@@ -1,13 +1,62 @@
-$BG-yellow: #FFCF70;
-$FONT-colour: #000000;
-$BG-gray: #4F4E4E;
-$ICON-colour: #FFFFFF;
-
-.test {
-    color: $BG-yellow;
-}
+$bg-color: #FFCF70;
+$font-color: #000000;
+$border-radius-large: 25px;
+$border-radius-small: 20px;
+$padding-large: 20px;
+$padding-small: 15px;
+$margin-between: 10px;
+$letter-spacing: 1.5px;
+$font-size-large: 18px;
+$font-size-small: 16px;
 
 .mainContainer {
-    background-color: $BG-gray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
 }
 
+.firstRow, .secondRow, .thirdRow, .fourthRow {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: $margin-between;
+
+    & > div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: $bg-color;
+        color: $font-color;
+        border: 2px solid rgba(0, 0, 0, 0.2);
+        font-weight: bold;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        letter-spacing: $letter-spacing;
+        font-size: $font-size-small;
+    }
+}
+
+.schedule {
+    border-radius: $border-radius-large;
+    padding: $padding-large $padding-large;
+    width: 44.5%;
+    font-size: $font-size-large;
+}
+
+.employee, .notification, .chat, .vacations, .statistic, .plannerAi {
+    border-radius: $border-radius-small;
+    padding: $padding-small $padding-large;
+    margin: 0 $margin-between;
+    width: 20%;
+}
+
+.secondRow, .thirdRow, .fourthRow {
+    & > div {
+        &:first-child {
+            margin-right: $margin-between;
+        }
+        &:last-child {
+            margin-left: $margin-between;
+        }
+    }
+}
