@@ -33,21 +33,36 @@ $font-size-small: 16px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         letter-spacing: $letter-spacing;
         font-size: $font-size-small;
+        padding: $padding-small;
+        cursor: pointer;
+
+        .icon {
+            margin-right: 8px;
+            height: 20px;
+            width: 20px;
+        }
+
+        .paragraphName {
+            margin: 0;
+        }
     }
 }
 
 .schedule {
     border-radius: $border-radius-large;
-    padding: $padding-large $padding-large;
     width: 44.5%;
     font-size: $font-size-large;
 }
 
 .employee, .notification, .chat, .vacations, .statistic, .plannerAi {
     border-radius: $border-radius-small;
-    padding: $padding-small $padding-large;
     margin: 0 $margin-between;
     width: 20%;
+}
+
+.plannerAi {
+    display: flex;
+    align-items: center;
 }
 
 .secondRow, .thirdRow, .fourthRow {
