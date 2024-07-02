@@ -1,0 +1,56 @@
+$bg-color: #4F4E4E;
+$font-color: #FFFFFF;
+$highlight-color: #FFCF70;
+$padding: 10px;
+$logo-size: 24px;
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $bg-color;
+    color: $font-color;
+    padding: $padding;
+}
+
+.leftSection, .rightSection {
+    display: flex;
+    align-items: center;
+}
+
+.leftSection .logo {
+    font-size: $logo-size;
+    font-weight: bold;
+    margin-left: 10px;
+    color: white;
+    letter-spacing: -25%;
+}
+
+.logo::first-letter{
+    color: $highlight-color;
+}
+
+.icon {
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+}
+
+.rightSection p,
+.leftSection p {
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
+}
+
+.rightSection p {
+    margin-left: 10px;
+}
+
+.leftSection p {
+    margin-right: 10px;
+}
+
+.rotate {
+    transform: rotate(180deg);
+}
