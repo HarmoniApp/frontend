@@ -1,0 +1,37 @@
+$bg-color: #4F4E4E;
+$font-color: #FFFFFF;
+$highlight-color: #FFCF70;
+$padding: 10px;
+$active-color: #FFCF70;
+$active-font-weight: bold;
+
+.navbar {
+    background-color: $bg-color;
+    padding: $padding;
+}
+
+.navList {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navItem {
+    color: $font-color;
+    padding: $padding;
+    cursor: pointer;
+    transition: color 0.3s ease;
+
+    &:hover {
+        color: $highlight-color;
+    }
+}
+
+.active {
+    color: $active-color;
+    font-weight: $active-font-weight;
+    border-bottom: 2px solid $active-color;
+}
