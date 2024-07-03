@@ -2,6 +2,7 @@ import DesktopDashboard from "../components/dashboard/desktop";
 import NavbarTop from "../components/navbar/top";
 import NavbarBottom from "../components/navbar/bottom";
 import Login from "../components/login";
+import Resister from "../components/register";
 
 export default function Home() {
   return (
@@ -9,7 +10,8 @@ export default function Home() {
       {/* <DesktopDashboard /> */}
       {/* <NavbarTop /> */}
       {/* <NavbarBottom /> */}
-      <Login />
+      {/* <Login /> */}
+      <Resister/>
     </div>
   );
 }
