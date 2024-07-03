@@ -1,0 +1,57 @@
+"use client";
+import React from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import styles from './main.module.scss';
+
+const Login = () => {
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().email('Nieprawidłowy email').required('Email jest wymagany'),
+    password: Yup.string().required('Hasło jest wymagane'),
+  });
+
+  return (
+    <div className={styles.container}>
+      <h1 className={styles.title}>Harmoni App</h1>
+      <Formik
+        initialValues={{ email: '', password: '' }}
+        validationSchema={validationSchema}
+        onSubmit={(values) => {
+          console.log(values);
+        }}
+      >
+        {({ errors, touched }) => (
+          <Form className={styles.form}>
+            <label className={styles.label} htmlFor="email">Adres Email</label>
+            <Field
+              className={`${styles.input} ${errors.email && touched.email ? styles.errorInput : ''}`}
+              type="email"
+              id="email"
+              name="email"
+              placeholder="my_email@example.com"
+            />
+            <ErrorMessage name="email" component="div" className={styles.error} />
+
+            <label className={styles.label} htmlFor="password">Hasło</label>
+            <Field
+              className={`${styles.input} ${errors.password && touched.password ? styles.errorInput : ''}`}
+              type="password"
+              id="password"
+              name="password"
+              placeholder="********"
+            />
+            <ErrorMessage name="password" component="div" className={styles.error} />
+
+            <button type="submit" className={styles.button}>Zaloguj</button>
+          </Form>
+        )}
+      </Formik>
+      <div className={styles.links}>
+        <a href="#" className={styles.link}>Zapomniałeś hasła?</a>
+        <a href="#" className={styles.link}>Nie masz konta? Utwórz je!</a>
+      </div>
+    </div>
+  );
+};
+
+export default Login;

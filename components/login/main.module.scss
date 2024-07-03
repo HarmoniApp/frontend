@@ -1,0 +1,91 @@
+$primary-color: #FFCF70;
+$secondary-color: #4F4E4E;
+$font-color: #000000;
+$bg-color: #F0F0F0;
+$border-color: rgba(0, 0, 0, 0.2);
+$link-color: #0000EE;
+$error-color: #FF0000;
+
+.container {
+    width: 100%;
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: $bg-color;
+    border: 1px solid $border-color;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.title {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+}
+
+.label {
+    font-size: 1em;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.input {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid $primary-color;
+    border-radius: 5px;
+    font-size: 1em;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.errorInput {
+    border-color: $error-color;
+}
+
+.button {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: $primary-color;
+    color: $font-color;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+
+    &:hover {
+        background-color: darken($primary-color, 10%);
+    }
+}
+
+.links {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.link {
+    color: $link-color;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.error {
+    color: $error-color;
+    font-size: 0.9em;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    text-align: left;
+}
