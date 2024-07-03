@@ -7,11 +7,11 @@ import Resister from "../components/register";
 export default function Home() {
   return (
     <div>
-      {/* <DesktopDashboard /> */}
+      <DesktopDashboard />
       {/* <NavbarTop /> */}
       {/* <NavbarBottom /> */}
       {/* <Login /> */}
-      <Resister/>
+      {/* <Resister/> */}
     </div>
   );
 }

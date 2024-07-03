@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faSearch, faBell, faUser } from '@fortawesome/free-solid-svg-icons';
 import styles from "./main.module.scss";
+import './main.css';
 
 const NavbarTop = () => {
 
