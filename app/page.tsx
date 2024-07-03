@@ -1,4 +1,4 @@
-import DesktopDashboard from "../components/dashboard/desktop";
+import DesktopDashboard from "../components/dashboard";
 import NavbarTop from "../components/navbar/top";
 import NavbarBottom from "../components/navbar/bottom";
 import Login from "../components/login";
