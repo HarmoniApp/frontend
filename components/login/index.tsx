@@ -1,10 +1,18 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import styles from './main.module.scss';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const validationSchema = Yup.object().shape({
     email: Yup.string().email('Nieprawidłowy email').required('Email jest wymagany'),
     password: Yup.string().required('Hasło jest wymagane'),
@@ -33,13 +41,20 @@ const Login = () => {
             <ErrorMessage name="email" component="div" className={styles.error} />
 
             <label className={styles.label} htmlFor="password">Hasło</label>
-            <Field
-              className={`${styles.input} ${errors.password && touched.password ? styles.errorInput : ''}`}
-              type="password"
-              id="password"
-              name="password"
-              placeholder="********"
-            />
+            <div className={styles.passwordContainer}>
+              <Field
+                className={`${styles.input} ${errors.password && touched.password ? styles.errorInput : ''}`}
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                placeholder="********"
+              />
+              <FontAwesomeIcon 
+                icon={showPassword ? faEyeSlash : faEye} 
+                className={styles.eyeIcon} 
+                onClick={togglePasswordVisibility}
+              />
+            </div>
             <ErrorMessage name="password" component="div" className={styles.error} />
 
             <button type="submit" className={styles.button}>Zaloguj</button>

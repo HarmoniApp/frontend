@@ -50,6 +50,19 @@ $error-color: #FF0000;
     border-color: $error-color;
 }
 
+.passwordContainer {
+    position: relative;
+}
+
+.eyeIcon {
+    position: absolute;
+    top: 37%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: $secondary-color;
+}
+
 .button {
     padding: 10px;
     margin-top: 10px;
