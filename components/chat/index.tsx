@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faCommentDots } from '@fortawesome/free-solid-svg-icons';
+import {faCommentDots, faPaperPlane, faImage, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 
 const Chat = () => {
@@ -8,10 +8,13 @@ const Chat = () => {
     <div className={styles.chatContainer}>
       <div className={styles.sidebar}>
         <div className={styles.sidebarHeader}>
-          <h2>CZATY <FontAwesomeIcon icon={faCommentDots} className={styles.icon}/></h2>
+            <FontAwesomeIcon icon={faCommentDots} className={styles.icon}/>
+            <h2>CZATY</h2>
+            <FontAwesomeIcon icon={faPlus} className={styles.icon}/>
         </div>
         <div className={styles.searchBar}>
-          <input type="text" placeholder="Wyszukaj pracownika lub grupę" disabled />
+            <FontAwesomeIcon icon={faSearch} className={styles.icon} />
+            <input type="text" placeholder="Wyszukaj pracownika lub grupę" disabled />
         </div>
         <ul className={styles.chatList}>
           <li className={`${styles.chatItem} ${styles.activeChat}`}>
@@ -24,22 +27,8 @@ const Chat = () => {
           <li className={styles.chatItem}>
             <div className={styles.chatAvatar}></div>
             <div>
-              <p className={styles.chatName}>Adam Widawski</p>
-              <p className={styles.chatMessage}>Załatwione!</p>
-            </div>
-          </li>
-          <li className={styles.chatItem}>
-            <div className={styles.chatAvatar}></div>
-            <div>
               <p className={styles.chatName}>Mariola Nowak</p>
               <p className={styles.chatMessage}>Za tydzień mam urlop. Nie...</p>
-            </div>
-          </li>
-          <li className={styles.chatItem}>
-            <div className={styles.chatAvatar}></div>
-            <div>
-              <p className={styles.chatName}>HR</p>
-              <p className={styles.chatMessage}>Magdalena: Utworzyłam gra...</p>
             </div>
           </li>
           <li className={styles.chatItem}>
@@ -73,7 +62,9 @@ const Chat = () => {
           </div>
         </div>
         <div className={styles.messageInputContainer}>
-          <input type="text" placeholder="Wpisz wiadomość" disabled/>
+            <FontAwesomeIcon icon={faImage} className={styles.icon} />
+            <input type="text" placeholder="Wpisz wiadomość" disabled/>
+            <FontAwesomeIcon icon={faPaperPlane} className={styles.icon}/>
         </div>
       </div>
     </div>
