@@ -14,11 +14,11 @@ const NavbarTop = () => {
     return (
         <nav className={styles.navbar}>
             <div className={styles.leftSection}>
-            {!isDashboard && <p><FontAwesomeIcon icon={faPlay} className={`${styles.icon} ${styles.rotate}`} /></p>}
+                {!isDashboard && <p><FontAwesomeIcon icon={faPlay} className={`${styles.icon} ${styles.rotate}`} /></p>}
                 <span className={styles.logo}>HA</span>
             </div>
             <div className={styles.rightSection}>
-            {!isDashboard && <p><FontAwesomeIcon icon={faSearch} className={styles.icon} /></p>}
+                {!isDashboard && <p><FontAwesomeIcon icon={faSearch} className={styles.icon} /></p>}
                 <p><FontAwesomeIcon icon={faBell} className={styles.icon} /></p>
                 <p><FontAwesomeIcon icon={faUser} className={styles.icon} /></p>
             </div>

@@ -7,7 +7,7 @@ $primary-color: #FFCF70;
 }
 
 .overlay {
-  position: fixed; 
+  position: fixed;
   top: 111px;
   left: 0;
   width: 100%;
@@ -17,13 +17,13 @@ $primary-color: #FFCF70;
 }
 
 .centeredText {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 3; 
-    color: $primary-color; 
-    font-size: 24px; 
-    font-weight: bold; 
-    text-align: center;
-  }
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  color: $primary-color;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
