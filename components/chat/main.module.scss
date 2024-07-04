@@ -1,0 +1,158 @@
+$bg-color: #F0F0F0;
+$primary-color: #FFCF70;
+$secondary-color: #4F4E4E;
+$text-color: #000000;
+$highlight-color: #FFCF70;
+$border-radius: 10px;
+
+.chatContainer {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 300px;
+  background-color: $secondary-color;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebarHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px;
+  color: #fff;
+  font-size: 1.5em;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: $bg-color;
+
+  input {
+    margin-left: 10px;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    border-radius: $border-radius;
+    outline: none;
+  }
+}
+
+.chatList {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.chatItem {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  transition: background-color 0.3s;
+  background-color: #fff;
+
+  &:hover {
+    background-color: lighten($bg-color, 10%);
+  }
+
+  &.activeChat {
+    background-color: $highlight-color;
+  }
+}
+
+.chatAvatar {
+  width: 40px;
+  height: 40px;
+  background-color: #ccc;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.chatName {
+  font-weight: bold;
+  color: $text-color;
+}
+
+.chatMessage {
+  color: $text-color;
+}
+
+.chatWindow {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: $bg-color;
+}
+
+.chatHeader {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.chatMessages {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.message {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+
+  p {
+    background-color: #e5e5e5;
+    padding: 10px;
+    border-radius: $border-radius;
+    margin: 0;
+  }
+}
+
+.otherMessage {
+  justify-content: flex-start;
+}
+
+.selfMessage {
+  justify-content: flex-end;
+
+  p {
+    background-color: $highlight-color;
+  }
+}
+
+.messageAvatar {
+  width: 30px;
+  height: 30px;
+  background-color: #ccc;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.messageInputContainer {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-top: 1px solid #ddd;
+
+  input {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    border-radius: $border-radius;
+    outline: none;
+    margin: 0 10px;
+  }
+}
+
+.icon {
+  width: 30px;
+  height: 30px;
+}
