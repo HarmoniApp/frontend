@@ -1,9 +1,9 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faPlus, faPaperPlane, faImage, faCommentDots } from '@fortawesome/free-solid-svg-icons';
+import {faCommentDots } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 
-const ChatPage = () => {
+const Chat = () => {
   return (
     <div className={styles.chatContainer}>
       <div className={styles.sidebar}>
@@ -80,4 +80,4 @@ const ChatPage = () => {
   );
 };
 
-export default ChatPage;
+export default Chat;
