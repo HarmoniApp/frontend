@@ -13,7 +13,8 @@ $logo-size: 24px;
     padding: $padding;
 }
 
-.leftSection, .rightSection {
+.leftSection,
+.rightSection {
     display: flex;
     align-items: center;
 }
@@ -26,7 +27,7 @@ $logo-size: 24px;
     letter-spacing: -25%;
 }
 
-.logo::first-letter{
+.logo::first-letter {
     color: $highlight-color;
 }
 

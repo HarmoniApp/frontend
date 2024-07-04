@@ -79,9 +79,9 @@ const Register = () => {
                 name="password"
                 placeholder="********"
               />
-              <FontAwesomeIcon 
-                icon={showPassword ? faEyeSlash : faEye} 
-                className={styles.eyeIcon} 
+              <FontAwesomeIcon
+                icon={showPassword ? faEyeSlash : faEye}
+                className={styles.eyeIcon}
                 onClick={togglePasswordVisibility}
               />
             </div>
@@ -96,9 +96,9 @@ const Register = () => {
                 name="confirmPassword"
                 placeholder="********"
               />
-              <FontAwesomeIcon 
-                icon={showConfirmPassword ? faEyeSlash : faEye} 
-                className={styles.eyeIcon} 
+              <FontAwesomeIcon
+                icon={showConfirmPassword ? faEyeSlash : faEye}
+                className={styles.eyeIcon}
                 onClick={toggleConfirmPasswordVisibility}
               />
             </div>

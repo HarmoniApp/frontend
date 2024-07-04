@@ -49,9 +49,9 @@ const Login = () => {
                 name="password"
                 placeholder="********"
               />
-              <FontAwesomeIcon 
-                icon={showPassword ? faEyeSlash : faEye} 
-                className={styles.eyeIcon} 
+              <FontAwesomeIcon
+                icon={showPassword ? faEyeSlash : faEye}
+                className={styles.eyeIcon}
                 onClick={togglePasswordVisibility}
               />
             </div>

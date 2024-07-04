@@ -17,13 +17,16 @@ $font-size-small: 18px;
     padding-top: 10%;
 }
 
-.firstRow, .secondRow, .thirdRow, .fourthRow {
+.firstRow,
+.secondRow,
+.thirdRow,
+.fourthRow {
     display: flex;
     justify-content: center;
     width: 100%;
     margin-bottom: $margin-between;
 
-    & > div {
+    &>div {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -55,7 +58,12 @@ $font-size-small: 18px;
     font-size: $font-size-large;
 }
 
-.employee, .notification, .chat, .vacations, .statistic, .plannerAi {
+.employee,
+.notification,
+.chat,
+.vacations,
+.statistic,
+.plannerAi {
     border-radius: $border-radius-small;
     margin: 0 $margin-between;
     width: 30%;
@@ -66,11 +74,14 @@ $font-size-small: 18px;
     align-items: center;
 }
 
-.secondRow, .thirdRow, .fourthRow {
-    & > div {
+.secondRow,
+.thirdRow,
+.fourthRow {
+    &>div {
         &:first-child {
             margin-right: $margin-between;
         }
+
         &:last-child {
             margin-left: $margin-between;
         }

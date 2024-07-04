@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faCommentDots, faPaperPlane, faImage, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faCommentDots, faPaperPlane, faImage, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 
 const Chat = () => {
@@ -8,13 +8,13 @@ const Chat = () => {
     <div className={styles.chatContainer}>
       <div className={styles.sidebar}>
         <div className={styles.sidebarHeader}>
-            <FontAwesomeIcon icon={faCommentDots} className={styles.icon}/>
-            <h2>CZATY</h2>
-            <FontAwesomeIcon icon={faPlus} className={styles.icon}/>
+          <FontAwesomeIcon icon={faCommentDots} className={styles.icon} />
+          <h2>CZATY</h2>
+          <FontAwesomeIcon icon={faPlus} className={styles.icon} />
         </div>
         <div className={styles.searchBar}>
-            <FontAwesomeIcon icon={faSearch} className={styles.icon} />
-            <input type="text" placeholder="Wyszukaj pracownika lub grupę" disabled />
+          <FontAwesomeIcon icon={faSearch} className={styles.icon} />
+          <input type="text" placeholder="Wyszukaj pracownika lub grupę" disabled />
         </div>
         <ul className={styles.chatList}>
           <li className={`${styles.chatItem} ${styles.activeChat}`}>
@@ -62,9 +62,9 @@ const Chat = () => {
           </div>
         </div>
         <div className={styles.messageInputContainer}>
-            <FontAwesomeIcon icon={faImage} className={styles.icon} />
-            <input type="text" placeholder="Wpisz wiadomość" disabled/>
-            <FontAwesomeIcon icon={faPaperPlane} className={styles.icon}/>
+          <FontAwesomeIcon icon={faImage} className={styles.icon} />
+          <input type="text" placeholder="Wpisz wiadomość" disabled />
+          <FontAwesomeIcon icon={faPaperPlane} className={styles.icon} />
         </div>
       </div>
     </div>
