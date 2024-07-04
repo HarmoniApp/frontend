@@ -116,13 +116,7 @@ $border-radius: 10px;
   }
 }
 
-.otherMessage {
-  justify-content: flex-start;
-}
-
-.selfMessage {
-  justify-content: flex-end;
-
+.highlightedMessage {
   p {
     background-color: $highlight-color;
   }
@@ -151,8 +145,7 @@ $border-radius: 10px;
     margin: 0 10px;
   }
 }
-
-.icon {
-  width: 30px;
-  height: 30px;
+.icon{
+    width: 30px;
+    height: 30px;
 }
