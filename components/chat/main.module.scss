@@ -7,7 +7,9 @@ $border-radius: 10px;
 
 .chatContainer {
   display: flex;
-  height: 100vh;
+  height: 70vh;
+  margin: 40px;
+  margin-top:60px;
 }
 
 .sidebar {
@@ -19,11 +21,12 @@ $border-radius: 10px;
 
 .sidebarHeader {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: 2px;
   color: #fff;
   font-size: 1.5em;
+  padding: 0 30px;
 }
 
 .searchBar {
@@ -88,6 +91,7 @@ $border-radius: 10px;
   display: flex;
   flex-direction: column;
   background-color: $bg-color;
+  margin-left: 20px;
 }
 
 .chatHeader {
@@ -116,7 +120,13 @@ $border-radius: 10px;
   }
 }
 
-.highlightedMessage {
+.otherMessage {
+  justify-content: flex-start;
+}
+
+.selfMessage {
+  justify-content: flex-end;
+
   p {
     background-color: $highlight-color;
   }
@@ -145,7 +155,9 @@ $border-radius: 10px;
     margin: 0 10px;
   }
 }
-.icon{
-    width: 30px;
-    height: 30px;
+
+.icon {
+    color: $primary-color;
+  width: 30px;
+  height: 30px;
 }
