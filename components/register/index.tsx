@@ -109,7 +109,7 @@ const Register = () => {
         )}
       </Formik>
       <div className={styles.links}>
-        <a href="#" className={styles.link}>Masz już konto? Zaloguj się!</a>
+        <a href="/login" className={styles.link}>Masz już konto? Zaloguj się!</a>
       </div>
     </div>
   );
