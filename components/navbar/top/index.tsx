@@ -6,7 +6,11 @@ import { faPlay, faSearch, faBell, faUser } from '@fortawesome/free-solid-svg-ic
 import styles from "./main.module.scss";
 import './main.css';
 
-const NavbarTop = () => {
+interface NavbarTopProps {
+    onAccountIconClick: () => void;
+}
+
+const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick }) => {
 
     const pathname = usePathname();
     const isDashboard = pathname === '/dashboard';
@@ -20,7 +24,7 @@ const NavbarTop = () => {
             <div className={styles.rightSection}>
                 {!isDashboard && <p><FontAwesomeIcon icon={faSearch} className={styles.icon} /></p>}
                 <p><FontAwesomeIcon icon={faBell} className={styles.icon} /></p>
-                <p><FontAwesomeIcon icon={faUser} className={styles.icon} /></p>
+                <p onClick={onAccountIconClick}><FontAwesomeIcon icon={faUser} className={styles.icon} /></p>
             </div>
         </nav>
     );
