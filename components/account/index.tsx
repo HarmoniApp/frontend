@@ -5,12 +5,12 @@ import { faUser, faEdit, faQuestionCircle, faClipboard, faCog, faSignOutAlt } fr
 
 
 
-interface AccountProps {
+interface SidebarProps {
     isOpen: boolean;
     toggleSidebar: () => void;
 }
 
-const Account: React.FC<AccountProps> = ({ isOpen, toggleSidebar }) => {
+const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
     return (
         <>
             <div className={`${styles.sidebarContainer} ${isOpen ? styles.open : ''}`}>
@@ -40,7 +40,6 @@ const Account: React.FC<AccountProps> = ({ isOpen, toggleSidebar }) => {
                         <span>Wyloguj się</span>
                     </div>
                 </div>
-            
                 <div className={styles.footer}>
                     <div className={styles.logoContainer}>
                         <p className={styles.logo}>HA</p>

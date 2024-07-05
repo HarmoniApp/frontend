@@ -13,18 +13,19 @@ interface NavbarTopProps {
 const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick }) => {
 
     const pathname = usePathname();
-    const isDashboard = pathname === '/dashboard';
+    const mustBeBackButton = pathname === '/dashboard' || pathname === '/register' || pathname === '/login';
+    const mustBeAccoutButton =  pathname === '/register' || pathname === '/login';
 
     return (
         <nav className={styles.navbar}>
             <div className={styles.leftSection}>
-                {!isDashboard && <p><FontAwesomeIcon icon={faPlay} className={`${styles.icon} ${styles.rotate}`} /></p>}
+                {!mustBeBackButton && <p><FontAwesomeIcon icon={faPlay} className={`${styles.icon} ${styles.rotate}`} /></p>}
                 <span className={styles.logo}>HA</span>
             </div>
             <div className={styles.rightSection}>
-                {!isDashboard && <p><FontAwesomeIcon icon={faSearch} className={styles.icon} /></p>}
-                <p><FontAwesomeIcon icon={faBell} className={styles.icon} /></p>
-                <p onClick={onAccountIconClick}><FontAwesomeIcon icon={faUser} className={styles.icon} /></p>
+                {!mustBeBackButton && <p><FontAwesomeIcon icon={faSearch} className={styles.icon} /></p>}
+                {!mustBeAccoutButton && <p><FontAwesomeIcon icon={faBell} className={styles.icon} /></p>}
+                {!mustBeAccoutButton && <p onClick={onAccountIconClick}><FontAwesomeIcon icon={faUser} className={styles.icon} /></p>}
             </div>
         </nav>
     );

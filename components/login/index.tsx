@@ -63,7 +63,7 @@ const Login = () => {
       </Formik>
       <div className={styles.links}>
         <a href="#" className={styles.link}>Zapomniałeś hasła?</a>
-        <a href="#" className={styles.link}>Nie masz konta? Utwórz je!</a>
+        <a href="/register" className={styles.link}>Nie masz konta? Utwórz je!</a>
       </div>
     </div>
   );
