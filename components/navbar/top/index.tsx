@@ -13,7 +13,7 @@ interface NavbarTopProps {
 const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick }) => {
 
     const pathname = usePathname();
-    const isDashboard = pathname === '/dashboard';
+    const isDashboard = pathname === '/dashboard' || pathname === '/register' || pathname === '/login' || pathname === '/dashboard/index/';
 
     return (
         <nav className={styles.navbar}>
