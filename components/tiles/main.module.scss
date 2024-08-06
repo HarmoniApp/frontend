@@ -1,0 +1,28 @@
+$bg-color: #F0F0F0;
+$primary-color: #FFCF70;
+$secondary-color: #4F4E4E;
+$text-color: #000000;
+$highlight-color: #FFCF70;
+$border-radius: 10px;
+
+.tile {
+  border: 1px solid $bg-color;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+
+  .name {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 5px 0;
+  }
+
+  .languages {
+    font-size: 14px;
+    margin: 5px 0;
+
+    .language {
+      margin: 0 5px;
+    }
+  }
+}
