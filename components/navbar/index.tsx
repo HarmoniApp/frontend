@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from "react";
 import NavbarBottom from "./bottom";
+import Account from "@/components/account";
 import NavbarTop from "./top";
 
 export default function Navbar() {
@@ -13,6 +14,7 @@ export default function Navbar() {
     return (
         <div>
             <NavbarTop onAccountIconClick={toggleSidebar} />
+            <Account isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
             <NavbarBottom />
         </div>
     )

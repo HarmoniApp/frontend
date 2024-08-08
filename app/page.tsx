@@ -9,7 +9,7 @@ import Resister from "../components/register";
 import Chat from "../components/chat";
 import Navbar from "@/components/navbar";
 import Account from "@/components/account";
-import Tiles from "@/components/tiles";
+import Tiles from "@/components/employees/tile";
 import Employees from "@/components/employees";
 
 export default function Home() {
