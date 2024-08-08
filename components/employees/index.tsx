@@ -20,6 +20,7 @@ const Employees: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState('');
+  const [selectedSort, setSelectedSort] = useState('');
 
   useEffect(() => {
     fetch('http://localhost:8080/api/v1/user/simple')
@@ -41,6 +42,12 @@ const Employees: React.FC = () => {
 
   const handleSortChange = (value: string) => {
     setSortOrder(value);
+    setSelectedSort(value);
+  };
+
+  const handleClearFilters = () => {
+    setSortOrder('');
+    setSelectedSort('');
   };
 
   const sortedData = [...data].sort((a, b) => {
@@ -57,7 +64,7 @@ const Employees: React.FC = () => {
 
   return (
     <div>
-      <FilterEmp onSortChange={handleSortChange} />
+      <FilterEmp onSortChange={handleSortChange} onClearFilters={handleClearFilters} selectedSort={selectedSort} />
       <div className={styles.container}>
         {sortedData.map((person, index) => (
           <Tile key={index} person={person} />
