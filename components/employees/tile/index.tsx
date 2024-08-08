@@ -25,17 +25,20 @@ interface LanguageTileProps {
   person: Person;
 }
 
-const LanguageTile: React.FC<LanguageTileProps> = ({ person }) => {
+const Title: React.FC<LanguageTileProps> = ({ person }) => {
   return (
-    <div className={styles.tile}>
-      <div className={styles.name}>{`${person.firstname} ${person.surname}`}</div>
-      <div className={styles.languages}>
-        {person.languages.map((language, index) => (
-          <span key={index} className={styles.language}>{languageAbbreviations[language.name]}</span>
-        ))}
+    <div>
+      <div className={styles.tile}>
+        <div className={styles.name}>{`${person.firstname} ${person.surname}`}</div>
+        <div className={styles.languages}>
+          {person.languages.map((language, index) => (
+            <span key={index} className={styles.language}>{languageAbbreviations[language.name]}</span>
+          ))}
+        </div>
       </div>
     </div>
+
   );
 }
 
-export default LanguageTile;
+export default Title;

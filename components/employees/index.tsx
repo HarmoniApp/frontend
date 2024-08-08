@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Tiles from '@/components/tiles';
+import Tile from '@/components/employees/tile';
+import FilterEmp from '@/components/employees/filterEmp';
 import styles from './main.module.scss';
 
 interface Language {
@@ -14,10 +15,11 @@ interface Person {
   languages: Language[];
 }
 
-const IndexPage: React.FC = () => {
+const Employees: React.FC = () => {
   const [data, setData] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sortOrder, setSortOrder] = useState('');
 
   useEffect(() => {
     fetch('http://localhost:8080/api/v1/user/simple')
@@ -37,16 +39,32 @@ const IndexPage: React.FC = () => {
       });
   }, []);
 
+  const handleSortChange = (value: string) => {
+    setSortOrder(value);
+  };
+
+  const sortedData = [...data].sort((a, b) => {
+    if (sortOrder === 'az') {
+      return a.firstname.localeCompare(b.firstname);
+    } else if (sortOrder === 'za') {
+      return b.firstname.localeCompare(a.firstname);
+    }
+    return 0;
+  });
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className={styles.container}>
-      {data.map((person, index) => (
-        <Tiles key={index} person={person} />
-      ))}
+    <div>
+      <FilterEmp onSortChange={handleSortChange} />
+      <div className={styles.container}>
+        {sortedData.map((person, index) => (
+          <Tile key={index} person={person} />
+        ))}
+      </div>
     </div>
   );
 }
 
-export default IndexPage;
+export default Employees;
