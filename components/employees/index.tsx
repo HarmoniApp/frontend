@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Tile from '@/components/employees/tile';
 import FilterEmp from '@/components/employees/filterEmp';
 import styles from './main.module.scss';
+import NavEmp from '@/components/employees/navEmp';
 
 interface Language {
   id: number;
@@ -19,8 +20,7 @@ const Employees: React.FC = () => {
   const [data, setData] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState('');
-  const [selectedSort, setSelectedSort] = useState('');
+  const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
 
   useEffect(() => {
     fetch('http://localhost:8080/api/v1/user/simple')
@@ -40,23 +40,23 @@ const Employees: React.FC = () => {
       });
   }, []);
 
-  const handleSortChange = (value: string) => {
-    setSortOrder(value);
-    setSelectedSort(value);
-  };
-
   const handleClearFilters = () => {
-    setSortOrder('');
-    setSelectedSort('');
+    setSelectedRoles([]);
   };
 
-  const sortedData = [...data].sort((a, b) => {
-    if (sortOrder === 'az') {
-      return a.firstname.localeCompare(b.firstname);
-    } else if (sortOrder === 'za') {
-      return b.firstname.localeCompare(a.firstname);
-    }
-    return 0;
+  const handleRoleChange = (roleId: number) => {
+    setSelectedRoles((prevSelectedRoles) => {
+      if (prevSelectedRoles.includes(roleId)) {
+        return prevSelectedRoles.filter((id) => id !== roleId);
+      } else {
+        return [...prevSelectedRoles, roleId];
+      }
+    });
+  };
+
+  const filteredData = data.filter(person => {
+    if (selectedRoles.length === 0) return true;
+    return person.languages.some(language => selectedRoles.includes(language.id));
   });
 
   if (loading) return <div>Loading...</div>;
@@ -64,9 +64,10 @@ const Employees: React.FC = () => {
 
   return (
     <div>
-      <FilterEmp onSortChange={handleSortChange} onClearFilters={handleClearFilters} selectedSort={selectedSort} />
+      <NavEmp />
+      <FilterEmp/>
       <div className={styles.container}>
-        {sortedData.map((person, index) => (
+        {data.map((person, index) => (
           <Tile key={index} person={person} />
         ))}
       </div>
