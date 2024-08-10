@@ -36,6 +36,14 @@ const FilterEmp: React.FC<FilterEmpProps> = ({ onApplyFilters }) => {
       .catch(error => console.error('Error fetching languages:', error));
   }, []);
 
+  useEffect(() => {
+    const filters: { roles?: number[]; languages?: number[]; order?: string } = {};
+    if (selectedRoles.length) filters.roles = selectedRoles;
+    if (selectedLanguages.length) filters.languages = selectedLanguages;
+    if (order) filters.order = order;
+    onApplyFilters(filters);
+  }, [selectedRoles, selectedLanguages, order, onApplyFilters]);
+
   const handleRoleChange = (roleId: number) => {
     setSelectedRoles((prevSelectedRoles) => {
       if (prevSelectedRoles.includes(roleId)) {
@@ -54,14 +62,6 @@ const FilterEmp: React.FC<FilterEmpProps> = ({ onApplyFilters }) => {
         return [...prevSelectedLanguages, languageId];
       }
     });
-  };
-
-  const handleApplyFilters = () => {
-    const filters: { roles?: number[]; languages?: number[]; order?: string } = {};
-    if (selectedRoles.length) filters.roles = selectedRoles;
-    if (selectedLanguages.length) filters.languages = selectedLanguages;
-    if (order) filters.order = order;
-    onApplyFilters(filters);
   };
 
   const handleClearFilters = () => {
@@ -119,7 +119,6 @@ const FilterEmp: React.FC<FilterEmpProps> = ({ onApplyFilters }) => {
         </label>
       ))}
       
-      <button onClick={handleApplyFilters}>Zastosuj filtry</button>
       <button onClick={handleClearFilters}>Wyczyść wszystko</button>
     </div>
   );
