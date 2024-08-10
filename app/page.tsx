@@ -9,6 +9,8 @@ import Resister from "../components/register";
 import Chat from "../components/chat";
 import Navbar from "@/components/navbar";
 import Account from "@/components/account";
+import Tiles from "@/components/employees/tile";
+import Employees from "@/components/employees";
 
 export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -20,12 +22,13 @@ export default function Home() {
   return (
     <div>
       {/* <DesktopDashboard /> */}
-      <NavbarTop onAccountIconClick={toggleSidebar}/>
-      <Account isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      {/* <NavbarTop onAccountIconClick={toggleSidebar}/> */}
+      {/* <Account isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} /> */}
       {/* <NavbarBottom /> */}
       {/* <Login /> */}
       {/* <Resister/> */}
       {/* <Chat /> */}
+      <Employees />
     </div>
   );
 }
