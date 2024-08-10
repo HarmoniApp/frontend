@@ -20,10 +20,22 @@ const Employees: React.FC = () => {
   const [data, setData] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
 
-  useEffect(() => {
-    fetch('http://localhost:8080/api/v1/user/simple')
+  const fetchFilteredData = (filters: { roles?: number[]; languages?: number[]; order?: string }) => {
+    let url = 'http://localhost:8080/api/v1/user/simple';
+    const params = new URLSearchParams();
+
+    if (filters.roles && filters.roles.length) {
+      filters.roles.forEach(role => params.append('role', role.toString()));
+    }
+    if (filters.languages && filters.languages.length) {
+      filters.languages.forEach(language => params.append('language', language.toString()));
+    }
+    if (filters.order) params.append('order', filters.order);
+
+    if (params.toString()) url += `?${params.toString()}`;
+
+    fetch(url)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -38,26 +50,11 @@ const Employees: React.FC = () => {
         setError(error.message);
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetchFilteredData({});
   }, []);
-
-  const handleClearFilters = () => {
-    setSelectedRoles([]);
-  };
-
-  const handleRoleChange = (roleId: number) => {
-    setSelectedRoles((prevSelectedRoles) => {
-      if (prevSelectedRoles.includes(roleId)) {
-        return prevSelectedRoles.filter((id) => id !== roleId);
-      } else {
-        return [...prevSelectedRoles, roleId];
-      }
-    });
-  };
-
-  const filteredData = data.filter(person => {
-    if (selectedRoles.length === 0) return true;
-    return person.languages.some(language => selectedRoles.includes(language.id));
-  });
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -65,7 +62,7 @@ const Employees: React.FC = () => {
   return (
     <div>
       <NavEmp />
-      <FilterEmp/>
+      <FilterEmp onApplyFilters={fetchFilteredData} />
       <div className={styles.container}>
         {data.map((person, index) => (
           <Tile key={index} person={person} />
