@@ -3,7 +3,6 @@ import Tile from '@/components/employees/tile';
 import FilterEmp from '@/components/employees/filterEmp';
 import styles from './main.module.scss';
 import NavEmp from '@/components/employees/navEmp';
-import RolePopUp from '@/components/employees/rolePopUp';
 
 interface Language {
   id: number;
@@ -63,7 +62,6 @@ const Employees: React.FC = () => {
   return (
     <div>
       <NavEmp />
-      <RolePopUp />
       <FilterEmp onApplyFilters={fetchFilteredData} />
       <div className={styles.container}>
         {data.map((person, index) => (
