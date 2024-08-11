@@ -1,0 +1,27 @@
+$bg-color: #F0F0F0;
+$primary-color: #FFCF70;
+$secondary-color: #4F4E4E;
+$text-color: #000000;
+$highlight-color: #FFCF70;
+$border-radius: 10px;
+
+.mainContainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+    gap: 30px;
+}
+
+.addConteinerMain{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+    gap: 30px;
+}
+
+.addConteiner{
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
