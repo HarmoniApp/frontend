@@ -1,12 +1,26 @@
 import React from 'react';
 import styles from './main.module.scss';
+import Flag from 'react-flagkit';
 
 const languageAbbreviations: { [key: string]: string } = {
-  "German": "GER",
-  "Spanish": "SPA",
-  "Japanese": "JPN",
-  "Polish": "POL",
-  "English": "ENG"
+    Arabic: 'AE', 
+    Bengali: 'BD', 
+    English: 'GB', 
+    French: 'FR', 
+    German: 'DE', 
+    Hindi: 'IN', 
+    Italian: 'IT', 
+    Japanese: 'JP', 
+    Korean: 'KR', 
+    Mandarin: 'CN', 
+    Other: 'UN', 
+    Persian: 'IR',
+    Polish: 'PL', 
+    Portuguese: 'PT', 
+    Russian: 'RU',
+    Spanish: 'ES', 
+    Turkish: 'TR',
+    Vietnamese: 'VN',
 };
 
 interface Language {
@@ -32,7 +46,7 @@ const Title: React.FC<LanguageTileProps> = ({ person }) => {
         <div className={styles.name}>{`${person.firstname} ${person.surname}`}</div>
         <div className={styles.languages}>
           {person.languages.map((language, index) => (
-            <span key={index} className={styles.language}>{languageAbbreviations[language.name]}</span>
+            <Flag key={index} className={styles.language} country={languageAbbreviations[language.name]} />
           ))}
         </div>
       </div>

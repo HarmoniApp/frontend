@@ -43,9 +43,9 @@ const FilterEmp: React.FC<FilterEmpProps> = ({ onApplyFilters }) => {
       if (selectedLanguages.length) filters.languages = selectedLanguages;
       if (order) filters.order = order;
       onApplyFilters(filters);
-    }, 300); // Opóźnienie 300ms
+    }, 300);
 
-    return () => clearTimeout(timeoutId); // Wyczyszczenie timeoutu, gdy stan się zmienia
+    return () => clearTimeout(timeoutId);
   }, [selectedRoles, selectedLanguages, order]);
 
   const handleRoleChange = (roleId: number) => {
