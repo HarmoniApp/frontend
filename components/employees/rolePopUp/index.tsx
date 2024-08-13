@@ -33,7 +33,7 @@ const RolePopUp = () => {
 
   const handleAddRole = () => {
     if (newRoleName.trim() === '') {
-      return; // Nie dodawaj pustych ról
+      return;
     }
 
     fetch('http://localhost:8080/api/v1/role', {
@@ -46,7 +46,7 @@ const RolePopUp = () => {
       .then(response => response.json())
       .then(newRole => {
         setRoles([...roles, newRole]);
-        setNewRoleName(''); // Wyczyść pole input
+        setNewRoleName('');
       })
       .catch(error => console.error('Error adding role:', error));
   };

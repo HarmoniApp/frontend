@@ -1,32 +1,46 @@
 import React, { useState } from 'react';
 import RolePopUp from '@/components/employees/rolePopUp';
+import AddEmpPopUp from '@/components/employees/addEmpPopUp';
 import Modal from 'react-modal';
 import styles from './main.module.scss';
 
 const NavEmp = () => {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalIsOpenRole, setModalIsOpenRole] = useState(false);
+  const [modalIsOpenAddEmp, setModalIsOpenAddEmp] = useState(false);
 
-  const openModal = () => setModalIsOpen(true);
-  const closeModal = () => setModalIsOpen(false);
+  const openModalRole = () => setModalIsOpenRole(true);
+  const closeModalRole = () => setModalIsOpenRole(false);
+
+  const openModalAddEmp = () => setModalIsOpenAddEmp(true);
+  const closeModalAddEmp = () => setModalIsOpenAddEmp(false);
 
   return (
     <div>
       <button>import pracowkik</button>
-      <button>add pracowkik</button>
-      <button onClick={openModal}>EDIT ROLES</button>
-      <button>lista widok</button>
-      <button>kafelki widok</button>
-
+      <button onClick={openModalAddEmp}>add pracowkik</button>
       <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
+        isOpen={modalIsOpenAddEmp}
+        onRequestClose={closeModalAddEmp}
+        contentLabel="Add Employee"
+        className={styles.modalContent}
+        overlayClassName={styles.modalOverlay}
+      >
+        <AddEmpPopUp />
+        <button onClick={closeModalAddEmp}>Zamknij</button>
+      </Modal>
+      <button onClick={openModalRole}>EDIT ROLES</button>
+      <Modal
+        isOpen={modalIsOpenRole}
+        onRequestClose={closeModalRole}
         contentLabel="Edit Roles"
         className={styles.modalContent}
         overlayClassName={styles.modalOverlay}
       >
         <RolePopUp />
-        <button onClick={closeModal}>Zamknij</button>
+        <button onClick={closeModalRole}>Zamknij</button>
       </Modal>
+      <button>lista widok</button>
+      <button>kafelki widok</button>
     </div>
   );
 }
