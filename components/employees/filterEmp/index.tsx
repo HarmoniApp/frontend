@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from './main.module.scss';
+import Flag from 'react-flagkit';
 
 interface Role {
   id: number;
@@ -10,6 +11,27 @@ interface Language {
   id: number;
   name: string;
 }
+
+const languageAbbreviations: { [key: string]: string } = {
+  Arabic: 'AE', 
+  Bengali: 'BD', 
+  English: 'GB', 
+  French: 'FR', 
+  German: 'DE', 
+  Hindi: 'IN', 
+  Italian: 'IT', 
+  Japanese: 'JP', 
+  Korean: 'KR', 
+  Mandarin: 'CN', 
+  Other: 'UN', 
+  Persian: 'IR',
+  Polish: 'PL', 
+  Portuguese: 'PT', 
+  Russian: 'RU',
+  Spanish: 'ES', 
+  Turkish: 'TR',
+  Vietnamese: 'VN',
+};
 
 interface FilterEmpProps {
   onApplyFilters: (filters: { roles?: number[]; languages?: number[]; order?: string }) => void;
@@ -107,6 +129,7 @@ const FilterEmp: React.FC<FilterEmpProps> = ({ onApplyFilters }) => {
             onChange={() => handleLanguageChange(language.id)}
           />
           {language.name}
+          <Flag className={styles.language} country={languageAbbreviations[language.name]} />
         </label>
       ))}
       
