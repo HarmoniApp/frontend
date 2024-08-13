@@ -2,6 +2,8 @@ import React from 'react';
 import styles from './main.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEdit, faQuestionCircle, faClipboard, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import Flag from 'react-flagkit';
+
 
 
 
@@ -45,9 +47,9 @@ const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
                         <p className={styles.logo}>HA</p>
                     </div>
                     <div className={styles.languages}>
-                        <p className={styles.para}>PL</p>
-                        <p className={styles.para}>EN</p>
-                        <p className={styles.para}>ES</p>
+                        <Flag className={styles.para} country="PL" />
+                        <Flag className={styles.para} country="GB" />
+                        <Flag className={styles.para} country="ES" />
                     </div>
                 </div>
             </div>
