@@ -1,6 +1,6 @@
 import styles from './main.module.scss';
 
-const VacationsEmployeesRequest = () => {
+const AbsenceEmployeesRequest = () => {
     /*
     Miss endpoint for select of reasonsVac
     User_id is needed to send request to the server (no login is created)
@@ -23,4 +23,4 @@ const VacationsEmployeesRequest = () => {
         </div>
     )
 }
-export default VacationsEmployeesRequest
+export default AbsenceEmployeesRequest
