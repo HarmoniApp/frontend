@@ -11,6 +11,7 @@ import Navbar from "@/components/navbar";
 import Account from "@/components/account";
 import Tiles from "@/components/employees/tile";
 import Employees from "@/components/employees";
+import VacationsEmployees from '@/components/vacations/employees';
 
 export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -28,7 +29,9 @@ export default function Home() {
       {/* <Login /> */}
       {/* <Resister/> */}
       {/* <Chat /> */}
-      <Employees />
+      {/* <Employees /> */}
+      <VacationsEmployees />
+
     </div>
   );
 }
