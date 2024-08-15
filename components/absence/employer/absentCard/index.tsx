@@ -24,70 +24,49 @@ interface User {
     id: number;
     firstname: string;
     surname: string;
-    languages: {
-        id: number;
-        name: string;
-    }[];
 }
 
-const AbsenceCardEmployer: React.FC = () => {
-    const [absences, setAbsences] = useState<Absence[]>([]);
-    const [absenceTypes, setAbsenceTypes] = useState<{ [key: number]: AbsenceType }>({});
-    const [users, setUsers] = useState<{ [key: number]: User }>({});
+interface AbsenceCardProps {
+    absence: Absence;
+}
+
+const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence }) => {
+    /**
+     * Buttons aproving or declining absence is missing functionality because of schema lack of API endpoint.
+     */
+    const [absenceType, setAbsenceType] = useState<AbsenceType | null>(null);
+    const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/v1/absence')
+        fetch(`http://localhost:8080/api/v1/absence-type/${absence.absence_type_id}`)
             .then(response => response.json())
-            .then(async (data: Absence[]) => {
-                setAbsences(data);
+            .then(data => setAbsenceType(data))
+            .catch(error => console.error('Error fetching absence type:', error));
 
-                const absenceTypeRequests = data.map(absence =>
-                    fetch(`http://localhost:8080/api/v1/absence-type/${absence.absence_type_id}`)
-                        .then(response => response.json())
-                );
-
-                const userRequests = data.map(absence =>
-                    fetch(`http://localhost:8080/api/v1/user/simple/${absence.user_id}`)
-                        .then(response => response.json())
-                );
-
-                const fetchedAbsenceTypes = await Promise.all(absenceTypeRequests);
-                const fetchedUsers = await Promise.all(userRequests);
-
-                const absenceTypesMap = fetchedAbsenceTypes.reduce((acc, absenceType) => {
-                    acc[absenceType.id] = absenceType;
-                    return acc;
-                }, {} as { [key: number]: AbsenceType });
-
-                const usersMap = fetchedUsers.reduce((acc, user) => {
-                    acc[user.id] = user;
-                    return acc;
-                }, {} as { [key: number]: User });
-
-                setAbsenceTypes(absenceTypesMap);
-                setUsers(usersMap);
-            })
-            .catch(error => console.error('Error fetching absences:', error));
-    }, []);
+        fetch(`http://localhost:8080/api/v1/user/simple/${absence.user_id}`)
+            .then(response => response.json())
+            .then(data => setUser(data))
+            .catch(error => console.error('Error fetching user:', error));
+    }, [absence.absence_type_id, absence.user_id]);
 
     return (
         <div>
-            {absences.map(absence => (
-                <div key={absence.id} className={styles.absenceCard}>
-                    <h3>{absenceTypes[absence.absence_type_id]?.name}</h3>
-                    <p>{new Date(absence.submission).toLocaleDateString()}</p>
-                    <p>ID: #{absence.id}</p>
-                    <p>Imię: {users[absence.user_id]?.firstname}</p>
-                    <p>Nazwisko: {users[absence.user_id]?.surname}</p>
-                    <p>Dostępne dni: 20</p> {/* This should be dynamic, miss in database */}
-                    <p>Od: {new Date(absence.start).toLocaleDateString()}</p>
-                    <p>Do: {new Date(absence.end).toLocaleDateString()}</p>
-                    <p>Liczba dni: {Math.ceil((new Date(absence.end).getTime() - new Date(absence.start).getTime()) / (1000 * 3600 * 24))}</p> {/* These are all days even including weekends and should only be working days. */}
-                    <p>Status: {absence.status.name}</p>
-                    <button className={styles.acceptButton}>Akceptuj</button>
-                    <button className={styles.declineButton}>Odmów</button>
-                </div>
-            ))}
+
+            <div className={styles.absenceCard}>
+                <h3>{absenceType?.name}</h3>
+                <p>{new Date(absence.submission).toLocaleDateString()}</p>
+                <p>ID: #{absence.id}</p>
+                <p>Imię: {user?.firstname}</p>
+                <p>Nazwisko: {user?.surname}</p>
+                <p>Dostępne dni: 20</p> {/* This should be dynamic, miss in database */}
+                <p>Od: {new Date(absence.start).toLocaleDateString()}</p>
+                <p>Do: {new Date(absence.end).toLocaleDateString()}</p>
+                <p>Liczba dni: {Math.ceil((new Date(absence.end).getTime() - new Date(absence.start).getTime()) / (1000 * 3600 * 24))}</p> {/* These are all days even including weekends and should only be working days. */}
+                <p>Status: {absence.status.name}</p>
+                <button className={styles.acceptButton}>Akceptuj</button>
+                <button className={styles.declineButton}>Odmów</button>
+            </div>
+
         </div>
     );
 }
