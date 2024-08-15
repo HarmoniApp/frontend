@@ -82,7 +82,7 @@ const AbsenceCardEmployer: React.FC = () => {
                     <p>Dostępne dni: 20</p> {/* This should be dynamic, miss in database */}
                     <p>Od: {new Date(absence.start).toLocaleDateString()}</p>
                     <p>Do: {new Date(absence.end).toLocaleDateString()}</p>
-                    <p>Liczba dni: {Math.ceil((new Date(absence.end).getTime() - new Date(absence.start).getTime()) / (1000 * 3600 * 24))}</p>
+                    <p>Liczba dni: {Math.ceil((new Date(absence.end).getTime() - new Date(absence.start).getTime()) / (1000 * 3600 * 24))}</p> {/* These are all days even including weekends and should only be working days. */}
                     <p>Status: {absence.status.name}</p>
                     <button className={styles.acceptButton}>Akceptuj</button>
                     <button className={styles.declineButton}>Odmów</button>
