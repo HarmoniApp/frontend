@@ -1,6 +1,10 @@
 "use client";
 import { useEffect, useState } from 'react';
+import Modal from 'react-modal';
+import EditEmployeeData from '@/components/employees/employeeData/editEmployeeData';
+import styles from './main.module.scss';
 
+Modal.setAppElement('#root');
 interface EmployeeData {
   id: number;
   firstname: string;
@@ -48,6 +52,9 @@ interface SupervisorData {
 export default function EmployeeDataComponent({ userId }: { userId: number }) {
   const [employee, setEmployee] = useState<EmployeeData | null>(null);
   const [supervisorData, setSupervisorData] = useState<SupervisorData | null>(null);
+  const [modalIsOpenEditEmployeeData, setModalIsOpenEditEmployeeData] = useState(false);
+  const openModalEditEmployeeData = () => setModalIsOpenEditEmployeeData(true);
+  const closeModalEditEmployeeData = () => setModalIsOpenEditEmployeeData(false);
 
   useEffect(() => {
     fetch(`http://localhost:8080/api/v1/user/${userId}`)
@@ -92,6 +99,20 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
       <h3>Work Address</h3>
       <p>{employee.work_address.street}, {employee.work_address.building_number}/{employee.work_address.apartment}, {employee.work_address.zip_code}</p>
       <p>Supervisor: {supervisorData ? `${supervisorData.firstname} ${supervisorData.surname}` : 'Loading...'}</p>
+      <button>Statistics</button>
+      <button>Absences</button>
+      <button>Chat</button>
+      <button onClick={openModalEditEmployeeData}>Edit employee</button>
+      <Modal
+        isOpen={modalIsOpenEditEmployeeData}
+        // onRequestClose={closeModalRole}
+        contentLabel="Edit Employee"
+        className={styles.modalContent}
+        overlayClassName={styles.modalOverlay}
+      >
+        <EditEmployeeData />
+        <button onClick={closeModalEditEmployeeData}>Zamknij</button>
+      </Modal>
     </div>
   );
 }
