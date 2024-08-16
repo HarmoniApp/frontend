@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from 'react';
 import Tile from '@/components/employees/tile';
 import FilterEmp from '@/components/employees/filterEmp';
@@ -16,7 +17,7 @@ interface Person {
   languages: Language[];
 }
 
-const Employees: React.FC = () => {
+const EmployeesComponent: React.FC = () => {
   const [data, setData] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -72,4 +73,4 @@ const Employees: React.FC = () => {
   );
 }
 
-export default Employees;
+export default EmployeesComponent;
