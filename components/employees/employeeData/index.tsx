@@ -110,8 +110,7 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
         className={styles.modalContent}
         overlayClassName={styles.modalOverlay}
       >
-        <EditEmployeeData />
-        <button onClick={closeModalEditEmployeeData}>Zamknij</button>
+        <EditEmployeeData employee={employee} onClose={closeModalEditEmployeeData}/>
       </Modal>
     </div>
   );
