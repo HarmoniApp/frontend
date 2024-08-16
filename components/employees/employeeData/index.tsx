@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
-import EditEmployeeData from '@/components/employees/employeeData/editEmployeeData';
+import EditEmployeeDataPopUp from '@/components/employees/employeeData/editEmployeeData';
 import styles from './main.module.scss';
 
 Modal.setAppElement('#root');
@@ -63,6 +63,17 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
   const openModalEditEmployeeData = () => setModalIsOpenEditEmployeeData(true);
   const closeModalEditEmployeeData = () => setModalIsOpenEditEmployeeData(false);
 
+  const fetchEmployeeData = () => {
+    fetch(`http://localhost:8080/api/v1/user/${userId}`)
+      .then(response => response.json())
+      .then(data => setEmployee(data))
+      .catch(error => console.error('Error fetching employee data:', error));
+  };
+
+  useEffect(() => {
+    fetchEmployeeData();
+  }, [userId]);
+
   useEffect(() => {
     fetch('http://localhost:8080/api/v1/address/departments')
       .then(response => response.json())
@@ -93,7 +104,8 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
       <p>Phone Number: {employee.phone_number}</p>
       <p>Employee ID: {employee.employee_id}</p>
       <h3>Residence</h3>
-      <p>{employee.residence.street}, {employee.residence.building_number}/{employee.residence.apartment}, {employee.residence.zip_code}</p>
+      <p>Street: {employee.residence.street} {employee.residence.building_number} {employee.residence.apartment ? `/${employee.residence.apartment}` : ''} </p>
+      <p>City: {employee.residence.city} {employee.residence.zip_code}</p>
       <h3>Roles</h3>
       <ul>
         {employee.roles.map(role => (
@@ -130,7 +142,12 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
         className={styles.modalContent}
         overlayClassName={styles.modalOverlay}
       >
-        <EditEmployeeData employee={employee} onClose={closeModalEditEmployeeData} />
+        <EditEmployeeDataPopUp
+          employee={employee}
+          onClose={closeModalEditEmployeeData}
+          onEmployeeUpdate={() => {
+            fetchEmployeeData();
+          }} />
       </Modal>
     </div>
   );

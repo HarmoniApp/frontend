@@ -40,6 +40,7 @@ interface EmployeeData {
 interface EditEmployeeDataProps {
     employee: EmployeeData;
     onClose: () => void;
+    onEmployeeUpdate: () => void;
 }
 interface Contract {
     id: number;
@@ -67,7 +68,7 @@ interface Language {
     name: string;
 }
 
-const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onClose }) => {
+const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onClose, onEmployeeUpdate }) => {
     const [formData, setFormData] = useState<EmployeeData>(employee);
     const [contracts, setContracts] = useState<Contract[]>([]);
     const [departments, setDepartments] = useState<Department[]>([]);
@@ -137,32 +138,32 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, checked } = e.target;
-      
+
         if (name === "roles") {
-          const selectedRole = roles.find(role => role.id === parseInt(value));
-      
-          if (selectedRole) {
-            setFormData(prevFormData => ({
-              ...prevFormData,
-              roles: checked
-                ? [...prevFormData.roles, selectedRole]
-                : prevFormData.roles.filter(role => role.id !== selectedRole.id)
-            }));
-          }
+            const selectedRole = roles.find(role => role.id === parseInt(value));
+
+            if (selectedRole) {
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    roles: checked
+                        ? [...prevFormData.roles, selectedRole]
+                        : prevFormData.roles.filter(role => role.id !== selectedRole.id)
+                }));
+            }
         } else if (name === "languages") {
-          const selectedLanguage = languages.find(language => language.id === parseInt(value));
-      
-          if (selectedLanguage) {
-            setFormData(prevFormData => ({
-              ...prevFormData,
-              languages: checked
-                ? [...prevFormData.languages, selectedLanguage]
-                : prevFormData.languages.filter(lang => lang.id !== selectedLanguage.id)
-            }));
-          }
+            const selectedLanguage = languages.find(language => language.id === parseInt(value));
+
+            if (selectedLanguage) {
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    languages: checked
+                        ? [...prevFormData.languages, selectedLanguage]
+                        : prevFormData.languages.filter(lang => lang.id !== selectedLanguage.id)
+                }));
+            }
         }
-      };      
-      
+    };
+
     const handleSave = () => {
         const dataToSend = {
             firstname: formData.firstname,
@@ -197,6 +198,11 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
             .then(data => {
                 // console.log('Success:', data);
                 // alert('Employee data updated successfully');
+                return fetch(`http://localhost:8080/api/v1/user/${employee.id}`);
+            })
+            .then(response => response.json())
+            .then(updatedData => {
+                onEmployeeUpdate();
                 onClose();
             })
             .catch(error => {
@@ -210,7 +216,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
             <h2>Edit Employee Data</h2>
             <div className={styles.formGroup}>
                 <label>Employee Id:</label>
-                <input name="employee_id" value={formData.employee_id} onChange={handleInputChange}/>
+                <input name="employee_id" value={formData.employee_id} onChange={handleInputChange} />
             </div>
             <div className={styles.formGroup}>
                 <label>First Name:</label>
@@ -218,39 +224,39 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
             </div>
             <div className={styles.formGroup}>
                 <label>Surname:</label>
-                <input name="surname" value={formData.surname} onChange={handleInputChange}/>
+                <input name="surname" value={formData.surname} onChange={handleInputChange} />
             </div>
             <div className={styles.formGroup}>
                 <label>Email:</label>
-                <input name="email" value={formData.email} onChange={handleInputChange}/>
+                <input name="email" value={formData.email} onChange={handleInputChange} />
             </div>
             <div className={styles.formGroup}>
                 <label>Phone Number:</label>
-                <input name="phone_number" value={formData.phone_number} onChange={handleInputChange}/>
+                <input name="phone_number" value={formData.phone_number} onChange={handleInputChange} />
             </div>
 
             <h3>Residence</h3>
             <div className={styles.formGroup}>
-                <label>City:</label>
-                <input name="residence.city" value={formData.residence.city} onChange={handleInputChange}/>
-            </div>
-            <div className={styles.formGroup}>
                 <label>Street:</label>
-                <input name="residence.street" value={formData.residence.street} onChange={handleInputChange}/>
-            </div>
-            <div className={styles.formGroup}>
-                <label>Apartment:</label>
-                <input name="residence.apartment" value={formData.residence.apartment} onChange={handleInputChange}/>
-            </div>
-            <div className={styles.formGroup}>
-                <label>Zip Code:</label>
-                <input name="residence.zip_code" value={formData.residence.zip_code} onChange={handleInputChange}/>
+                <input name="residence.street" value={formData.residence.street} onChange={handleInputChange} />
             </div>
             <div className={styles.formGroup}>
                 <label>Building Number:</label>
-                <input name="residence.building_number" value={formData.residence.building_number} onChange={handleInputChange}/>
+                <input name="residence.building_number" value={formData.residence.building_number} onChange={handleInputChange} />
             </div>
-
+            <div className={styles.formGroup}>
+                <label>Apartment:</label>
+                <input name="residence.apartment" value={formData.residence.apartment} onChange={handleInputChange} />
+            </div>
+            <div className={styles.formGroup}>
+                <label>City:</label>
+                <input name="residence.city" value={formData.residence.city} onChange={handleInputChange} />
+            </div>
+            <div className={styles.formGroup}>
+                <label>Zip Code:</label>
+                <input name="residence.zip_code" value={formData.residence.zip_code} onChange={handleInputChange} />
+            </div>
+            
             <h4>Contract</h4>
             <div className={styles.formGroup}>
                 <label>Contract Type:</label>
@@ -284,11 +290,11 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
             </div>
             <div className={styles.formGroup}>
                 <label>Contract signature:</label>
-                <input type="date" name="contract_signature" value={formData.contract_signature} onChange={handleInputChange}/>
+                <input type="date" name="contract_signature" value={formData.contract_signature} onChange={handleInputChange} />
             </div>
             <div className={styles.formGroup}>
                 <label>Contract expiration:</label>
-                <input type="date" name="contract_expiration" value={formData.contract_expiration} onChange={handleInputChange}/>
+                <input type="date" name="contract_expiration" value={formData.contract_expiration} onChange={handleInputChange} />
             </div>
 
             <h4>Roles</h4>
