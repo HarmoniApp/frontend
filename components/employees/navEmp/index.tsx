@@ -4,6 +4,8 @@ import AddEmpPopUp from '@/components/employees/addEmpPopUp';
 import Modal from 'react-modal';
 import styles from './main.module.scss';
 
+Modal.setAppElement('#root');
+
 const NavEmp = () => {
   const [modalIsOpenRole, setModalIsOpenRole] = useState(false);
   const [modalIsOpenAddEmp, setModalIsOpenAddEmp] = useState(false);
