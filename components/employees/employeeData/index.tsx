@@ -49,15 +49,26 @@ interface SupervisorData {
   firstname: string;
   surname: string;
 }
+interface Department {
+  id: number;
+  departmentName: string;
+}
 
 export default function EmployeeDataComponent({ userId }: { userId: number }) {
   const [employee, setEmployee] = useState<EmployeeData | null>(null);
+  const [departments, setDepartments] = useState<Department[]>([]);
   const [supervisorData, setSupervisorData] = useState<SupervisorData | null>(null);
   const [modalIsOpenEditEmployeeData, setModalIsOpenEditEmployeeData] = useState(false);
+
   const openModalEditEmployeeData = () => setModalIsOpenEditEmployeeData(true);
   const closeModalEditEmployeeData = () => setModalIsOpenEditEmployeeData(false);
 
   useEffect(() => {
+    fetch('http://localhost:8080/api/v1/address/departments')
+      .then(response => response.json())
+      .then(data => setDepartments(data))
+      .catch(error => console.error('Error fetching departments:', error));
+
     fetch(`http://localhost:8080/api/v1/user/${userId}`)
       .then(response => response.json())
       .then(data => {
@@ -72,6 +83,8 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
   }, [userId]);
 
   if (!employee) return <div>Loading...</div>;
+
+  const department = departments.find(dept => dept.id === employee.work_address.id);
 
   return (
     <div>
@@ -97,6 +110,12 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
       <p>Type: {employee.contract_type.name}</p>
       <p>Signature Date: {employee.contract_signature}</p>
       <p>Expiration Date: {employee.contract_expiration}</p>
+      <h3>Department Name</h3>
+      {department ? (
+        <p>{department.departmentName}</p>
+      ) : (
+        <p>We do not have a branch under this name. Error!</p>
+      )}
       <h3>Work Address</h3>
       <p>{employee.work_address.street}, {employee.work_address.building_number}/{employee.work_address.apartment}, {employee.work_address.zip_code}</p>
       <p>Supervisor: {supervisorData ? `${supervisorData.firstname} ${supervisorData.surname}` : 'Loading...'}</p>
@@ -111,7 +130,7 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
         className={styles.modalContent}
         overlayClassName={styles.modalOverlay}
       >
-        <EditEmployeeData employee={employee} onClose={closeModalEditEmployeeData}/>
+        <EditEmployeeData employee={employee} onClose={closeModalEditEmployeeData} />
       </Modal>
     </div>
   );
