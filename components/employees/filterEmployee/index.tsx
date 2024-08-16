@@ -34,11 +34,11 @@ const languageAbbreviations: { [key: string]: string } = {
   Vietnamese: 'VN',
 };
 
-interface FilterEmpProps {
+interface FilterEmployeeProps {
   onApplyFilters: (filters: { roles?: number[]; languages?: number[]; order?: string }) => void;
 }
 
-const FilterEmp: React.FC<FilterEmpProps> = ({ onApplyFilters }) => {
+const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [languages, setLanguages] = useState<Language[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
@@ -152,4 +152,4 @@ const FilterEmp: React.FC<FilterEmpProps> = ({ onApplyFilters }) => {
   );
 }
 
-export default FilterEmp;
+export default FilterEmployee;

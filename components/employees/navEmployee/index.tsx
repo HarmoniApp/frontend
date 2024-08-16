@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import RolePopUp from '@/components/employees/rolePopUp';
-import AddEmpPopUp from '@/components/employees/addEmpPopUp';
+import AddEmployee from '@/components/employees/addEmployee';
 import Modal from 'react-modal';
 import styles from './main.module.scss';
 
 Modal.setAppElement('#root');
 
-const NavEmp = () => {
+const NavBarEmployee = () => {
   const [modalIsOpenRole, setModalIsOpenRole] = useState(false);
-  const [modalIsOpenAddEmp, setModalIsOpenAddEmp] = useState(false);
+  const [modalIsOpenAddEmployee, setModalIsOpenAddEmp] = useState(false);
 
   const openModalRole = () => setModalIsOpenRole(true);
   const closeModalRole = () => setModalIsOpenRole(false);
@@ -21,13 +21,13 @@ const NavEmp = () => {
       <button>import pracowkik</button>
       <button onClick={openModalAddEmp}>add pracowkik</button>
       <Modal
-        isOpen={modalIsOpenAddEmp}
+        isOpen={modalIsOpenAddEmployee}
         // onRequestClose={closeModalAddEmp}
         contentLabel="Add Employee"
         className={styles.modalContent}
         overlayClassName={styles.modalOverlay}
       >
-        <AddEmpPopUp />
+        <AddEmployee />
         <button onClick={closeModalAddEmp}>Zamknij</button>
       </Modal>
       <button onClick={openModalRole}>EDIT ROLES</button>
@@ -47,4 +47,4 @@ const NavEmp = () => {
   );
 }
 
-export default NavEmp;
+export default NavBarEmployee;

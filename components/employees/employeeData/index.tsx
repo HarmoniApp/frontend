@@ -12,6 +12,7 @@ interface EmployeeData {
   email: string;
   residence: {
     id: number;
+    city: string;
     street: string;
     apartment: string;
     zip_code: string;

@@ -195,12 +195,13 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
         })
             .then(response => response.json())
             .then(data => {
-                console.log('Success:', data);
-                alert('Employee data updated successfully');
+                // console.log('Success:', data);
+                // alert('Employee data updated successfully');
+                onClose();
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to update employee data');
+                // console.error('Error:', error);
+                // alert('Failed to update employee data');
             });
     };
 

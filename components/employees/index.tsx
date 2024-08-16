@@ -1,9 +1,9 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Tile from '@/components/employees/tile';
-import FilterEmp from '@/components/employees/filterEmp';
+import FilterEmployee from '@/components/employees/filterEmployee';
 import styles from './main.module.scss';
-import NavEmp from '@/components/employees/navEmp';
+import NavEmp from '@/components/employees/navEmployee';
 
 interface Language {
   id: number;
@@ -60,7 +60,7 @@ const EmployeesComponent: React.FC = () => {
   return (
     <div>
       <NavEmp />
-      <FilterEmp onApplyFilters={fetchFilteredData} />
+      <FilterEmployee onApplyFilters={fetchFilteredData} />
       <div className={styles.container}>
         {loading && <div>Loading...</div>}
         {error && <div>Error: {error}</div>}

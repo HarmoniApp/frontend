@@ -32,7 +32,7 @@ interface Department {
   departmentName: string;
 }
 
-const AddEmpPopUp = () => {
+const AddEmployee = () => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [languages, setLanguages] = useState<Language[]>([]);
@@ -90,7 +90,7 @@ const AddEmpPopUp = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log('Wysyłane dane:', formData);
+    // console.log('Wysyłane dane:', formData);
 
     fetch('http://localhost:8080/api/v1/user', {
       method: 'POST',
@@ -101,12 +101,12 @@ const AddEmpPopUp = () => {
     })
       .then(response => response.json())
       .then(data => {
-        console.log('Success:', data);
-        alert('Pomyślnie dodano pracownika');
+        // console.log('Success:', data);
+        // alert('Pomyślnie dodano pracownika');
       })
       .catch(error => {
-        console.error('Error:', error)
-        alert('Błąd podczas dodawania pracownika');
+        // console.error('Error:', error)
+        // alert('Błąd podczas dodawania pracownika');
       });
   };
 
@@ -297,4 +297,4 @@ const AddEmpPopUp = () => {
   );
 }
 
-export default AddEmpPopUp;
+export default AddEmployee;
