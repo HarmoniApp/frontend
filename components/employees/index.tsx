@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React, { useEffect, useState } from 'react';
 import Tile from '@/components/employees/tile';
 import FilterEmp from '@/components/employees/filterEmp';
@@ -57,15 +57,15 @@ const EmployeesComponent: React.FC = () => {
     fetchFilteredData({});
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
   return (
     <div>
       <NavEmp />
       <FilterEmp onApplyFilters={fetchFilteredData} />
       <div className={styles.container}>
-        {data.map((person, index) => (
+        {loading && <div>Loading...</div>}
+        {error && <div>Error: {error}</div>}
+        {!loading && !error && data.length === 0 && <div>No data available</div>}
+        {!loading && !error && data.length > 0 && data.map((person, index) => (
           <Tile key={index} person={person} />
         ))}
       </div>
