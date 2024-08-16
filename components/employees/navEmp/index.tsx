@@ -20,7 +20,7 @@ const NavEmp = () => {
       <button onClick={openModalAddEmp}>add pracowkik</button>
       <Modal
         isOpen={modalIsOpenAddEmp}
-        onRequestClose={closeModalAddEmp}
+        // onRequestClose={closeModalAddEmp}
         contentLabel="Add Employee"
         className={styles.modalContent}
         overlayClassName={styles.modalOverlay}
@@ -31,7 +31,7 @@ const NavEmp = () => {
       <button onClick={openModalRole}>EDIT ROLES</button>
       <Modal
         isOpen={modalIsOpenRole}
-        onRequestClose={closeModalRole}
+        // onRequestClose={closeModalRole}
         contentLabel="Edit Roles"
         className={styles.modalContent}
         overlayClassName={styles.modalOverlay}
