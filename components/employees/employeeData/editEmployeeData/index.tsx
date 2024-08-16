@@ -135,8 +135,6 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
         }
     };
 
-
-
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, checked } = e.target;
       
@@ -233,23 +231,23 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
             <h3>Residence</h3>
             <div className={styles.formGroup}>
                 <label>City:</label>
-                <input name="city" value={formData.residence.city} onChange={handleInputChange}/>
+                <input name="residence.city" value={formData.residence.city} onChange={handleInputChange}/>
             </div>
             <div className={styles.formGroup}>
                 <label>Street:</label>
-                <input name="street" value={formData.residence.street} onChange={handleInputChange}/>
+                <input name="residence.street" value={formData.residence.street} onChange={handleInputChange}/>
             </div>
             <div className={styles.formGroup}>
                 <label>Apartment:</label>
-                <input name="apartment" value={formData.residence.apartment} onChange={handleInputChange}/>
+                <input name="residence.apartment" value={formData.residence.apartment} onChange={handleInputChange}/>
             </div>
             <div className={styles.formGroup}>
                 <label>Zip Code:</label>
-                <input name="zip_code" value={formData.residence.zip_code} onChange={handleInputChange}/>
+                <input name="residence.zip_code" value={formData.residence.zip_code} onChange={handleInputChange}/>
             </div>
             <div className={styles.formGroup}>
                 <label>Building Number:</label>
-                <input name="building_number" value={formData.residence.building_number} onChange={handleInputChange}/>
+                <input name="residence.building_number" value={formData.residence.building_number} onChange={handleInputChange}/>
             </div>
 
             <h4>Contract</h4>
