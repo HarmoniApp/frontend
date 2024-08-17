@@ -4,12 +4,10 @@ import styles from './main.module.scss';
 interface EditEmployeeDataNotificationPopUpProps {
     onClose: () => void;
     onCloseEditData: () => void;
-    firstName: string;
-    surname: string;
-    changedData: { [key: string]: string | number | object | undefined;};
+    changedData: any;
 }
 
-const EditEmployeeDataNotificationPopUp:React.FC<EditEmployeeDataNotificationPopUpProps> = ({onClose, onCloseEditData, firstName, surname, changedData}) => {
+const EditEmployeeDataNotificationPopUp: React.FC<EditEmployeeDataNotificationPopUpProps> = ({ onClose, onCloseEditData, changedData }) => {
     const [modalCountdown, setModalCountdown] = useState(10);
     useEffect(() => {
         const countdownInterval = setInterval(() => {
@@ -21,18 +19,17 @@ const EditEmployeeDataNotificationPopUp:React.FC<EditEmployeeDataNotificationPop
                 return prev - 1;
             });
         }, 1000);
-    
+
         return () => clearInterval(countdownInterval);
     }, []);
     return (
         <div>
-            <h1>Edit Employee Data Conformation of {firstName} {surname}</h1>
-            <h2>Zaktualizowano następujące pola:</h2>
+            <h2>Zaktualizowano następujące pola w uzytkowniku:</h2>
             <h2>Updated Fields:</h2>
             <ul>
                 {Object.keys(changedData).map((key) => (
                     <li key={key}>
-                        {key}: {typeof changedData[key] === 'object' ? JSON.stringify(changedData[key]) : changedData[key]}
+                        {key}: {changedData[key]}
                     </li>
                 ))}
             </ul>

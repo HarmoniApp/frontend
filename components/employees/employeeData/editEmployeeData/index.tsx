@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import EditEmployeeNotificationPopUp from '@/components/employees/employeeData/editEmployeeData/editEmployeeDataNotification';
 import styles from './main.module.scss';
-import { on } from 'events';
 
 Modal.setAppElement('#root');
 
@@ -80,6 +79,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     const [formData, setFormData] = useState<EmployeeData>(employee);
     const [contracts, setContracts] = useState<Contract[]>([]);
     const [departments, setDepartments] = useState<Department[]>([]);
+    const [departmentMap, setDepartmentMap] = useState<{ [key: number]: string }>({});
     const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
     const [roles, setRoles] = useState<Role[]>([]);
     const [languages, setLanguages] = useState<Language[]>([]);
@@ -91,44 +91,24 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     }
     const closeModalEditEmployeeNotification = () => setModalEditEmployeeNotification(false);
     const [changedData, setChangedData] = useState<ChangedData>({});
-    const getChangedData = (): ChangedData => {
-        const changes: ChangedData = {};
-      
-        if (formData.firstname !== employee.firstname) changes.firstname = formData.firstname;
-        if (formData.surname !== employee.surname) changes.surname = formData.surname;
-        if (formData.email !== employee.email) changes.email = formData.email;
-        if (formData.phone_number !== employee.phone_number) changes.phone_number = formData.phone_number;
-        if (formData.employee_id !== employee.employee_id) changes.employee_id = formData.employee_id;
-        if (formData.contract_signature !== employee.contract_signature) changes.contract_signature = formData.contract_signature;    
-        if (formData.contract_expiration !== employee.contract_expiration) changes.contract_expiration = formData.contract_expiration;
-        if (formData.work_address.id !== employee.work_address.id) changes.work_address = formData.work_address;
-        if (formData.supervisor_id !== employee.supervisor_id) changes.supervisor_id = formData.supervisor_id;
-        if (JSON.stringify(formData.residence) !== JSON.stringify(employee.residence)) {
-          changes.residence = formData.residence;
-        }
-        if (JSON.stringify(formData.contract_type) !== JSON.stringify(employee.contract_type)) {
-          changes.contract_type = formData.contract_type;
-        }
-        if (JSON.stringify(formData.roles) !== JSON.stringify(employee.roles)) {
-          changes.roles = formData.roles;
-        }
-        if (JSON.stringify(formData.languages) !== JSON.stringify(employee.languages)) {
-          changes.languages = formData.languages;
-        }
-      
-        return changes;
-      };
-      
+
     useEffect(() => {
         fetch('http://localhost:8080/api/v1/contract-type')
             .then(response => response.json())
             .then(data => setContracts(data))
             .catch(error => console.error('Error fetching contracts:', error));
 
-        fetch('http://localhost:8080/api/v1/address/departments')
+            fetch('http://localhost:8080/api/v1/address/departments')
             .then(response => response.json())
-            .then(data => setDepartments(data))
-            .catch(error => console.error('Error fetching departments:', error));
+            .then(data => {
+                setDepartments(data);
+                const deptMap: { [key: number]: string } = {};
+                data.forEach((dept: Department) => {
+                    deptMap[dept.id] = dept.departmentName;
+                });
+                setDepartmentMap(deptMap);
+            })
+            .catch(error => console.error('Error fetching departments:', error));        
 
         fetch('http://localhost:8080/api/v1/user/supervisor')
             .then(response => response.json())
@@ -145,6 +125,43 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
             .then(data => setLanguages(data))
             .catch(error => console.error('Error fetching languages:', error));
     }, []);
+
+    const getChangedData = (): ChangedData => {
+        const changes: ChangedData = {};
+      
+        if (formData.firstname !== employee.firstname) changes.firstname = formData.firstname;
+        if (formData.surname !== employee.surname) changes.surname = formData.surname;
+        if (formData.email !== employee.email) changes.email = formData.email;
+        if (formData.phone_number !== employee.phone_number) changes.phone_number = formData.phone_number;
+        if (formData.employee_id !== employee.employee_id) changes.employee_id = formData.employee_id;
+        if (formData.contract_signature !== employee.contract_signature) changes.contract_signature = formData.contract_signature;    
+        if (formData.contract_expiration !== employee.contract_expiration) changes.contract_expiration = formData.contract_expiration;
+
+        if (formData.work_address.id !== employee.work_address.id) {
+            const departmentName = departmentMap[formData.work_address.id];
+            changes.work_address = departmentName ? departmentName : 'Unknown Department';
+        }
+
+        if (formData.supervisor_id !== employee.supervisor_id) changes.supervisor_id = formData.supervisor_id;
+
+        if (formData.residence.street !== employee.residence.street) changes.residenceStreet = formData.residence.street;
+        if (formData.residence.building_number !== employee.residence.building_number) changes.residenceBuildingNumber = formData.residence.building_number;
+        if (formData.residence.apartment !== employee.residence.apartment) changes.residenceApartment = formData.residence.apartment;
+        if (formData.residence.city !== employee.residence.city) changes.residenceCity = formData.residence.city;
+        if (formData.residence.zip_code !== employee.residence.zip_code) changes.residenceZipCode = formData.residence.zip_code;
+
+        if (formData.contract_type.name !== employee.contract_type.name) changes.contract_type = formData.contract_type.name;
+
+        if (JSON.stringify(formData.roles.map(role => role.name)) !== JSON.stringify(employee.roles.map(role => role.name))) {
+            changes.roles = formData.roles.map(role => role.name).join(', ');
+        }
+
+        if (JSON.stringify(formData.languages.map(lang => lang.name)) !== JSON.stringify(employee.languages.map(lang => lang.name))) {
+            changes.languages = formData.languages.map(lang => lang.name).join(', ');
+        }
+
+        return changes;
+    };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -383,8 +400,6 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
             >
                 <EditEmployeeNotificationPopUp
                     onClose={closeModalEditEmployeeNotification}
-                    firstName={formData.firstname}
-                    surname={formData.surname}
                     changedData={changedData}
                     onCloseEditData={onCloseEdit}
                 />
