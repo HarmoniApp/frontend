@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons'
 import Modal from 'react-modal';
@@ -13,12 +14,12 @@ import styles from './main.module.scss';
 
 Modal.setAppElement('#root');
 
-interface AddEmployeeProps {
-  onClose: () => void;
-  onRefreshData: () => void;
-}
 
-const AddEmployee: React.FC<AddEmployeeProps> = ({ onClose, onRefreshData }) => {
+const AddEmployee: React.FC = () => {
+  const router = useRouter();
+  const onBack = () => {
+    router.push('/employees')
+  }
   const [roles, setRoles] = useState<Role[]>([]);
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [languages, setLanguages] = useState<Language[]>([]);
@@ -48,6 +49,8 @@ const AddEmployee: React.FC<AddEmployeeProps> = ({ onClose, onRefreshData }) => 
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalCountdown, setModalCountdown] = useState(10);
+
+  if (modalCountdown == 0) onBack();
 
   useEffect(() => {
     fetch('http://localhost:8080/api/v1/role')
@@ -90,13 +93,11 @@ const AddEmployee: React.FC<AddEmployeeProps> = ({ onClose, onRefreshData }) => 
       .then(data => {
         const userId = data.id;
         setIsModalOpen(true);
-        onRefreshData();
         const countdownInterval = setInterval(() => {
           setModalCountdown(prev => {
             if (prev === 1) {
               clearInterval(countdownInterval);
               setIsModalOpen(false);
-              onClose();
             }
             return prev - 1;
           });
@@ -292,7 +293,7 @@ const AddEmployee: React.FC<AddEmployeeProps> = ({ onClose, onRefreshData }) => 
         </div>
         <div>
           <button type="submit">Dodaj</button>
-          <button type="button" onClick={onClose}>Cofnij</button>
+          <button type="button" onClick={onBack}>Cofnij</button>
         </div>
       </form>
       <Modal
@@ -306,11 +307,13 @@ const AddEmployee: React.FC<AddEmployeeProps> = ({ onClose, onRefreshData }) => 
           surname={formData.surname}
           employeeLink={employeeLink}
           modalCountdown={modalCountdown}
-          onClose={() => setIsModalOpen(false)}
+          onClose={() => {
+            setIsModalOpen(false)
+            onBack()
+          }}
         />
       </Modal>
     </div>
   );
 }
-
 export default AddEmployee;

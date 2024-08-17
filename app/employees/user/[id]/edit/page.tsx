@@ -1,6 +1,7 @@
 'use client';
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import Navbar from "@/components/navbar";
 import EditEmployeeDataPopUp from '@/components/employees/employeeData/editEmployeeData';
 import EmployeeData from '@/components/types/employeeData';
 
@@ -40,10 +41,13 @@ const EditEmployeePage: React.FC = () => {
   if (!employee) return <div>No employee data found</div>;
 
   return (
-    <EditEmployeeDataPopUp
-      employee={employee}
-      onCloseEdit={() => router.push(`/employees/user/${id}`)}
-    />
+    <div>
+      <Navbar />
+      <EditEmployeeDataPopUp
+        employee={employee}
+        onCloseEdit={() => router.push(`/employees/user/${id}`)}
+      />
+    </div>
   );
 };
 export default EditEmployeePage;
