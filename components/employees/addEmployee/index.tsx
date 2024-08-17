@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons'
 import Modal from 'react-modal';
+import AddEmployeeConfirmationPopUp from '@/components/employees/addEmployee/addEmplyeeConfirmation';
 import styles from './main.module.scss';
 
 Modal.setAppElement('#root');
@@ -39,7 +40,7 @@ interface AddEmployeeProps {
   onRefreshData: () => void;
 }
 
-const AddEmployee: React.FC<AddEmployeeProps> = ({onClose, onRefreshData}) => {
+const AddEmployee: React.FC<AddEmployeeProps> = ({ onClose, onRefreshData }) => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [languages, setLanguages] = useState<Language[]>([]);
@@ -133,11 +134,11 @@ const AddEmployee: React.FC<AddEmployeeProps> = ({onClose, onRefreshData}) => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-  
+
     if (name === 'contract_type') {
       setFormData({
         ...formData,
-    contract_type: { id: parseInt(value) }
+        contract_type: { id: parseInt(value) }
       });
     } else if (name === 'work_address') {
       setFormData({
@@ -160,39 +161,39 @@ const AddEmployee: React.FC<AddEmployeeProps> = ({onClose, onRefreshData}) => {
       });
     }
   };
-  
+
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const { name, value, checked } = e.target;
+    const { name, value, checked } = e.target;
 
-  if (name === "roles") {
-    if (checked) {
-      setFormData({
-        ...formData,
-        roles: [...(formData.roles as { id: number }[]), { id: parseInt(value) }]
-      });
-    } else {
-      setFormData({
-        ...formData,
-        roles: (formData.roles as { id: number }[]).filter(role => role.id !== parseInt(value))
-      });
+    if (name === "roles") {
+      if (checked) {
+        setFormData({
+          ...formData,
+          roles: [...(formData.roles as { id: number }[]), { id: parseInt(value) }]
+        });
+      } else {
+        setFormData({
+          ...formData,
+          roles: (formData.roles as { id: number }[]).filter(role => role.id !== parseInt(value))
+        });
+      }
+    } else if (name === "languages") {
+      if (checked) {
+        setFormData({
+          ...formData,
+          languages: [...(formData.languages as { id: number }[]), { id: parseInt(value) }]
+        });
+      } else {
+        setFormData({
+          ...formData,
+          languages: (formData.languages as { id: number }[]).filter(lang => lang.id !== parseInt(value))
+        });
+      }
     }
-  } else if (name === "languages") {
-    if (checked) {
-      setFormData({
-        ...formData,
-        languages: [...(formData.languages as { id: number }[]), { id: parseInt(value) }]
-      });
-    } else {
-      setFormData({
-        ...formData,
-        languages: (formData.languages as { id: number }[]).filter(lang => lang.id !== parseInt(value))
-      });
-    }
-  }
-};
+  };
 
-const [employeeLink, setEmployeeLink] = useState<string | null>(null);
+  const [employeeLink, setEmployeeLink] = useState<string | null>(null);
 
   return (
     <div>
@@ -322,13 +323,13 @@ const [employeeLink, setEmployeeLink] = useState<string | null>(null);
         className={styles.modalContent}
         overlayClassName={styles.modalOverlay}
       >
-        <div>
-          <h2>Pracownik dodany</h2>
-          <p>Właśnie dodałeś pracownika: {formData.firstname} {formData.surname}</p>
-          {employeeLink && <p>Więcej w <a href={employeeLink}>więcej</a></p>}
-          <p>Zamknięcie modala za: {modalCountdown} sekund</p>
-          <button onClick={() => setIsModalOpen(false)}>Zamknij</button>
-        </div>
+        <AddEmployeeConfirmationPopUp
+          firstname={formData.firstname}
+          surname={formData.surname}
+          employeeLink={employeeLink}
+          modalCountdown={modalCountdown}
+          onClose={() => setIsModalOpen(false)}
+        />
       </Modal>
     </div>
   );

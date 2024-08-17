@@ -59,9 +59,13 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [supervisorData, setSupervisorData] = useState<SupervisorData | null>(null);
   const [modalIsOpenEditEmployeeData, setModalIsOpenEditEmployeeData] = useState(false);
+  const [modalIsOpenDeleteEmployee, setModalDeleteEmployee] = useState(false);
 
   const openModalEditEmployeeData = () => setModalIsOpenEditEmployeeData(true);
   const closeModalEditEmployeeData = () => setModalIsOpenEditEmployeeData(false);
+
+  const openModalDeleteEmployee = () => setModalDeleteEmployee(true);
+  const closeModalDeleteEmployee = () => setModalDeleteEmployee(false);
 
   const fetchEmployeeData = () => {
     fetch(`http://localhost:8080/api/v1/user/${userId}`)
@@ -134,7 +138,7 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
       <button>Statistics</button>
       <button>Absences</button>
       <button>Chat</button>
-      <button onClick={openModalEditEmployeeData}>Edit employee</button>
+      
       <Modal
         isOpen={modalIsOpenEditEmployeeData}
         // onRequestClose={closeModalRole}
@@ -149,6 +153,20 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
             fetchEmployeeData();
           }} />
       </Modal>
+      <button onClick={openModalEditEmployeeData}>Edit employee</button>
+
+      <Modal
+        isOpen={modalIsOpenDeleteEmployee}
+        contentLabel="Delete Employee"
+        className={styles.modalContent}
+        overlayClassName={styles.modalOverlay}
+      >
+        <div>
+          <button>Usuń</button>
+          <button onClick={closeModalDeleteEmployee}>Cofnij</button>
+        </div>
+      </Modal>
+      <button onClick={openModalDeleteEmployee}></button>
     </div>
   );
 }
