@@ -4,37 +4,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons'
 import Modal from 'react-modal';
 import AddEmployeeConfirmationPopUp from '@/components/employees/addEmployee/addEmplyeeConfirmation';
+import Role from '@/components/types/role';
+import Contract from '@/components/types/contract';
+import Language from '@/components/types/language';
+import Supervisor from '@/components/types/supervisor';
+import Department from '@/components/types/department';
 import styles from './main.module.scss';
 
 Modal.setAppElement('#root');
 
-interface Role {
-  id: number;
-  name: string;
-}
-
-interface Contract {
-  id: number;
-  name: string;
-}
-interface Language {
-  id: number;
-  name: string;
-}
-interface Supervisor {
-  id: number;
-  firstname: string;
-  surname: string;
-  role: {
-    id: number;
-    name: string;
-  }[];
-  employeeId: string;
-}
-interface Department {
-  id: number;
-  departmentName: string;
-}
 interface AddEmployeeProps {
   onClose: () => void;
   onRefreshData: () => void;
