@@ -1,6 +1,11 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import Modal from 'react-modal';
+import EditEmployeeNotificationPopUp from '@/components/employees/employeeData/editEmployeeData/editEmployeeDataNotification';
 import styles from './main.module.scss';
+import { on } from 'events';
+
+Modal.setAppElement('#root');
 
 interface EmployeeData {
     id: number;
@@ -39,7 +44,7 @@ interface EmployeeData {
 
 interface EditEmployeeDataProps {
     employee: EmployeeData;
-    onClose: () => void;
+    onCloseEdit: () => void;
     onEmployeeUpdate: () => void;
 }
 interface Contract {
@@ -67,8 +72,11 @@ interface Language {
     id: number;
     name: string;
 }
+interface ChangedData {
+    [key: string]: string | number | undefined | object;
+}
 
-const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onClose, onEmployeeUpdate }) => {
+const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCloseEdit, onEmployeeUpdate }) => {
     const [formData, setFormData] = useState<EmployeeData>(employee);
     const [contracts, setContracts] = useState<Contract[]>([]);
     const [departments, setDepartments] = useState<Department[]>([]);
@@ -76,6 +84,41 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     const [roles, setRoles] = useState<Role[]>([]);
     const [languages, setLanguages] = useState<Language[]>([]);
 
+    const [modalIsOpenEditEmployeeNotification, setModalEditEmployeeNotification] = useState(false);
+    const openModaEditEmployeeNotification = (changedData: ChangedData) => {
+        setModalEditEmployeeNotification(true);
+        setChangedData(changedData);
+    }
+    const closeModalEditEmployeeNotification = () => setModalEditEmployeeNotification(false);
+    const [changedData, setChangedData] = useState<ChangedData>({});
+    const getChangedData = (): ChangedData => {
+        const changes: ChangedData = {};
+      
+        if (formData.firstname !== employee.firstname) changes.firstname = formData.firstname;
+        if (formData.surname !== employee.surname) changes.surname = formData.surname;
+        if (formData.email !== employee.email) changes.email = formData.email;
+        if (formData.phone_number !== employee.phone_number) changes.phone_number = formData.phone_number;
+        if (formData.employee_id !== employee.employee_id) changes.employee_id = formData.employee_id;
+        if (formData.contract_signature !== employee.contract_signature) changes.contract_signature = formData.contract_signature;    
+        if (formData.contract_expiration !== employee.contract_expiration) changes.contract_expiration = formData.contract_expiration;
+        if (formData.work_address.id !== employee.work_address.id) changes.work_address = formData.work_address;
+        if (formData.supervisor_id !== employee.supervisor_id) changes.supervisor_id = formData.supervisor_id;
+        if (JSON.stringify(formData.residence) !== JSON.stringify(employee.residence)) {
+          changes.residence = formData.residence;
+        }
+        if (JSON.stringify(formData.contract_type) !== JSON.stringify(employee.contract_type)) {
+          changes.contract_type = formData.contract_type;
+        }
+        if (JSON.stringify(formData.roles) !== JSON.stringify(employee.roles)) {
+          changes.roles = formData.roles;
+        }
+        if (JSON.stringify(formData.languages) !== JSON.stringify(employee.languages)) {
+          changes.languages = formData.languages;
+        }
+      
+        return changes;
+      };
+      
     useEffect(() => {
         fetch('http://localhost:8080/api/v1/contract-type')
             .then(response => response.json())
@@ -187,6 +230,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
             employee_id: formData.employee_id
         };
 
+        const changedData = getChangedData();
         fetch(`http://localhost:8080/api/v1/user/${employee.id}`, {
             method: 'PUT',
             headers: {
@@ -196,18 +240,17 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
         })
             .then(response => response.json())
             .then(data => {
-                // console.log('Success:', data);
-                // alert('Employee data updated successfully');
                 return fetch(`http://localhost:8080/api/v1/user/${employee.id}`);
             })
             .then(response => response.json())
             .then(updatedData => {
                 onEmployeeUpdate();
-                onClose();
+                setChangedData(changedData);
+                // onCloseEdit();
+                openModaEditEmployeeNotification(changedData);
             })
             .catch(error => {
-                // console.error('Error:', error);
-                // alert('Failed to update employee data');
+                alert('Failed to update employee data');
             });
     };
 
@@ -256,7 +299,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
                 <label>Zip Code:</label>
                 <input name="residence.zip_code" value={formData.residence.zip_code} onChange={handleInputChange} />
             </div>
-            
+
             <h4>Contract</h4>
             <div className={styles.formGroup}>
                 <label>Contract Type:</label>
@@ -330,8 +373,22 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
 
             <div className={styles.modalActions}>
                 <button onClick={handleSave}>Save</button>
-                <button onClick={onClose}>Cancel</button>
+                <button onClick={onCloseEdit}>Cancel</button>
             </div>
+            <Modal
+                isOpen={modalIsOpenEditEmployeeNotification}
+                contentLabel="Edit Employee Notification"
+                className={styles.modalContent}
+                overlayClassName={styles.modalOverlay}
+            >
+                <EditEmployeeNotificationPopUp
+                    onClose={closeModalEditEmployeeNotification}
+                    firstName={formData.firstname}
+                    surname={formData.surname}
+                    changedData={changedData}
+                    onCloseEditData={onCloseEdit}
+                />
+            </Modal>
 
         </div>
     );

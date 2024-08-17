@@ -149,7 +149,7 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
       >
         <EditEmployeeDataPopUp
           employee={employee}
-          onClose={closeModalEditEmployeeData}
+          onCloseEdit={closeModalEditEmployeeData}
           onEmployeeUpdate={() => {
             fetchEmployeeData();
           }} />
