@@ -2,7 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons'
+import Modal from 'react-modal';
 import styles from './main.module.scss';
+
+Modal.setAppElement('#root');
 
 interface Role {
   id: number;
@@ -31,8 +34,12 @@ interface Department {
   id: number;
   departmentName: string;
 }
+interface AddEmployeeProps {
+  onClose: () => void;
+  onRefreshData: () => void;
+}
 
-const AddEmployee = () => {
+const AddEmployee: React.FC<AddEmployeeProps> = ({onClose, onRefreshData}) => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [languages, setLanguages] = useState<Language[]>([]);
@@ -59,6 +66,9 @@ const AddEmployee = () => {
     phone_number: '',
     employee_id: ''
   });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalCountdown, setModalCountdown] = useState(10);
 
   useEffect(() => {
     fetch('http://localhost:8080/api/v1/role')
@@ -90,8 +100,6 @@ const AddEmployee = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // console.log('Wysyłane dane:', formData);
-
     fetch('http://localhost:8080/api/v1/user', {
       method: 'POST',
       headers: {
@@ -101,12 +109,25 @@ const AddEmployee = () => {
     })
       .then(response => response.json())
       .then(data => {
-        // console.log('Success:', data);
-        // alert('Pomyślnie dodano pracownika');
+        const userId = data.id;
+        setIsModalOpen(true);
+        onRefreshData();
+        const countdownInterval = setInterval(() => {
+          setModalCountdown(prev => {
+            if (prev === 1) {
+              clearInterval(countdownInterval);
+              setIsModalOpen(false);
+              onClose();
+            }
+            return prev - 1;
+          });
+        }, 1000);
+
+        setEmployeeLink(`/employees/user/${userId}`);
+
       })
       .catch(error => {
-        // console.error('Error:', error)
-        // alert('Błąd podczas dodawania pracownika');
+        alert('Błąd podczas dodawania pracownika');
       });
   };
 
@@ -171,6 +192,7 @@ const AddEmployee = () => {
   }
 };
 
+const [employeeLink, setEmployeeLink] = useState<string | null>(null);
 
   return (
     <div>
@@ -291,8 +313,23 @@ const AddEmployee = () => {
         </div>
         <div>
           <button type="submit">Dodaj</button>
+          <button type="button" onClick={onClose}>Cofnij</button>
         </div>
       </form>
+      <Modal
+        isOpen={isModalOpen}
+        contentLabel="Employee Added"
+        className={styles.modalContent}
+        overlayClassName={styles.modalOverlay}
+      >
+        <div>
+          <h2>Pracownik dodany</h2>
+          <p>Właśnie dodałeś pracownika: {formData.firstname} {formData.surname}</p>
+          {employeeLink && <p>Więcej w <a href={employeeLink}>więcej</a></p>}
+          <p>Zamknięcie modala za: {modalCountdown} sekund</p>
+          <button onClick={() => setIsModalOpen(false)}>Zamknij</button>
+        </div>
+      </Modal>
     </div>
   );
 }

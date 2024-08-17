@@ -5,6 +5,8 @@ import FilterEmployee from '@/components/employees/filterEmployee';
 import styles from './main.module.scss';
 import NavEmp from '@/components/employees/navEmployee';
 
+
+
 interface Language {
   id: number;
   name: string;
@@ -22,7 +24,25 @@ const EmployeesComponent: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchFilteredData = (filters: { roles?: number[]; languages?: number[]; order?: string }) => {
+  const fetchUpdatedData = () => {
+    fetch('http://localhost:8080/api/v1/user/simple')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        setError(error.message);
+        setLoading(false);
+      });
+  }
+
+  const fetchFilteredData = (filters: { roles?: number[]; languages?: number[]; order?: string } = {}) => {
     let url = 'http://localhost:8080/api/v1/user/simple';
     const params = new URLSearchParams();
 
@@ -55,18 +75,19 @@ const EmployeesComponent: React.FC = () => {
 
   useEffect(() => {
     fetchFilteredData({});
+    fetchUpdatedData()
   }, []);
 
   return (
     <div>
-      <NavEmp />
+      <NavEmp refreshData={fetchUpdatedData} />
       <FilterEmployee onApplyFilters={fetchFilteredData} />
       <div className={styles.container}>
         {loading && <div>Loading...</div>}
         {error && <div>Error: {error}</div>}
         {!loading && !error && data.length === 0 && <div>No data available</div>}
         {!loading && !error && data.length > 0 && data.map((person, index) => (
-          <Tile key={index} person={person} />
+          <Tile key={index} person={person}/>
         ))}
       </div>
     </div>

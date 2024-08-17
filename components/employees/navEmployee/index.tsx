@@ -6,7 +6,11 @@ import styles from './main.module.scss';
 
 Modal.setAppElement('#root');
 
-const NavBarEmployee = () => {
+interface NavbarEmployeeProps {
+  refreshData: () => void;
+}
+
+const NavBarEmployee: React.FC<NavbarEmployeeProps> = ({refreshData}) => {
   const [modalIsOpenRole, setModalIsOpenRole] = useState(false);
   const [modalIsOpenAddEmployee, setModalIsOpenAddEmp] = useState(false);
 
@@ -27,8 +31,10 @@ const NavBarEmployee = () => {
         className={styles.modalContent}
         overlayClassName={styles.modalOverlay}
       >
-        <AddEmployee />
-        <button onClick={closeModalAddEmp}>Zamknij</button>
+        <AddEmployee
+          onClose={closeModalAddEmp}
+          onRefreshData={refreshData}
+         />
       </Modal>
       <button onClick={openModalRole}>EDIT ROLES</button>
       <Modal
