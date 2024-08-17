@@ -80,6 +80,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     const [contracts, setContracts] = useState<Contract[]>([]);
     const [departments, setDepartments] = useState<Department[]>([]);
     const [departmentMap, setDepartmentMap] = useState<{ [key: number]: string }>({});
+    const [supervisorMap, setSupervisorMap] = useState<{ [key: number]: string }>({});
     const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
     const [roles, setRoles] = useState<Role[]>([]);
     const [languages, setLanguages] = useState<Language[]>([]);
@@ -110,9 +111,16 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
             })
             .catch(error => console.error('Error fetching departments:', error));        
 
-        fetch('http://localhost:8080/api/v1/user/supervisor')
+            fetch('http://localhost:8080/api/v1/user/supervisor')
             .then(response => response.json())
-            .then(data => setSupervisors(data))
+            .then(data => {
+                setSupervisors(data);
+                const supervisorMap: { [key: number]: string } = {};
+                data.forEach((supervisor: Supervisor) => {
+                    supervisorMap[supervisor.id] = `${supervisor.firstname} ${supervisor.surname}`;
+                });
+                setSupervisorMap(supervisorMap);
+            })
             .catch(error => console.error('Error fetching supervisors:', error));
 
         fetch('http://localhost:8080/api/v1/role')
@@ -141,8 +149,14 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
             const departmentName = departmentMap[formData.work_address.id];
             changes.work_address = departmentName ? departmentName : 'Unknown Department';
         }
-
-        if (formData.supervisor_id !== employee.supervisor_id) changes.supervisor_id = formData.supervisor_id;
+        
+        console.log('formData.supervisor_id:', formData.supervisor_id);
+        console.log('employee.supervisor_id:', employee.supervisor_id);
+    
+        if (formData.supervisor_id !== employee.supervisor_id) {
+            const selectedSupervisor = supervisorMap[formData.supervisor_id];
+            changes.supervisor = selectedSupervisor ? selectedSupervisor : 'Unknown Supervisor';
+        }
 
         if (formData.residence.street !== employee.residence.street) changes.residenceStreet = formData.residence.street;
         if (formData.residence.building_number !== employee.residence.building_number) changes.residenceBuildingNumber = formData.residence.building_number;
