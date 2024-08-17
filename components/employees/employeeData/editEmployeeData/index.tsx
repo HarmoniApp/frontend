@@ -2,81 +2,27 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import EditEmployeeNotificationPopUp from '@/components/employees/employeeData/editEmployeeData/editEmployeeDataNotification';
+import EmployeeDataWorkAdressOnlyId from '@/components/types/employeeDataWorkAdressOnlyId';
+import Department from '@/components/types/department';
+import Supervisor from '@/components/types/supervisor';
+import Role from '@/components/types/role';
+import Language from '@/components/types/language';
+import Contract from '@/components/types/contract';
+
 import styles from './main.module.scss';
 
 Modal.setAppElement('#root');
 
-interface EmployeeData {
-    id: number;
-    firstname: string;
-    surname: string;
-    email: string;
-    residence: {
-        id: number;
-        city: string;
-        street: string;
-        apartment: string;
-        zip_code: string;
-        building_number: string;
-    };
-    roles: {
-        id: number;
-        name: string;
-    }[];
-    languages: {
-        id: number;
-        name: string;
-    }[];
-    contract_type: {
-        id: number;
-        name: string;
-    };
-    contract_signature: string;
-    contract_expiration: string;
-    work_address: {
-        id: number;
-    };
-    supervisor_id: number;
-    phone_number: string;
-    employee_id: string;
-}
-
 interface EditEmployeeDataProps {
-    employee: EmployeeData;
+    employee: EmployeeDataWorkAdressOnlyId;
     onCloseEdit: () => void;
-    onEmployeeUpdate: () => void;
-}
-interface Contract {
-    id: number;
-    name: string;
-}
-interface Department {
-    id: number;
-    departmentName: string;
-}
-interface Supervisor {
-    id: number;
-    firstname: string;
-    surname: string;
-    role: {
-        id: number;
-        name: string;
-    }[];
-}
-interface Role {
-    id: number;
-    name: string;
-}
-interface Language {
-    id: number;
-    name: string;
 }
 interface ChangedData {
     [key: string]: string | number | undefined | object;
 }
 
-const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCloseEdit, onEmployeeUpdate }) => {
-    const [formData, setFormData] = useState<EmployeeData>(employee);
+const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCloseEdit }) => {
+    const [formData, setFormData] = useState<EmployeeDataWorkAdressOnlyId>(employee);
     const [contracts, setContracts] = useState<Contract[]>([]);
     const [departments, setDepartments] = useState<Department[]>([]);
     const [departmentMap, setDepartmentMap] = useState<{ [key: number]: string }>({});
@@ -90,7 +36,10 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
         setModalEditEmployeeNotification(true);
         setChangedData(changedData);
     }
-    const closeModalEditEmployeeNotification = () => setModalEditEmployeeNotification(false);
+    const closeModalEditEmployeeNotification = () => {
+        setModalEditEmployeeNotification(false);
+    };
+
     const [changedData, setChangedData] = useState<ChangedData>({});
 
     useEffect(() => {
@@ -99,7 +48,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
             .then(data => setContracts(data))
             .catch(error => console.error('Error fetching contracts:', error));
 
-            fetch('http://localhost:8080/api/v1/address/departments')
+        fetch('http://localhost:8080/api/v1/address/departments')
             .then(response => response.json())
             .then(data => {
                 setDepartments(data);
@@ -109,9 +58,9 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
                 });
                 setDepartmentMap(deptMap);
             })
-            .catch(error => console.error('Error fetching departments:', error));        
+            .catch(error => console.error('Error fetching departments:', error));
 
-            fetch('http://localhost:8080/api/v1/user/supervisor')
+        fetch('http://localhost:8080/api/v1/user/supervisor')
             .then(response => response.json())
             .then(data => {
                 setSupervisors(data);
@@ -136,23 +85,20 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
 
     const getChangedData = (): ChangedData => {
         const changes: ChangedData = {};
-      
+
         if (formData.firstname !== employee.firstname) changes.firstname = formData.firstname;
         if (formData.surname !== employee.surname) changes.surname = formData.surname;
         if (formData.email !== employee.email) changes.email = formData.email;
         if (formData.phone_number !== employee.phone_number) changes.phone_number = formData.phone_number;
         if (formData.employee_id !== employee.employee_id) changes.employee_id = formData.employee_id;
-        if (formData.contract_signature !== employee.contract_signature) changes.contract_signature = formData.contract_signature;    
+        if (formData.contract_signature !== employee.contract_signature) changes.contract_signature = formData.contract_signature;
         if (formData.contract_expiration !== employee.contract_expiration) changes.contract_expiration = formData.contract_expiration;
 
         if (formData.work_address.id !== employee.work_address.id) {
             const departmentName = departmentMap[formData.work_address.id];
             changes.work_address = departmentName ? departmentName : 'Unknown Department';
         }
-        
-        console.log('formData.supervisor_id:', formData.supervisor_id);
-        console.log('employee.supervisor_id:', employee.supervisor_id);
-    
+
         if (formData.supervisor_id !== employee.supervisor_id) {
             const selectedSupervisor = supervisorMap[formData.supervisor_id];
             changes.supervisor = selectedSupervisor ? selectedSupervisor : 'Unknown Supervisor';
@@ -275,9 +221,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
             })
             .then(response => response.json())
             .then(updatedData => {
-                onEmployeeUpdate();
                 setChangedData(changedData);
-                // onCloseEdit();
                 openModaEditEmployeeNotification(changedData);
             })
             .catch(error => {
@@ -422,5 +366,4 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
         </div>
     );
 };
-
 export default EditEmployeeDataPopUp;

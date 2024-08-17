@@ -1,106 +1,56 @@
 "use client";
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Modal from 'react-modal';
-import EditEmployeeDataPopUp from '@/components/employees/employeeData/editEmployeeData';
 import DeleteEmployeePopUp from '@/components/employees/employeeData/deleteEmployee';
+import EmployeeData from '@/components/types/employeeData';
+import Department from '@/components/types/department';
+import SupervisorDataSimple from '@/components/types/supervisorDataSimple';
 import styles from './main.module.scss';
 
 Modal.setAppElement('#root');
-interface EmployeeData {
-  id: number;
-  firstname: string;
-  surname: string;
-  email: string;
-  residence: {
-    id: number;
-    city: string;
-    street: string;
-    apartment: string;
-    zip_code: string;
-    building_number: string;
-  };
-  roles: {
-    id: number;
-    name: string;
-    sup: boolean;
-  }[];
-  languages: {
-    id: number;
-    name: string;
-  }[];
-  contract_type: {
-    id: number;
-    name: string;
-  };
-  contract_signature: string;
-  contract_expiration: string;
-  work_address: {
-    id: number;
-    street: string;
-    apartment: string;
-    zip_code: string;
-    building_number: string;
-  };
-  supervisor_id: number;
-  phone_number: string;
-  employee_id: string;
-}
-interface SupervisorData {
-  id: number;
-  firstname: string;
-  surname: string;
-}
-interface Department {
-  id: number;
-  departmentName: string;
-}
 
 export default function EmployeeDataComponent({ userId }: { userId: number }) {
   const [employee, setEmployee] = useState<EmployeeData | null>(null);
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [supervisorData, setSupervisorData] = useState<SupervisorData | null>(null);
-  const [modalIsOpenEditEmployeeData, setModalIsOpenEditEmployeeData] = useState(false);
+  const [supervisorData, setSupervisorData] = useState<SupervisorDataSimple | null>(null);
   const [modalIsOpenDeleteEmployee, setModalDeleteEmployee] = useState(false);
 
-  const openModalEditEmployeeData = () => setModalIsOpenEditEmployeeData(true);
-  const closeModalEditEmployeeData = () => setModalIsOpenEditEmployeeData(false);
+  const router = useRouter();
 
   const openModalDeleteEmployee = () => setModalDeleteEmployee(true);
   const closeModalDeleteEmployee = () => setModalDeleteEmployee(false);
 
-  const fetchEmployeeData = () => {
-    fetch(`http://localhost:8080/api/v1/user/${userId}`)
-      .then(response => response.json())
-      .then(data => setEmployee(data))
-      .catch(error => console.error('Error fetching employee data:', error));
-  };
-
   useEffect(() => {
-    fetchEmployeeData();
-  }, [userId]);
+    if (userId) {
 
-  useEffect(() => {
-    fetch('http://localhost:8080/api/v1/address/departments')
-      .then(response => response.json())
-      .then(data => setDepartments(data))
-      .catch(error => console.error('Error fetching departments:', error));
+      fetch('http://localhost:8080/api/v1/address/departments')
+        .then(response => response.json())
+        .then(data => setDepartments(data))
+        .catch(error => console.error('Error fetching departments:', error));
 
-    fetch(`http://localhost:8080/api/v1/user/${userId}`)
-      .then(response => response.json())
-      .then(data => {
-        setEmployee(data);
-
-        if (data.supervisor_id) {
-          return fetch(`http://localhost:8080/api/v1/user/simple/${data.supervisor_id}`)
-            .then(response => response.json())
-            .then(supervisorData => setSupervisorData(supervisorData));
-        }
-      });
+      fetch(`http://localhost:8080/api/v1/user/${userId}`)
+        .then(response => response.json())
+        .then(data => {
+          setEmployee(data);
+          if (data.supervisor_id) {
+            fetch(`http://localhost:8080/api/v1/user/simple/${data.supervisor_id}`)
+              .then(response => response.json())
+              .then(supervisorData => setSupervisorData(supervisorData))
+              .catch(error => console.error('Error fetching supervisor data:', error));
+          }
+        })
+        .catch(error => console.error('Error fetching employee data:', error));
+    }
   }, [userId]);
 
   if (!employee) return <div>Loading...</div>;
 
   const department = departments.find(dept => dept.id === employee.work_address.id);
+
+  const handleEditEmployee = () => {
+    router.push(`/employees/user/${userId}/edit`);
+  };
 
   return (
     <div>
@@ -139,22 +89,8 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
       <button>Statistics</button>
       <button>Absences</button>
       <button>Chat</button>
-      
-      <Modal
-        isOpen={modalIsOpenEditEmployeeData}
-        // onRequestClose={closeModalRole}
-        contentLabel="Edit Employee"
-        className={styles.modalContent}
-        overlayClassName={styles.modalOverlay}
-      >
-        <EditEmployeeDataPopUp
-          employee={employee}
-          onCloseEdit={closeModalEditEmployeeData}
-          onEmployeeUpdate={() => {
-            fetchEmployeeData();
-          }} />
-      </Modal>
-      <button onClick={openModalEditEmployeeData}>Edit employee</button>
+
+      <button onClick={handleEditEmployee}>Edit employee</button>
 
       <Modal
         isOpen={modalIsOpenDeleteEmployee}
@@ -162,12 +98,12 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
         className={styles.modalContent}
         overlayClassName={styles.modalOverlay}
       >
-        <DeleteEmployeePopUp 
+        <DeleteEmployeePopUp
           userId={employee.id}
-          firstName={employee.firstname} 
-          surname = {employee.surname}
-          roles = {employee.roles}
-          departmentName = {department ? department.departmentName : 'Loading...'}
+          firstName={employee.firstname}
+          surname={employee.surname}
+          roles={employee.roles}
+          departmentName={department ? department.departmentName : 'Loading...'}
           onClose={closeModalDeleteEmployee}
         />
       </Modal>
