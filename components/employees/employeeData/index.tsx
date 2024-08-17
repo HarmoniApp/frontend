@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import EditEmployeeDataPopUp from '@/components/employees/employeeData/editEmployeeData';
+import DeleteEmployeePopUp from '@/components/employees/employeeData/deleteEmployee';
 import styles from './main.module.scss';
 
 Modal.setAppElement('#root');
@@ -161,12 +162,16 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
         className={styles.modalContent}
         overlayClassName={styles.modalOverlay}
       >
-        <div>
-          <button>Usuń</button>
-          <button onClick={closeModalDeleteEmployee}>Cofnij</button>
-        </div>
+        <DeleteEmployeePopUp 
+          userId={employee.id}
+          firstName={employee.firstname} 
+          surname = {employee.surname}
+          roles = {employee.roles}
+          departmentName = {department ? department.departmentName : 'Loading...'}
+          onClose={closeModalDeleteEmployee}
+        />
       </Modal>
-      <button onClick={openModalDeleteEmployee}></button>
+      <button onClick={openModalDeleteEmployee}>Usuń pracownika</button>
     </div>
   );
 }
