@@ -16,7 +16,7 @@ interface DeleteEmployeeProps {
 
 const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surname, roles, departmentName, onClose }) => {
   const [modalStage, setModalStage] = useState<'confirm' | 'delete'>('confirm');
-  const [modalCountdown, setModalCountdown] = useState(10);
+  const [modalCountdown, setModalCountdown] = useState(100000000);
   const [employeeLink, setEmployeeLink] = useState<string | null>(null);
   const router = useRouter();
 
@@ -45,13 +45,8 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
     <div>
       {modalStage === 'confirm' ? (
         <div className={styles.deleteContainerMain}>
-          <h2 className={styles.questionParagraph}>Czy na pewno chcesz usunąć użytkownika w oddziale:</h2>
-          <p className={styles.departmentParagraph}>{departmentName}</p>
-          <p className={styles.fullNameParagraph}>Imię:
-            <span className={styles.highlight}>{firstName}</span>, Nazwisko:
-            <span className={styles.highlight}>{surname}</span>
-          </p>
-          {/* , role: {roles.map(role => role.name).join(', ')} */}
+          <h2 className={styles.questionHeader}>Czy na pewno chcesz usunąć użytkownika:</h2>
+          <p className={styles.fullNameParagraph}>{firstName} {surname}</p>
           <div className={styles.butonContainter}>
             <button className={styles.deleteButton} onClick={handleDeleteEmployee}>Usuń</button>
             <button className={styles.backButton} onClick={onClose}>Cofnij</button>

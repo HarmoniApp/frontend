@@ -95,8 +95,8 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
       <Modal
         isOpen={modalIsOpenDeleteEmployee}
         contentLabel="Delete Employee"
-        className={styles.modalContent}
-        overlayClassName={styles.modalOverlay}
+        className={styles.modalContentOfDeleteEmployee}
+        overlayClassName={styles.modalOverlayDeleteEmployee}
       >
         <DeleteEmployeePopUp
           userId={employee.id}
