@@ -102,8 +102,6 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
           userId={employee.id}
           firstName={employee.firstname}
           surname={employee.surname}
-          roles={employee.roles}
-          departmentName={department ? department.departmentName : 'Loading...'}
           onClose={closeModalDeleteEmployee}
         />
       </Modal>

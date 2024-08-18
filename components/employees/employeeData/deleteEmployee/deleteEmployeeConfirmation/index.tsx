@@ -1,16 +1,18 @@
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './main.module.scss';
-import { count } from 'console';
 
 interface DeleteEmployeeConfirmationPopUpProps {
   firstName: string;
   surname: string;
-  employeeLink: string | null;
-  onClose: () => void;
   modalCountdown: number;
 }
 
-const DeleteEmployeeConfirmationPopUp: React.FC<DeleteEmployeeConfirmationPopUpProps> = ({ firstName, surname, employeeLink, onClose, modalCountdown }) => {
+const DeleteEmployeeConfirmationPopUp: React.FC<DeleteEmployeeConfirmationPopUpProps> = ({ firstName, surname, modalCountdown }) => {
+  const router = useRouter();
+  const handleImmediateRedirect = () => {
+    router.push("/employees");
+  };
   return (
     <div className={styles.deleteConfirmationCntainerMain}>
       <div className={styles.questionContainer}>
@@ -25,7 +27,7 @@ const DeleteEmployeeConfirmationPopUp: React.FC<DeleteEmployeeConfirmationPopUpP
         </div>
       </div>
       <div className={styles.buttonConianer}>
-        <button className={styles.backButton} onClick={onClose}><a href={employeeLink ?? ''} className={styles.a}>Powrót</a></button>
+        <button className={styles.backButton} onClick={handleImmediateRedirect}>Przejdź</button>
       </div>
     </div>
   );

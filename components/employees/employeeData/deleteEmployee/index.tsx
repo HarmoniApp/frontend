@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import DeleteEmployeeConfirmationPopUp from '@/components/employees/employeeData/deleteEmployee/deleteEmployeeConfirmation';
 import styles from './main.module.scss';
@@ -7,18 +7,20 @@ interface DeleteEmployeeProps {
   userId: number;
   firstName: string;
   surname: string;
-  roles: {
-    name: string;
-  }[];
-  departmentName: string;
   onClose: () => void;
 }
 
-const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surname, roles, departmentName, onClose }) => {
+const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surname, onClose }) => {
   const [modalStage, setModalStage] = useState<'confirm' | 'delete'>('confirm');
-  const [modalCountdown, setModalCountdown] = useState(100000000);
-  const [employeeLink, setEmployeeLink] = useState<string | null>(null);
+  const [modalCountdown, setModalCountdown] = useState(10);
   const router = useRouter();
+
+  useEffect(() => {
+    if (modalStage === 'delete' && modalCountdown === 0) {
+      router.push("/employees");
+      onClose();
+    }
+  }, [modalStage, modalCountdown, router, onClose]);
 
   const handleDeleteEmployee = () => {
     fetch(`http://localhost:8080/api/v1/user/${userId}`, {
@@ -30,13 +32,11 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
           setModalCountdown(prev => {
             if (prev === 1) {
               clearInterval(countdownInterval);
-              router.push("/employees");
-              onClose();
+              setModalCountdown(0);
             }
             return prev - 1;
           });
         }, 1000);
-        setEmployeeLink(`/employees`);
       })
       .catch(error => console.error('Error deleting employee:', error));
   };
@@ -56,8 +56,6 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
         <DeleteEmployeeConfirmationPopUp
           firstName={firstName}
           surname={surname}
-          employeeLink={employeeLink}
-          onClose={onClose}
           modalCountdown={modalCountdown}
         />
       )}
