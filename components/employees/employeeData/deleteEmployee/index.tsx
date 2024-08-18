@@ -19,7 +19,7 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
   const [modalCountdown, setModalCountdown] = useState(10);
   const [employeeLink, setEmployeeLink] = useState<string | null>(null);
   const router = useRouter();
-    
+
   const handleDeleteEmployee = () => {
     fetch(`http://localhost:8080/api/v1/user/${userId}`, {
       method: 'DELETE',
@@ -44,20 +44,28 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
   return (
     <div>
       {modalStage === 'confirm' ? (
-          <div>
-            <p>Czy na pewno chcesz usunąć użytkownika Imię: {firstName}, Nazwisko: {surname}, role: {roles.map(role => role.name).join(', ')}, w oddziale {departmentName}?</p>
-            <button onClick={handleDeleteEmployee}>Usuń</button>
-            <button onClick={onClose}>Cofnij</button>
+        <div className={styles.deleteContainerMain}>
+          <h2 className={styles.questionParagraph}>Czy na pewno chcesz usunąć użytkownika w oddziale:</h2>
+          <p className={styles.departmentParagraph}>{departmentName}</p>
+          <p className={styles.fullNameParagraph}>Imię:
+            <span className={styles.highlight}>{firstName}</span>, Nazwisko:
+            <span className={styles.highlight}>{surname}</span>
+          </p>
+          {/* , role: {roles.map(role => role.name).join(', ')} */}
+          <div className={styles.butonContainter}>
+            <button className={styles.deleteButton} onClick={handleDeleteEmployee}>Usuń</button>
+            <button className={styles.backButton} onClick={onClose}>Cofnij</button>
           </div>
-        ) : (
-          <DeleteEmployeeConfirmationPopUp
-            firstName={firstName}
-            surname={surname}
-            employeeLink={employeeLink}
-            onClose={onClose}
-            modalCountdown={modalCountdown}
-          />
-        )}
+        </div>
+      ) : (
+        <DeleteEmployeeConfirmationPopUp
+          firstName={firstName}
+          surname={surname}
+          employeeLink={employeeLink}
+          onClose={onClose}
+          modalCountdown={modalCountdown}
+        />
+      )}
     </div>
   );
 };

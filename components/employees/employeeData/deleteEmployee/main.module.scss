@@ -1,0 +1,85 @@
+$font-color: #FFFFFF;
+$font-color-dark: #000000;
+$highlight-color: #FFCF70;
+$margin-evenly: 10px 0;
+
+.deleteContainerMain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.questionParagraph {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    font-weight: bold;
+    color: $font-color-dark;
+    margin: $margin-evenly;
+}
+
+.departmentParagraph {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    font-size: 22px;
+    color: $highlight-color;
+    font-weight: bold;
+    margin: $margin-evenly;
+}
+
+.fullNameParagraph {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    font-size: 16px;
+    color: $font-color-dark;
+    margin: $margin-evenly;
+}
+
+.fullNameParagraph .highlight {
+    color: $highlight-color;
+    font-weight: bold;
+}
+
+.butonContainter {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin:$margin-evenly;
+    width: 100%;
+}
+
+.deleteButton {
+    text-align: center;
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.deleteButton:hover {
+    background-color: #c82333;
+}
+
+.backButton {
+    text-align: center;
+    background-color: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.backButton:hover {
+    background-color: #5a6268;
+}
