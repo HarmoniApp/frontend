@@ -353,8 +353,8 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
             <Modal
                 isOpen={modalIsOpenEditEmployeeNotification}
                 contentLabel="Edit Employee Notification"
-                className={styles.modalContent}
-                overlayClassName={styles.modalOverlay}
+                className={styles.modalContentEditEmployeeNotification}
+                overlayClassName={styles.modalOverlayEditEmployeeNotification}
             >
                 <EditEmployeeNotificationPopUp
                     onClose={closeModalEditEmployeeNotification}
