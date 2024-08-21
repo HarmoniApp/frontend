@@ -1,12 +1,12 @@
-$bg-color: #4F4E4E;
-$font-color: #FFFFFF;
-$font-color-dark: #000000;
-$highlight-color: #FFCF70;
-$highlight-color-hover: #FFBE4D;
+$popup-bg-colour: #4F4E4E;
+$popup-font-colour: #FFFFFF;
+$popup-font-colour-dark: #000000;
+$popup-highlight-colour: #FFCF70;
+$popup-highlight-colour-hover: #FFBE4D;
 
 .deleteConfirmationContainerMain {
     display: flex;
-    background-color: $bg-color;
+    background-color: $popup-bg-colour;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -27,12 +27,12 @@ $highlight-color-hover: #FFBE4D;
     .headerParagraph{
         text-align: center;
         gap:2px;
-        color: $font-color;
+        color: $popup-font-colour;
         margin: 0;
     }
 
     .highlight {
-        color: $highlight-color;
+        color: $popup-highlight-colour;
         font-size: 20px;
         font-weight: bold;
         text-transform: capitalize;
@@ -52,7 +52,7 @@ $highlight-color-hover: #FFBE4D;
         display: flex;
         align-items: center;
         text-align: center;
-        color: $font-color;
+        color: $popup-font-colour;
         margin: 0;
     }
 
@@ -60,12 +60,12 @@ $highlight-color-hover: #FFBE4D;
         display: flex;
         align-items: center;
         text-align: center;
-        color: $font-color;
+        color: $popup-font-colour;
         margin: 0;
         gap: 3px;
 
         .highlight {
-            color: $highlight-color;
+            color: $popup-highlight-colour;
             font-size: 20px;
             font-weight: bold;
             margin: 0 0 10px 0;
@@ -75,7 +75,7 @@ $highlight-color-hover: #FFBE4D;
             display: flex;
             align-items: center;
             text-align: center;
-            color: $font-color;
+            color: $popup-font-colour;
             margin: 0 0 10px 0;
         }
     }
@@ -90,8 +90,8 @@ $highlight-color-hover: #FFBE4D;
 
     .closeButton {
         text-align: center;
-        background-color: $highlight-color;
-        color: $font-color-dark;
+        background-color: $popup-highlight-colour;
+        color: $popup-font-colour-dark;
         padding: 10px 20px;
         border: none;
         border-radius: 4px;
@@ -100,11 +100,11 @@ $highlight-color-hover: #FFBE4D;
     
         .a {
             text-decoration: none;
-            color: $font-color-dark;
+            color: $popup-font-colour-dark;
         }
         
         :hover {
-            background-color: $highlight-color-hover;
+            background-color: $popup-highlight-colour-hover;
         }
     }
 }

@@ -1,13 +1,14 @@
-$font-color: #FFFFFF;
-$bg-color: #4F4E4E;
-$font-color-dark: #000000;
-$highlight-color: #FFCF70;
-$highlight-color-hover: #FFBE4D;
-$margin-evenly: 10px 0;
+$popup-bg-colour: #4F4E4E;
+$popup-font-colour: #FFFFFF;
+$popup-font-colour-dark: #000000;
+$popup-highlight-colour: #FFCF70;
+$popup-highlight-colour-hover: #FFBE4D;
+$popup-delete-button-colour: #dc3545;
+$popup-detete-button-colour-hover: #c82333;
 
 .deleteContainerMain {
     display: flex;
-    background-color: $bg-color;
+    background-color: $popup-bg-colour;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -21,8 +22,8 @@ $margin-evenly: 10px 0;
     align-items: center;
     text-align: center;
     font-weight: bold;
-    color: $font-color;
-    margin: $margin-evenly;
+    color: $popup-font-colour;
+    margin: 10px 0;
 }
 
 .fullNameParagraph {
@@ -30,37 +31,37 @@ $margin-evenly: 10px 0;
     align-items: center;
     text-align: center;
     font-size: 22px;
-    color: $highlight-color;
+    color: $popup-highlight-colour;
     font-weight: bold;
-    margin: $margin-evenly;
+    margin: 10px 0;
 }
 
 .butonContainter {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    margin:$margin-evenly;
+    margin:10px 0;
     width: 100%;
 
     .deleteButton {
         text-align: center;
-        background-color: #dc3545;
+        background-color: $popup-delete-button-colour;
         color: white;
         padding: 10px 20px;
         border: none;
         border-radius: 4px;
         cursor: pointer;
-        transition: background-color 0.3s ease;
+        transition: background-colour 0.3s ease;
     
         :hover {
-            background-color: #c82333;
+            background-color: $popup-detete-button-colour-hover;
         }
     }
 
     .backButton {
         text-align: center;
-        background-color: $highlight-color;
-        color: $font-color-dark;
+        background-color: $popup-highlight-colour;
+        color: $popup-font-colour-dark;
         padding: 10px 20px;
         border: none;
         border-radius: 4px;
@@ -68,7 +69,7 @@ $margin-evenly: 10px 0;
         transition: background-color 0.3s ease;
     
         :hover {
-            background-color: $highlight-color-hover;
+            background-color: $popup-highlight-colour-hover;
         }
     }
 }
