@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import DeleteEmployeeConfirmationPopUp from '@/components/employees/employeeData/deleteEmployee/deleteEmployeeConfirmation';
+import DeleteEmployeeNotificationPopUp from '@/components/employees/employeeData/deleteEmployee/deleteEmployeeNotification';
 import styles from './main.module.scss';
 
 interface DeleteEmployeeProps {
@@ -53,7 +53,7 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
           </div>
         </div>
       ) : (
-        <DeleteEmployeeConfirmationPopUp
+        <DeleteEmployeeNotificationPopUp
           firstName={firstName}
           surname={surname}
           modalCountdown={modalCountdown}
