@@ -57,7 +57,7 @@ const EditEmployeeDataNotificationPopUp: React.FC<EditEmployeeDataNotificationPo
 
             </div>
             <div className={styles.buttonConianer}>
-                <button className={styles.backButton }onClick={() => { onClose(); onCloseEditData(); }}>Przejdź</button>
+                <button className={styles.backButton }onClick={() => { onClose(); onCloseEditData(); }}>Zamknij</button>
             </div>
         </div>
     )

@@ -41,34 +41,34 @@ $margin-evenly: 10px 0;
     justify-content: space-evenly;
     margin:$margin-evenly;
     width: 100%;
-}
 
-.deleteButton {
-    text-align: center;
-    background-color: #dc3545;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-
-    :hover {
-        background-color: #c82333;
+    .deleteButton {
+        text-align: center;
+        background-color: #dc3545;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    
+        :hover {
+            background-color: #c82333;
+        }
     }
-}
 
-.backButton {
-    text-align: center;
-    background-color: $highlight-color;
-    color: $font-color-dark;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-
-    :hover {
-        background-color: $highlight-color-hover;
+    .backButton {
+        text-align: center;
+        background-color: $highlight-color;
+        color: $font-color-dark;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    
+        :hover {
+            background-color: $highlight-color-hover;
+        }
     }
 }

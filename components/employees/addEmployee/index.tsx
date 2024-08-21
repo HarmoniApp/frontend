@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons'
 import Modal from 'react-modal';
-import AddEmployeeConfirmationPopUp from '@/components/employees/addEmployee/addEmplyeeConfirmation';
+import AddEmployeeNotificationPopUp from '@/components/employees/addEmployee/addEmplyeeNotification';
 import Role from '@/components/types/role';
 import Contract from '@/components/types/contract';
 import Language from '@/components/types/language';
@@ -299,10 +299,10 @@ const AddEmployee: React.FC = () => {
       <Modal
         isOpen={isModalOpen}
         contentLabel="Employee Added"
-        className={styles.modalContent}
-        overlayClassName={styles.modalOverlay}
+        className={styles.modalContentOfAddEmployee}
+        overlayClassName={styles.modalOverlayOfAddEmployee}
       >
-        <AddEmployeeConfirmationPopUp
+        <AddEmployeeNotificationPopUp
           firstname={formData.firstname}
           surname={formData.surname}
           employeeLink={employeeLink}

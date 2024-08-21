@@ -27,7 +27,7 @@ const DeleteEmployeeConfirmationPopUp: React.FC<DeleteEmployeeConfirmationPopUpP
         </div>
       </div>
       <div className={styles.buttonConianer}>
-        <button className={styles.backButton} onClick={handleImmediateRedirect}>Przejdź</button>
+        <button className={styles.backButton} onClick={handleImmediateRedirect}>Zamknij</button>
       </div>
     </div>
   );
