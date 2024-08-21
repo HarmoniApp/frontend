@@ -8,7 +8,7 @@ interface EditEmployeeDataNotificationPopUpProps {
 }
 
 const EditEmployeeDataNotificationPopUp: React.FC<EditEmployeeDataNotificationPopUpProps> = ({ onClose, onCloseEditData, changedData }) => {
-    const [modalCountdown, setModalCountdown] = useState(10000000);
+    const [modalCountdown, setModalCountdown] = useState(10);
     useEffect(() => {
         const countdownInterval = setInterval(() => {
             setModalCountdown(prev => {
