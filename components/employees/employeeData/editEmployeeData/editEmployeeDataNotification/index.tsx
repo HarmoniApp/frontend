@@ -23,9 +23,9 @@ const EditEmployeeDataNotificationPopUp: React.FC<EditEmployeeDataNotificationPo
         return () => clearInterval(countdownInterval);
     }, []);
     return (
-        <div className={styles.editEmployeeDataNotificationPopUpContainerMain}>
-            <div className={styles.questionContainer}>
-                <p className={styles.questionParagraph}>Zaktualizowano następujące pola w użytkowniku:</p>
+        <div className={styles.editEmployeeDataNotificationContainerMain}>
+            <div className={styles.headerContainer}>
+                <p className={styles.headerParagraph}>Zaktualizowano następujące pola w użytkowniku:</p>
             </div>
             <div className={styles.changedDataContainer}>
                 <ul className={styles.changedDataList}>
@@ -49,15 +49,15 @@ const EditEmployeeDataNotificationPopUp: React.FC<EditEmployeeDataNotificationPo
                 </ul>
             </div>
             <div className={styles.timerContainer}>
-                <p className={styles.textParagraph}>Przekierowanie do danych pracownika za:</p>
-                <div className={styles.counterTimer}>
+                <p className={styles.timerParagraph}>Przekierowanie do danych pracownika za:</p>
+                <div className={styles.counterTimerContainer}>
                     <span className={styles.highlight}>{modalCountdown}</span>
-                    <p className={styles.counterParagraph}>sekund.</p>
+                    <p className={styles.counterTimerParagraph}>sekund.</p>
                 </div>
 
             </div>
             <div className={styles.buttonConianer}>
-                <button className={styles.backButton }onClick={() => { onClose(); onCloseEditData(); }}>Zamknij</button>
+                <button className={styles.closeButton }onClick={() => { onClose(); onCloseEditData(); }}>Zamknij</button>
             </div>
         </div>
     )

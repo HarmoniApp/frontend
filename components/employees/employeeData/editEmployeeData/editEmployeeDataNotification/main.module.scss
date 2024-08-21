@@ -1,13 +1,12 @@
-$font-color: #FFFFFF;
-$bg-color: #4F4E4E;
-$font-color-dark: #000000;
-$highlight-color: #FFCF70;
-$highlight-color-hover: #FFBE4D;
-$margin-evenly: 10px 0;
+$popup-bg-colour: #4F4E4E;
+$popup-font-color: #FFFFFF;
+$popup-font-color-dark: #000000;
+$popup-highlight-color: #FFCF70;
+$popup-highlight-color-hover: #FFBE4D;
 
-.editEmployeeDataNotificationPopUpContainerMain {
+.editEmployeeDataNotificationContainerMain {
     display: flex;
-    background-color: $bg-color;
+    background-color: $popup-bg-colour;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -26,7 +25,7 @@ $margin-evenly: 10px 0;
     }
 }
 
-.questionContainer {
+.headerContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -35,12 +34,12 @@ $margin-evenly: 10px 0;
     width: 100%;
     margin: 0 0 20px 0;
 
-    .questionParagraph {
+    .headerParagraph {
         text-align: center;
         font-size: 18px;
         font-weight: bold;
         gap: 2px;
-        color: $font-color;
+        color: $popup-font-color;
         margin: 0;
 
         @media (max-width: 400px) {
@@ -65,7 +64,7 @@ $margin-evenly: 10px 0;
         justify-content: space-between;
         text-align: center;
         margin: 5px 0;
-        color: $font-color;
+        color: $popup-font-color;
 
         @media (max-width: 400px) {
             flex-direction: column; 
@@ -76,7 +75,7 @@ $margin-evenly: 10px 0;
         .changedDataKey {
             font-weight: bold;
             text-decoration: underline;
-            text-decoration-color: $highlight-color;
+            text-decoration-color: $popup-highlight-color;
             text-align: center;
             margin: 0 10px 0 0;
 
@@ -87,7 +86,7 @@ $margin-evenly: 10px 0;
 
         .changedDataValue {
             text-align: center;
-            color: $highlight-color;
+            color: $popup-highlight-color;
 
             @media (max-width: 400px) {
                 text-align: left;
@@ -104,11 +103,11 @@ $margin-evenly: 10px 0;
     width: 100%;
     margin: 20px 0 0 0;
 
-    .textParagraph {
+    .timerParagraph {
         display: flex;
         align-items: center;
         text-align: center;
-        color: $font-color;
+        color: $popup-font-color;
         margin: 0;
 
         @media (max-width: 400px) {
@@ -116,16 +115,16 @@ $margin-evenly: 10px 0;
         }
     }
 
-    .counterTimer {
+    .counterTimerContainer {
         display: flex;
         align-items: center;
         text-align: center;
-        color: $font-color;
+        color: $popup-font-color;
         margin: 0;
         gap: 3px;
 
         .highlight {
-            color: $highlight-color;
+            color: $popup-highlight-color;
             font-size: 20px;
             font-weight: bold;
             margin: 0 0 10px 0;
@@ -135,11 +134,11 @@ $margin-evenly: 10px 0;
             }
         }
 
-        .counterParagraph {
+        .counterTimerParagraph {
             display: flex;
             align-items: center;
             text-align: center;
-            color: $font-color;
+            color: $popup-font-color;
             margin: 0 0 10px 0;
 
             @media (max-width: 400px) {
@@ -156,10 +155,10 @@ $margin-evenly: 10px 0;
     justify-content: center;
     width: 100%;
 
-    .backButton {
+    .closeButton {
         text-align: center;
-        background-color: $highlight-color;
-        color: $font-color-dark;
+        background-color: $popup-highlight-color;
+        color: $popup-font-color-dark;
         padding: 10px 20px;
         border: none;
         border-radius: 4px;
@@ -167,7 +166,7 @@ $margin-evenly: 10px 0;
         transition: background-color 0.3s ease;
 
         :hover {
-            background-color: $highlight-color-hover;
+            background-color: $popup-highlight-color-hover;
         }
 
         @media (max-width: 400px) {
