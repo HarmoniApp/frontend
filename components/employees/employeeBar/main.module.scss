@@ -1,0 +1,92 @@
+$popup-border-colour: #dee2e6;
+$popup-box-shadow-colour: rgba(0, 0, 0, 0.1);
+
+$employeeBar-button-bg-colour: #FFFFFF;
+$employeeBar-font-colour: #FFFFFF;
+$employeeBar-font-colour-dark: #000000;
+$employeeBar-highlight-colour: #FFCF70;
+$employeeBar-highlight-colour-hover: #FFBE4D;
+
+.modalContentOfEditRoles {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid $popup-border-colour;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px $popup-box-shadow-colour;
+    text-align: center;
+    width: auto;
+    max-width: 35%;
+    overflow-y: auto;
+}
+
+.employeeBarContainerMain {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.actionContainer {
+    display: flex;
+    gap: 15px;
+    margin: 0 10px;
+}
+
+.addEmployeeButton,
+.importEmployeeButton,
+.editRoles {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: $employeeBar-button-bg-colour;
+    color: $employeeBar-font-colour-dark;
+    border: 2px solid $employeeBar-highlight-colour;
+    border-radius: 5px;
+    font-size: 14px;
+    gap: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.addEmployeeButton:hover,
+.importEmployeeButton:hover,
+.editRoles:hover {
+    background-color: $employeeBar-highlight-colour-hover;
+    color: $employeeBar-font-colour;
+    border-color: $employeeBar-highlight-colour-hover;
+}
+
+.viewContainer {
+    display: flex;
+    gap: 15px;
+    margin: 0 10px;
+
+    .listViewButton,
+    .tilesViewButton {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 35px;
+        cursor: pointer;
+    }
+
+    .active {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 35px;
+        cursor: pointer;
+        color: $employeeBar-highlight-colour;
+    }
+}
+

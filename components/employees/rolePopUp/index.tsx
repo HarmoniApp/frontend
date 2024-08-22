@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useState } from 'react';
+import Role from '@/components/types/role';
 import styles from './main.module.scss';
 
-interface Role {
-  id: number;
-  name: string;
+interface RolePopUpProps {
+  onClick: () => void;
 }
 
-const RolePopUp = () => {
+const RolePopUp:React.FC<RolePopUpProps> = ({onClick}) => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [newRoleName, setNewRoleName] = useState<string>('');
 
@@ -70,6 +70,9 @@ const RolePopUp = () => {
           placeholder="Nowa rola"
         />
         <button onClick={handleAddRole}>+</button>
+      </div>
+      <div className={styles.buttonContainer}>
+        <button className={styles.closeButton} onClick={onClick}>Zamknij</button>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Tile from '@/components/employees/tile';
 import FilterEmployee from '@/components/employees/filterEmployee';
-import NavEmp from '@/components/employees/navEmployee';
+import EmployeeBar from '@/components/employees/employeeBar';
 import PersonTile from '@/components/types/personTile';
 import styles from './main.module.scss';
 
@@ -47,7 +47,7 @@ const EmployeesComponent: React.FC = () => {
 
   return (
     <div>
-      <NavEmp />
+      <EmployeeBar />
       <FilterEmployee onApplyFilters={fetchFilteredData} />
       <div className={styles.container}>
         {loading && <div>Loading...</div>}
