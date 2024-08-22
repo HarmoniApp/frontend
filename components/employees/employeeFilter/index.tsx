@@ -14,22 +14,22 @@ interface Language {
 }
 
 const languageAbbreviations: { [key: string]: string } = {
-  Arabic: 'AE', 
-  Bengali: 'BD', 
-  English: 'GB', 
-  French: 'FR', 
-  German: 'DE', 
-  Hindi: 'IN', 
-  Italian: 'IT', 
-  Japanese: 'JP', 
-  Korean: 'KR', 
-  Mandarin: 'CN', 
-  Other: 'IL', 
+  Arabic: 'AE',
+  Bengali: 'BD',
+  English: 'GB',
+  French: 'FR',
+  German: 'DE',
+  Hindi: 'IN',
+  Italian: 'IT',
+  Japanese: 'JP',
+  Korean: 'KR',
+  Mandarin: 'CN',
+  Other: 'IL',
   Persian: 'IR',
-  Polish: 'PL', 
-  Portuguese: 'PT', 
+  Polish: 'PL',
+  Portuguese: 'PT',
   Russian: 'RU',
-  Spanish: 'ES', 
+  Spanish: 'ES',
   Turkish: 'TR',
   Vietnamese: 'VN',
 };
@@ -99,55 +99,64 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
   };
 
   return (
-    <div className={styles.mainContainer}>
-      <h3>Sortowanie</h3>
-      <label>
-        <input
-          type="checkbox"
-          className={styles.ascCheckbox}
-          value="asc"
-          checked={order === 'asc'}
-          onChange={() => setOrder(order === 'asc' ? null : 'asc')}
-        /> A-Z
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          className={styles.descCheckbox}
-          value="desc"
-          checked={order === 'desc'}
-          onChange={() => setOrder(order === 'desc' ? null : 'desc')}
-        /> Z-A
-      </label>
-
-      <h3>Języki</h3>
-      {languages.map(language => (
-        <label key={language.id}>
+    <div className={styles.employeesFilerContainerMain}>
+      <div className={styles.sortContainer}>
+        <h3 className={styles.sortTitle}>Sortowanie</h3>
+        <label className={styles.ascCheckboxContainer}>
           <input
             type="checkbox"
-            value={language.id}
-            checked={selectedLanguages.includes(language.id)}
-            onChange={() => handleLanguageChange(language.id)}
+            className={styles.ascCheckbox}
+            value="asc"
+            checked={order === 'asc'}
+            onChange={() => setOrder(order === 'asc' ? null : 'asc')}
           />
-          {language.name}
-          <Flag className={styles.language} country={languageAbbreviations[language.name]} />
+          <span className={styles.ascCheckboxLabel}>A-Z</span>
         </label>
-      ))}
-      
-      <h3>Stanowisko:</h3>
-      {roles.map(role => (
-        <label key={role.id}>
+        <label className={styles.descCheckboxContainer}>
           <input
             type="checkbox"
-            value={role.id}
-            checked={selectedRoles.includes(role.id)}
-            onChange={() => handleRoleChange(role.id)}
+            className={styles.descCheckbox}
+            value="desc"
+            checked={order === 'desc'}
+            onChange={() => setOrder(order === 'desc' ? null : 'desc')}
           />
-          {role.name}
+          <span className={styles.descCheckboxLabel}>Z-A</span>
         </label>
-      ))}
-      
-      <button onClick={handleClearFilters}>Wyczyść wszystko</button>
+      </div>
+      <div className={styles.languagesContainer}>
+        <h3 className={styles.languagesTitle}>Języki</h3>
+        {languages.map(language => (
+          <label key={language.id} className={styles.languageCheckboxContainer}>
+            <input
+              type="checkbox"
+              value={language.id}
+              className={styles.languageCheckbox}
+              checked={selectedLanguages.includes(language.id)}
+              onChange={() => handleLanguageChange(language.id)}
+            />
+            <span className={styles.languageCheckboxLabel}>{language.name}</span>
+            <Flag className={styles.languageFlag} country={languageAbbreviations[language.name]} />
+          </label>
+        ))}
+      </div>
+      <div className={styles.positionContainer}>
+        <h3 className={styles.positionTitle}>Stanowsiko</h3>
+        {roles.map(role => (
+          <label key={role.id} className={styles.positionCheckboxContainer}>
+            <input
+              type="checkbox"
+              value={role.id}
+              className={styles.positionCheckbox}
+              checked={selectedRoles.includes(role.id)}
+              onChange={() => handleRoleChange(role.id)}
+            />
+            <span className={styles.positionCheckboxLabel}>{role.name}</span>
+          </label>
+        ))}
+      </div>
+      <div className={styles.buttonContainer}>
+        <button className={styles.clearButton} onClick={handleClearFilters}>Wyczyść wszystko</button>
+      </div>
     </div>
   );
 }

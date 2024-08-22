@@ -1,5 +1,82 @@
-.mainContainer{
+$employeeFilter-chechbox-bg-colour: #e8e8e8;
+$employeeFilter-bg-colour-light: #FFFFFF;
+$employeeFilter-font-colour: #FFFFFF;
+$employeeFilter-highlight-colour: #FFCF70;
+$employeeFilter-highlight-colour-hover: #FFBE4D;
+$employeeFilter-box-shadow-colour: rgba(0, 0, 0, 0.1);
+
+.employeesFilerContainerMain {
+    width: 250px;
+    padding: 20px;
+    background-color: $employeeFilter-bg-colour-light;
+    border: 1px solid $employeeFilter-highlight-colour;
+    border-radius: 10px;
+    box-shadow: 0px 2px 5px $employeeFilter-box-shadow-colour;
+  }
+  
+  .sortContainer, .languagesContainer, .positionContainer {
+    margin-bottom: 20px;
+  }
+  
+  .sortTitle, .languagesTitle, .positionTitle {
+    font-size: 16px;
+    color: $employeeFilter-font-colour-dark;
+    background-color: $employeeFilter-highlight-colour;
+    padding: 10px;
+    margin: 0;
+    border-radius: 5px;
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+
+  .sortTitle:hover, .languagesTitle:hover, .positionTitle:hover {
+    background-color: $employeeFilter-highlight-colour-hover;
+  }
+
+  .ascCheckboxContainer, .descCheckboxContainer, 
+  .languageCheckboxContainer, .positionCheckboxContainer {
     display: flex;
     align-items: center;
-    flex-direction: column;
-}
+    background-color: $employeeFilter-chechbox-bg-colour;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .ascCheckbox, .descCheckbox, .languageCheckbox, .positionCheckbox {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+    accent-color: $employeeFilter-highlight-colour;
+  }
+  
+  .ascCheckboxLabel, .descCheckboxLabel, .positionCheckboxLabel, .languagesContainer {
+    font-size: 14px;
+    color: $employeeFilter-font-colour-dark;
+  }
+  
+  .languageFlag {
+    margin-left: auto;
+  }
+  
+  .buttonContainer {
+    text-align: center;
+  }
+  
+  .clearButton {
+    padding: 10px 15px;
+    background-color: $employeeFilter-highlight-colour;
+    color: $employeeFilter-font-colour-dark;
+    border: 1px solid $employeeFilter-highlight-colour;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+  
+  .clearButton:hover {
+    background-color: $employeeFilter-highlight-colour-hover;
+  }
+  

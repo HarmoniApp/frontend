@@ -1,6 +1,7 @@
 .employeesContainerMain{
   display: flex;
   flex-direction: column;
+  margin: 30px;
 }
 
 .employeesFilterAndListContainer{
@@ -11,12 +12,14 @@
 }
 
 .emplyeesFilterContainer {
-  flex: 1;
+  width: auto;
 }
 
 .employeesListcontainer {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  width: 100%;
+  height: fit-content;
   gap: 20px;
-  flex: 3x;
 }
