@@ -1,13 +1,16 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMinus, faPlus  } from '@fortawesome/free-solid-svg-icons'
 import Role from '@/components/types/role';
 import styles from './main.module.scss';
 
 interface RolePopUpProps {
   onClick: () => void;
+  onWidthChange: (width: number) => void;
 }
 
-const RolePopUp:React.FC<RolePopUpProps> = ({onClick}) => {
+const RolePopUp:React.FC<RolePopUpProps> = ({onClick, onWidthChange}) => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [newRoleName, setNewRoleName] = useState<string>('');
 
@@ -52,24 +55,33 @@ const RolePopUp:React.FC<RolePopUpProps> = ({onClick}) => {
       .catch(error => console.error('Error adding role:', error));
   };
 
+  const roleContainerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (roleContainerRef.current) {
+            onWidthChange(roleContainerRef.current.offsetWidth);
+        }
+    }, [onWidthChange]);
+
   return (
-    <div className={styles.mainContainer}>
-      <div className={styles.addConteinerMain}>
+    <div ref={roleContainerRef} className={styles.rolePopUpContainerMain}>
+      <div className={styles.showRoleMapConteiner}>
         {roles.map(role => (
-          <div key={role.id} className={styles.addContainer}>
-            <p>{role.name}</p>
-            <button onClick={() => handleDeleteRole(role.id)}>-</button>
+          <div key={role.id} className={styles.showRoleConteiner}>
+            <p className={styles.roleNameParagraph}>{role.name}</p>
+            <button className={styles.removeButton} onClick={() => handleDeleteRole(role.id)}><FontAwesomeIcon icon={faMinus} /></button>
           </div>
         ))}
       </div>
       <div className={styles.addContainer}>
         <input
           type="text"
+          className={styles.addInput}
           value={newRoleName}
           onChange={(e) => setNewRoleName(e.target.value)}
-          placeholder="Nowa rola"
+          placeholder="Wpisz nazwę nowej roli"
         />
-        <button onClick={handleAddRole}>+</button>
+        <button className={styles.addButton} onClick={handleAddRole}><FontAwesomeIcon icon={faPlus} /></button>
       </div>
       <div className={styles.buttonContainer}>
         <button className={styles.closeButton} onClick={onClick}>Zamknij</button>
@@ -77,5 +89,4 @@ const RolePopUp:React.FC<RolePopUpProps> = ({onClick}) => {
     </div>
   );
 }
-
 export default RolePopUp;
