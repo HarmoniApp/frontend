@@ -1,28 +1,40 @@
-$bg-color: #F0F0F0;
-$primary-color: #FFCF70;
-$secondary-color: #4F4E4E;
-$text-color: #000000;
-$highlight-color: #FFCF70;
-$border-radius: 10px;
+$tile-bg-colour: #FFCF70;
+$tile-bg-colour-hover: #FFBE4D;
+$tile-font-colour-dark: #000000;
+$tile-border-colour: #000000;
+$tile-box-shadow-colour: rgba(0, 0, 0, 0.1);
 
-.tile {
-  border: 1px solid $bg-color;
-  border-radius: 8px;
-  padding: 10px;
-  text-align: center;
+.tileContainerMain {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: $tile-bg-colour;
+  border: 1px solid $tile-border-colour;
+  box-shadow: 0px 4px 6px $tile-box-shadow-colour;
+  border-radius: 10px;
+  padding: 5px;
+  cursor: pointer;
+}
 
-  .name {
-    font-size: 18px;
+.tileContainerMain:hover {
+  background-color: $tile-bg-colour-hover;
+}
+
+.fullNameContainer{
+  .fullNameParagraph {
+    text-align: center;
     font-weight: bold;
+    color: $tile-font-colour-dark;
+    font-size: 24px;
     margin: 5px 0;
-  }
-
-  .languages {
-    font-size: 14px;
-    margin: 5px 0;
-
-    .language {
-      margin: 0 5px;
-    }
   }
 }
+
+  .languagesContainer {
+    .languageFlag {
+      margin: 5px;
+      width: 40px;
+      height: 40px;
+    }
+  }

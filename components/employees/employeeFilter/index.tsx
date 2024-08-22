@@ -24,7 +24,7 @@ const languageAbbreviations: { [key: string]: string } = {
   Japanese: 'JP', 
   Korean: 'KR', 
   Mandarin: 'CN', 
-  Other: 'UN', 
+  Other: 'IL', 
   Persian: 'IR',
   Polish: 'PL', 
   Portuguese: 'PT', 
