@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Tile from '@/components/employees/tile';
-import FilterEmployee from '@/components/employees/filterEmployee';
+import EmployeeFilter from '@/components/employees/employeeFilter';
 import EmployeeBar from '@/components/employees/employeeBar';
 import PersonTile from '@/components/types/personTile';
 import styles from './main.module.scss';
@@ -48,7 +48,7 @@ const EmployeesComponent: React.FC = () => {
   return (
     <div>
       <EmployeeBar />
-      <FilterEmployee onApplyFilters={fetchFilteredData} />
+      <EmployeeFilter onApplyFilters={fetchFilteredData} />
       <div className={styles.container}>
         {loading && <div>Loading...</div>}
         {error && <div>Error: {error}</div>}
