@@ -23,7 +23,6 @@ const EmployeeBar: React.FC = () => {
   const [modalWidth, setModalWidth] = useState('auto');
 
     const handleWidthChange = (width:number) => {
-      console.log('Current width in %:', width);
         setModalWidth(`${width}%`);
     };
 
