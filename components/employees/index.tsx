@@ -46,16 +46,22 @@ const EmployeesComponent: React.FC = () => {
   }, []);
 
   return (
-    <div>
-      <EmployeeBar />
-      <EmployeeFilter onApplyFilters={fetchFilteredData} />
-      <div className={styles.container}>
-        {loading && <div>Loading...</div>}
-        {error && <div>Error: {error}</div>}
-        {!loading && !error && data.length === 0 && <div>No data available</div>}
-        {!loading && !error && data.length > 0 && data.map((person, index) => (
-          <Tile key={index} person={person}/>
-        ))}
+    <div className={styles.employeesContainerMain}>
+      <div className={styles.emplyeesBarContainer}>
+        <EmployeeBar />
+      </div>
+      <div className={styles.employeesFilterAndListContainer}>
+        <div className={styles.emplyeesFilterContainer}>
+          <EmployeeFilter onApplyFilters={fetchFilteredData} />
+        </div>
+        <div className={styles.employeesListcontainer}>
+          {loading && <div>Loading...</div>}
+          {error && <div>Error: {error}</div>}
+          {!loading && !error && data.length === 0 && <div>No data available</div>}
+          {!loading && !error && data.length > 0 && data.map((person, index) => (
+            <Tile key={index} person={person} />
+          ))}
+        </div>
       </div>
     </div>
   );
