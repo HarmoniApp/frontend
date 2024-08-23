@@ -16,11 +16,15 @@ const RolePopUp: React.FC<RolePopUpProps> = ({ onClick }) => {
   const [editedRoleName, setEditedRoleName] = useState<string>('');
 
   useEffect(() => {
+    fetchRoles();
+  }, []);
+
+  const fetchRoles = () => {
     fetch('http://localhost:8080/api/v1/role')
       .then(response => response.json())
       .then(data => setRoles(data))
       .catch(error => console.error('Error fetching roles:', error));
-  }, []);
+  };
 
   const handleDeleteRole = (roleId: number) => {
     fetch(`http://localhost:8080/api/v1/role/${roleId}`, {
@@ -28,7 +32,7 @@ const RolePopUp: React.FC<RolePopUpProps> = ({ onClick }) => {
     })
       .then(response => {
         if (response.ok) {
-          setRoles(roles.filter(role => role.id !== roleId));
+          fetchRoles();
         } else {
           console.error('Failed to delete role');
         }
@@ -50,7 +54,7 @@ const RolePopUp: React.FC<RolePopUpProps> = ({ onClick }) => {
     })
       .then(response => response.json())
       .then(newRole => {
-        setRoles([...roles, newRole]);
+        fetchRoles();
         setNewRoleName('');
       })
       .catch(error => console.error('Error adding role:', error));
@@ -76,8 +80,8 @@ const RolePopUp: React.FC<RolePopUpProps> = ({ onClick }) => {
         body: JSON.stringify({ name: editedRoleName }),
       })
         .then(response => response.json())
-        .then(updatedRole => {
-          setRoles(roles.map(role => role.id === editingRoleId ? updatedRole : role));
+        .then(() => {
+          fetchRoles();
           setEditingRoleId(null);
           setEditedRoleName('');
         })
