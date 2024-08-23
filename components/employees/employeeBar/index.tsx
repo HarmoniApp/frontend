@@ -20,11 +20,6 @@ const EmployeeBar: React.FC = () => {
   }
 
   const [activeView, setActiveView] = useState('tiles');
-  const [modalWidth, setModalWidth] = useState('auto');
-
-    const handleWidthChange = (width:number) => {
-        setModalWidth(`${width}%`);
-    };
 
   return (
     <div className={styles.employeeBarContainerMain}>
@@ -48,9 +43,8 @@ const EmployeeBar: React.FC = () => {
         contentLabel="Edit Roles"
         className={styles.modalContentOfEditRoles}
         overlayClassName={styles.modalOverlayOfEditRoles}
-        style={{ content: { width: modalWidth } }}
       >
-        <RolePopUp onClick={closeModalRole} onWidthChange={handleWidthChange} />
+        <RolePopUp onClick={closeModalRole}  /> 
       </Modal>
     </div>
   );

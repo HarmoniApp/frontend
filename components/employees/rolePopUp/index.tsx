@@ -1,18 +1,19 @@
 "use client";
-import React, { useEffect, useState, useRef } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMinus, faPlus  } from '@fortawesome/free-solid-svg-icons'
+import React, { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 import Role from '@/components/types/role';
 import styles from './main.module.scss';
 
 interface RolePopUpProps {
   onClick: () => void;
-  onWidthChange: (width: number) => void;
 }
 
-const RolePopUp:React.FC<RolePopUpProps> = ({onClick, onWidthChange}) => {
+const RolePopUp: React.FC<RolePopUpProps> = ({ onClick }) => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [newRoleName, setNewRoleName] = useState<string>('');
+  const [editingRoleId, setEditingRoleId] = useState<number | null>(null);
+  const [editedRoleName, setEditedRoleName] = useState<string>('');
 
   useEffect(() => {
     fetch('http://localhost:8080/api/v1/role')
@@ -55,21 +56,71 @@ const RolePopUp:React.FC<RolePopUpProps> = ({onClick, onWidthChange}) => {
       .catch(error => console.error('Error adding role:', error));
   };
 
-  const roleContainerRef = useRef<HTMLDivElement>(null);
+  const handleEditRole = (role: Role) => {
+    setEditingRoleId(role.id);
+    setEditedRoleName(role.name);
+  };
 
-    useEffect(() => {
-        if (roleContainerRef.current) {
-            onWidthChange(roleContainerRef.current.offsetWidth);
-        }
-    }, [onWidthChange]);
+  const handleCancelEdit = () => {
+    setEditingRoleId(null);
+    setEditedRoleName('');
+  };
+
+  const handleSaveEdit = () => {
+    if (editingRoleId !== null && editedRoleName.trim() !== '') {
+      fetch(`http://localhost:8080/api/v1/role/${editingRoleId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: editedRoleName }),
+      })
+        .then(response => response.json())
+        .then(updatedRole => {
+          setRoles(roles.map(role => role.id === editingRoleId ? updatedRole : role));
+          setEditingRoleId(null);
+          setEditedRoleName('');
+        })
+        .catch(error => console.error('Error updating role:', error));
+    }
+  };
 
   return (
-    <div ref={roleContainerRef} className={styles.rolePopUpContainerMain}>
+    <div className={styles.rolePopUpContainerMain}>
       <div className={styles.showRoleMapConteiner}>
         {roles.map(role => (
           <div key={role.id} className={styles.showRoleConteiner}>
-            <p className={styles.roleNameParagraph}>{role.name}</p>
-            <button className={styles.removeButton} onClick={() => handleDeleteRole(role.id)}><FontAwesomeIcon icon={faMinus} /></button>
+            {editingRoleId === role.id ? (
+              <input
+                type="text"
+                value={editedRoleName}
+                onChange={(e) => setEditedRoleName(e.target.value)}
+                className={styles.roleNameInput}
+              />
+            ) : (
+              <p className={styles.roleNameParagraph}>{role.name}</p>
+            )}
+            <div className={styles.editAndRemoveButtonContainer}>
+              {editingRoleId === role.id ? (
+                <>
+                  <button className={styles.yesButton} onClick={handleSaveEdit}>
+                    <FontAwesomeIcon icon={faCheck} />
+                  </button>
+                  <button className={styles.noButton} onClick={handleCancelEdit}>
+                    <FontAwesomeIcon icon={faXmark} />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button className={styles.editButton} onClick={() => handleEditRole(role)}>
+                    <FontAwesomeIcon icon={faPen} />
+                  </button>
+                  <button className={styles.removeButton} onClick={() => handleDeleteRole(role.id)}>
+                    <FontAwesomeIcon icon={faMinus} />
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         ))}
       </div>
@@ -81,12 +132,14 @@ const RolePopUp:React.FC<RolePopUpProps> = ({onClick, onWidthChange}) => {
           onChange={(e) => setNewRoleName(e.target.value)}
           placeholder="Wpisz nazwę nowej roli"
         />
-        <button className={styles.addButton} onClick={handleAddRole}><FontAwesomeIcon icon={faPlus} /></button>
+        <button className={styles.addButton} onClick={handleAddRole}>
+          <FontAwesomeIcon icon={faPlus} />
+        </button>
       </div>
       <div className={styles.buttonContainer}>
         <button className={styles.closeButton} onClick={onClick}>Zamknij</button>
       </div>
     </div>
   );
-}
+};
 export default RolePopUp;

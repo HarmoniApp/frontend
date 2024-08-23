@@ -1,9 +1,12 @@
 $popup-bg-colour: #4F4E4E;
+$popup-bg-colour-dark: #000000;
 $popup-bg-colour-light: #FFFFFF;
 $popup-font-colour: #FFFFFF;
 $popup-font-colour-dark: #000000;
 $popup-highlight-colour: #FFCF70;
 $popup-highlight-colour-hover: #FFBE4D;
+$popup-no-button-colour: #dc3545;
+$popup-yes-button-colour: #008000;
 
 .rolePopUpContainerMain {
     background-color: $popup-bg-colour;
@@ -16,30 +19,51 @@ $popup-highlight-colour-hover: #FFBE4D;
     height: 100%;
     max-height: 70vh;
     gap: 15px;
-    flex-grow: 1;
-    overflow-y: auto;
+    overflow-y: hidden;
 }
 
 
 .showRoleMapConteiner {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    align-items: center;
-    justify-content: center;
+    grid-template-rows: minmax(auto, 1fr);
     gap: 10px;
+
+    flex-grow: 1;
+    overflow-y: auto;
 
     .showRoleConteiner {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        height: fit-content;
         padding: 10px;
         background-color: $popup-highlight-colour;
         border-radius: 5px;
+        gap: 10px;
 
         .roleNameParagraph {
+            display: flex;
+            align-items: left;
             margin: 0;
             color: $popup-font-colour-dark;
             font-weight: bold;
+            width: 10vw;
+        }
+
+        .roleNameInput{
+            padding: 5px;
+            border: 2px solid $popup-bg-colour-dark;
+            border-radius: 5px;
+            background-color: $popup-bg-colour-light;
+            color: $popup-font-colour-dark;
+            outline: none;
+            width: 10vw;
+        }
+        .editAndRemoveButtonContainer{
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
         }
     }
 }
@@ -65,7 +89,7 @@ $popup-highlight-colour-hover: #FFBE4D;
 }
 
 
-.removeButton {
+.removeButton, .editButton, .yesButton, .noButton {
     background-color: transparent;
     border: 2px solid $popup-font-colour-dark;
     color: $popup-font-colour-dark;
@@ -78,6 +102,17 @@ $popup-highlight-colour-hover: #FFBE4D;
         background-color: $popup-font-colour-dark;
         color: $popup-highlight-colour;
     }
+
+}
+
+.yesButton:hover{
+    background-color: $popup-yes-button-colour;
+    color: $popup-font-colour-dark;
+}
+
+.noButton:hover{
+    background-color: $popup-no-button-colour;
+    color: $popup-font-colour-dark;
 }
 
 .addContainer {
