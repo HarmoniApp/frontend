@@ -1,5 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import Flag from 'react-flagkit';
 
@@ -101,7 +103,7 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
   return (
     <div className={styles.employeesFilerContainerMain}>
       <div className={styles.sortContainer}>
-        <h3 className={styles.sortTitle}>Sortowanie</h3>
+        <h3 className={styles.sortTitle}><FontAwesomeIcon className={styles.sortIcon} icon={faPlay}/>Sortowanie</h3>
         <label className={styles.ascCheckboxContainer}>
           <input
             type="checkbox"
@@ -124,7 +126,7 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
         </label>
       </div>
       <div className={styles.languagesContainer}>
-        <h3 className={styles.languagesTitle}>Języki</h3>
+        <h3 className={styles.languagesTitle}><FontAwesomeIcon className={styles.languageIcon} icon={faPlay}/>Języki</h3>
         {languages.map(language => (
           <label key={language.id} className={styles.languageCheckboxContainer}>
             <input
@@ -140,7 +142,7 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
         ))}
       </div>
       <div className={styles.positionContainer}>
-        <h3 className={styles.positionTitle}>Stanowsiko</h3>
+        <h3 className={styles.positionTitle}><FontAwesomeIcon className={styles.positionIcon} icon={faPlay}/> Stanowsiko</h3>
         {roles.map(role => (
           <label key={role.id} className={styles.positionCheckboxContainer}>
             <input
