@@ -1,7 +1,6 @@
-"use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import Flag from 'react-flagkit';
 
@@ -100,67 +99,121 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
     onApplyFilters({});
   };
 
+  // Stany dla rozwijania/zamykania sekcji
+  const [isPositionOpen, setIsPositionOpen] = useState(false);
+  const [isSortOpen, setIsSortOpen] = useState(false);
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+
+  const positionListRef = useRef<HTMLDivElement>(null);
+  const sortListRef = useRef<HTMLDivElement>(null);
+  const languageListRef = useRef<HTMLDivElement>(null);
+
+  const toggleSection = (setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, ref: React.RefObject<HTMLDivElement>) => {
+    setIsOpen(prevIsOpen => {
+      const isOpen = !prevIsOpen;
+      if (ref.current) {
+        if (isOpen) {
+          ref.current.style.height = `${ref.current.scrollHeight}px`;
+        } else {
+          ref.current.style.height = '0';
+        }
+      }
+      return isOpen;
+    });
+  };
+
   return (
     <div className={styles.employeesFilerContainerMain}>
       <div className={styles.sortContainer}>
-        <h3 className={styles.sortTitle}><FontAwesomeIcon className={styles.sortIcon} icon={faPlay}/>Sortowanie</h3>
-        <label className={styles.ascCheckboxContainer}>
-          <input
-            type="checkbox"
-            className={styles.ascCheckbox}
-            value="asc"
-            checked={order === 'asc'}
-            onChange={() => setOrder(order === 'asc' ? null : 'asc')}
+        <div className={styles.sortTitleContainer} onClick={() => toggleSection(setIsSortOpen, sortListRef)}>
+          <FontAwesomeIcon
+            className={`${styles.sortIcon} ${isSortOpen ? styles.iconRotated : ''}`}
+            icon={faPlay}
           />
-          <span className={styles.ascCheckboxLabel}>A-Z</span>
-        </label>
-        <label className={styles.descCheckboxContainer}>
-          <input
-            type="checkbox"
-            className={styles.descCheckbox}
-            value="desc"
-            checked={order === 'desc'}
-            onChange={() => setOrder(order === 'desc' ? null : 'desc')}
-          />
-          <span className={styles.descCheckboxLabel}>Z-A</span>
-        </label>
+          <h3 className={styles.sortText}>Sortowanie</h3>
+        </div>
+
+        <div ref={sortListRef} className={`${styles.listContainer}`}>
+          <label className={styles.ascCheckboxContainer}>
+            <input
+              type="checkbox"
+              className={styles.ascCheckbox}
+              value="asc"
+              checked={order === 'asc'}
+              onChange={() => setOrder(order === 'asc' ? null : 'asc')}
+            />
+            <span className={styles.ascCheckboxLabel}>A-Z</span>
+          </label>
+          <label className={styles.descCheckboxContainer}>
+            <input
+              type="checkbox"
+              className={styles.descCheckbox}
+              value="desc"
+              checked={order === 'desc'}
+              onChange={() => setOrder(order === 'desc' ? null : 'desc')}
+            />
+            <span className={styles.descCheckboxLabel}>Z-A</span>
+          </label>
+        </div>
       </div>
+
       <div className={styles.languagesContainer}>
-        <h3 className={styles.languagesTitle}><FontAwesomeIcon className={styles.languageIcon} icon={faPlay}/>Języki</h3>
-        {languages.map(language => (
-          <label key={language.id} className={styles.languageCheckboxContainer}>
-            <input
-              type="checkbox"
-              value={language.id}
-              className={styles.languageCheckbox}
-              checked={selectedLanguages.includes(language.id)}
-              onChange={() => handleLanguageChange(language.id)}
-            />
-            <span className={styles.languageCheckboxLabel}>{language.name}</span>
-            <Flag className={styles.languageFlag} country={languageAbbreviations[language.name]} />
-          </label>
-        ))}
+        <div className={styles.languagesTitleContainer} onClick={() => toggleSection(setIsLanguageOpen, languageListRef)}>
+          <FontAwesomeIcon
+            className={`${styles.languageIcon} ${isLanguageOpen ? styles.iconRotated : ''}`}
+            icon={faPlay}
+          />
+          <h3 className={styles.languagesText}>Języki</h3>
+        </div>
+
+        <div ref={languageListRef} className={`${styles.listContainer}`}>
+          {languages.map(language => (
+            <label key={language.id} className={styles.languageCheckboxContainer}>
+              <input
+                type="checkbox"
+                value={language.id}
+                className={styles.languageCheckbox}
+                checked={selectedLanguages.includes(language.id)}
+                onChange={() => handleLanguageChange(language.id)}
+              />
+              <span className={styles.languageCheckboxLabel}>{language.name}</span>
+              <Flag className={styles.languageFlag} country={languageAbbreviations[language.name]} />
+            </label>
+          ))}
+        </div>
       </div>
+
       <div className={styles.positionContainer}>
-        <h3 className={styles.positionTitle}><FontAwesomeIcon className={styles.positionIcon} icon={faPlay}/> Stanowsiko</h3>
-        {roles.map(role => (
-          <label key={role.id} className={styles.positionCheckboxContainer}>
-            <input
-              type="checkbox"
-              value={role.id}
-              className={styles.positionCheckbox}
-              checked={selectedRoles.includes(role.id)}
-              onChange={() => handleRoleChange(role.id)}
-            />
-            <span className={styles.positionCheckboxLabel}>{role.name}</span>
-          </label>
-        ))}
+        <div className={styles.positionTitleContainer} onClick={() => toggleSection(setIsPositionOpen, positionListRef)}>
+          <FontAwesomeIcon
+            className={`${styles.positionIcon} ${isPositionOpen ? styles.iconRotated : ''}`}
+            icon={faPlay}
+          />
+          <h3 className={styles.positionText}>Stanowsiko</h3>
+        </div>
+        <div ref={positionListRef} className={`${styles.listContainer}`}>
+          {roles.map(role => (
+            <label key={role.id} className={styles.positionCheckboxContainer}>
+              <input
+                type="checkbox"
+                value={role.id}
+                className={styles.positionCheckbox}
+                checked={selectedRoles.includes(role.id)}
+                onChange={() => handleRoleChange(role.id)}
+              />
+              <span className={styles.positionCheckboxLabel}>{role.name}</span>
+            </label>
+          ))}
+        </div>
       </div>
+
       <div className={styles.buttonContainer}>
-        <button className={styles.clearButton} onClick={handleClearFilters}>Wyczyść wszystko</button>
+        <button className={styles.clearButton} onClick={handleClearFilters}>
+          <FontAwesomeIcon className={styles.clearButtonIcon} icon={faTrashCan} />
+          Wyczyść wszystko
+        </button>
       </div>
     </div>
   );
-}
-
+};
 export default FilterEmployee;
