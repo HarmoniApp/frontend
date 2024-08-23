@@ -8,7 +8,12 @@ import styles from './main.module.scss';
 
 Modal.setAppElement('#root');
 
-const EmployeeBar: React.FC = () => {
+interface EmployeeBarProps {
+  setActiveView: (view: 'tiles' | 'list') => void;
+  activeView: 'tiles' | 'list';
+}
+
+const EmployeeBar: React.FC<EmployeeBarProps> = ({setActiveView, activeView}) => {
   const [modalIsOpenRole, setModalIsOpenRole] = useState(false);
 
   const openModalRole = () => setModalIsOpenRole(true);
@@ -18,8 +23,6 @@ const EmployeeBar: React.FC = () => {
   const onAddEmployee = () => {
     router.push('/employees/user/add')
   }
-
-  const [activeView, setActiveView] = useState('tiles');
 
   return (
     <div className={styles.employeeBarContainerMain}>

@@ -7,6 +7,7 @@ import PersonTile from '@/components/types/personTile';
 import styles from './main.module.scss';
 
 const EmployeesComponent: React.FC = () => {
+  const [activeView, setActiveView] = useState<'tiles' | 'list'>('tiles');
   const [data, setData] = useState<PersonTile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -48,18 +49,18 @@ const EmployeesComponent: React.FC = () => {
   return (
     <div className={styles.employeesContainerMain}>
       <div className={styles.emplyeesBarContainer}>
-        <EmployeeBar />
+        <EmployeeBar setActiveView={setActiveView} activeView={activeView}/>
       </div>
       <div className={styles.employeesFilterAndListContainer}>
         <div className={styles.emplyeesFilterContainer}>
           <EmployeeFilter onApplyFilters={fetchFilteredData} />
         </div>
-        <div className={styles.employeesListcontainer}>
+        <div className={`${styles.employeesListcontainer} ${activeView === 'tiles' ? styles.tilesView : styles.listView}`}>
           {loading && <div>Loading...</div>}
           {error && <div>Error: {error}</div>}
           {!loading && !error && data.length === 0 && <div>No data available</div>}
           {!loading && !error && data.length > 0 && data.map((person, index) => (
-            <Tile key={index} person={person} />
+            <Tile key={index} person={person} view={activeView}/>
           ))}
         </div>
       </div>

@@ -27,17 +27,20 @@ const languageAbbreviations: { [key: string]: string } = {
 
 interface LanguageTileProps {
   person: PersonTile;
+  view: 'tiles' | 'list'; 
 }
 
-const Title: React.FC<LanguageTileProps> = ({ person }) => {
+const Tile: React.FC<LanguageTileProps> = ({ person, view }) => {
   const router = useRouter();
 
   const handleClick = () => {
     router.push(`/employees/user/${person.id}`);
   };
 
+  const tileClassName = view === 'tiles' ? styles.tileContainerMain : styles.listContainerMain;
+
   return (
-    <div onClick={handleClick} className={styles.tileContainerMain}>
+    <div onClick={handleClick} className={tileClassName}>
       <div className={styles.fullNameContainer}>
         <p className={styles.fullNameParagraph}>{`${person.firstname} ${person.surname}`}</p>
       </div>
@@ -50,4 +53,4 @@ const Title: React.FC<LanguageTileProps> = ({ person }) => {
   );
 }
 
-export default Title;
+export default Tile;
