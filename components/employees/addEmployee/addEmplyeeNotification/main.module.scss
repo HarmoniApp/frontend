@@ -97,14 +97,14 @@ $popup-highlight-colour-hover: #FFBE4D;
         border-radius: 4px;
         cursor: pointer;
         transition: background-color 0.3s ease;
-    
+        
+        &:hover {
+            background-color: $popup-highlight-colour-hover;
+        }
+
         .a {
             text-decoration: none;
             color: $popup-font-colour-dark;
-        }
-        
-        :hover {
-            background-color: $popup-highlight-colour-hover;
         }
     }
 
