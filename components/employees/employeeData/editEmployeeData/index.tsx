@@ -45,42 +45,63 @@ interface EditEmployeeDataProps {
   onCloseEdit: () => void;
 }
 
+interface ChangedData {
+  [key: string]: string | number | undefined | object;
+}
+
 const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCloseEdit }) => {
   const router = useRouter();
 
-  const [roles, setRoles] = useState<Role[]>([]);
+  const [formData, setFormData] = useState<EmployeeDataWorkAdressOnlyId>(employee);
   const [contracts, setContracts] = useState<Contract[]>([]);
-  const [languages, setLanguages] = useState<Language[]>([]);
-  const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
+  const [departmentMap, setDepartmentMap] = useState<{ [key: number]: string }>({});
+  const [supervisorMap, setSupervisorMap] = useState<{ [key: number]: string }>({});
+  const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [languages, setLanguages] = useState<Language[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [changedData, setChangedData] = useState({});
+  const [changedData, setChangedData] = useState<ChangedData>({});
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/v1/role')
-      .then((response) => response.json())
-      .then((data) => setRoles(data))
-      .catch((error) => console.error('Error fetching roles:', error));
-
     fetch('http://localhost:8080/api/v1/contract-type')
-      .then((response) => response.json())
-      .then((data) => setContracts(data))
-      .catch((error) => console.error('Error fetching contract-type:', error));
-
-    fetch('http://localhost:8080/api/v1/language')
-      .then((response) => response.json())
-      .then((data) => setLanguages(data))
-      .catch((error) => console.error('Error fetching languages:', error));
-
-    fetch('http://localhost:8080/api/v1/user/supervisor')
-      .then((response) => response.json())
-      .then((data) => setSupervisors(data))
-      .catch((error) => console.error('Error fetching supervisors:', error));
+      .then(response => response.json())
+      .then(data => setContracts(data))
+      .catch(error => console.error('Error fetching contracts:', error));
 
     fetch('http://localhost:8080/api/v1/address/departments')
-      .then((response) => response.json())
-      .then((data) => setDepartments(data))
-      .catch((error) => console.error('Error fetching departments:', error));
+      .then(response => response.json())
+      .then(data => {
+        setDepartments(data);
+        const deptMap: { [key: number]: string } = {};
+        data.forEach((dept: Department) => {
+          deptMap[dept.id] = dept.departmentName;
+        });
+        setDepartmentMap(deptMap);
+      })
+      .catch(error => console.error('Error fetching departments:', error));
+
+    fetch('http://localhost:8080/api/v1/user/supervisor')
+      .then(response => response.json())
+      .then(data => {
+        setSupervisors(data);
+        const supervisorMap: { [key: number]: string } = {};
+        data.forEach((supervisor: Supervisor) => {
+          supervisorMap[supervisor.id] = `${supervisor.firstname} ${supervisor.surname}`;
+        });
+        setSupervisorMap(supervisorMap);
+      })
+      .catch(error => console.error('Error fetching supervisors:', error));
+
+    fetch('http://localhost:8080/api/v1/role')
+      .then(response => response.json())
+      .then(data => setRoles(data))
+      .catch(error => console.error('Error fetching roles:', error));
+
+    fetch('http://localhost:8080/api/v1/language')
+      .then(response => response.json())
+      .then(data => setLanguages(data))
+      .catch(error => console.error('Error fetching languages:', error));
   }, []);
 
   const validationSchema = Yup.object({
@@ -108,6 +129,46 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     languages: Yup.array().min(1, 'Przynajmniej jeden język jest wymagany'),
   });
 
+  const getChangedData = (values: typeof initialValues): ChangedData => {
+    const changes: ChangedData = {};
+
+    if (values.firstname !== employee.firstname) changes.firstname = values.firstname;
+    if (values.surname !== employee.surname) changes.surname = values.surname;
+    if (values.email !== employee.email) changes.email = values.email;
+    if (values.phone_number !== employee.phone_number) changes.phone_number = values.phone_number;
+    if (values.employee_id !== employee.employee_id) changes.employee_id = values.employee_id;
+    if (values.contract_signature !== employee.contract_signature) changes.contract_signature = values.contract_signature;
+    if (values.contract_expiration !== employee.contract_expiration) changes.contract_expiration = values.contract_expiration;
+
+    if (values.work_address.id !== employee.work_address.id) {
+      const departmentName = departmentMap[values.work_address.id];
+      changes.work_address = departmentName ? departmentName : 'Unknown Department';
+    }
+
+    if (parseInt(values.supervisor_id) !== employee.supervisor_id) {  // Konwersja na number
+      const selectedSupervisor = supervisorMap[parseInt(values.supervisor_id)];
+      changes.supervisor = selectedSupervisor ? selectedSupervisor : 'Unknown Supervisor';
+    }
+
+    if (values.residence.street !== employee.residence.street) changes.residenceStreet = values.residence.street;
+    if (values.residence.building_number !== employee.residence.building_number) changes.residenceBuildingNumber = values.residence.building_number;
+    if (values.residence.apartment !== employee.residence.apartment) changes.residenceApartment = values.residence.apartment;
+    if (values.residence.city !== employee.residence.city) changes.residenceCity = values.residence.city;
+    if (values.residence.zip_code !== employee.residence.zip_code) changes.residenceZipCode = values.residence.zip_code;
+
+    if (values.contract_type.id !== employee.contract_type.id) changes.contract_type = values.contract_type.id;
+
+    if (JSON.stringify(values.roles.map(role => role.id)) !== JSON.stringify(employee.roles.map(role => role.id))) {
+      changes.roles = values.roles.map(role => role.id);
+    }
+
+    if (JSON.stringify(values.languages.map(lang => lang.id)) !== JSON.stringify(employee.languages.map(lang => lang.id))) {
+      changes.languages = values.languages.map(lang => lang.id);
+    }
+
+    return changes;
+  };
+
   const handleSubmit = (values: typeof initialValues) => {
     const changedData = getChangedData(values);
 
@@ -118,42 +179,14 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
       },
       body: JSON.stringify(values),
     })
-      .then((response) => response.json())
-      .then((updatedData) => {
+      .then(response => response.json())
+      .then(updatedData => {
         setChangedData(changedData);
         setIsModalOpen(true);
       })
-      .catch((error) => {
+      .catch(error => {
         alert('Błąd podczas aktualizacji danych pracownika');
       });
-  };
-
-  const getChangedData = (values: typeof initialValues) => {
-    const changes: { [key: string]: any } = {};
-
-    if (values.firstname !== employee.firstname) changes.firstname = values.firstname;
-    if (values.surname !== employee.surname) changes.surname = values.surname;
-    if (values.email !== employee.email) changes.email = values.email;
-    if (values.phone_number !== employee.phone_number) changes.phone_number = values.phone_number;
-    if (values.employee_id !== employee.employee_id) changes.employee_id = values.employee_id;
-    if (values.contract_signature !== employee.contract_signature) changes.contract_signature = values.contract_signature;
-    if (values.contract_expiration !== employee.contract_expiration) changes.contract_expiration = values.contract_expiration;
-    if (values.work_address.id !== employee.work_address.id) changes.work_address = values.work_address;
-    if (values.supervisor_id !== employee.supervisor_id) changes.supervisor_id = values.supervisor_id;
-    if (values.residence.street !== employee.residence.street) changes.residenceStreet = values.residence.street;
-    if (values.residence.building_number !== employee.residence.building_number) changes.residenceBuildingNumber = values.residence.building_number;
-    if (values.residence.apartment !== employee.residence.apartment) changes.residenceApartment = values.residence.apartment;
-    if (values.residence.city !== employee.residence.city) changes.residenceCity = values.residence.city;
-    if (values.residence.zip_code !== employee.residence.zip_code) changes.residenceZipCode = values.residence.zip_code;
-    if (values.contract_type.id !== employee.contract_type.id) changes.contract_type = values.contract_type.id;
-    if (JSON.stringify(values.roles.map(role => role.id)) !== JSON.stringify(employee.roles.map(role => role.id))) {
-      changes.roles = values.roles.map(role => role.id);
-    }
-    if (JSON.stringify(values.languages.map(lang => lang.id)) !== JSON.stringify(employee.languages.map(lang => lang.id))) {
-      changes.languages = values.languages.map(lang => lang.id);
-    }
-
-    return changes;
   };
 
   const initialValues = {
@@ -173,7 +206,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     contract_signature: employee.contract_signature || '',
     contract_expiration: employee.contract_expiration || '',
     work_address: { id: employee.work_address?.id || 0 },
-    supervisor_id: employee.supervisor_id || '',
+    supervisor_id: employee.supervisor_id?.toString() || '',  // Konwersja na string
     phone_number: employee.phone_number || '',
     employee_id: employee.employee_id || '',
   };
@@ -367,7 +400,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
                   </option>
                   {supervisors.map((supervisor) => (
                     <option key={supervisor.id} value={supervisor.id}>
-                      {supervisor.firstname} {supervisor.surname} → {supervisor.role.map((role) => role.name).join(', ')}
+                      {supervisor.firstname} {supervisor.surname}
                     </option>
                   ))}
                 </Field>
