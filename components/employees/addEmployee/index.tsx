@@ -170,7 +170,7 @@ const AddEmployee: React.FC = () => {
         validateOnMount={false}
       >
         {({ values, handleChange, setFieldValue, errors, touched }) => (
-          <Form>
+          <Form className={styles.formCotainer}>
             <div className={styles.rowContainerTop}>
               <div className={styles.columnContainer}>
                 <label className={styles.essentialDataLabel}>
