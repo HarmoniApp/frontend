@@ -374,7 +374,10 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
                   })}
                   name="contract_type.id"
                   value={values.contract_type.id === 0 ? '' : values.contract_type.id}
-                  onChange={handleChange}
+                  onChange={(e:any) => {
+                    handleChange(e);
+                    setFieldValue("contract_type.id", parseInt(e.target.value));
+                  }}
                 >
                   <option className={styles.defaultOption} value="" disabled>
                     Wybierz rodzaj umowy
@@ -521,5 +524,4 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     </div>
   );
 };
-
 export default EditEmployeeDataPopUp;
