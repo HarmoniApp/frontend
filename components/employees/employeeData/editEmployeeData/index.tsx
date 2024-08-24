@@ -215,7 +215,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   };
 
   return (
-    <div className={styles.addEmployeeContainerMain}>
+    <div className={styles.editEmployeeContainerMain}>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
