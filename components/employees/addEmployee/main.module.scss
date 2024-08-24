@@ -1,6 +1,16 @@
 $popup-border-colour: #dee2e6;
 $popup-box-shadow-colour: rgba(0, 0, 0, 0.1);
 
+$addEmployee-main-bg-colour: #f5f5f5;
+$addEmployee-font-colour-dark: #000000;
+$addEmployee-checkbox-bg-colour: #e8e8e8;
+$addEmployee-box-shadow-colour: rgba(0, 0, 0, 0.1);
+$addEmployee-highlight-colour: #FFCF70;
+$addEmployee-highlight-colour-hover: #FFBE4D;
+$addEmployee-column-colour: #FFFFFF;
+$addEmployee-approve-colour: #008000;
+$addEmployee-error-colour: #dc3545;
+
 .modalContentOfAddEmployee {
     position: fixed;
     top: 50%;
@@ -13,4 +23,248 @@ $popup-box-shadow-colour: rgba(0, 0, 0, 0.1);
     width: auto;
     max-height: 80vh;
     overflow-y: auto;
+}
+
+.addEmployeeContainerMain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+
+     background-color: $addEmployee-main-bg-colour;
+}
+
+.rowContainerTop {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.columnContainer {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 20px;
+    background-color: $addEmployee-column-colour;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px $addEmployee-box-shadow-colour;
+
+    .essentialDataLabel,
+    .residenceLabel,
+    .contractDateLables,
+    .contractTypeLabel,
+    .supervisorLabel,
+    .departmentLabel {
+        font-size: 16px;
+        font-weight: bold;
+        color: $addEmployee-font-colour-dark;
+        margin: 10px 0;
+        transition: color 0.3s ease;
+
+        &:hover {
+            color: $addEmployee-highlight-colour;
+        }
+    }
+
+    .formInput {
+        -webkit-appearance: none; /* Safari */
+        -moz-appearance: none; /* Firefox */
+        appearance: none; /* Standard */
+        width: 100%;
+        height: 5vh;
+        border-radius: 5px;
+        border: none;
+        border-bottom: 2px solid $addEmployee-highlight-colour;
+        padding: 10px 5vh 10px 10px;
+        color: $addEmployee-font-colour-dark;
+        box-shadow: inset 0 2px 4px $addEmployee-box-shadow-colour;
+        transition: all 0.3s ease;
+
+        &:hover {
+            border: 2px solid $addEmployee-highlight-colour;
+            outline: none;
+            background-color: lighten($addEmployee-checkbox-bg-colour, 5%);
+        }
+
+        &::placeholder {
+            margin: 0 0 0 10px;
+            color: lighten($addEmployee-font-colour-dark, 30%);
+        }
+    }
+
+    .formSelect {
+        background-image: 
+            linear-gradient(45deg, transparent 50%, $addEmployee-font-colour-dark 50%),
+            linear-gradient(135deg, $addEmployee-font-colour-dark 50%, transparent 50%);
+        background-position: 
+            calc(100% - 15px) calc(1em + 5px), //15 2
+            calc(100% - 6px) calc(1em + 5px); //10 2 
+        background-size: 
+            9px 9px, //5 5
+            9px 9px; //5 5
+        background-repeat: no-repeat;
+        color: $addEmployee-font-colour-dark;
+    }
+
+    .pointer{
+        cursor: pointer;
+    }
+}
+
+.rowContainerMiddle {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    gap: 20px;
+    margin: 20px 0;
+
+    .columnContainerMiddle {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        max-height: 45vh;
+        border-radius: 10px;
+        background-color: $addEmployee-column-colour;
+        box-shadow: 0 4px 8px $addEmployee-box-shadow-colour;
+
+        .languageParagraph,
+        .roleParagraph {
+            font-size: 16px;
+            font-weight: bold;
+            color: $addEmployee-font-colour-dark;
+            margin: 10px 0;
+        }
+
+        .roleContainer {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 20px;
+            overflow-y: auto;
+
+            .roleLabel {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                text-align: center;
+                gap: 10px;
+
+                background-color: $addEmployee-checkbox-bg-colour;
+                border-radius: 5px;
+                box-shadow: 0px 2px 5px $addEmployee-box-shadow-colour;
+                font-size: 16px;
+                color: $addEmployee-font-colour-dark;
+
+                cursor: pointer;
+                width: 100%;
+                padding: 10px;
+
+                .roleCheckbox {
+                    margin-right: 10px;
+                    width: 20px;
+                    height: 20px;
+                    accent-color: $addEmployee-highlight-colour;
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .languagesContainer {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 0;
+            margin: 20px;
+            overflow-y: auto;
+
+            .languageLabel {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                text-align: center;
+                gap: 10px;
+
+                background-color: $addEmployee-checkbox-bg-colour;
+                border-radius: 5px;
+                box-shadow: 0px 2px 5px $addEmployee-box-shadow-colour;
+                font-size: 16px;
+                color: $addEmployee-font-colour-dark;
+
+                cursor: pointer;
+                width: 100%;
+                padding: 10px;
+
+                .languageCheckbox {
+                    margin-right: 10px;
+                    width: 20px;
+                    height: 20px;
+                    accent-color: $addEmployee-highlight-colour;
+                    cursor: pointer;
+                }
+
+                .languageFlag {
+                    height: 20px;
+                    width: 20px;
+                    margin: 0 0 0 auto;
+                }
+            }
+        }
+    }
+}
+
+.rowContainerBottom {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    margin: 20px 0 40px 0;
+
+    .buttonContainer {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+        width: 100%;
+        gap: 20px;
+
+        .backButton,
+        .addButton {
+            display: flex;
+            align-items: center;
+            background-color: $addEmployee-highlight-colour;
+            color: $addEmployee-font-colour-dark;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+            &:hover {
+                background-color: $addEmployee-highlight-colour-hover;
+            }
+
+            .buttonParagraph {
+                text-align: center;
+                margin: 0 0 0 10px;
+                font-size: 20px;
+            }
+
+            .buttonIcon {
+                height: 26px;
+                width: 26px;
+                margin: 0 10px 0 0;
+            }
+        }
+    }
 }

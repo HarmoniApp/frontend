@@ -1,9 +1,10 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleUser } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDeleteLeft, faCircleCheck, faSquareCaretDown } from '@fortawesome/free-solid-svg-icons';
 import Modal from 'react-modal';
+import Flag from 'react-flagkit';
 import AddEmployeeNotificationPopUp from '@/components/employees/addEmployee/addEmplyeeNotification';
 import Role from '@/components/types/role';
 import Contract from '@/components/types/contract';
@@ -14,6 +15,26 @@ import styles from './main.module.scss';
 
 Modal.setAppElement('#root');
 
+const languageAbbreviations: { [key: string]: string } = {
+  Arabic: 'AE',
+  Bengali: 'BD',
+  English: 'GB',
+  French: 'FR',
+  German: 'DE',
+  Hindi: 'IN',
+  Italian: 'IT',
+  Japanese: 'JP',
+  Korean: 'KR',
+  Mandarin: 'CN',
+  Other: 'IL',
+  Persian: 'IR',
+  Polish: 'PL',
+  Portuguese: 'PT',
+  Russian: 'RU',
+  Spanish: 'ES',
+  Turkish: 'TR',
+  Vietnamese: 'VN',
+};
 
 const AddEmployee: React.FC = () => {
   const router = useRouter();
@@ -175,125 +196,87 @@ const AddEmployee: React.FC = () => {
   const [employeeLink, setEmployeeLink] = useState<string | null>(null);
 
   return (
-    <div>
+    <div className={styles.addEmployeeContainerMain}>
       <form onSubmit={handleSubmit}>
-        <div className={styles.firtsCol}>
-          <FontAwesomeIcon icon={faCircleUser} />
-          <a>Edytuj zdjecie</a>
-          <label>
-            <p>Nie wymagane (Opcjonalne)</p>
-            ID: <input name="employee_id" value={formData.employee_id} onChange={handleInputChange} />
-          </label>
-        </div>
-        <div className={styles.secoundCol}>
-          <label>
-            IMIĘ: <input name="firstname" onChange={handleInputChange} required />
-          </label>
-          <label>
-            NAZWISKO: <input name="surname" onChange={handleInputChange} required />
-          </label>
-          <label>
-            E-MAIL: <input name="email" onChange={handleInputChange} required />
-          </label>
-          <label>
-            NUMER TELEFONU: <input name="phone_number" onChange={handleInputChange} required />
-          </label>
-        </div>
-        <div className={styles.thirdCol}>
-          <label>
-            ULICA: <input name="residence.street" onChange={handleInputChange} required />
-          </label>
-          <label>
-            NUMER BUDYNKU: <input name="residence.building_number" onChange={handleInputChange} required />
-          </label>
-          <label>
-            MIESZKANIE: <input name="residence.apartment" onChange={handleInputChange} />
-          </label>
-          <label>
-            MIASTO: <input name="residence.city" onChange={handleInputChange} required />
-          </label>
-          <label>
-            KOD POCZTOWY: <input name="residence.zip_code" onChange={handleInputChange} required />
-          </label>
-          <label>
-            LOGIN: <input name="login" />
-            {/*Waitng for login input */}
-          </label>
-        </div>
-        <div className={styles.fourthCol}>
-          <div className={styles.contractContainerMain}>
-            <p>UMOWA:</p>
-            <select name="contract_type" value={formData.contract_type.id === 0 ? '' : formData.contract_type.id} onChange={handleInputChange} required>
-              <option value="" disabled>Wybierz umowe:</option>
-              {contracts.map(contract => (
-                <option key={contract.id} value={contract.id}>
-                  {contract.name}
-                </option>
-              ))}
-            </select>
-            <label>
-              DATA ZAWARCIA: <input type='date' name="contract_signature" onChange={handleInputChange} required />
+        <div className={styles.rowContainerTop}>
+          <div className={styles.columnContainer}>
+            <label className={styles.essentialDataLabel}>ID (Opcjonalne)<input className={styles.formInput} name="employee_id" value={formData.employee_id} onChange={handleInputChange} placeholder='Wpisz ID' /></label>
+            <label className={styles.essentialDataLabel}>Imię<input className={styles.formInput} name="firstname" onChange={handleInputChange} placeholder='Wpisz imię' required /></label>
+            <label className={styles.essentialDataLabel}>Nazwisko<input className={styles.formInput} name="surname" onChange={handleInputChange} placeholder='Wpisz nazwisko' required /></label>
+            <label className={styles.essentialDataLabel}>E-mail<input className={styles.formInput} name="email" onChange={handleInputChange} placeholder='Wpisz e-mail' required /></label>
+            <label className={styles.essentialDataLabel}>Nr telefonu<input className={styles.formInput} name="phone_number" onChange={handleInputChange} placeholder='Wpisz numer telefonu' required /></label>
+          </div>
+          <div className={styles.columnContainer}>
+            <label className={styles.residenceLabel}>Ulica<input className={styles.formInput} name="residence.street" onChange={handleInputChange} placeholder='Wpisz ulice' required /></label>
+            <label className={styles.residenceLabel}>Numer budynku<input className={styles.formInput} name="residence.building_number" onChange={handleInputChange} placeholder='Wpisz numer budynku' required /></label>
+            <label className={styles.residenceLabel}>Numer mieszkania<input className={styles.formInput} name="residence.apartment" onChange={handleInputChange} placeholder='Wpisz numer mieszkania' /></label>
+            <label className={styles.residenceLabel}>Miasto<input className={styles.formInput} name="residence.city" onChange={handleInputChange} placeholder='Wpisz miasto' required /></label>
+            <label className={styles.residenceLabel}>Kod pocztowy<input className={styles.formInput} name="residence.zip_code" onChange={handleInputChange} placeholder='Wpisz kod pocztowy' required /></label>
+          </div>
+          <div className={styles.columnContainer}>
+            <label className={styles.contractDateLables}>Data zawarcia umowy<input className={`${styles.formInput} ${styles.pointer}`} type='date' name="contract_signature" onChange={handleInputChange} required /></label>
+            <label className={styles.contractDateLables}>Data zakończenia umowy<input className={`${styles.formInput} ${styles.pointer}`} type='date' name="contract_expiration" onChange={handleInputChange} required /></label>
+            <label className={styles.contractTypeLabel}>Rodzaj umowy
+              <select className={`${styles.formInput} ${styles.formSelect} ${styles.pointer}`} name="contract_type" value={formData.contract_type.id === 0 ? '' : formData.contract_type.id} onChange={handleInputChange} required>
+                <option className={styles.defaultOption} value="" disabled>Wybierz rodzaj umowy</option>
+                {contracts.map(contract => (
+                  <option key={contract.id} value={contract.id}>
+                    {contract.name}
+                  </option>
+                ))}
+              </select>
             </label>
-            <label>
-              DATA ZAKOŃCZENIA: <input type='date' name="contract_expiration" onChange={handleInputChange} required />
+            <label className={styles.supervisorLabel}>Przełożony
+              <select className={`${styles.formInput} ${styles.formSelect} ${styles.pointer}`} name="supervisor_id" value={formData.supervisor_id} onChange={handleInputChange}>
+                <option className={styles.defaultOption} value="" disabled>Wybierz przełożonego</option>
+                {supervisors.map(supervisor => (
+                  <option key={supervisor.id} value={supervisor.id}>
+                    {supervisor.firstname} {supervisor.surname} → {supervisor.role.map(role => role.name).join(', ')}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className={styles.departmentLabel}>Oddział
+              <select className={`${styles.formInput} ${styles.formSelect} ${styles.pointer}`} name="work_address" value={formData.work_address.id === 0 ? '' : formData.work_address.id} onChange={handleInputChange} required>
+                <option className={styles.defaultOption} value="" disabled>Wybierz oddział</option>
+                {departments.map(department => (
+                  <option key={department.id} value={department.id}>
+                    {department.departmentName}
+                  </option>
+                ))}
+              </select>
             </label>
           </div>
-          <div className={styles.supervisorContainerMain}>
-            <p>PRZEŁOŻONY:</p>
-            <select name="supervisor_id" value={formData.supervisor_id} onChange={handleInputChange}>
-              <option value="" disabled>Wybierz przełożonego:</option>
-              {supervisors.map(supervisor => (
-                <option key={supervisor.id} value={supervisor.id}>
-                  {supervisor.firstname} {supervisor.surname} → {supervisor.role.map(role => role.name).join(', ')}
-                </option>
+        </div>
+        <div className={styles.rowContainerMiddle}>
+          <div className={styles.columnContainerMiddle}>
+            <p className={styles.roleParagraph}>Wybierz role dla pracownika</p>
+            <div className={styles.roleContainer}>
+              {roles.map(role => (
+                <label key={role.id} className={styles.roleLabel}>
+                  <input className={styles.roleCheckbox} type="checkbox" name="roles" value={role.id} onChange={handleCheckboxChange} /> {role.name}
+                </label>
               ))}
-            </select>
+            </div>
           </div>
-          <div className={styles.departmentContainerMain}>
-            <p>ODDZIAŁ:</p>
-            <select name="work_address" value={formData.work_address.id === 0 ? '' : formData.work_address.id} onChange={handleInputChange} required>
-              <option value="" disabled>Wybierz oddział:</option>
-              {departments.map(department => (
-                <option key={department.id} value={department.id}>
-                  {department.departmentName}
-                </option>
+          <div className={styles.columnContainerMiddle}>
+            <p className={styles.languageParagraph}>Wybierz języki dla pracownika</p>
+            <div className={styles.languagesContainer}>
+              {languages.map(language => (
+                <label key={language.id} className={styles.languageLabel}>
+                  <input className={styles.languageCheckbox} type="checkbox" name="languages" value={language.id} onChange={handleCheckboxChange} />
+                  <span className={styles.languageCheckboxLabel}>{language.name}</span>
+                  <Flag className={styles.languageFlag} country={languageAbbreviations[language.name]} />
+                </label>
               ))}
-            </select>
+            </div>
           </div>
         </div>
-        <div className={styles.fifthCol}>
-          <div className={styles.roleContainerMain}>
-            <p>ROLA:</p>
-            {roles.map(role => (
-              <label key={role.id} >
-                <input
-                  type="checkbox"
-                  name="roles"
-                  value={role.id}
-                  onChange={handleCheckboxChange}
-                />
-                {role.name}
-              </label>
-            ))}
+        <div className={styles.rowContainerBottom}>
+          <div className={styles.buttonContainer}>
+            <button className={styles.backButton} type="button" onClick={onBack}><FontAwesomeIcon className={styles.buttonIcon} icon={faDeleteLeft} /><p className={styles.buttonParagraph}>Anuluj dodanie</p></button>
+            <button className={styles.addButton} type="submit"><FontAwesomeIcon className={styles.buttonIcon} icon={faCircleCheck} /><p className={styles.buttonParagraph}>Zapisz pracownika</p></button>
           </div>
-          <div className={styles.languagesContainerMain}>
-            <p>Języki:</p>
-            {languages.map(language => (
-              <label key={language.id} >
-                <input
-                  type="checkbox"
-                  name="languages"
-                  value={language.id}
-                  onChange={handleCheckboxChange}
-                />
-                {language.name}
-              </label>
-            ))}
-          </div>
-        </div>
-        <div>
-          <button type="submit">Dodaj</button>
-          <button type="button" onClick={onBack}>Cofnij</button>
         </div>
       </form>
       <Modal
