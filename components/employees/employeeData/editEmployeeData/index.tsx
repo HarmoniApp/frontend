@@ -145,7 +145,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
       changes.work_address = departmentName ? departmentName : 'Unknown Department';
     }
 
-    if (parseInt(values.supervisor_id) !== employee.supervisor_id) {  // Konwersja na number
+    if (parseInt(values.supervisor_id) !== employee.supervisor_id) {
       const selectedSupervisor = supervisorMap[parseInt(values.supervisor_id)];
       changes.supervisor = selectedSupervisor ? selectedSupervisor : 'Unknown Supervisor';
     }
@@ -156,14 +156,17 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     if (values.residence.city !== employee.residence.city) changes.residenceCity = values.residence.city;
     if (values.residence.zip_code !== employee.residence.zip_code) changes.residenceZipCode = values.residence.zip_code;
 
-    if (values.contract_type.id !== employee.contract_type.id) changes.contract_type = values.contract_type.id;
+    if (values.contract_type.id !== employee.contract_type.id) {
+      const selectedContractType = contracts.find(contract => contract.id === values.contract_type.id);
+      changes.contract_type = selectedContractType ? selectedContractType.name : 'Unknown Contract Type';
+    }
 
     if (JSON.stringify(values.roles.map(role => role.id)) !== JSON.stringify(employee.roles.map(role => role.id))) {
-      changes.roles = values.roles.map(role => role.id);
+      changes.roles = values.roles.map(role => roles.find(r => r.id === role.id)?.name).filter(name => name).join(', ');
     }
 
     if (JSON.stringify(values.languages.map(lang => lang.id)) !== JSON.stringify(employee.languages.map(lang => lang.id))) {
-      changes.languages = values.languages.map(lang => lang.id);
+      changes.languages = values.languages.map(lang => languages.find(l => l.id === lang.id)?.name).filter(name => name).join(', ');
     }
 
     return changes;
@@ -206,7 +209,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     contract_signature: employee.contract_signature || '',
     contract_expiration: employee.contract_expiration || '',
     work_address: { id: employee.work_address?.id || 0 },
-    supervisor_id: employee.supervisor_id?.toString() || '',  // Konwersja na string
+    supervisor_id: employee.supervisor_id?.toString() || '',
     phone_number: employee.phone_number || '',
     employee_id: employee.employee_id || '',
   };
