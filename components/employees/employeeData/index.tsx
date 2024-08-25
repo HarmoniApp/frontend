@@ -6,9 +6,31 @@ import DeleteEmployeePopUp from '@/components/employees/employeeData/deleteEmplo
 import EmployeeData from '@/components/types/employeeData';
 import Department from '@/components/types/department';
 import SupervisorDataSimple from '@/components/types/supervisorDataSimple';
+import Flag from 'react-flagkit';
 import styles from './main.module.scss';
 
 Modal.setAppElement('#root');
+
+const languageAbbreviations: { [key: string]: string } = {
+  Arabic: 'AE',
+  Bengali: 'BD',
+  English: 'GB',
+  French: 'FR',
+  German: 'DE',
+  Hindi: 'IN',
+  Italian: 'IT',
+  Japanese: 'JP',
+  Korean: 'KR',
+  Mandarin: 'CN',
+  Other: 'IL',
+  Persian: 'IR',
+  Polish: 'PL',
+  Portuguese: 'PT',
+  Russian: 'RU',
+  Spanish: 'ES',
+  Turkish: 'TR',
+  Vietnamese: 'VN',
+};
 
 export default function EmployeeDataComponent({ userId }: { userId: number }) {
   const [employee, setEmployee] = useState<EmployeeData | null>(null);
@@ -52,45 +74,102 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
     router.push(`/employees/user/${userId}/edit`);
   };
 
-  return (
-    <div>
-      <h2>{employee.firstname} {employee.surname}</h2>
-      <p>Email: {employee.email}</p>
-      <p>Phone Number: {employee.phone_number}</p>
-      <p>Employee ID: {employee.employee_id}</p>
-      <h3>Residence</h3>
-      <p>Street: {employee.residence.street} {employee.residence.building_number} {employee.residence.apartment ? `/${employee.residence.apartment}` : ''} </p>
-      <p>City: {employee.residence.city} {employee.residence.zip_code}</p>
-      <h3>Roles</h3>
-      <ul>
-        {employee.roles.map(role => (
-          <li key={role.id}>{role.name}</li>
-        ))}
-      </ul>
-      <h3>Languages</h3>
-      <ul>
-        {employee.languages.map(lang => (
-          <li key={lang.id}>{lang.name}</li>
-        ))}
-      </ul>
-      <h3>Contract</h3>
-      <p>Type: {employee.contract_type.name}</p>
-      <p>Signature Date: {employee.contract_signature}</p>
-      <p>Expiration Date: {employee.contract_expiration}</p>
-      <h3>Department Name</h3>
-      {department ? (
-        <p>{department.departmentName}</p>
-      ) : (
-        <p>We do not have a branch under this name. Error!</p>
-      )}
-      <h3>Work Address</h3>
-      <p>{employee.work_address.street}, {employee.work_address.building_number}/{employee.work_address.apartment}, {employee.work_address.zip_code}</p>
-      <p>Supervisor: {supervisorData ? `${supervisorData.firstname} ${supervisorData.surname}` : 'Loading...'}</p>
-      <button>Statistics</button>
-      <button>Absences</button>
-      <button>Chat</button>
 
-      <button onClick={handleEditEmployee}>Edit employee</button>
+
+  return (
+
+
+    <div className={styles.employeeDataContainerMain}>
+      <div className={styles.rowContainerBottom}>
+        <div className={styles.buttonContainer}>
+          <button className={styles.statsButton}>Statistics</button>
+          <button className={styles.absencesButton}>Absences</button>
+          <button className={styles.chatButton}>Chat</button>
+          <button className={styles.resetPasswordButton}>Reset Password</button>
+          <button className={styles.editButton} onClick={handleEditEmployee}>Edit employee</button>
+          <button className={styles.deleteButton} onClick={openModalDeleteEmployee}>Usuń pracownika</button>
+        </div>
+      </div>
+
+      <div className={styles.fullNameAndIdContainer}>
+        <div className={styles.fullNameColumnContainer}>
+          <div className={styles.firstNameContainer}>
+            <p className={styles.firstNameParagraph}>Imię:</p>
+            <p className={styles.firstNameDataParagraph}>{employee.firstname}</p>
+          </div>
+          <div className={styles.surnameContainer}>
+            <p className={styles.surnameParagraph}>Nazwisko:</p>
+            <p className={styles.surnameDataParagraph}>{employee.surname}</p>
+          </div>
+        </div>
+        <div className={styles.employeeIdContainer}>
+          <p className={styles.idParagraph}>ID pracownika:</p>
+          <p className={styles.idDataParagraph}>{employee.employee_id}</p>
+        </div>
+      </div>
+
+      <div className={styles.emplyeeDataContainer}>
+        <div className={styles.columnContainer}>
+          <label className={styles.residenceLabel}>
+            <p className={styles.homeAdressParagraph}>Adres zamieszkania</p>
+            <p className={styles.homeAdressDataParagraph}>ul. {employee.residence.street} {employee.residence.building_number} {employee.residence.apartment ? '/ ' + employee.residence.apartment : ''}, {employee.residence.city} {employee.residence.zip_code}</p>
+          </label>
+          <label className={styles.supervisorLabel}>
+            <p className={styles.supervisorParagraph}>Przełożony</p>
+            <p className={styles.supervisorDataParagraph}>{supervisorData ? `${supervisorData.firstname} ${supervisorData.surname}` : 'Loading...'}</p>
+          </label>
+          <label className={styles.phoneNumberLabel}>
+            <p className={styles.phoneNumberParagraph}>Nr telefonu</p>
+            <p className={styles.phoneNumberDataParagraph}>{employee.phone_number}</p>
+          </label>
+          <label className={styles.emailLabel}>
+            <p className={styles.emailParagraph}>E-mail</p>
+            <p className={styles.emailDataParagraph}>{employee.email}</p>
+          </label>
+        </div>
+        <div className={styles.columnContainer}>
+          <label className={styles.startContractDateLables}>
+            <p className={styles.startContractDateParagraph}>Data zawarcia umowy</p>
+            <p className={styles.startContractDateDataParagraph}>{employee.contract_signature}</p>
+          </label>
+          <label className={styles.endContractDateLables}>
+            <p className={styles.endContractDateParagraph}>Data zakończenia sie umowy</p>
+            <p className={styles.endContractDateDataParagraph}>{employee.contract_expiration}</p>
+          </label>
+          <label className={styles.contractTypeLabel}>
+            <p className={styles.contractTypeParagraph}>Typ umowy</p>
+            <p className={styles.contractTypeDataParagraph}>{employee.contract_type.name}</p>
+          </label>
+          <label className={styles.departmentLabel}>
+            <p className={styles.departmentParagraph}>Oddział</p>
+            <p className={styles.departmentDataParagraph}>{department ? department.departmentName : 'We do not have a branch under this name. Error!'}</p>
+          </label>
+        </div>
+      </div>
+
+      <div className={styles.rowContainerMiddle}>
+        <div className={styles.columnContainerMiddle}>
+          <p className={styles.roleParagraph}>Roles</p>
+          <div className={styles.roleContainer}>
+            {employee.roles.map((role) => (
+              <label key={role.id} className={styles.roleLabel}>
+                <span>{role.name}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+        <div className={styles.columnContainerMiddle}>
+          <p className={styles.languageParagraph}>Languages</p>
+          <div className={styles.languagesContainer}>
+            {employee.languages.map((lang) => (
+              <label key={lang.id} className={styles.languageLabel}>
+                <span className={styles.languageName}>{lang.name}</span>
+                <Flag className={styles.languageFlag} country={languageAbbreviations[lang.name]} />
+              </label>
+            ))}
+          </div>
+        </div>
+      </div>
 
       <Modal
         isOpen={modalIsOpenDeleteEmployee}
@@ -105,7 +184,6 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
           onClose={closeModalDeleteEmployee}
         />
       </Modal>
-      <button onClick={openModalDeleteEmployee}>Usuń pracownika</button>
     </div>
   );
 }
