@@ -166,7 +166,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence }) => {
             <div className={styles.absenceDataContainer}>
                 <div className={styles.columnContainer}>
                     <label className={styles.idLabel}>
-                        <p className={styles.idParagraph}>ID:</p>
+                        <p className={styles.idParagraph}>Id zgłoszenia:</p>
                         <p className={styles.idDataParagraph}>{absence.id}</p>
                     </label>
                     <label className={styles.firstnameLabel}>

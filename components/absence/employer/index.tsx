@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AbsenceCard from '@/components/absence/employer/absentCard';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRectangleList, faGrip } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 
 interface Absence {
@@ -27,10 +29,33 @@ const AbsenceEmployer: React.FC = () => {
   }, []);
 
   return (
-    <div>
-      {absences.map(absence => (
-        <AbsenceCard key={absence.id} absence={absence} />
-      ))}
+    <div className={styles.absenceEmployerContainerMain}>
+      <div className={styles.absenceEmployerContainer}>
+        <div className={styles.buttonContainer}>
+          <div className={styles.selectContainer}>
+            <select className={styles.roleSelect} name="status" id="">
+              <option className="defalutOption" value="" disabled>Filtruj</option>
+              {/* Here will be a map */}
+              <option className="clearFilter" value="clear">Wyczyść filtry</option>
+            </select>
+          </div>
+          <div className={styles.viewContainer}>
+            <div className={styles.viewContainer}>
+              <button
+                className={styles.listViewButton}><FontAwesomeIcon icon={faRectangleList} />
+              </button>
+              <button
+                className={styles.tilesViewButton}><FontAwesomeIcon icon={faGrip} />
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className={styles.cardsViewContainer}>
+          {absences.map(absence => (
+            <AbsenceCard key={absence.id} absence={absence} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

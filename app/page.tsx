@@ -11,7 +11,7 @@ import Navbar from "@/components/navbar";
 import Account from "@/components/account";
 import Tiles from "@/components/employees/tile";
 import Employees from "@/components/employees";
-import AbsenceEmployees from '@/components/absence/employees';
+import AbsenceEmployees from '@/components/absence/employee';
 import AbsenceEmployer from '@/components/absence/employer';
 
 export default function Home() {
