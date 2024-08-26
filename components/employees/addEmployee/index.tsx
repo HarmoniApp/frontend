@@ -176,13 +176,13 @@ const AddEmployee: React.FC = () => {
     }),
     contract_signature: Yup.date()
       .required('Pole wymagane')
-      .test('is-before-expiration', 'Data początkowa musi być przed datą końcową', function (value) {
+      .test('is-before-expiration', 'Brak chronologii', function (value) {
         const { contract_expiration } = this.parent;
         return contract_expiration ? new Date(value) <= new Date(contract_expiration) : true;
       }),
     contract_expiration: Yup.date()
       .required('Pole wymagane')
-      .test('is-after-signature', 'Data końcowa musi być po dacie początkowej', function (value) {
+      .test('is-after-signature', 'Brak chronologii', function (value) {
         const { contract_signature } = this.parent;
         return contract_signature ? new Date(value) >= new Date(contract_signature) : true;
       }),
