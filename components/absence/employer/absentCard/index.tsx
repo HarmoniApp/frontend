@@ -5,14 +5,12 @@ import Absence from '@/components/types/absence';
 import AbsenceType from '@/components/types/absenceType';
 import AbsenceUser from '@/components/types/absenceUser';
 import styles from './main.module.scss';
+
 interface AbsenceCardProps {
     absence: Absence;
 }
 
 const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence }) => {
-    /**
-     * Buttons aproving or declining absence is missing functionality because of schema lack of API endpoint.
-     */
     const [absenceType, setAbsenceType] = useState<AbsenceType | null>(null);
     const [user, setUser] = useState<AbsenceUser | null>(null);
 
@@ -41,25 +39,51 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence }) => {
     }
 
     const workingDays = () => {
-        if (absence.working_days == null) {
-            return 0;
-        }
-        else {
-            return absence.working_days;
-        }
+        return absence.working_days ?? 0;
     }
+
+    const updateAbsenceStatus = (absenceId: number, statusId: number): Promise<void> => {
+        return fetch(`http://localhost:8080/api/v1/absence/${absenceId}/status/${statusId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error updating absence status');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating absence status:', error);
+                throw error;
+            });
+    };
+
+    const handleAcceptClick = () => {
+        updateAbsenceStatus(absence.id, 2)
+            .then(() => console.log('Absence approved'))
+            .catch(error => console.error('Error approving absence:', error));
+    };
+
+    const handleDeclineClick = () => {
+        updateAbsenceStatus(absence.id, 4)
+            .then(() => console.log('Absence rejected'))
+            .catch(error => console.error('Error rejecting absence:', error));
+    };
 
     const renderButtons = () => {
         switch (absence.status.name) {
             case 'approved':
                 return (
                     <div className={styles.buttonContainer}>
-                        <button className={styles.declineButton}>
+                        <button 
+                            className={styles.declineButton}
+                            onClick={handleDeclineClick}
+                        >
                             <FontAwesomeIcon icon={faXmark} />
                             <p className={styles.buttonParagraph}>Odmów</p>
                         </button>
-
-
                     </div>
                 );
             case 'cancelled':
@@ -71,11 +95,17 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence }) => {
             case 'awaiting':
                 return (
                     <div className={styles.buttonContainer}>
-                        <button className={styles.acceptButton}>
+                        <button 
+                            className={styles.acceptButton}
+                            onClick={handleAcceptClick}
+                        >
                             <FontAwesomeIcon className={styles.buttonIcon} icon={faCheck} />
                             <p className={styles.buttonParagraph}>Akceptuj</p>
                         </button>
-                        <button className={styles.declineButton}>
+                        <button 
+                            className={styles.declineButton}
+                            onClick={handleDeclineClick}
+                        >
                             <FontAwesomeIcon icon={faXmark} />
                             <p className={styles.buttonParagraph}>Odmów</p>
                         </button>
@@ -135,5 +165,4 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence }) => {
         </div>
     );
 }
-
 export default AbsenceCardEmployer;
