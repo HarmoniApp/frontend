@@ -17,7 +17,7 @@ const NavbarBottom = () => {
     router.push('/chat');
   };
   const vacationToGo = () => {
-    router.push('/vacation');
+    router.push('/absence');
   };
   const statisticsToGo = () => {
     router.push('/statistics');
@@ -31,9 +31,9 @@ const NavbarBottom = () => {
     <nav className={styles.navbar}>
       <ul className={styles.navList}>
         <li onClick={scheduleToGo} className={`${styles.navItem} ${pathname === '/schedule' ? styles.active : ''}`}>Kalendarz</li>
-        <li onClick={employeesToGo} className={`${styles.navItem} ${pathname === '/employees' || pathname.startsWith('/employees/user') ? styles.active : ''}`}>Pracownicy</li>
+        <li onClick={employeesToGo} className={`${styles.navItem} ${pathname.startsWith('/employees') ? styles.active : ''}`}>Pracownicy</li>
         <li onClick={chatToGo} className={`${styles.navItem} ${pathname === '/chat' ? styles.active : ''}`}>Czat</li>
-        <li onClick={vacationToGo} className={`${styles.navItem} ${pathname === '/vacation' ? styles.active : ''}`}>Urlopy</li>
+        <li onClick={vacationToGo} className={`${styles.navItem} ${pathname === '/absence' ? styles.active : ''}`}>Urlopy</li>
         <li onClick={statisticsToGo} className={`${styles.navItem} ${pathname === '/statistics' ? styles.active : ''}`}>Statystyki</li>
         <li onClick={plannerAiToGo} className={`${styles.navItem} ${pathname === '/plannerAI' ? styles.active : ''}`}>PlannerAI</li>
       </ul>

@@ -11,6 +11,8 @@ import Navbar from "@/components/navbar";
 import Account from "@/components/account";
 import Tiles from "@/components/employees/tile";
 import Employees from "@/components/employees";
+import AbsenceEmployees from '@/components/absence/employee';
+import AbsenceEmployer from '@/components/absence/employer';
 
 export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -29,6 +31,7 @@ export default function Home() {
       {/* <Resister/> */}
       {/* <Chat /> */}
       {/* <Employees /> */}
+      {/* <AbsenceEmployer /> */}
     </div>
   );
 }
