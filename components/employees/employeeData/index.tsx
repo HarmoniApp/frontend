@@ -76,11 +76,7 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
     router.push(`/employees/user/${userId}/edit`);
   };
 
-
-
   return (
-
-
     <div className={styles.employeeDataContainerMain}>
       <div className={styles.rowButtonContainer}>
         <div className={styles.buttonContainer}>
@@ -169,9 +165,9 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
         </div>
       </div>
 
-      <div className={styles.rowContainerMiddle}>
-        <div className={styles.columnContainerMiddle}>
-          <p className={styles.roleParagraph}>Roles</p>
+      <div className={styles.roleAndLanguagesContainer}>
+        <div className={styles.columnContainer}>
+          <p className={styles.roleParagraph}>Role przypisane do pracownika</p>
           <div className={styles.roleContainer}>
             {employee.roles.map((role) => (
               <label key={role.id} className={styles.roleLabel}>
@@ -180,8 +176,8 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
             ))}
           </div>
         </div>
-        <div className={styles.columnContainerMiddle}>
-          <p className={styles.languageParagraph}>Languages</p>
+        <div className={styles.columnContainer}>
+          <p className={styles.languageParagraph}>Ten pracownik posługuję się tymi językami</p>
           <div className={styles.languagesContainer}>
             {employee.languages.map((lang) => (
               <label key={lang.id} className={styles.languageLabel}>
