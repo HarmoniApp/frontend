@@ -31,7 +31,7 @@ export default function Home() {
       {/* <Resister/> */}
       {/* <Chat /> */}
       {/* <Employees /> */}
-      <AbsenceEmployer />
+      {/* <AbsenceEmployer /> */}
     </div>
   );
 }
