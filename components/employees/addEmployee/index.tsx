@@ -346,7 +346,7 @@ const AddEmployee: React.FC = () => {
                   </option>
                   {supervisors.map((supervisor) => (
                     <option key={supervisor.id} value={supervisor.id}>
-                      {supervisor.firstname} {supervisor.surname} → {supervisor.role.map((role) => role.name).join(', ')}
+                      {supervisor.firstname} {supervisor.surname}
                     </option>
                   ))}
                 </Field>
