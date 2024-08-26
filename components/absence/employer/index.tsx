@@ -3,18 +3,25 @@ import AbsenceCard from '@/components/absence/employer/absentCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRectangleList, faGrip } from '@fortawesome/free-solid-svg-icons';
 import Absence from '@/components/types/absence';
+import AbsenceStatus from '@/components/types/absenceStatus';
 import styles from './main.module.scss';
 
 
 
 const AbsenceEmployer: React.FC = () => {
   const [absences, setAbsences] = useState<Absence[]>([]);
+  const [absencesStatus, setAbsencesStatus] = useState<AbsenceStatus[]>([]);
   const [viewMode, setViewMode] = useState('tiles');
 
   useEffect(() => {
     fetch('http://localhost:8080/api/v1/absence')
       .then(response => response.json())
       .then(data => setAbsences(data))
+      .catch(error => console.error('Error fetching absences:', error));
+
+      fetch('http://localhost:8080/api/v1/status')
+      .then(response => response.json())
+      .then(data => setAbsencesStatus(data))
       .catch(error => console.error('Error fetching absences:', error));
   }, []);
 
@@ -24,8 +31,10 @@ const AbsenceEmployer: React.FC = () => {
         <div className={styles.buttonContainer}>
           <div className={styles.selectContainer}>
             <select className={styles.roleSelect} name="status" id="">
-              <option className="defalutOption" value="" disabled>Filtruj</option>
-              {/* Here will be a map */}
+              <option className="defalutOption" selected disabled>Filtruj</option>
+              {absencesStatus.map(absenceStatus => (
+                <option className={styles.filterOption} key={absenceStatus.id} value={absenceStatus.name}>{absenceStatus.name}</option>
+              ))}
               <option className="clearFilter" value="clear">Wyczyść filtry</option>
             </select>
           </div>
