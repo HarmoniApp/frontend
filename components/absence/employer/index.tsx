@@ -11,7 +11,7 @@ const AbsenceEmployer: React.FC = () => {
   const [absences, setAbsences] = useState<Absence[]>([]);
   const [absencesStatus, setAbsencesStatus] = useState<AbsenceStatus[]>([]);
   const [viewMode, setViewMode] = useState('tiles');
-  const [selectedStatus, setSelectedStatus] = useState<string | undefined>(undefined);
+  const [selectedStatus, setSelectedStatus] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     fetch('http://localhost:8080/api/v1/absence')
@@ -26,17 +26,17 @@ const AbsenceEmployer: React.FC = () => {
   }, []);
 
   const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const status = event.target.value;
+    const statusId = event.target.value === 'clear' ? undefined : parseInt(event.target.value);
 
-    if (status === 'clear') {
+    if (statusId === undefined) {
       setSelectedStatus(undefined);
       fetch('http://localhost:8080/api/v1/absence')
         .then(response => response.json())
         .then(data => setAbsences(data))
         .catch(error => console.error('Error fetching absences:', error));
     } else {
-      setSelectedStatus(status);
-      fetch(`http://localhost:8080/api/v1/absence/status/${status}`)
+      setSelectedStatus(statusId);
+      fetch(`http://localhost:8080/api/v1/absence/status/${statusId}`)
         .then(response => response.json())
         .then(data => setAbsences(data))
         .catch(error => console.error('Error fetching absences by status:', error));
@@ -52,14 +52,14 @@ const AbsenceEmployer: React.FC = () => {
               className={styles.roleSelect}
               name="status"
               onChange={handleStatusChange}
-              value={selectedStatus || 'default'}
+              value={selectedStatus !== undefined ? selectedStatus : 'default'}
             >
               <option value="default" disabled>Filtruj</option>
               {absencesStatus.map(absenceStatus => (
                 <option
                   className={styles.filterOption}
                   key={absenceStatus.id}
-                  value={absenceStatus.name}
+                  value={absenceStatus.id}
                 >
                   {absenceStatus.name}
                 </option>
