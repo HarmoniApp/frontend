@@ -63,9 +63,61 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence }) => {
         return new Date(absence.end).toLocaleDateString();
     }
 
-    const quantityDays = () => {
-        return Math.ceil((new Date(absence.end).getTime() - new Date(absence.start).getTime()) / (1000 * 3600 * 24));
-    }
+    function calculateEaster(year: number): Date {
+        const f = Math.floor,
+          G = year % 19,
+          C = f(year / 100),
+          H = (C - f(C / 4) - f((8 * C + 13) / 25) + 19 * G + 15) % 30,
+          I = H - f(H / 28) * (1 - f(29 / (H + 1)) * f((21 - G) / 11)),
+          J = (year + f(year / 4) + I + 2 - C + f(C / 4)) % 7,
+          L = I - J,
+          month = 3 + f((L + 40) / 44),
+          day = L + 28 - 31 * f(month / 4);
+      
+        return new Date(year, month - 1, day);
+      }
+      
+      
+      function calculateWorkingDays() {
+        const currentYear = new Date().getFullYear();
+        const holidays = [
+          `${currentYear}-01-01`, // Nowy Rok
+          `${currentYear}-05-01`, // Święto Pracy
+          `${currentYear}-05-03`, // Święto Konstytucji 3 Maja
+          `${currentYear}-08-15`, // Wniebowzięcie Najświętszej Maryi Panny
+          `${currentYear}-11-01`, // Wszystkich Świętych
+          `${currentYear}-11-11`, // Święto Niepodległości
+          `${currentYear}-12-25`, // Boże Narodzenie
+          `${currentYear}-12-26`, // Drugi dzień Bożego Narodzenia
+        ];
+      
+        const easter = calculateEaster(currentYear);
+        const easterMonday = new Date(easter);
+        easterMonday.setDate(easter.getDate() + 1);
+      
+        holidays.push(
+          easter.toISOString().split('T')[0],
+          easterMonday.toISOString().split('T')[0]
+        );
+      
+        const startDate = new Date(absence.start);
+        const endDate = new Date(absence.end);
+      
+        let totalDays = 0;
+      
+        for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+          const dayOfWeek = date.getDay();
+          const formattedDate = date.toISOString().split('T')[0];
+      
+          if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+            if (!holidays.includes(formattedDate) || (dayOfWeek === 6 || dayOfWeek === 0)) {
+              totalDays++;
+            }
+          }
+        }
+      
+        return totalDays;
+      }
 
     return (
         <div className={styles.absenceCardContainerMain}>
@@ -103,7 +155,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence }) => {
                     </label>
                     <label className={styles.quantityDaysLabel}>
                         <p className={styles.quantityDaysParagraph}>Liczba dni:</p>
-                        <p className={styles.quantityDaysDataParagraph}>{quantityDays()}</p>
+                        <p className={styles.quantityDaysDataParagraph}>{calculateWorkingDays()}</p>
                     </label>
                     <label className={styles.statusNameLabel}>
                         <p className={styles.statusNameParagraph}>Status:</p>
