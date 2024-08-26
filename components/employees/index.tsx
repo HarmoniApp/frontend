@@ -1,27 +1,17 @@
+'use client';
 import React, { useEffect, useState } from 'react';
 import Tile from '@/components/employees/tile';
-import FilterEmp from '@/components/employees/filterEmp';
+import EmployeeFilter from '@/components/employees/employeeFilter';
+import EmployeeBar from '@/components/employees/employeeBar';
+import PersonTile from '@/components/types/personTile';
 import styles from './main.module.scss';
-import NavEmp from '@/components/employees/navEmp';
 
-interface Language {
-  id: number;
-  name: string;
-}
-
-interface Person {
-  id: number;
-  firstname: string;
-  surname: string;
-  languages: Language[];
-}
-
-const Employees: React.FC = () => {
-  const [data, setData] = useState<Person[]>([]);
+const EmployeesComponent: React.FC = () => {
+  const [activeView, setActiveView] = useState<'tiles' | 'list'>('tiles');
+  const [data, setData] = useState<PersonTile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const fetchFilteredData = (filters: { roles?: number[]; languages?: number[]; order?: string }) => {
+  const fetchFilteredData = (filters: { roles?: number[]; languages?: number[]; order?: string } = {}) => {
     let url = 'http://localhost:8080/api/v1/user/simple';
     const params = new URLSearchParams();
 
@@ -56,20 +46,25 @@ const Employees: React.FC = () => {
     fetchFilteredData({});
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
   return (
-    <div>
-      <NavEmp />
-      <FilterEmp onApplyFilters={fetchFilteredData} />
-      <div className={styles.container}>
-        {data.map((person, index) => (
-          <Tile key={index} person={person} />
-        ))}
+    <div className={styles.employeesContainerMain}>
+      <div className={styles.emplyeesBarContainer}>
+        <EmployeeBar setActiveView={setActiveView} activeView={activeView}/>
+      </div>
+      <div className={styles.employeesFilterAndListContainer}>
+        <div className={styles.emplyeesFilterContainer}>
+          <EmployeeFilter onApplyFilters={fetchFilteredData} />
+        </div>
+        <div className={`${styles.employeesListcontainer} ${activeView === 'tiles' ? styles.tilesView : styles.listView}`}>
+          {loading && <div>Loading...</div>}
+          {error && <div>Error: {error}</div>}
+          {!loading && !error && data.length === 0 && <div>No data available</div>}
+          {!loading && !error && data.length > 0 && data.map((person, index) => (
+            <Tile key={index} person={person} view={activeView}/>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
-
-export default Employees;
+export default EmployeesComponent;

@@ -28,7 +28,7 @@ export default function Home() {
       {/* <Login /> */}
       {/* <Resister/> */}
       {/* <Chat /> */}
-      <Employees />
+      {/* <Employees /> */}
     </div>
   );
 }
