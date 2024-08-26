@@ -10,4 +10,5 @@ export default interface Absence {
     updated: string;
     user_id: number;
     absence_type_id: number;
+    working_days: number;
   }
