@@ -83,34 +83,120 @@ const AddEmployee: React.FC = () => {
       .catch((error) => console.error('Error fetching departments:', error));
   }, []);
 
+  const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
+    const invalidChars = value.split('').filter(char => !allowedPattern.test(char));
+    return Array.from(new Set(invalidChars));
+  };
+  
   const validationSchema = Yup.object({
-    employee_id: Yup.string().required('Pole wymagane'),
-    firstname: Yup.string().required('Pole wymagane'),
-    surname: Yup.string().required('Pole wymagane'),
-    email: Yup.string().email('Niepoprawny email').required('Pole wymagane'),
-    phone_number: Yup.string().required('Pole wymagane'),
+    employee_id: Yup.string()
+      .required('Pole wymagane')
+      .test('no-invalid-chars', function (value) {
+        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
+        return invalidChars.length === 0
+          ? true
+          : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
+      }),
+    firstname: Yup.string()
+      .required('Pole wymagane')
+      .test('no-invalid-chars', function (value) {
+        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z]*$/);
+        return invalidChars.length === 0
+          ? true
+          : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
+      }),
+    surname: Yup.string()
+      .required('Pole wymagane')
+      .test('no-invalid-chars', function (value) {
+        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z]*$/);
+        return invalidChars.length === 0
+          ? true
+          : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
+      }),
+    email: Yup.string()
+      .email('Niepoprawny email')
+      .required('Pole wymagane')
+      .test('no-invalid-chars', function (value) {
+        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9@.-]*$/);
+        return invalidChars.length === 0
+          ? true
+          : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
+      })
+      .test('no-consecutive-special-chars', 'Niedozwolone znaki', function (value) {
+        const invalidPattern = /(\.\.|--|@@)/;
+        return !invalidPattern.test(value || '');
+      }),
+    phone_number: Yup.string()
+      .required('Pole wymagane')
+      .test('no-invalid-chars', function (value) {
+        const invalidChars = findInvalidCharacters(value || '', /^[0-9]*$/);
+        return invalidChars.length === 0
+          ? true
+          : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
+      }),
     residence: Yup.object().shape({
-      city: Yup.string().required('Pole wymagane'),
-      street: Yup.string().required('Pole wymagane'),
-      building_number: Yup.string().required('Pole wymagane'),
-      zip_code: Yup.string().required('Pole wymagane'),
+      city: Yup.string()
+        .required('Pole wymagane')
+        .test('no-invalid-chars', function (value) {
+          const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9\s]*$/);
+          return invalidChars.length === 0
+            ? true
+            : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
+        }),
+      street: Yup.string()
+        .required('Pole wymagane')
+        .test('no-invalid-chars', function (value) {
+          const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9\s]*$/);
+          return invalidChars.length === 0
+            ? true
+            : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
+        }),
+      building_number: Yup.string()
+        .required('Pole wymagane')
+        .test('no-invalid-chars', function (value) {
+          const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
+          return invalidChars.length === 0
+            ? true
+            : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
+        }),
+      apartment: Yup.string().test('no-invalid-chars', function (value) {
+        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
+        return invalidChars.length === 0
+          ? true
+          : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
+      }),
+      zip_code: Yup.string()
+        .required('Pole wymagane')
+        .test('no-invalid-chars', function (value) {
+          const invalidChars = findInvalidCharacters(value || '', /^[0-9-]*$/);
+          return invalidChars.length === 0
+            ? true
+            : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
+        }),
     }),
     contract_signature: Yup.date()
       .required('Pole wymagane')
-      .test('is-before-expiration', 'Brak chronologii', function(value) {
+      .test('is-before-expiration', 'Data początkowa musi być przed datą końcową', function (value) {
         const { contract_expiration } = this.parent;
         return contract_expiration ? new Date(value) <= new Date(contract_expiration) : true;
       }),
     contract_expiration: Yup.date()
       .required('Pole wymagane')
-      .test('is-after-signature', 'Brak chronologii', function(value) {
+      .test('is-after-signature', 'Data końcowa musi być po dacie początkowej', function (value) {
         const { contract_signature } = this.parent;
         return contract_signature ? new Date(value) >= new Date(contract_signature) : true;
       }),
     contract_type: Yup.object().shape({
       id: Yup.number().min(1, 'Pole wymagane').required('Pole wymagane'),
     }),
-    supervisor_id: Yup.string().required('Pole wymagane'),
+    supervisor_id: Yup.string()
+      .required('Pole wymagane')
+      .test('no-invalid-chars', function (value) {
+        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
+        return invalidChars.length === 0
+          ? true
+          : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
+      }),
     work_address: Yup.object().shape({
       id: Yup.number().min(1, 'Pole wymagane').required('Pole wymagane'),
     }),
@@ -188,7 +274,7 @@ const AddEmployee: React.FC = () => {
                   <ErrorMessage name="employee_id" component="div" className={styles.errorMessage} />
                 </label>
                 <Field className={classNames(styles.formInput, {
-                  [styles.errorInput]: errors.firstname && touched.firstname,
+                  [styles.errorInput]: errors.employee_id && touched.employee_id,
                 })}
                   name="employee_id"
                   placeholder="Wpisz ID" />
@@ -262,6 +348,7 @@ const AddEmployee: React.FC = () => {
                 />
                 <label className={styles.residenceLabel}>
                   Numer mieszkania
+                  <ErrorMessage name="residence.apartment" component="div" className={styles.errorMessage} />
                 </label>
                 <Field
                   className={classNames(styles.formInput, {
