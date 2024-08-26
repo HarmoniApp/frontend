@@ -40,12 +40,11 @@ $employerAbsenceCard-cancelAbsence-button-colour-hover: #c82333;
     }
 }
 
-
-
 .absenceDataContainer{
     display: flex;
     flex-direction: row;
     gap: 20px;
+    margin: 0 0 10px 0;
 
     .columnContainer {
         display: flex;

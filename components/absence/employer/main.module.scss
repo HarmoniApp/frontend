@@ -86,6 +86,7 @@ $employer-cancelAbsence-button-colour-hover: #c82333;
             padding: 0;
             font-size: 35px;
             cursor: pointer;
+
         }
     
         .active {
@@ -102,7 +103,7 @@ $employer-cancelAbsence-button-colour-hover: #c82333;
     }
 }
 
-.cardsViewContainer{
+.cardsViewContainerTiles{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap:20px;
@@ -112,3 +113,10 @@ $employer-cancelAbsence-button-colour-hover: #c82333;
     }
 }
 
+.cardsViewContainerList{
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap:20px;
+
+    
+}

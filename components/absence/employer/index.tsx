@@ -20,6 +20,7 @@ interface Absence {
 
 const AbsenceEmployer: React.FC = () => {
   const [absences, setAbsences] = useState<Absence[]>([]);
+  const [viewMode, setViewMode] = useState('tiles');
 
   useEffect(() => {
     fetch('http://localhost:8080/api/v1/absence')
@@ -40,17 +41,21 @@ const AbsenceEmployer: React.FC = () => {
             </select>
           </div>
           <div className={styles.viewContainer}>
-            <div className={styles.viewContainer}>
-              <button
-                className={styles.listViewButton}><FontAwesomeIcon icon={faRectangleList} />
-              </button>
-              <button
-                className={styles.tilesViewButton}><FontAwesomeIcon icon={faGrip} />
-              </button>
-            </div>
+            <button
+              className={`${styles.listViewButton} ${viewMode === 'list' ? styles.active : ''}`}
+              onClick={() => setViewMode('list')}> <FontAwesomeIcon icon={faRectangleList} />
+            </button>
+            <button
+              className={`${styles.tilesViewButton} ${viewMode === 'tiles' ? styles.active : ''}`}
+              onClick={() => setViewMode('tiles')}><FontAwesomeIcon icon={faGrip} />
+            </button>
           </div>
         </div>
-        <div className={styles.cardsViewContainer}>
+        <div className={
+          viewMode === 'tiles'
+            ? styles.cardsViewContainerTiles
+            : styles.cardsViewContainerList
+        }>
           {absences.map(absence => (
             <AbsenceCard key={absence.id} absence={absence} />
           ))}
