@@ -2,21 +2,10 @@ import React, { useEffect, useState } from 'react';
 import AbsenceCard from '@/components/absence/employer/absentCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRectangleList, faGrip } from '@fortawesome/free-solid-svg-icons';
+import Absence from '@/components/types/absence';
 import styles from './main.module.scss';
 
-interface Absence {
-  id: number;
-  start: string;
-  end: string;
-  status: {
-    id: number;
-    name: string;
-  };
-  submission: string;
-  updated: string;
-  user_id: number;
-  absence_type_id: number;
-}
+
 
 const AbsenceEmployer: React.FC = () => {
   const [absences, setAbsences] = useState<Absence[]>([]);
