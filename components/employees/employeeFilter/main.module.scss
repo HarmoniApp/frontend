@@ -1,0 +1,143 @@
+$employeeFilter-chechbox-bg-colour: #e8e8e8;
+$employeeFilter-bg-colour-light: #FFFFFF;
+$employeeFilter-font-colour: #FFFFFF;
+$employeeFilter-font-colour-dark: #000000;
+$employeeFilter-highlight-colour: #FFCF70;
+$employeeFilter-highlight-colour-hover: #FFBE4D;
+$employeeFilter-box-shadow-colour: rgba(0, 0, 0, 0.1);
+
+.employeesFilerContainerMain {
+  padding: 20px;
+  background-color: $employeeFilter-bg-colour-light;
+  border: 1px solid $employeeFilter-highlight-colour;
+  border-radius: 10px;
+  box-shadow: 0px 2px 5px $employeeFilter-box-shadow-colour;
+}
+
+.sortContainer,
+.languagesContainer,
+.positionContainer {
+  margin: 0 0 20px 0;
+}
+
+.positionTitleContainer,
+.sortTitleContainer,
+.languagesTitleContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 10px;
+  background-color: $employeeFilter-highlight-colour;
+  border-radius: 8px;
+  width: 100%;
+
+  &:hover {
+    background-color: $employeeFilter-highlight-colour-hover;
+  }
+
+  .sortIcon,
+  .languageIcon,
+  .positionIcon {
+    margin: 0 20px;
+    transform: rotate(90deg);
+    transition: transform 0.3s ease-in-out;
+    font-size: 16px;
+  }
+
+  .iconRotated {
+    transform: rotate(-90deg);
+  }
+
+  .positionText,
+  .sortText,
+  .languagesText {
+    margin: 0 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: $employeeFilter-font-colour-dark;
+    text-align: center;
+  }
+
+}
+
+
+
+.listContainer {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.3s ease-out;
+}
+
+.listContainer.open {
+  height: auto;
+}
+
+.autoHeight {
+  height: auto;
+}
+
+.ascCheckboxContainer,
+.descCheckboxContainer,
+.languageCheckboxContainer,
+.positionCheckboxContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  background-color: $employeeFilter-chechbox-bg-colour;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px 0;
+  cursor: pointer;
+  width: 100%;
+}
+
+.ascCheckbox,
+.descCheckbox,
+.languageCheckbox,
+.positionCheckbox {
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+  accent-color: $employeeFilter-highlight-colour;
+  cursor: pointer;
+}
+
+.ascCheckboxLabel,
+.descCheckboxLabel,
+.positionCheckboxLabel {
+  font-size: 14px;
+  color: $employeeFilter-font-colour-dark;
+}
+
+.languageFlag {
+  margin-left: auto;
+}
+
+.buttonContainer {
+  text-align: center;
+
+  .clearButtonIcon {
+    margin: 0 10px 0 0;
+  }
+
+  .clearButton {
+    padding: 10px 15px;
+    background-color: $employeeFilter-highlight-colour;
+    color: $employeeFilter-font-colour-dark;
+    border: 1px solid $employeeFilter-highlight-colour;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    width: 100%;
+
+    :hover {
+      background-color: $employeeFilter-highlight-colour-hover;
+    }
+  }
+}

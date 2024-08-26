@@ -1,0 +1,177 @@
+$popup-bg-colour: #4F4E4E;
+$popup-font-colour: #FFFFFF;
+$popup-font-colour-dark: #000000;
+$popup-highlight-colour: #FFCF70;
+$popup-highlight-colour-hover: #FFBE4D;
+
+.editEmployeeDataNotificationContainerMain {
+    display: flex;
+    background-color: $popup-bg-colour;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 500px;
+    padding: 20px 40px;
+    box-sizing: border-box;
+    margin: 0 auto; 
+
+    @media (max-width: 600px) {
+        padding: 15px 20px; 
+    }
+
+    @media (max-width: 400px) {
+        padding: 10px 15px; 
+    }
+}
+
+.headerContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0 0 20px 0;
+
+    .headerParagraph {
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        gap: 2px;
+        color: $popup-font-colour;
+        margin: 0;
+
+        @media (max-width: 400px) {
+            font-size: 14px;
+        }
+    }
+}
+
+.changedDataContainer {
+    width: 100%;
+    
+    .changedDataList {
+        list-style-type: none;
+        padding-left: 0;
+        margin: 0;
+    }
+
+    .changedDataItem {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        text-align: center;
+        margin: 5px 0;
+        color: $popup-font-colour;
+
+        @media (max-width: 400px) {
+            flex-direction: column; 
+            align-items: flex-start;
+            text-align: left; 
+        }
+
+        .changedDataKey {
+            font-weight: bold;
+            text-decoration: underline;
+            text-decoration-color: $popup-highlight-colour;
+            text-align: center;
+            margin: 0 10px 0 0;
+
+            @media (max-width: 400px) {
+                margin: 0 0 5px 0;
+            }
+        }
+
+        .changedDataValue {
+            text-align: center;
+            color: $popup-highlight-colour;
+
+            @media (max-width: 400px) {
+                text-align: left;
+            }
+        }
+    }
+}
+
+.timerContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 20px 0 0 0;
+
+    .timerParagraph {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: $popup-font-colour;
+        margin: 0;
+
+        @media (max-width: 400px) {
+            font-size: 14px;
+        }
+    }
+
+    .counterTimerContainer {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: $popup-font-colour;
+        margin: 0;
+        gap: 3px;
+
+        .highlight {
+            color: $popup-highlight-colour;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0 0 10px 0;
+
+            @media (max-width: 400px) {
+                font-size: 18px; 
+            }
+        }
+
+        .counterTimerParagraph {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: $popup-font-colour;
+            margin: 0 0 10px 0;
+
+            @media (max-width: 400px) {
+                font-size: 14px;
+            }
+        }
+    }
+}
+
+.buttonConianer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+    .closeButton {
+        text-align: center;
+        background-color: $popup-highlight-colour;
+        color: $popup-font-colour-dark;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-colour 0.3s ease;
+
+        :hover {
+            background-color: $popup-highlight-colour-hover;
+        }
+
+        @media (max-width: 400px) {
+            padding: 8px 16px;
+            font-size: 14px; 
+        }
+    }
+}

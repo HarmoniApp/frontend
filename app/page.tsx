@@ -30,9 +30,7 @@ export default function Home() {
       {/* <Login /> */}
       {/* <Resister/> */}
       {/* <Chat /> */}
-      {/* <Employees /> */}
-      {/* <AbsenceEmployees /> */}
-      <AbsenceEmployer />
+      <Employees />
     </div>
   );
 }

@@ -1,0 +1,110 @@
+$popup-bg-colour: #4F4E4E;
+$popup-font-colour: #FFFFFF;
+$popup-font-colour-dark: #000000;
+$popup-highlight-colour: #FFCF70;
+$popup-highlight-colour-hover: #FFBE4D;
+
+.deleteConfirmationContainerMain {
+    display: flex;
+    background-color: $popup-bg-colour;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;;
+    padding:20px 40px;
+    box-sizing: border-box;
+}
+
+.headerContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+
+    .headerParagraph{
+        text-align: center;
+        gap:2px;
+        color: $popup-font-colour;
+        margin: 0;
+    }
+
+    .highlight {
+        color: $popup-highlight-colour;
+        font-size: 20px;
+        font-weight: bold;
+        text-transform: capitalize;
+        margin: 0 0 10px 0;
+    }
+}
+
+.counterContainter{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+
+    .counterParagraph{
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: $popup-font-colour;
+        margin: 0;
+    }
+
+    .counterTimer{
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: $popup-font-colour;
+        margin: 0;
+        gap: 3px;
+
+        .highlight {
+            color: $popup-highlight-colour;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0 0 10px 0;
+        }
+        
+        .counterTimerParagraph{
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: $popup-font-colour;
+            margin: 0 0 10px 0;
+        }
+    }
+}
+
+.buttonConianer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+    .closeButton {
+        text-align: center;
+        background-color: $popup-highlight-colour;
+        color: $popup-font-colour-dark;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    
+        .a {
+            text-decoration: none;
+            color: $popup-font-colour-dark;
+        }
+        
+        :hover {
+            background-color: $popup-highlight-colour-hover;
+        }
+    }
+}
