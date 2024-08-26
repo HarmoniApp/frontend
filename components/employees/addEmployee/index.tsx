@@ -95,8 +95,18 @@ const AddEmployee: React.FC = () => {
       building_number: Yup.string().required('Pole wymagane'),
       zip_code: Yup.string().required('Pole wymagane'),
     }),
-    contract_signature: Yup.date().required('Pole wymagane'),
-    contract_expiration: Yup.date().required('Pole wymagane'),
+    contract_signature: Yup.date()
+      .required('Pole wymagane')
+      .test('is-before-expiration', 'Brak chronologii', function(value) {
+        const { contract_expiration } = this.parent;
+        return contract_expiration ? new Date(value) <= new Date(contract_expiration) : true;
+      }),
+    contract_expiration: Yup.date()
+      .required('Pole wymagane')
+      .test('is-after-signature', 'Brak chronologii', function(value) {
+        const { contract_signature } = this.parent;
+        return contract_signature ? new Date(value) >= new Date(contract_signature) : true;
+      }),
     contract_type: Yup.object().shape({
       id: Yup.number().min(1, 'Pole wymagane').required('Pole wymagane'),
     }),
