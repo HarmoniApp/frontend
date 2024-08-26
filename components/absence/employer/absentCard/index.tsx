@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 
 interface Absence {
@@ -49,24 +51,76 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence }) => {
             .catch(error => console.error('Error fetching user:', error));
     }, [absence.absence_type_id, absence.user_id]);
 
+    const subbmisionDate = () => {
+        return new Date(absence.submission).toLocaleDateString();
+    }
+
+    const startDate = () => {
+        return new Date(absence.start).toLocaleDateString();
+    }
+
+    const endDate = () => {
+        return new Date(absence.end).toLocaleDateString();
+    }
+
+    const quantityDays = () => {
+        return Math.ceil((new Date(absence.end).getTime() - new Date(absence.start).getTime()) / (1000 * 3600 * 24));
+    }
+
     return (
-        <div>
-
-            <div className={styles.absenceCard}>
-                <h3>{absenceType?.name}</h3>
-                <p>{new Date(absence.submission).toLocaleDateString()}</p>
-                <p>ID: #{absence.id}</p>
-                <p>Imię: {user?.firstname}</p>
-                <p>Nazwisko: {user?.surname}</p>
-                <p>Dostępne dni: 20</p> {/* This should be dynamic, miss in database */}
-                <p>Od: {new Date(absence.start).toLocaleDateString()}</p>
-                <p>Do: {new Date(absence.end).toLocaleDateString()}</p>
-                <p>Liczba dni: {Math.ceil((new Date(absence.end).getTime() - new Date(absence.start).getTime()) / (1000 * 3600 * 24))}</p> {/* These are all days even including weekends and should only be working days. */}
-                <p>Status: {absence.status.name}</p>
-                <button className={styles.acceptButton}>Akceptuj</button>
-                <button className={styles.declineButton}>Odmów</button>
+        <div className={styles.absenceCardContainerMain}>
+            <div className={styles.headerCardContainer}>
+                <p className={styles.absenceTypeNameParagraph}>{absenceType?.name}</p>
+                <p className={styles.subbmisionDateParagraph}>{subbmisionDate()}</p>
             </div>
-
+            <div className={styles.absenceDataContainer}>
+                <div className={styles.columnContainer}>
+                    <label className={styles.idLabel}>
+                        <p className={styles.idParagraph}>ID:</p>
+                        <p className={styles.idDataParagraph}>{absence.id}</p>
+                    </label>
+                    <label className={styles.firstnameLabel}>
+                        <p className={styles.firstnameParagraph}>Imię:</p>
+                        <p className={styles.firstnameDataParagraph}>{user?.firstname}</p>
+                    </label>
+                    <label className={styles.surnameLabel}>
+                        <p className={styles.surnameParagraph}>Nazwisko:</p>
+                        <p className={styles.surnameDataParagraph}>{user?.surname}</p>
+                    </label>
+                    <label className={styles.remainingDaysLabel}>
+                        <p className={styles.remainingDaysParagraph}>Dostępne dni:</p>
+                        <p className={styles.remainingDaysDataParagraph}>20</p>
+                    </label>
+                </div>
+                <div className={styles.columnContainer}>
+                    <label className={styles.startDateLabel}>
+                        <p className={styles.startDateParagraph}>Od:</p>
+                        <p className={styles.startDateDataParagraph}>{startDate()}</p>
+                    </label>
+                    <label className={styles.endDateLabel}>
+                        <p className={styles.endDateParagraph}>Do:</p>
+                        <p className={styles.endDateDataParagraph}>{endDate()}</p>
+                    </label>
+                    <label className={styles.quantityDaysLabel}>
+                        <p className={styles.quantityDaysParagraph}>Liczba dni:</p>
+                        <p className={styles.quantityDaysDataParagraph}>{quantityDays()}</p>
+                    </label>
+                    <label className={styles.statusNameLabel}>
+                        <p className={styles.statusNameParagraph}>Status:</p>
+                        <p className={styles.statusNameDataParagraph}>{absence.status.name}</p>
+                    </label>
+                </div>
+            </div>
+            <div className={styles.buttonContainer}>
+                <button className={styles.acceptButton}>
+                    <FontAwesomeIcon className={styles.buttonIcon} icon={faCheck} />
+                    <p className={styles.buttonParagraph}>Akceptuj</p>
+                </button>
+                <button className={styles.declineButton}>
+                    <FontAwesomeIcon icon={faXmark} />
+                    <p className={styles.buttonParagraph}>Odrzuć</p>
+                </button>
+            </div>
         </div>
     );
 }
