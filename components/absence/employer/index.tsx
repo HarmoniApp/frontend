@@ -13,11 +13,15 @@ const AbsenceEmployer: React.FC = () => {
   const [viewMode, setViewMode] = useState('tiles');
   const [selectedStatus, setSelectedStatus] = useState<number | undefined>(undefined);
 
-  useEffect(() => {
+  const fetchAbsences = () => {
     fetch('http://localhost:8080/api/v1/absence')
       .then(response => response.json())
       .then(data => setAbsences(data))
       .catch(error => console.error('Error fetching absences:', error));
+  };
+
+  useEffect(() => {
+    fetchAbsences();
 
     fetch('http://localhost:8080/api/v1/status')
       .then(response => response.json())
@@ -30,10 +34,7 @@ const AbsenceEmployer: React.FC = () => {
 
     if (statusId === undefined) {
       setSelectedStatus(undefined);
-      fetch('http://localhost:8080/api/v1/absence')
-        .then(response => response.json())
-        .then(data => setAbsences(data))
-        .catch(error => console.error('Error fetching absences:', error));
+      fetchAbsences();
     } else {
       setSelectedStatus(statusId);
       fetch(`http://localhost:8080/api/v1/absence/status/${statusId}`)
@@ -88,7 +89,7 @@ const AbsenceEmployer: React.FC = () => {
             : styles.cardsViewContainerList
         }>
           {absences.map(absence => (
-            <AbsenceCard key={absence.id} absence={absence} />
+            <AbsenceCard key={absence.id} absence={absence} onStatusUpdate={fetchAbsences} />
           ))}
         </div>
       </div>

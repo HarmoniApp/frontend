@@ -8,9 +8,10 @@ import styles from './main.module.scss';
 
 interface AbsenceCardProps {
     absence: Absence;
+    onStatusUpdate: () => void;
 }
 
-const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence }) => {
+const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpdate }) => {
     const [absenceType, setAbsenceType] = useState<AbsenceType | null>(null);
     const [user, setUser] = useState<AbsenceUser | null>(null);
 
@@ -62,13 +63,19 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence }) => {
 
     const handleAcceptClick = () => {
         updateAbsenceStatus(absence.id, 2)
-            .then(() => console.log('Absence approved'))
+            .then(() => {
+                console.log('Absence approved');
+                onStatusUpdate();
+            })
             .catch(error => console.error('Error approving absence:', error));
     };
 
     const handleDeclineClick = () => {
         updateAbsenceStatus(absence.id, 4)
-            .then(() => console.log('Absence rejected'))
+            .then(() => {
+                console.log('Absence rejected');
+                onStatusUpdate();
+            })
             .catch(error => console.error('Error rejecting absence:', error));
     };
 
