@@ -12,12 +12,24 @@ const AbsenceEmployer: React.FC = () => {
   const [absencesStatus, setAbsencesStatus] = useState<AbsenceStatus[]>([]);
   const [viewMode, setViewMode] = useState('tiles');
   const [selectedStatus, setSelectedStatus] = useState<number | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(true); 
+  const [error, setError] = useState<string | null>(null);
 
   const fetchAbsences = () => {
+    setLoading(true);
+    setError(null);
+
     fetch('http://localhost:8080/api/v1/absence')
       .then(response => response.json())
-      .then(data => setAbsences(data))
-      .catch(error => console.error('Error fetching absences:', error));
+      .then(data => {
+        setAbsences(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching absences:', error);
+        setError('Error fetching absences');
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -32,6 +44,9 @@ const AbsenceEmployer: React.FC = () => {
   const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const statusId = event.target.value === 'clear' ? undefined : parseInt(event.target.value);
 
+    setLoading(true);
+    setError(null);
+
     if (statusId === undefined) {
       setSelectedStatus(undefined);
       fetchAbsences();
@@ -39,8 +54,15 @@ const AbsenceEmployer: React.FC = () => {
       setSelectedStatus(statusId);
       fetch(`http://localhost:8080/api/v1/absence/status/${statusId}`)
         .then(response => response.json())
-        .then(data => setAbsences(data))
-        .catch(error => console.error('Error fetching absences by status:', error));
+        .then(data => {
+          setAbsences(data);
+          setLoading(false);
+        })
+        .catch(error => {
+          console.error('Error fetching absences by status:', error);
+          setError('Error fetching absences by status');
+          setLoading(false);
+        });
     }
   };
 
@@ -83,15 +105,20 @@ const AbsenceEmployer: React.FC = () => {
             </button>
           </div>
         </div>
-        <div className={
-          viewMode === 'tiles'
-            ? styles.cardsViewContainerTiles
-            : styles.cardsViewContainerList
-        }>
-          {absences.map(absence => (
-            <AbsenceCard key={absence.id} absence={absence} onStatusUpdate={fetchAbsences} />
-          ))}
-        </div>
+        {loading && <div>Ładowanie danych...</div>}
+        {error && <div>Błąd: {error}</div>}
+        {!loading && !error && absences.length === 0 && <div>Brak dostępnych danych</div>}
+        {!loading && !error && absences.length > 0 && (
+          <div className={
+            viewMode === 'tiles'
+              ? styles.cardsViewContainerTiles
+              : styles.cardsViewContainerList
+          }>
+            {absences.map(absence => (
+              <AbsenceCard key={absence.id} absence={absence} onStatusUpdate={fetchAbsences} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
