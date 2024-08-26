@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Modal from 'react-modal';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faComments, faPlane, faChartBar, faUserMinus, faUserPen, faUserLock } from '@fortawesome/free-solid-svg-icons';
 import DeleteEmployeePopUp from '@/components/employees/employeeData/deleteEmployee';
 import EmployeeData from '@/components/types/employeeData';
 import Department from '@/components/types/department';
@@ -80,14 +82,34 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
 
 
     <div className={styles.employeeDataContainerMain}>
-      <div className={styles.rowContainerBottom}>
+      <div className={styles.rowButtonContainer}>
         <div className={styles.buttonContainer}>
-          <button className={styles.statsButton}>Statistics</button>
-          <button className={styles.absencesButton}>Absences</button>
-          <button className={styles.chatButton}>Chat</button>
-          <button className={styles.resetPasswordButton}>Reset Password</button>
-          <button className={styles.editButton} onClick={handleEditEmployee}>Edit employee</button>
-          <button className={styles.deleteButton} onClick={openModalDeleteEmployee}>Usuń pracownika</button>
+          <button className={styles.chatButton}>
+            <FontAwesomeIcon className={styles.buttonIcon} icon={faComments} />
+            <p className={styles.buttonParagraph}>Chat</p>
+          </button>
+          <button className={styles.absencesButton}>
+            <FontAwesomeIcon className={styles.buttonIcon} icon={faPlane} />
+            <p className={styles.buttonParagraph}>Urolopy</p>
+          </button>
+          <button className={styles.statisticsButton}>
+            <FontAwesomeIcon className={styles.buttonIcon} icon={faChartBar} />
+            <p className={styles.buttonParagraph}>Statystki</p>
+          </button>
+        </div>
+        <div className={styles.buttonContainer}>
+          <button className={styles.editButton} onClick={handleEditEmployee}>
+            <FontAwesomeIcon className={styles.buttonIcon} icon={faUserPen} />
+            <p className={styles.buttonParagraph}>Edytuj</p>
+          </button>
+          <button className={styles.resetPasswordButton}>
+            <FontAwesomeIcon className={styles.buttonIcon} icon={faUserLock} />
+            <p className={styles.buttonParagraph}>Zresetuj hasło</p>
+          </button>
+          <button className={styles.deleteButton} onClick={openModalDeleteEmployee}>
+            <FontAwesomeIcon className={styles.buttonIcon} icon={faUserMinus} />
+            <p className={styles.buttonParagraph}>Usuń</p>
+          </button>
         </div>
       </div>
 
