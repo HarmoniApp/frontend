@@ -1,12 +1,13 @@
 import Navbar from "@/components/navbar";
 import AddEmployee from '@/components/employees/addEmployee';
+import styles from './main.module.scss';
 
-const EditEmployeePage = () => {
+const AddEmployeePage = () => {
     return (
-        <div>
+        <div className={styles.addEmployeePageContainerMain}>
             <Navbar />
             <AddEmployee />
         </div>
     );
 };
-export default EditEmployeePage;
+export default AddEmployeePage;

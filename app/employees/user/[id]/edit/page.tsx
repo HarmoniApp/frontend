@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Navbar from "@/components/navbar";
 import EditEmployeeDataPopUp from '@/components/employees/employeeData/editEmployeeData';
 import EmployeeData from '@/components/types/employeeData';
+import styles from './main.module.scss';
 
 const EditEmployeePage: React.FC = () => {
   const router = useRouter();
@@ -41,7 +42,7 @@ const EditEmployeePage: React.FC = () => {
   if (!employee) return <div>No employee data found</div>;
 
   return (
-    <div>
+    <div className={styles.editEmployeePageContainerMain}>
       <Navbar />
       <EditEmployeeDataPopUp
         employee={employee}

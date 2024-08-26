@@ -1,10 +1,11 @@
 import Navbar from "@/components/navbar";
 import EmployeesComponent from "@/components/employees";
+import styles from './main.module.scss';
 
-export default function Employees() {
+export default function EmployeesPage() {
 
     return (
-        <div>
+        <div className={styles.employeesPageContainerMain}>
             <Navbar />
             <EmployeesComponent />
         </div>

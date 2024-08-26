@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import Modal from 'react-modal';
@@ -50,9 +49,7 @@ interface ChangedData {
 }
 
 const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCloseEdit }) => {
-  const router = useRouter();
 
-  const [formData, setFormData] = useState<EmployeeDataWorkAdressOnlyId>(employee);
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [departmentMap, setDepartmentMap] = useState<{ [key: number]: string }>({});
