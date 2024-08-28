@@ -8,6 +8,10 @@ interface CalendarHeaderProps {
 const CalendarHeader: React.FC<CalendarHeaderProps> = ({ weekData }) => {
   return (
     <div className={styles.calendarHeaderContainerMain}>
+      <div className={styles.nameContainer}>
+        <p>IMIE I NAZWISKO</p>
+      </div>
+      <div className={styles.calendarDayContainer}>
       {weekData.map((day, index) => (
         <div key={index} className={styles.dayContainer}>
           <div className={styles.dayName}>
@@ -18,6 +22,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({ weekData }) => {
           </div>
         </div>
       ))}
+      </div>
     </div>
   );
 };

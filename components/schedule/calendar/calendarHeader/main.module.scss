@@ -1,6 +1,19 @@
 .calendarHeaderContainerMain{
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+
+    .nameContainer{
+        flex:1;
+    }
+
+    .calendarDayContainer{
+        flex:7;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+    }
 }
+
+
+
