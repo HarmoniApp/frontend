@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Role from '@/components/types/role';
 import styles from './main.module.scss';
 
 interface Shift {
@@ -10,6 +9,11 @@ interface Shift {
   role_id: number;
 }
 
+interface Role {
+  id: number;
+  name: string;
+  is_sup: boolean;
+}
 interface ShiftItemProps {
   date: string;
   shifts: Shift[];
@@ -21,36 +25,46 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts }) => {
     return date.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
   };
 
-  const roleIds = shifts.map((shift) => shift.role_id);
-  const [roles, setRoles] = useState<Role[]>([]);
+  const [roles, setRoles] = useState<Record<number, string>>({});
 
   useEffect(() => {
-    if (roleIds.length > 0) {
-      const roleIdsString = roleIds.join(',');
-      
-      fetch(`http://localhost:8080/api/v1/role?ids=${roleIdsString}`)
-        .then((response) => response.json())
-        .then((data) => setRoles(data))
-        .catch((error) => console.error('Error fetching roles:', error));
+    const fetchRoles = async () => {
+      const rolePromises = shifts.map(shift =>
+        fetch(`http://localhost:8080/api/v1/role/${shift.role_id}`)
+          .then(response => response.json())
+          .then((data: Role) => ({ id: shift.role_id, name: data.name }))
+          .catch(error => console.error(`Error fetching role ${shift.role_id}:`, error))
+      );
+
+      const roleData = await Promise.all(rolePromises);
+      const roleMap: Record<number, string> = {};
+      roleData.forEach(role => {
+        if (role) {
+          roleMap[role.id] = role.name;
+        }
+      });
+      setRoles(roleMap);
+    };
+
+    if (shifts.length > 0) {
+      fetchRoles();
     }
-  }, [roleIds]);
+  }, [shifts]);
 
   return (
     <div className={styles.shiftItem}>
       {shifts.length > 0 ? (
-        shifts.map((shift) => {
-          const roleName = roles.find(role => role.id === shift.role_id)?.name || 'Brak roli';
-          return (
-            <div key={shift.id} className={styles.shiftDetails}>
-              {formatTime(shift.start)} - {formatTime(shift.end)}
-              <div>{roleName}</div>
-            </div>
-          );
-        })
+        shifts.map(shift => (
+          <div key={shift.id} className={styles.shiftDetails}>
+            {formatTime(shift.start)} - {formatTime(shift.end)}
+            <div>{roles[shift.role_id] || 'Loading...'}</div>
+          </div>
+        ))
       ) : (
         <div className={styles.noShift}>Brak zmiany</div>
       )}
     </div>
   );
 };
+
 export default ShiftItem;
