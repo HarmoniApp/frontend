@@ -7,7 +7,10 @@ const ScheduleBar: React.FC = () => {
 
     return (
         <div className={styles.scheduleBar}>
+            <button className={styles.Button}>Domyslne zmiany</button>
             <WeekSwitcher />
+            <button className={styles.Button}>Importuj</button>
+            <button className={styles.Button}>Opublikuj</button>
         </div>
     );
 };
