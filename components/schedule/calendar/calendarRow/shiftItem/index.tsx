@@ -14,6 +14,7 @@ interface Role {
   name: string;
   is_sup: boolean;
 }
+
 interface ShiftItemProps {
   date: string;
   shifts: Shift[];
@@ -51,8 +52,26 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts }) => {
     }
   }, [shifts]);
 
+  // Funkcja do przypisania koloru na podstawie roli
+  const getBackgroundColor = (roleId: number) => {
+    switch (roleId) {
+      case 1:
+        return '#FF6347';
+      case 2:
+        return '#4682B4';
+      case 3:
+        return '#32CD32';
+    }
+  };
+
   return (
-    <div className={styles.shiftItemContainerMain}>
+    <div 
+      className={styles.shiftItemContainerMain} 
+      style={{ 
+        backgroundColor: shifts.length > 0 ? getBackgroundColor(shifts[0].role_id) : '#A9A9A9',
+        backgroundImage: 'repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, 0.2) 10px, transparent 10px, transparent 20px)'
+      }}
+    >
       {shifts.length > 0 ? (
         shifts.map(shift => (
           <div key={shift.id} className={styles.shiftDetails}>
