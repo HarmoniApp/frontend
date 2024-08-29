@@ -52,7 +52,7 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts }) => {
   }, [shifts]);
 
   return (
-    <div className={styles.shiftItem}>
+    <div className={styles.shiftItemContainerMain}>
       {shifts.length > 0 ? (
         shifts.map(shift => (
           <div key={shift.id} className={styles.shiftDetails}>
