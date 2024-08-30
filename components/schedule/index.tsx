@@ -1,7 +1,6 @@
 'use client';
 import React, { useState } from 'react';
 import ScheduleBar from '@/components/schedule/scheduleBar';
-import ScheduleFilter from '@/components/schedule/scheduleFilter';
 import Calendar from '@/components/schedule/calendar';
 import styles from './main.module.scss';
 
@@ -37,9 +36,7 @@ const SchedulePage: React.FC = () => {
           <div className={styles.firstRowContainer}>
             <ScheduleBar currentWeek={currentWeek} onNextWeek={goToNextWeek} onPreviousWeek={goToPreviousWeek} />
           </div>
-          <input className={styles.input} type="text" value="" placeholder='wyszkukaj'/>
           <div className={styles.secoundRowContainer}>
-            {/* <ScheduleFilter /> */}
             <Calendar weekData={currentWeek} />
           </div>
         </div>
