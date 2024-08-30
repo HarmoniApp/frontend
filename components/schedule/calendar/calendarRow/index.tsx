@@ -14,7 +14,6 @@ const CalendarRow: React.FC<CalendarRowProps> = ({ currentWeek }) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // Pobierz listę użytkowników
     const fetchUsers = async () => {
       try {
         const response = await fetch('http://localhost:8080/api/v1/user/simple');
@@ -85,7 +84,6 @@ const CalendarRow: React.FC<CalendarRowProps> = ({ currentWeek }) => {
         <div className={styles.shiftContainer}>
           {currentWeek.map((day) => {
             const dayStr = day.toISOString().split('T')[0];
-
             const userShifts = schedules[user.id]?.shifts.filter((shift) => shift.start.startsWith(dayStr)) || [];
             const userAbsences = schedules[user.id]?.absences.filter((absence) => 
               new Date(absence.start) <= day && new Date(absence.end) >= day
@@ -111,5 +109,4 @@ const CalendarRow: React.FC<CalendarRowProps> = ({ currentWeek }) => {
     </div>
   );
 };
-
 export default CalendarRow;

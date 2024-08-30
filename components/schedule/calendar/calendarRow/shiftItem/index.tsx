@@ -3,9 +3,9 @@ import Shift from '@/components/types/shift';
 import styles from './main.module.scss';
 
 interface ShiftItemProps {
-  date: string;
-  shifts: Shift[];
-  absence: boolean;
+  date: string; 
+  shifts: Shift[]; 
+  absence: boolean; 
 }
 
 const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence }) => {
@@ -20,27 +20,21 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence }) => {
         return '#FF6347';
       case 'sup_mid':
         return '#4682B4';
-      case 'role11':
+      case 'user':
         return '#32CD32';
       default:
         return '#A9A9A9';
     }
   };
 
-  // Sprawdzenie, czy jest shift nieopublikowany
   const hasUnpublishedShift = shifts.some(shift => !shift.published);
-
-  // Ustawienie stylu tła na podstawie wartości published
-  const backgroundImageStyle = !absence && hasUnpublishedShift 
-    ? 'repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, 0.2) 10px, transparent 10px, transparent 20px)'
-    : 'none';
+  const shiftItemClass = `${styles.shiftItemContainerMain} ${absence ? styles.absence : hasUnpublishedShift ? styles.unpublished : styles.published}`;
 
   return (
     <div 
-      className={styles.shiftItemContainerMain} 
+      className={shiftItemClass} 
       style={{ 
-        backgroundColor: absence ? '#FFD700' : (shifts.length > 0 ? getBackgroundColor(shifts[0].role_name) : '#A9A9A9'),
-        backgroundImage: backgroundImageStyle
+        backgroundColor: absence ? '#FFD700' : (shifts.length > 0 ? getBackgroundColor(shifts[0].role_name) : '#A9A9A9')
       }}
     >
       {absence ? (
@@ -58,5 +52,4 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence }) => {
     </div>
   );
 };
-
 export default ShiftItem;
