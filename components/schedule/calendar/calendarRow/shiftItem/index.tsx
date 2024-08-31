@@ -47,7 +47,9 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence }) => {
           </div>
         ))
       ) : (
-        <div className={styles.noShift}>Brak zmiany</div>
+        <div className={styles.noShift} style={{
+          cursor: hasUnpublishedShift ? 'default' : 'pointer'
+        }}>Brak zmiany</div>
       )}
     </div>
   );
