@@ -34,7 +34,8 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence }) => {
     <div 
       className={shiftItemClass} 
       style={{ 
-        backgroundColor: absence ? '#FFD700' : (shifts.length > 0 ? getBackgroundColor(shifts[0].role_name) : '#A9A9A9')
+        backgroundColor: absence ? '#FFD700' : (shifts.length > 0 ? getBackgroundColor(shifts[0].role_name) : '#A9A9A9'),
+        cursor: 'pointer'
       }}
     >
       {absence ? (
@@ -47,9 +48,7 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence }) => {
           </div>
         ))
       ) : (
-        <div className={styles.noShift} style={{
-          cursor: hasUnpublishedShift ? 'default' : 'pointer'
-        }}>Brak zmiany</div>
+        <div className={styles.noShift}>Brak zmiany</div>
       )}
     </div>
   );
