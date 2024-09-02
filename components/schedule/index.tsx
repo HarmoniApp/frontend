@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import ScheduleBar from '@/components/schedule/scheduleBar';
 import Calendar from '@/components/schedule/calendar';
 import styles from './main.module.scss';
@@ -8,10 +8,11 @@ const Schedule: React.FC = () => {
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() => {
     const today = new Date();
     const dayOfWeek = today.getDay();
-    
     const firstDayOfWeek = new Date(today.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)));
     return firstDayOfWeek;
   });
+
+  const calendarRowRef = useRef<{ publishAll: () => void }>(null);
 
   const getWeekDays = (startDate: Date): Date[] => {
     const weekDays = [];
@@ -33,15 +34,26 @@ const Schedule: React.FC = () => {
     setCurrentWeekStart(new Date(currentWeekStart.setDate(currentWeekStart.getDate() - 7)));
   };
 
-    return (
-        <div className={styles.scheduleContainerMain}>
-          <div className={styles.firstRowContainer}>
-            <ScheduleBar currentWeek={currentWeek} onNextWeek={goToNextWeek} onPreviousWeek={goToPreviousWeek} />
-          </div>
-          <div className={styles.secoundRowContainer}>
-            <Calendar weekData={currentWeek} />
-          </div>
-        </div>
-    );
+  const handlePublishAll = () => {
+    if (calendarRowRef.current) {
+      calendarRowRef.current.publishAll();
+    }
+  };
+
+  return (
+    <div className={styles.scheduleContainerMain}>
+      <div className={styles.firstRowContainer}>
+        <ScheduleBar
+          currentWeek={currentWeek}
+          onNextWeek={goToNextWeek}
+          onPreviousWeek={goToPreviousWeek}
+          onPublishAll={handlePublishAll}
+        />
+      </div>
+      <div className={styles.secoundRowContainer}>
+        <Calendar ref={calendarRowRef} currentWeek={currentWeek} />
+      </div>
+    </div>
+  );
 };
 export default Schedule;

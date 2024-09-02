@@ -1,17 +1,18 @@
+import React, { forwardRef } from 'react';
 import CalendarHeader from '@/components/schedule/calendar/calendarHeader';
 import CalendarRow from '@/components/schedule/calendar/calendarRow';
 import styles from './main.module.scss';
 
 interface CalendarProps {
-    weekData: Date[];
+    currentWeek: Date[];
 }
 
-const Calendar: React.FC<CalendarProps> = ({weekData}) => {
+const Calendar = forwardRef(({ currentWeek }: CalendarProps, ref) => {
     return (
         <div className={styles.calendarContainerMain}>
-            <CalendarHeader weekData={weekData}/>
-            <CalendarRow currentWeek={weekData}/>
+            <CalendarHeader weekData={currentWeek} />
+            <CalendarRow ref={ref} currentWeek={currentWeek} />
         </div>
     );
-};
+});
 export default Calendar;

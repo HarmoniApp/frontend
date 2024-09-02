@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useImperativeHandle, forwardRef } from 'react';
 import EmployeeItem from './employeeItem';
 import ShiftItem from './shiftItem';
 import AddShift from '@/components/schedule/calendar/addShift';
@@ -12,7 +12,7 @@ interface CalendarRowProps {
   currentWeek: Date[];
 }
 
-const CalendarRow: React.FC<CalendarRowProps> = ({ currentWeek }) => {
+const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
   const [users, setUsers] = useState<User[]>([]);
   const [schedules, setSchedules] = useState<Record<number, WeekSchedule>>({});
   const [loading, setLoading] = useState<boolean>(true);
@@ -87,10 +87,8 @@ const CalendarRow: React.FC<CalendarRowProps> = ({ currentWeek }) => {
   };
 
   const handleEditShiftClick = (shift: Shift) => {
-    console.log('Clicked shift to edit:', shift);
     setSelectedShift(shift);
     setIsEditModalOpen(true);
-    console.log('isEditModalOpen set to true');
   };
 
   const handleAddShift = async (shiftData: { start: string; end: string; userId: number; roleName: string; }) => {
@@ -163,6 +161,47 @@ const CalendarRow: React.FC<CalendarRowProps> = ({ currentWeek }) => {
       console.error('Error deleting shift:', error);
     }
   };
+
+  const handlePublishAll = async () => {
+    const shiftsToPublish: Shift[] = [];
+
+    Object.values(schedules).forEach(schedule => {
+      schedule.shifts.forEach(shift => {
+        if (!shift.published) {
+          shiftsToPublish.push(shift);
+        }
+      });
+    });
+
+    shiftsToPublish.forEach(async (shift) => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/v1/shift/${shift.id}`, {
+          method: 'PATCH',
+        });
+
+        if (response.ok) {
+          console.log(`Shift ${shift.id} published successfully`);
+          setSchedules(prevSchedules => ({
+            ...prevSchedules,
+            [shift.user_id]: {
+              ...prevSchedules[shift.user_id],
+              shifts: prevSchedules[shift.user_id].shifts.map(s =>
+                s.id === shift.id ? { ...s, published: true } : s
+              ),
+            },
+          }));
+        } else {
+          console.error(`Failed to publish shift ${shift.id}`);
+        }
+      } catch (error) {
+        console.error('Error publishing shift:', error);
+      }
+    });
+  };
+
+  useImperativeHandle(ref, () => ({
+    publishAll: handlePublishAll,
+  }));
 
   const fetchUserSchedule = async (userId: number) => {
     try {
@@ -262,5 +301,5 @@ const CalendarRow: React.FC<CalendarRowProps> = ({ currentWeek }) => {
       )}
     </div>
   );
-};
+});
 export default CalendarRow;
