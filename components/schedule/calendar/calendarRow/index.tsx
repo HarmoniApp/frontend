@@ -21,6 +21,7 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
   const [selectedDay, setSelectedDay] = useState<string>('');
+  const [abortController, setAbortController] = useState<AbortController | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -39,20 +40,37 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
 
   useEffect(() => {
     if (users.length > 0) {
+      if (abortController) {
+        abortController.abort();
+      }
+
+      const newAbortController = new AbortController(); 
+      setAbortController(newAbortController);
       const fetchSchedules = async () => {
         try {
           const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
           const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
 
           const schedulePromises = users.map(user =>
-            fetch(`http://localhost:8080/api/v1/calendar/user/${user.id}/week?startDate=${startDate}&endDate=${endDate}`)
-              .then(response => response.json())
+            fetch(`http://localhost:8080/api/v1/calendar/user/${user.id}/week?startDate=${startDate}&endDate=${endDate}`, {
+              signal: newAbortController.signal,
+            })
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error('Network response was not ok');
+                }
+                return response.json();
+              })
               .then(data => {
                 console.log(`Fetched schedule for user ${user.id}:`, data);
                 return { userId: user.id, data: data };
               })
               .catch(error => {
-                console.error(`Error fetching schedule for user ${user.id}:`, error);
+                if (error.name === 'AbortError') {
+                  console.log(`Fetch for user ${user.id} was aborted`);
+                } else {
+                  console.error(`Error fetching schedule for user ${user.id}:`, error);
+                }
                 return { userId: user.id, data: { shifts: [], absences: [] } };
               })
           );
@@ -185,7 +203,7 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
             ...prevSchedules,
             [shift.user_id]: {
               ...prevSchedules[shift.user_id],
-              shifts: prevSchedules[shift.user_id].shifts.map(s =>
+              shifts: prevSchedules[shift.user_id].shifts.map(s => 
                 s.id === shift.id ? { ...s, published: true } : s
               ),
             },
