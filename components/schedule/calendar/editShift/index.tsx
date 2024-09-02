@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Role from '@/components/types/role';
 import Shift from '@/components/types/shift';
+import PredefinedShifts from '@/components/types/predefinedShifts';
 import styles from './main.module.scss';
 
 interface EditShiftModalProps {
@@ -19,11 +20,12 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
   if (!isOpen) return null;
 
   const [roles, setRoles] = useState<Role[]>([]);
+  const [predefineShifts, setPredefineShifts] = useState<PredefinedShifts[]>([]);
   const [selectedRole, setSelectedRole] = useState<string>(shift.role_name);
   const [selectedStartTime, setSelectedStartTime] = useState<string>(shift.start.split('T')[1].slice(0, 5));
   const [selectedEndTime, setSelectedEndTime] = useState<string>(shift.end.split('T')[1].slice(0, 5));
 
-  const shiftHours = [];
+  const shiftHours: string[] = [];
   for (let hour = 0; hour < 24; hour++) {
     for (let minute = 0; minute < 60; minute += 30) {
       const formattedHour = hour.toString().padStart(2, '0');
@@ -32,7 +34,7 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
     }
   }
 
-  const handleTimeChange = (setter: any) => (event: any) => {
+  const handleTimeChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (event: React.ChangeEvent<HTMLSelectElement>) => {
     setter(event.target.value);
   };
 
@@ -60,7 +62,20 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
         console.log('Fetched roles:', data);
       })
       .catch(error => console.error('Error fetching roles:', error));
+
+    fetch('http://localhost:8080/api/v1/predefine-shift')
+      .then(response => response.json())
+      .then(data => {
+        setPredefineShifts(data);
+        console.log('Fetched predefineShifts:', data);
+      })
+      .catch(error => console.error('Error fetching predefineShifts:', error));
   }, []);
+
+  const handlePredefinedShift = (predefinedShift: PredefinedShifts) => {
+    setSelectedStartTime(predefinedShift.start.slice(0, 5));
+    setSelectedEndTime(predefinedShift.end.slice(0, 5)); 
+  };
 
   const handleSubmit = () => {
     const newStart = `${shift.start.split('T')[0]}T${selectedStartTime}`;
@@ -105,6 +120,16 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
               </option>
             ))}
           </select>
+        </div>
+        <div className={styles.predefinedShiftsContainer}>
+          {predefineShifts.map((predefinedShift) => (
+            <button
+              onClick={() => handlePredefinedShift(predefinedShift)}
+              key={predefinedShift.id}
+            >
+              <p>{predefinedShift.name}</p>
+            </button>
+          ))}
         </div>
         <select
           value={selectedRole}
