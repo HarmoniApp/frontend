@@ -3,9 +3,9 @@ import Shift from '@/components/types/shift';
 import styles from './main.module.scss';
 
 interface ShiftItemProps {
-  date: string; 
-  shifts: Shift[]; 
-  absence: boolean; 
+  date: string;
+  shifts: Shift[];
+  absence: boolean;
 }
 
 const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence }) => {
@@ -31,10 +31,13 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence }) => {
   const shiftItemClass = `${styles.shiftItemContainerMain} ${absence ? styles.absence : hasUnpublishedShift ? styles.unpublished : styles.published}`;
 
   return (
-    <div 
-      className={shiftItemClass} 
-      style={{ 
+    <div
+      className={shiftItemClass}
+      style={{
         backgroundColor: absence ? '#FFD700' : (shifts.length > 0 ? getBackgroundColor(shifts[0].role_name) : '#A9A9A9'),
+        backgroundImage: shifts.length > 0 && !absence && !shifts[0].published ?
+          'repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, 0.2) 10px, transparent 10px, transparent 20px)'
+          : 'none',
         cursor: 'pointer'
       }}
     >
@@ -48,7 +51,7 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence }) => {
           </div>
         ))
       ) : (
-        <div className={styles.noShift}>Brak zmiany</div>
+        <div className={styles.noShift}>Dodaj zmiane</div>
       )}
     </div>
   );
