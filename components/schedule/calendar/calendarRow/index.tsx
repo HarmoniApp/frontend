@@ -111,32 +111,7 @@ const CalendarRow: React.FC<CalendarRowProps> = ({ currentWeek }) => {
 
       if (response.ok) {
         console.log('Shift added successfully', shiftData);
-        const fetchUserSchedule = async () => {
-          try {
-            const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
-            const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
-            const userResponse = await fetch(`http://localhost:8080/api/v1/calendar/user/${shiftData.userId}/week?startDate=${startDate}&endDate=${endDate}`);
-
-            if (!userResponse.ok) {
-              throw new Error(`Failed to fetch schedule for user ${shiftData.userId}`);
-            }
-
-            const data = await userResponse.json();
-            console.log(`Fetched updated schedule for user ${shiftData.userId}:`, data);
-
-            setSchedules(prevSchedules => ({
-              ...prevSchedules,
-              [shiftData.userId]: {
-                shifts: data.shifts || [],
-                absences: data.absences || []
-              }
-            }));
-          } catch (error) {
-            console.error(`Error fetching schedule for user ${shiftData.userId}:`, error);
-          }
-        };
-
-        fetchUserSchedule();
+        fetchUserSchedule(shiftData.userId);
       } else {
         console.error('Failed to add shift');
       }
@@ -163,37 +138,54 @@ const CalendarRow: React.FC<CalendarRowProps> = ({ currentWeek }) => {
 
       if (response.ok) {
         console.log('Shift edited successfully', shiftData);
-        const fetchUserSchedule = async () => {
-          try {
-            const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
-            const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
-            const userResponse = await fetch(`http://localhost:8080/api/v1/calendar/user/${shiftData.userId}/week?startDate=${startDate}&endDate=${endDate}`);
-
-            if (!userResponse.ok) {
-              throw new Error(`Failed to fetch schedule for user ${shiftData.userId}`);
-            }
-
-            const data = await userResponse.json();
-            console.log(`Fetched updated schedule for user ${shiftData.userId}:`, data);
-
-            setSchedules(prevSchedules => ({
-              ...prevSchedules,
-              [shiftData.userId]: {
-                shifts: data.shifts || [],
-                absences: data.absences || []
-              }
-            }));
-          } catch (error) {
-            console.error(`Error fetching schedule for user ${shiftData.userId}:`, error);
-          }
-        };
-
-        fetchUserSchedule();
+        fetchUserSchedule(shiftData.userId);
       } else {
         console.error('Failed to edit shift');
       }
     } catch (error) {
       console.error('Error editing shift:', error);
+    }
+  };
+
+  const handleDeleteShift = async (shiftId: number, userId: number) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/v1/shift/${shiftId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        console.log('Shift deleted successfully');
+        fetchUserSchedule(userId);
+      } else {
+        console.error('Failed to delete shift');
+      }
+    } catch (error) {
+      console.error('Error deleting shift:', error);
+    }
+  };
+
+  const fetchUserSchedule = async (userId: number) => {
+    try {
+      const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
+      const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
+      const userResponse = await fetch(`http://localhost:8080/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}`);
+
+      if (!userResponse.ok) {
+        throw new Error(`Failed to fetch schedule for user ${userId}`);
+      }
+
+      const data = await userResponse.json();
+      console.log(`Fetched updated schedule for user ${userId}:`, data);
+
+      setSchedules(prevSchedules => ({
+        ...prevSchedules,
+        [userId]: {
+          shifts: data.shifts || [],
+          absences: data.absences || []
+        }
+      }));
+    } catch (error) {
+      console.error(`Error fetching schedule for user ${userId}:`, error);
     }
   };
 
@@ -262,6 +254,7 @@ const CalendarRow: React.FC<CalendarRowProps> = ({ currentWeek }) => {
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           onEditShift={handleEditShift}
+          onDeleteShift={handleDeleteShift}
           shift={selectedShift}
           firstName={users.find(user => user.id === selectedShift.user_id)?.firstname || ''}
           surname={users.find(user => user.id === selectedShift.user_id)?.surname || ''}

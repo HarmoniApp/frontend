@@ -8,12 +8,13 @@ interface EditShiftModalProps {
   isOpen: boolean;
   onClose: () => void;
   onEditShift: (shiftData: { id: number; start: string; end: string; userId: number; roleName: string; }) => void;
+  onDeleteShift: (shiftId: number, userId: number) => void;
   shift: Shift;
   firstName: string;
   surname: string;
 }
 
-const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift, shift, firstName, surname }) => {
+const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift, onDeleteShift, shift, firstName, surname }) => {
   console.log('Rendering EditShift with isOpen:', isOpen);
   console.log('Shift data:', shift);
 
@@ -74,7 +75,7 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
 
   const handlePredefinedShift = (predefinedShift: PredefinedShifts) => {
     setSelectedStartTime(predefinedShift.start.slice(0, 5));
-    setSelectedEndTime(predefinedShift.end.slice(0, 5)); 
+    setSelectedEndTime(predefinedShift.end.slice(0, 5));
   };
 
   const handleSubmit = () => {
@@ -89,6 +90,11 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
       roleName: selectedRole,
     });
 
+    onClose();
+  };
+
+  const handleDelete = () => {
+    onDeleteShift(shift.id, shift.user_id);
     onClose();
   };
 
@@ -143,6 +149,7 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
           ))}
         </select>
         <button onClick={handleSubmit}>Zapisz Zmianę</button>
+        <button onClick={handleDelete}>Usuń Zmianę</button>
         <button onClick={handleClose}>Anuluj</button>
       </div>
     </div>
