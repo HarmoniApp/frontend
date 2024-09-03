@@ -1,4 +1,6 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCalendarPlus, faPersonThroughWindow } from '@fortawesome/free-solid-svg-icons';
 import Shift from '@/components/types/shift';
 import styles from './main.module.scss';
 
@@ -37,21 +39,23 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence }) => {
         backgroundColor: absence ? '#FFD700' : (shifts.length > 0 ? getBackgroundColor(shifts[0].role_name) : '#A9A9A9'),
         backgroundImage: shifts.length > 0 && !absence && !shifts[0].published ?
           'repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, 0.2) 10px, transparent 10px, transparent 20px)'
-          : 'none',
-        cursor: 'pointer'
+          : 'none'
       }}
     >
       {absence ? (
-        <div className={styles.absence}>Urlop</div>
+        <div className={styles.absence}>
+          <FontAwesomeIcon className={styles.buttonIcon} icon={faPersonThroughWindow} />
+          <p className={styles.absenceParagraph}>Urlop</p>
+        </div>
       ) : shifts.length > 0 ? (
         shifts.map(shift => (
           <div key={shift.id} className={styles.shiftDetails}>
-            {formatTime(shift.start)} - {formatTime(shift.end)}
-            <div>{shift.role_name}</div>
+            <p className={styles.shiftTimeParagraph}>{formatTime(shift.start)} - {formatTime(shift.end)}</p>
+            <p className={styles.shiftRoleParagraph}>{shift.role_name}</p>
           </div>
         ))
       ) : (
-        <div className={styles.noShift}>Dodaj zmiane</div>
+        <div className={styles.noShift}><FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarPlus} /></div>
       )}
     </div>
   );

@@ -9,7 +9,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({ weekData }) => {
   return (
     <div className={styles.calendarHeaderContainerMain}>
       <div className={styles.nameContainer}>
-        <p>IMIE I NAZWISKO</p>
+        {/* <p>IMIE I NAZWISKO</p> */}
       </div>
       <div className={styles.calendarDayContainer}>
       {weekData.map((day, index) => (

@@ -10,8 +10,12 @@ interface CalendarProps {
 const Calendar = forwardRef(({ currentWeek }: CalendarProps, ref) => {
     return (
         <div className={styles.calendarContainerMain}>
-            <CalendarHeader weekData={currentWeek} />
-            <CalendarRow ref={ref} currentWeek={currentWeek} />
+            <div className={styles.calendarHeaderContainer}>
+                <CalendarHeader weekData={currentWeek} />
+            </div>
+            <div className={styles.calendarRowContainer}>
+                <CalendarRow ref={ref} currentWeek={currentWeek} />
+            </div>
         </div>
     );
 });

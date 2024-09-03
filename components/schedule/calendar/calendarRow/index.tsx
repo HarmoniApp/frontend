@@ -252,11 +252,11 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
     }
 
     return users.map((user) => (
-      <div key={user.id} className={styles.userRow}>
-        <div className={styles.nameContainer}>
+      <div key={user.id} className={styles.calendarRowContainerMain}>
+        <div className={styles.employeeItemContainer}>
           <EmployeeItem firstName={user.firstname} surname={user.surname} />
         </div>
-        <div className={styles.shiftContainer}>
+        <div className={styles.shiftItemContainer}>
           {currentWeek.map((day) => {
             const dayStr = day.toISOString().split('T')[0];
 
@@ -266,7 +266,7 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
             ) || [];
 
             return (
-              <div key={dayStr}>
+              <div key={dayStr} className={styles.shiftsItems}>
                 {userShifts.length === 0 ? (
                   <div onClick={() => handleAddShiftClick(user, dayStr)}>
                     <ShiftItem
@@ -295,7 +295,7 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
   }, [users, schedules, currentWeek, loading]);
 
   return (
-    <div className={styles.calendarRow}>
+    <div>
       {renderedRows}
       {isAddModalOpen && selectedUser && selectedDay && (
         <AddShift

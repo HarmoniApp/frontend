@@ -1,14 +1,94 @@
-.scheduleBarContainerMain{
+$scheduleBar-button-bg-colour: #FFFFFF;
+$scheduleBar-font-colour: #FFFFFF;
+$scheduleBar-font-colour-dark: #000000;
+$scheduleBar-highlight-colour: #FFCF70;
+$scheduleBar-highlight-colour-hover: #FFBE4D;
+
+.scheduleBarContainerMain {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 20px;
+
+    .buttonContainer {
+        display: flex;
+        flex: 1;
+        gap: 15px;
+        margin: 0 30px 0 0;
+
+        .exportButton,
+        .publishButton {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: $scheduleBar-button-bg-colour;
+            color: $scheduleBar-font-colour-dark;
+            border: 2px solid $scheduleBar-highlight-colour;
+            border-radius: 5px;
+            font-size: 14px;
+            gap: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+
+            &:hover {
+                background-color: $scheduleBar-highlight-colour-hover;
+                color: $scheduleBar-font-colour;
+                border-color: $scheduleBar-highlight-colour-hover;
+            }
+
+        }
+    }
+
+    .weekSwitcher {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        flex: 4;
+
+        .changeWeekButton {
+            padding: 10px;
+            background-color: $scheduleBar-button-bg-colour;
+            color: $scheduleBar-font-colour-dark;
+            border: 2px solid $scheduleBar-highlight-colour;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+
+            &:hover {
+                background-color: $scheduleBar-highlight-colour-hover;
+                color: $scheduleBar-font-colour;
+                border-color: $scheduleBar-highlight-colour-hover;
+            }
+
+        }
+
+        .dateRange {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background-color: $scheduleBar-button-bg-colour;
+            color: $scheduleBar-font-colour-dark;
+            border: 2px solid $scheduleBar-highlight-colour;
+            border-radius: 5px;
+            gap: 10px;
+
+            .dateRangeParagraph{
+                margin: 0;
+                padding: 0;
+                font-weight: bold;
+                color: $scheduleBar-font-colour-dark;
+            }
+        }
+    }
 }
 
-.weekSwitcher{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+.buttonIcon {
+    height: 20px;
+    width: 20px;
 }
