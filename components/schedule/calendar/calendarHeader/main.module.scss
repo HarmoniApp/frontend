@@ -1,0 +1,51 @@
+$calendarHeader-border-colour-dark: #000000;
+$calendarHeader-font-colour-dark: #000000;
+$calendarHeader-box-shadow-colour: rgba(0, 0, 0, 0.1);
+$calendarHeader-highlight-colour: #FFCF70;
+
+.calendarHeaderContainerMain {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 30px;
+
+    .nameContainer {
+        flex: 1;
+        display: flex;
+        align-items: center;
+    }
+
+    .calendarDayContainer {
+        flex: 4;
+        display: flex;
+        gap: 15px;
+        margin: 0;
+
+        .dayContainer {
+            flex: 1;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 8vh;
+            color: $calendarHeader-font-colour-dark;
+            background-color: $calendarHeader-highlight-colour;
+            border-radius: 10px;
+            border: 2px solid $calendarHeader-border-colour-dark;
+            box-shadow: 0px 2px 5px $calendarHeader-box-shadow-colour;
+
+            .dayName {
+                font-size: 16px;
+                font-weight: bold;
+                text-transform: capitalize;
+            }
+
+            .dayDate {
+                font-size: 14px;
+            }
+
+        }
+    }
+}
