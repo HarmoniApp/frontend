@@ -1,10 +1,18 @@
+import React from 'react';
+import Roles from './roles';
+import Departments from './departments';
+import PredefinedShifts from './predefinedShifts';
+import SchedulesArchive from './schedulesArchive';
 import styles from './main.module.scss';
 
-const Settings = () => {
+const Settings: React.FC = () => {
     return (
         <div className={styles.settingsContainerMain}>
             <h1>Settings</h1>
-            <p>Here you can change your settings.</p>
+            <Roles />
+            <Departments />
+            <PredefinedShifts />
+            <SchedulesArchive />
         </div>
     );
 }
