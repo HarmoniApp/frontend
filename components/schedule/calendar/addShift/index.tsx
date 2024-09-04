@@ -122,7 +122,7 @@ const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShi
         <div className={styles.addShiftModalOverlay}>
             <div className={styles.addShiftModalContent}>
                 <div className={styles.titleContainer}>
-                    <h1 className={styles.title}>Dodaj zmianę</h1>
+                    <label className={styles.title}>Dodaj zmianę</label>
                 </div>
                 <div className={styles.basicInfoContainer}>
                     <div className={styles.personFullnameContainer}>
@@ -144,10 +144,10 @@ const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShi
                     </div>
                 </div>
                 <div className={styles.hoursConstainerMain}>
-                    <label className={styles.hourInfoLabel}>
-                        <p className={styles.hourInfoParagraph}>Godziny:</p>
-                        <p className={styles.hourInfoAdviceParagraph}>(wybierz gotowe... lub dodaj własne)</p>
-                    </label>
+                    <div className={styles.hourInfoContainer}>
+                        <label className={styles.hourInfoLabel}>Godziny:</label>
+                        <label className={styles.hourInfoAdviceLabel}>(wybierz gotowe... lub dodaj własne)</label>
+                    </div>
                     <div className={styles.hoursConstainer}>
                         <div className={styles.startHour}>
                             <label className={styles.startHourLabel}>Początek zmiany:</label>
@@ -159,7 +159,6 @@ const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShi
                                 ))}
                             </select>
                         </div>
-                        {/* <label className={styles.hourSeparator}>-</label> */}
                         <div className={styles.endHour}>
                             <label className={styles.endHourLabel}>Koniec zmiany:</label>
                             <select className={styles.hourSelect} value={selectedEndTime} onChange={handleEndTimeChange}>
@@ -173,7 +172,7 @@ const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShi
                     </div>
                 </div>
                 <div className={styles.shiftTimeContainer}>
-                    <p className={styles.shiftTimeParagraph}>Czas trwania zmiany {shiftTime()}</p>
+                    <label className={styles.shiftTimeLabel}>Czas trwania zmiany: {shiftTime()}h.</label>
                 </div>
                 <div className={styles.predefinedShiftsContainer}>
                     {predefineShifts.map((predefinedShift) => (

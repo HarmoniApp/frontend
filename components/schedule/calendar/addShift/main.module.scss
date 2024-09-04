@@ -23,35 +23,39 @@ $popup-highlight-colour-hover: #FFBE4D;
 .addShiftModalContent {
   display: flex;
   flex-direction: column;
-  border: 1px solid $popup-border-colour;
+  border: 2px solid $popup-highlight-colour;
   border-radius: 8px;
-  box-shadow: 0px 4px 6px $popup-box-shadow-colour;
   background-color: $popup-bg-colour;
-  color: $popup-font-colour;
   text-align: center;
   width: auto;
   max-height: 80vh;
   overflow-y: auto;
-
+  gap: 20px;
+  padding: 20px;
 }
 
-.titleContainer{
+.titleContainer {
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 0;
+  padding: 0;
 
   .title {
+    font-size: 30px;
     text-align: center;
     font-weight: bold;
     color: $popup-highlight-colour;
+    border-bottom: 2px solid $popup-highlight-colour;
   }
 }
 
 .basicInfoContainer {
   display: flex;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 0;
+  width: 90.5%;
 
   .personFullnameContainer,
   .dayContainer {
@@ -85,20 +89,23 @@ $popup-highlight-colour-hover: #FFBE4D;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
 
-  .hourInfoLabel {
+  .hourInfoContainer {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 10px;
 
-    .hourInfoParagraph {
+    .hourInfoLabel {
       font-size: large;
       font-weight: bold;
       color: $popup-highlight-colour;
     }
 
-    .hourInfoAdviceParagraph {
+    .hourInfoAdviceLabel {
       font-size: x-small;
       color: $popup-font-colour;
     }
@@ -108,7 +115,13 @@ $popup-highlight-colour-hover: #FFBE4D;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    justify-content: center;
+    justify-content: space-between;
+    width: 100%;
+
+    .startHourLabel, .endHourLabel {
+      font-weight: bold;
+      color: $popup-font-colour;
+    }
 
     .startHour,
     .endHour {
@@ -129,12 +142,11 @@ $popup-highlight-colour-hover: #FFBE4D;
 .shiftTimeContainer {
   text-align: center;
 
-  .shiftTimeParagraph {
+  .shiftTimeLabel {
     font-weight: bold;
     color: $popup-font-colour;
   }
 }
-
 
 .predefinedShiftsContainer {
   display: grid;
@@ -160,9 +172,9 @@ $popup-highlight-colour-hover: #FFBE4D;
   }
 }
 
-
 .roleContainer {
   text-align: left;
+
   .roleLabel {
     font-weight: bold;
     color: $popup-highlight-colour;
@@ -177,8 +189,9 @@ $popup-highlight-colour-hover: #FFBE4D;
 
 .buttonContainer {
   display: flex;
-  justify-content: space-around;
-  margin-top: 20px;
+  justify-content: space-between;
+  align-self: center;
+  width: 100%;
 
   .addShiftButton,
   .closeButton {
@@ -193,13 +206,14 @@ $popup-highlight-colour-hover: #FFBE4D;
     font-weight: bold;
     background-color: $popup-highlight-colour;
     color: $popup-font-colour-dark;
+    padding: 10px 15px;
 
-    .buttonIcon{
+    .buttonIcon {
       height: 20px;
       width: 20px;
     }
 
-    .buttonParagraph{
+    .buttonParagraph {
       margin: 0;
       font-size: 14px;
     }
