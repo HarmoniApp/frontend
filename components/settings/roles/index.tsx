@@ -92,7 +92,7 @@ const Roles: React.FC = () => {
   };
 
   return (
-    <div className={styles.rolePopUpContainerMain}>
+    <div className={styles.roleContainerMain}>
       <div className={styles.showRoleMapConteiner}>
         {roles.map(role => (
           <div key={role.id} className={styles.showRoleConteiner}>
