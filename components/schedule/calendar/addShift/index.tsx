@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowTurnUp, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+import { faArrowTurnUp, faCalendarPlus } from '@fortawesome/free-solid-svg-icons';
 import Role from '@/components/types/role';
 import User from '@/components/types/user';
 import PredefinedShifts from '@/components/types/predefinedShifts';
@@ -201,7 +201,7 @@ const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShi
                     </select>
                 </div>
                 <div className={styles.buttonContainer}>
-                    <button className={styles.addShiftButton} onClick={handleSubmit}><FontAwesomeIcon className={styles.buttonIcon} icon={faCircleCheck} /><p className={styles.buttonParagraph}>Dodaj zmianę</p></button>
+                    <button className={styles.addShiftButton} onClick={handleSubmit}><FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarPlus} /><p className={styles.buttonParagraph}>Dodaj zmianę</p></button>
                     <button className={styles.closeButton} onClick={handleClose}><FontAwesomeIcon className={styles.buttonIcon} icon={faArrowTurnUp} style={{ transform: 'rotate(-90deg)' }}/><p className={styles.buttonParagraph}>Anuluj</p></button>
                 </div>
             </div>

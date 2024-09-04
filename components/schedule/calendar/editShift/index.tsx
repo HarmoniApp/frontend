@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowTurnUp, faCalendarXmark, faCalendarPlus } from '@fortawesome/free-solid-svg-icons';
 import Role from '@/components/types/role';
 import Shift from '@/components/types/shift';
 import PredefinedShifts from '@/components/types/predefinedShifts';
@@ -73,6 +75,10 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
       .catch(error => console.error('Error fetching predefineShifts:', error));
   }, []);
 
+  const newDayFormat = () => {
+    return shift.start.split('T')[0].replace(/-/g, '.').split('.').reverse().join('.');
+  };
+
   const handlePredefinedShift = (predefinedShift: PredefinedShifts) => {
     setSelectedStartTime(predefinedShift.start.slice(0, 5));
     setSelectedEndTime(predefinedShift.end.slice(0, 5));
@@ -103,54 +109,92 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
   };
 
   return (
-    <div className={styles.modalOverlay}>
-      <div className={styles.modalContent}>
-        <h2>Edytuj Zmianę</h2>
-        <p>Pracownik: {firstName} {surname}</p>
-        <p>Data: {shift.start.split('T')[0]}</p>
-        <p>Czas zmiany {shiftTime()}</p>
-        <div>
-          <select value={selectedStartTime} onChange={handleStartTimeChange}>
-            {shiftHours.map((time, index) => (
-              <option key={index} value={time}>
-                {time}
-              </option>
-            ))}
-          </select>
+    <div className={styles.editShiftModalOverlay}>
+      <div className={styles.editShiftModalContent}>
+        <div className={styles.titleContainer}>
+          <label className={styles.title}>Edytuj zmianę</label>
         </div>
-        <div>
-          <select value={selectedEndTime} onChange={handleEndTimeChange}>
-            {shiftHours.map((time, index) => (
-              <option key={index} value={time}>
-                {time}
-              </option>
-            ))}
-          </select>
+        <div className={styles.basicInfoContainer}>
+          <div className={styles.personFullnameContainer}>
+            <div className={styles.fullNameContainer}>
+              <label className={styles.fullNameLabel}></label>Imie i Nazwisko:
+            </div>
+            <div className={styles.fullNameParagraphContainer}>
+              <p className={styles.firstnameParagraph}>{firstName}</p>
+              <p className={styles.surnameParagraph}>{surname}</p>
+            </div>
+          </div>
+          <div className={styles.dayContainer}>
+            <div className={styles.dayLabelContainer}>
+              <label className={styles.dayLabel}></label>  Data:
+            </div>
+            <div className={styles.dayParagraphContainer}>
+              <p className={styles.dayParagraph}>{newDayFormat()}</p>
+            </div>
+          </div>
+        </div>
+        <div className={styles.hoursConstainerMain}>
+          <div className={styles.hourInfoContainer}>
+            <label className={styles.hourInfoLabel}>Godziny:</label>
+            <label className={styles.hourInfoAdviceLabel}>(wybierz gotowe... lub dodaj własne)</label>
+          </div>
+          <div className={styles.hoursConstainer}>
+            <div className={styles.startHour}>
+              <label className={styles.startHourLabel}>Początek zmiany:</label>
+              <select className={styles.hourSelect} value={selectedStartTime} onChange={handleStartTimeChange}>
+                {shiftHours.map((time, index) => (
+                  <option key={index} value={time}>
+                    {time}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className={styles.endHour}>
+              <label className={styles.endHourLabel}>Koniec zmiany:</label>
+              <select className={styles.hourSelect} value={selectedEndTime} onChange={handleEndTimeChange}>
+                {shiftHours.map((time, index) => (
+                  <option key={index} value={time}>
+                    {time}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div className={styles.shiftTimeContainer}>
+          <label className={styles.shiftTimeLabel}>Czas trwania zmiany: {shiftTime()}h.</label>
         </div>
         <div className={styles.predefinedShiftsContainer}>
           {predefineShifts.map((predefinedShift) => (
             <button
               onClick={() => handlePredefinedShift(predefinedShift)}
               key={predefinedShift.id}
+              className={styles.predefinedShiftButton}
             >
-              <p>{predefinedShift.name}</p>
+              <p className={styles.predefinedShiftParagraph}>{predefinedShift.name}</p>
             </button>
           ))}
         </div>
-        <select
-          value={selectedRole}
-          onChange={(e) => setSelectedRole(e.target.value)}
-        >
-          <option value="">Wybierz rolę</option>
-          {roles.map((role) => (
-            <option key={role.id} value={role.name}>
-              {role.name}
-            </option>
-          ))}
-        </select>
-        <button onClick={handleSubmit}>Zapisz Zmianę</button>
-        <button onClick={handleDelete}>Usuń Zmianę</button>
-        <button onClick={handleClose}>Anuluj</button>
+        <div className={styles.roleContainer}>
+          <label className={styles.roleLabel}>Rola na zmianie: </label>
+          <select
+            className={styles.roleSelect}
+            value={selectedRole}
+            onChange={(e) => setSelectedRole(e.target.value)}
+          >
+            <option value="">Wybierz rolę</option>
+            {roles.map((role) => (
+              <option key={role.id} value={role.name}>
+                {role.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className={styles.buttonContainer}>
+          <button className={styles.addShiftButton} onClick={handleSubmit}><FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarPlus} /><p className={styles.buttonParagraph}>Dodaj zmianę</p></button>
+          <button className={styles.deleteShiftButton} onClick={handleDelete}><FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarXmark} /><p className={styles.buttonParagraph}>Usuń zmianę</p></button>
+          <button className={styles.closeButton} onClick={handleClose}><FontAwesomeIcon className={styles.buttonIcon} icon={faArrowTurnUp} style={{ transform: 'rotate(-90deg)' }} /><p className={styles.buttonParagraph}>Anuluj</p></button>
+        </div>
       </div>
     </div>
   );
