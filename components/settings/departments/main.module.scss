@@ -22,7 +22,7 @@ $popup-yes-button-colour: #008000;
 
 .showDepartmentsMapConteiner {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-template-rows: minmax(auto, 1fr);
     gap: 10px;
 
@@ -30,25 +30,17 @@ $popup-yes-button-colour: #008000;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        padding: 10px;
         background-color: $popup-highlight-colour;
         border-radius: 5px;
-        gap: 10px;
+        margin: 0;
+        padding: 10px;
 
         .departmentInfoContainer {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            margin: 0;
+            padding: 0;
 
-            .departmentNameParagraph,
-            .departmentInfoParagraph {
-                margin: 0;
-                color: $popup-font-colour-dark;
-                font-weight: bold;
-                width: 100%;
-            }
-
-            .departmentNameInput,
             .departmentInput {
                 padding: 5px;
                 border: 2px solid $popup-bg-colour-dark;
@@ -57,6 +49,75 @@ $popup-yes-button-colour: #008000;
                 color: $popup-font-colour-dark;
                 outline: none;
                 width: 100%;
+                margin: 0 0 5px 0;
+            }
+
+            .inputLabel {
+                font-weight: bold;
+                color: $popup-font-colour-dark;
+            }
+
+            .departmentNameContainer {
+                flex: 1;
+                margin: 0 0 10px 0;
+
+                .departmentNameLabel {
+                    font-weight: bold;
+                    color: $popup-font-colour-dark;
+                    font-size: 22px;
+                    text-transform: uppercase;
+                    text-decoration: underline;
+                }
+            }
+
+            .departmentInfoRowContainer {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                margin: 0 0 10px 0;
+                width: 100%;
+
+                .departmentDataContainer {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 5px;
+
+                    .comma::after {
+                        content: ',';
+                    }
+
+                    .largeAll {
+                        text-transform: uppercase;
+                        font-weight: bold;
+                    }
+
+                    .departmentCityLabel {
+                        color: $popup-font-colour-dark;
+                    }
+
+                    .buildingNumbersContainer {
+                        display: flex;
+                        flex-direction: row;
+
+                        .slash::after {
+                            content: '/';
+                        }
+                    }
+
+                    .departmentZipCodeParagraph {
+                        color: $popup-font-colour-dark;
+                    }
+                }
+            }
+
+            @media (max-width: 768px) {
+                .departmentInfoRowContainer {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
             }
         }
 
@@ -97,33 +158,19 @@ $popup-yes-button-colour: #008000;
     }
 }
 
-@media (max-width: 1200px) {
-    .showDepartmentsMapConteiner {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 800px) {
-    .showDepartmentsMapConteiner {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 600px) {
-    .showDepartmentsMapConteiner {
-        grid-template-columns: 1fr;
-    }
-}
-
-.addContainer {
-    display: flex;
-    flex-direction: column;
+.addDepartmentContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    margin: 10px 0 0 0;
+    margin-top: 10px;
+
+    .addItemContainer {
+        display: flex;
+        flex-direction: column;
+    }
 
     .departmentNameInput,
     .departmentInput {
-        flex-grow: 1;
         padding: 10px;
         border: 2px solid $popup-highlight-colour;
         border-radius: 5px;
@@ -135,6 +182,16 @@ $popup-yes-button-colour: #008000;
             color: $popup-font-colour-dark;
         }
     }
+
+    .inputLabel {
+        font-weight: bold;
+        color: $popup-font-colour;
+        margin-bottom: 5px;
+    }
+}
+
+.buttonContainer {
+    width: 100%;
 
     .addButton {
         background-color: $popup-highlight-colour;
@@ -149,5 +206,27 @@ $popup-yes-button-colour: #008000;
         &:hover {
             background-color: $popup-highlight-colour-hover;
         }
+    }
+}
+
+@media (max-width: 1200px) {
+    .showDepartmentsMapConteiner {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 800px) {
+
+    .showDepartmentsMapConteiner,
+    .addDepartmentContainer {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+
+    .showDepartmentsMapConteiner,
+    .addDepartmentContainer {
+        grid-template-columns: 1fr;
     }
 }

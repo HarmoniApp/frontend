@@ -9,10 +9,10 @@ const Settings: React.FC = () => {
     return (
         <div className={styles.settingsContainerMain}>
             <h1>Settings</h1>
-            <Roles />
+            {/* <Roles /> */}
             <Departments />
-            <PredefinedShifts />
-            <SchedulesArchive />
+            {/* <PredefinedShifts /> */}
+            {/* <SchedulesArchive /> */}
         </div>
     );
 }
