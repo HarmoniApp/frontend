@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowTurnUp, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import Role from '@/components/types/role';
 import User from '@/components/types/user';
 import PredefinedShifts from '@/components/types/predefinedShifts';
 import styles from './main.module.scss';
-
 interface AddShiftModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -82,6 +83,10 @@ const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShi
             });
     }, [isOpen]);
 
+    const newDayFormat = () => {
+        return day.split('-').reverse().join('.');
+    };
+
     const resetForm = () => {
         setSelectedRole('');
         setSelectedStartTime('00:00');
@@ -114,53 +119,92 @@ const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShi
     };
 
     return isOpen ? (
-        <div className={styles.modalOverlay}>
-            <div className={styles.modalContent}>
-                <h2>Dodaj Zmianę dla {user.firstname} {user.surname} na dzień {day}</h2>
-                <div>
-                    <select value={selectedStartTime} onChange={handleStartTimeChange}>
-                        {shiftHours.map((time, index) => (
-                            <option key={index} value={time}>
-                                {time}
-                            </option>
-                        ))}
-                    </select>
+        <div className={styles.addShiftModalOverlay}>
+            <div className={styles.addShiftModalContent}>
+                <div className={styles.titleContainer}>
+                    <h1 className={styles.title}>Dodaj zmianę</h1>
                 </div>
-                <div>
-                    <select value={selectedEndTime} onChange={handleEndTimeChange}>
-                        {shiftHours.map((time, index) => (
-                            <option key={index} value={time}>
-                                {time}
-                            </option>
-                        ))}
-                    </select>
+                <div className={styles.basicInfoContainer}>
+                    <div className={styles.personFullnameContainer}>
+                        <div className={styles.fullNameContainer}>
+                            <label className={styles.fullNameLabel}></label>Imie i Nazwisko:
+                        </div>
+                        <div className={styles.fullNameParagraphContainer}>
+                            <p className={styles.firstnameParagraph}>{user.firstname}</p>
+                            <p className={styles.surnameParagraph}>{user.surname}</p>
+                        </div>
+                    </div>
+                    <div className={styles.dayContainer}>
+                        <div className={styles.dayLabelContainer}>
+                            <label className={styles.dayLabel}></label>  Data:
+                        </div>
+                        <div className={styles.dayParagraphContainer}>
+                            <p className={styles.dayParagraph}>{newDayFormat()}</p>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <p>Czas zmiany {shiftTime()}</p>
+                <div className={styles.hoursConstainerMain}>
+                    <label className={styles.hourInfoLabel}>
+                        <p className={styles.hourInfoParagraph}>Godziny:</p>
+                        <p className={styles.hourInfoAdviceParagraph}>(wybierz gotowe... lub dodaj własne)</p>
+                    </label>
+                    <div className={styles.hoursConstainer}>
+                        <div className={styles.startHour}>
+                            <label className={styles.startHourLabel}>Początek zmiany:</label>
+                            <select className={styles.hourSelect} value={selectedStartTime} onChange={handleStartTimeChange}>
+                                {shiftHours.map((time, index) => (
+                                    <option key={index} value={time}>
+                                        {time}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        {/* <label className={styles.hourSeparator}>-</label> */}
+                        <div className={styles.endHour}>
+                            <label className={styles.endHourLabel}>Koniec zmiany:</label>
+                            <select className={styles.hourSelect} value={selectedEndTime} onChange={handleEndTimeChange}>
+                                {shiftHours.map((time, index) => (
+                                    <option key={index} value={time}>
+                                        {time}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.shiftTimeContainer}>
+                    <p className={styles.shiftTimeParagraph}>Czas trwania zmiany {shiftTime()}</p>
                 </div>
                 <div className={styles.predefinedShiftsContainer}>
                     {predefineShifts.map((predefinedShift) => (
                         <button
                             onClick={() => handlePredefinedShift(predefinedShift)}
                             key={predefinedShift.id}
+                            className={styles.predefinedShiftButton}
                         >
-                            <p>{predefinedShift.name}</p>
+                            <p className={styles.predefinedShiftParagraph}>{predefinedShift.name}</p>
                         </button>
                     ))}
                 </div>
-                <select
-                    value={selectedRole}
-                    onChange={(e) => setSelectedRole(e.target.value)}
-                >
-                    <option value="">Wybierz rolę</option>
-                    {roles.map((role) => (
-                        <option key={role.id} value={role.name}>
-                            {role.name}
-                        </option>
-                    ))}
-                </select>
-                <button onClick={handleSubmit}>Dodaj Zmianę</button>
-                <button onClick={handleClose}>Anuluj</button>
+                <div className={styles.roleContainer}>
+                    <label className={styles.roleLabel}>Rola na zmianie: </label>
+                    <select
+                        className={styles.roleSelect}
+                        value={selectedRole}
+                        onChange={(e) => setSelectedRole(e.target.value)}
+                    >
+                        <option value="">Wybierz rolę</option>
+                        {roles.map((role) => (
+                            <option key={role.id} value={role.name}>
+                                {role.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className={styles.buttonContainer}>
+                    <button className={styles.addShiftButton} onClick={handleSubmit}><FontAwesomeIcon className={styles.buttonIcon} icon={faCircleCheck} /><p className={styles.buttonParagraph}>Dodaj zmianę</p></button>
+                    <button className={styles.closeButton} onClick={handleClose}><FontAwesomeIcon className={styles.buttonIcon} icon={faArrowTurnUp} style={{ transform: 'rotate(-90deg)' }}/><p className={styles.buttonParagraph}>Anuluj</p></button>
+                </div>
             </div>
         </div>
     ) : null;
