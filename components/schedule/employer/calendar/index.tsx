@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
-import CalendarHeader from '@/components/schedule/calendar/calendarHeader';
-import CalendarRow from '@/components/schedule/calendar/calendarRow';
+import CalendarHeader from './calendarHeader';
+import CalendarRow from './calendarRow';
 import styles from './main.module.scss';
 
 interface CalendarProps {

@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useMemo, useImperativeHandle, forwardRef } from 'react';
 import EmployeeItem from './employeeItem';
 import ShiftItem from './shiftItem';
-import AddShift from '@/components/schedule/calendar/addShift';
-import EditShift from '@/components/schedule/calendar/editShift';
+import AddShift from '../addShift';
+import EditShift from '../editShift';
 import WeekSchedule from '@/components/types/weekSchedule';
 import User from '@/components/types/user';
 import Shift from '@/components/types/shift';
