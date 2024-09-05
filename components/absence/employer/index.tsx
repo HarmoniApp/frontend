@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRectangleList, faGrip } from '@fortawesome/free-solid-svg-icons';
-import AbsenceCard from '@/components/absence/employer/absentCard';
+import AbsenceCard from '@/components/absence/employer/absenceCard';
 import Absence from '@/components/types/absence';
 import AbsenceStatus from '@/components/types/absenceStatus';
 import styles from './main.module.scss';
