@@ -2,7 +2,7 @@ import Employee from './employee';
 import Employer from './employer';
 import styles from './main.module.scss';
 
-const absence = () => {
+const Absence = () => {
     const whoIsLogged = true;  //true = employee, false = employer
     const employeeId = 26;
 
@@ -12,4 +12,4 @@ const absence = () => {
         </div>
     )
 }
-export default absence;
+export default Absence;
