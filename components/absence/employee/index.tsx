@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from './main.module.scss';
-import AbsenceRequest from '@/components/absence/employees/absenceRequest';
+import AbsenceRequest from '@/components/absence/employee/absenceRequest';
 import Modal from 'react-modal';
 
 const AbsenceEmployees = () => {
