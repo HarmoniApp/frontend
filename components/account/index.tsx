@@ -1,10 +1,9 @@
 import React from 'react';
-import styles from './main.module.scss';
+import { usePathname, useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEdit, faQuestionCircle, faClipboard, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import Flag from 'react-flagkit';
-
-
+import styles from './main.module.scss';
 
 
 interface SidebarProps {
@@ -13,6 +12,13 @@ interface SidebarProps {
 }
 
 const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
+
+const pathname = usePathname();
+const router = useRouter();
+
+const settingsToGo = () => {
+    router.push('/settings');
+  };
     return (
         <>
             <div className={`${styles.sidebarContainer} ${isOpen ? styles.open : ''}`}>
@@ -33,7 +39,7 @@ const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
                         <FontAwesomeIcon icon={faClipboard} className={styles.icon} />
                         <span>Przekaż Opinię</span>
                     </div>
-                    <div className={styles.item}>
+                    <div className={`${styles.item} ${pathname === '/settings' ? styles.active : ''}`} onClick={settingsToGo}>
                         <FontAwesomeIcon icon={faCog} className={styles.icon} />
                         <span>Ustawienia</span>
                     </div>

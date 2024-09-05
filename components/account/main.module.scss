@@ -24,6 +24,12 @@ $logo-size: 24px;
     right: 0;
 }
 
+.active {
+    color: $highlight-color;
+    font-weight: bold;
+    border-bottom: 2px solid $highlight-color;
+}
+
 .header {
     background-color: $bg-color;
     color: $highlight-color;
