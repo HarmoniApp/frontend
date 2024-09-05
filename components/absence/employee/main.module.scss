@@ -2,29 +2,164 @@ $popup-bg: rgba(0, 0, 0, 0.5);
 $popup-bg-colour: #4F4E4E;
 $popup-highlight-colour: #FFCF70;
 
+$absenceTable-highlight-colour: #FFCF70;
+$absenceTable-highlight-hover-colour: #FFBE4D;
+$absenceTable-font-colour-light: #ffffff;
+$absenceTable-font-colour-dark: #000000;
+$absenceTable-bg-colour-light: #f5f5f5;
+$absenceTable-bg-colour-dark: #4F4E4E;
+
+$absenceTable-button-bg-colour: #FFFFFF;
+$absenceTable-font-colour: #FFFFFF;
+$absenceTable-font-colour-dark: #000000;
+$absenceTable-highlight-colour: #FFCF70;
+$absenceTable-highlight-colour-hover: #FFBE4D;
+
 .addAbsencetModalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: $popup-bg;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $popup-bg;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.addAbsenceModalContent {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid $popup-highlight-colour;
+  border-radius: 8px;
+  background-color: $popup-bg-colour;
+  text-align: center;
+  width: auto;
+  max-height: 80vh;
+  overflow-y: auto;
+  gap: 20px;
+  padding: 20px;
+}
+
+.absenceEmployeesContainerMain {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  justify-content: center;
+  gap: 40px;
+  margin: 20px auto ;
+  width: 70%;
+}
+
+.absenceHeaderContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: $popup-bg-colour;
+  border: 2px solid $absenceTable-highlight-colour;
+  border-radius: 10px;
+  padding: 20px 40px;
+  width: 100%;
+
+  .title{
+    font-size: 24px;
+    font-weight: bold;
+    color: $absenceTable-highlight-colour;
+    text-transform: uppercase;
+    text-decoration: underline;
+
   }
-  
-  .addAbsenceModalContent {
-    display: flex;
-    flex-direction: column;
-    border: 2px solid $popup-highlight-colour;
-    border-radius: 8px;
-    background-color: $popup-bg-colour;
-    text-align: center;
-    width: auto;
-    max-height: 80vh;
-    overflow-y: auto;
-    gap: 20px;
-    padding: 20px;
-  }
+}
+
+.tableContainer {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  background-color: $popup-bg-colour;
+  border: 2px solid $absenceTable-highlight-colour;
+  border-radius: 10px;
+  padding: 40px;
+  width: 100%;
+}
+
+.absenceTable {
+  border-collapse: collapse;
+  background-color: $absenceTable-bg-colour-dark;
+
+}
+
+.absenceThead {
+  text-align: center;
+  background-color: $absenceTable-highlight-colour;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.absenceTheadRowElement {
+  border-bottom: 2px solid $absenceTable-highlight-colour;
+}
+
+.absenceTheadHeadElement {
+  padding: 15px;
+  font-size: 16px;
+  color: $absenceTable-font-colour-dark;
+}
+
+.absenceDataBody {
+  color: $absenceTable-font-colour-dark;
+  text-align: center;
+}
+
+.absenceDataBodyRowElement {
+  border-bottom: 2px solid $absenceTable-highlight-colour;
+  transition: background-color 0.3s ease;
+}
+
+.absenceDataBodyRowElement:hover {
+  background-color: $absenceTable-highlight-colour;
+}
+
+.absenceDataBodyHeadElement {
+  padding: 15px;
+  font-size: 14px;
+  color: $absenceTable-font-colour-light;
+  text-transform: capitalize;
+}
+
+.absenceDataBodyHeadElementButton{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.afterElement::after {
+  content: " dni";
+}
+
+.archiveButton,
+.newAbsenceButton {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background-color: $absenceTable-button-bg-colour;
+  color: $absenceTable-font-colour-dark;
+  border: 2px solid $absenceTable-highlight-colour;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.archiveButton:hover,
+.newAbsenceButton:hover {
+  background-color: $absenceTable-highlight-colour-hover;
+  color: $absenceTable-font-colour;
+  border-color: $absenceTable-highlight-colour-hover;
+}
