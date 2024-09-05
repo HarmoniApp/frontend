@@ -1,9 +1,13 @@
+'use client';
 import React, { useState } from 'react';
 import styles from './main.module.scss';
 import AbsenceRequest from '@/components/absence/employee/absenceRequest';
-import Modal from 'react-modal';
 
-const AbsenceEmployees = () => {
+interface AbsenceEmployeesProps {
+    userId: number;
+}
+
+const AbsenceEmployees:React.FC<AbsenceEmployeesProps> = ({userId}) => {
     const [modalIsOpenAbsenceRequest, setModalIsOpenAbsenceRequest] = useState(false);
     const openModalAbsenceRequest = () => setModalIsOpenAbsenceRequest(true);
     const closeModalAbsenceRequest = () => setModalIsOpenAbsenceRequest(false);
@@ -17,18 +21,16 @@ const AbsenceEmployees = () => {
         <div>
             <h1>EmployeesVacations</h1>
             <button onClick={openModalAbsenceRequest}>Złóż wniosek o urlop</button>
-            <Modal
-                isOpen={modalIsOpenAbsenceRequest}
-                // If we click outside the popUp area it will close (onRequestClose)
-                // onRequestClose={closeModalAbsenceRequest}
-                contentLabel="Vacations Employees Request"
-                className={styles.modalContent}
-                overlayClassName={styles.modalOverlay}
-            >
-                <AbsenceRequest />
-                <button onClick={closeModalAbsenceRequest}>Zamknij</button>
-            </Modal>
+
+            {modalIsOpenAbsenceRequest && (
+                <div className={styles.addAbsencetModalOverlay}>
+                    <div className={styles.addAbsenceModalContent}>
+                        <AbsenceRequest onSend={userId} onClose={closeModalAbsenceRequest}/>
+                    </div>
+                </div>
+            )}
         </div>
-    )
+    );
 }
-export default AbsenceEmployees
+
+export default AbsenceEmployees;
