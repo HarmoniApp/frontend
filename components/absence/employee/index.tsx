@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Absence from '@/components/types/absence';
 import AbsenceRequest from '@/components/absence/employee/absenceRequest';
 import styles from './main.module.scss';
+
 interface AbsenceEmployeesProps {
     userId: number;
 }
@@ -15,41 +16,41 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
     const [absenceTypeNames, setAbsenceTypeNames] = useState<{ [key: number]: string }>({});
 
     useEffect(() => {
-        const fetchUserAbsences = async () => {
-            try {
-                const response = await fetch(`http://localhost:8080/api/v1/absence/user/${userId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const data: Absence[] = await response.json();
-                setAbsences(data);
-
-                const typeNames: { [key: number]: string } = {};
-                for (const absence of data) {
-                    if (!(absence.absence_type_id in typeNames)) {
-                        const typeName = await fetchAbsenceTypeName(absence.absence_type_id);
-                        typeNames[absence.absence_type_id] = typeName;
-                    }
-                }
-                setAbsenceTypeNames(typeNames);
-            } catch (error) {
-                console.error('Error fetching user absences:', error);
-            }
-        };
-
         fetchUserAbsences();
     }, []);
 
+    const fetchUserAbsences = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/v1/absence/user/${userId}/archived?archived=false`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data: Absence[] = await response.json();
+            setAbsences(data);
+
+            const typeNames: { [key: number]: string } = {};
+            for (const absence of data) {
+                if (!(absence.absence_type_id in typeNames)) {
+                    const typeName = await fetchAbsenceTypeName(absence.absence_type_id);
+                    typeNames[absence.absence_type_id] = typeName;
+                }
+            }
+            setAbsenceTypeNames(typeNames);
+        } catch (error) {
+            console.error('Error fetching user absences:', error);
+        }
+    };
+
     const fetchAbsenceTypeName = async (id: number): Promise<string> => {
         try {
-            const response = await fetch(`http://localhost:8080/api/v1/absence-type/${id}/archived?archived=false`, {
+            const response = await fetch(`http://localhost:8080/api/v1/absence-type/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -65,6 +66,25 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
         } catch (error) {
             console.error(`Error fetching absence type name for ID ${id}:`, error);
             return 'Unknown';
+        }
+    };
+
+    const handleArchiveAbsence = async (id: number) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/v1/absence/archive/${id}?archived=true`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            fetchUserAbsences();
+        } catch (error) {
+            console.error(`Error archiving absence with ID ${id}:`, error);
         }
     };
 
@@ -94,13 +114,16 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                                 <td className={styles.absenceDataBodyHeadElement}>{new Date(absence.end).toLocaleDateString()}</td>
                                 <td className={`${styles.absenceDataBodyHeadElement} ${styles.afterElement}`}>{absence.working_days}</td>
                                 <td className={styles.absenceDataBodyHeadElement}>{absence.status.name}</td>
-                                <td className={`${styles.absenceDataBodyHeadElement} ${styles.absenceDataBodyHeadElementButton}`}><button className={styles.archiveButton}>Tak</button></td>
+                                <td className={`${styles.absenceDataBodyHeadElement} ${styles.absenceDataBodyHeadElementButton}`}>
+                                    <button className={styles.archiveButton} onClick={() => handleArchiveAbsence(absence.id)}>
+                                        Tak
+                                    </button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
-
 
             {modalIsOpenAbsenceRequest && (
                 <div className={styles.addAbsencetModalOverlay}>
