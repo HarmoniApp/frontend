@@ -8,7 +8,7 @@ import styles from './main.module.scss';
 const Roles: React.FC = () => {
   const [roles, setRoles] = useState<RoleWithColour[]>([]);
   const [newRoleName, setNewRoleName] = useState<string>('');
-  const [newRoleColor, setNewRoleColor] = useState<string>('#000000');
+  const [newRoleColor, setNewRoleColor] = useState<string>('#ffb6c1');
   const [editingRoleId, setEditingRoleId] = useState<number | null>(null);
   const [editedRoleName, setEditedRoleName] = useState<string>('');
   const [editedRoleColor, setEditedRoleColor] = useState<string>('');
@@ -54,7 +54,7 @@ const Roles: React.FC = () => {
       .then(() => {
         fetchRoles();
         setNewRoleName('');
-        setNewRoleColor('#000000');
+        setNewRoleColor('#ffb6c1');
       })
       .catch(error => console.error('Error adding role:', error));
   };
@@ -62,13 +62,13 @@ const Roles: React.FC = () => {
   const handleEditRole = (role: RoleWithColour) => {
     setEditingRoleId(role.id);
     setEditedRoleName(role.name);
-    setEditedRoleColor(role.color || '#000000');
+    setEditedRoleColor(role.color || '#ffb6c1');
   };
 
   const handleCancelEdit = () => {
     setEditingRoleId(null);
     setEditedRoleName('');
-    setEditedRoleColor('#000000');
+    setEditedRoleColor('#ffb6c1');
   };
 
   const handleSaveEdit = () => {
@@ -85,7 +85,7 @@ const Roles: React.FC = () => {
           fetchRoles();
           setEditingRoleId(null);
           setEditedRoleName('');
-          setEditedRoleColor('#000000');
+          setEditedRoleColor('#ffb6c1');
         })
         .catch(error => console.error('Error updating role:', error));
     }
