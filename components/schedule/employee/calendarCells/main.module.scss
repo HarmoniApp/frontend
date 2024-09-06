@@ -30,11 +30,6 @@ $employeeCalendar-font-colour-dark: #000;
     font-weight: bold;
   }
 
-  .emptyCell {
-    background-color: $employeeCalendar-bg-colour-powderlight;
-    border: 2px solid $employeeCalendar-border-colour;
-  }
-
   .calendarCell {
     display: flex;
     flex-direction: column;
@@ -43,6 +38,7 @@ $employeeCalendar-font-colour-dark: #000;
     height: 100%; 
     padding: 5px;
     color: $employeeCalendar-font-colour-dark;
+    border-radius: 8px;
 
     .shiftOrAbsenceContainer{
       flex-grow: 1;
