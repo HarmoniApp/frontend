@@ -122,7 +122,7 @@ const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShi
                     }}
                 >
                     {({ handleSubmit, setFieldValue, errors, touched, values}) => (
-                        <Form onSubmit={handleSubmit}>
+                        <Form onSubmit={handleSubmit} className={styles.editShiftForm}>
                             <div className={styles.titleContainer}>
                                 <label className={styles.title}>Dodaj zmianę</label>
                             </div>
