@@ -44,7 +44,6 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
       try {
         const response = await fetch('http://localhost:8080/api/v1/user/simple/empId');
         const data: User[] = await response.json();
-        console.log('Fetched users:', data);
         setUsers(data);
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -78,12 +77,10 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
                 return response.json();
               })
               .then(data => {
-                console.log(`Fetched schedule for user ${user.id}:`, data);
                 return { userId: user.id, data: data };
               })
               .catch(error => {
                 if (error.name === 'AbortError') {
-                  console.log(`Fetch for user ${user.id} was aborted`);
                 } else {
                   console.error(`Error fetching schedule for user ${user.id}:`, error);
                 }
@@ -101,7 +98,6 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
             };
           });
 
-          console.log('Final schedules map:', schedulesMap);
           setSchedules(schedulesMap);
         } catch (error) {
           console.error('Error fetching schedules:', error);
@@ -142,7 +138,6 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
       });
 
       if (response.ok) {
-        console.log('Shift added successfully', shiftData);
         fetchUserSchedule(shiftData.userId);
       } else {
         console.error('Failed to add shift');
@@ -169,7 +164,6 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
       });
 
       if (response.ok) {
-        console.log('Shift edited successfully', shiftData);
         fetchUserSchedule(shiftData.userId);
       } else {
         console.error('Failed to edit shift');
@@ -186,7 +180,6 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
       });
 
       if (response.ok) {
-        console.log('Shift deleted successfully');
         fetchUserSchedule(userId);
       } else {
         console.error('Failed to delete shift');
@@ -214,7 +207,6 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
         });
 
         if (response.ok) {
-          console.log(`Shift ${shift.id} published successfully`);
           setSchedules(prevSchedules => ({
             ...prevSchedules,
             [shift.user_id]: {
@@ -248,7 +240,6 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
       }
 
       const data = await userResponse.json();
-      console.log(`Fetched updated schedule for user ${userId}:`, data);
 
       setSchedules(prevSchedules => ({
         ...prevSchedules,
