@@ -26,7 +26,7 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/v1/user/simple');
+        const response = await fetch('http://localhost:8080/api/v1/user/simple/empId');
         const data: User[] = await response.json();
         console.log('Fetched users:', data);
         setUsers(data);
@@ -254,7 +254,7 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
     return users.map((user) => (
       <div key={user.id} className={styles.calendarRowContainerMain}>
         <div className={styles.employeeItemContainer}>
-          <EmployeeItem firstName={user.firstname} surname={user.surname} />
+          <EmployeeItem employeeId={user.employee_id} firstName={user.firstname} surname={user.surname} />
         </div>
         <div className={styles.shiftItemContainer}>
           {currentWeek.map((day) => {

@@ -3,13 +3,17 @@ import styles from './main.module.scss';
 interface EmployeeItemProps {
   firstName: string;
   surname: string;
+  employeeId: string;
 }
 
-const EmployeeItem: React.FC<EmployeeItemProps> = ({ firstName, surname }) => {
+const EmployeeItem: React.FC<EmployeeItemProps> = ({ employeeId, firstName, surname }) => {
   return (
     <div className={styles.employeeItemContainerMain}>
-      <p className={styles.employeeItemParagraph}>{firstName}</p>
-      <p className={styles.employeeItemParagraph}>{surname}</p>
+      <div className={styles.fullNameContainer}>
+        <label className={styles.employeeItemLabel}>{firstName}</label>
+        <label className={styles.employeeItemLabel}>{surname}</label>
+      </div>
+        <label className={styles.employeeItemLabel}>{employeeId}</label>
     </div>
   );
 };
