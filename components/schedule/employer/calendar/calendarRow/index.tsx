@@ -6,6 +6,7 @@ import EditShift from '../editShift';
 import WeekSchedule from '@/components/types/weekSchedule';
 import User from '@/components/types/user';
 import Shift from '@/components/types/shift';
+import RoleWithColour from '@/components/types/roleWithColour';
 import styles from './main.module.scss';
 
 interface CalendarRowProps {
@@ -22,6 +23,21 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [abortController, setAbortController] = useState<AbortController | null>(null);
+  const [roles, setRoles] = useState<RoleWithColour[]>([]);
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/v1/role');
+        const data = await response.json();
+        setRoles(data);
+      } catch (error) {
+        console.error('Error fetching roles:', error);
+      }
+    };
+
+    fetchRoles();
+  }, []);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -277,6 +293,7 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
                       date={dayStr}
                       shifts={[]}
                       absence={isAbsence}
+                      roles={roles}
                     />
                   </div>
                 ) : (
@@ -286,6 +303,7 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
                         date={dayStr}
                         shifts={[shift]}
                         absence={isAbsence}
+                        roles={roles}
                       />
                     </div>
                   ))
