@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowTurnUp, faCalendarXmark, faCalendarPlus } from '@fortawesome/free-solid-svg-icons';
+import { Formik, Field, ErrorMessage, Form } from 'formik';
+import * as Yup from 'yup';
 import Role from '@/components/types/role';
 import Shift from '@/components/types/shift';
 import PredefinedShifts from '@/components/types/predefinedShifts';
@@ -17,16 +19,38 @@ interface EditShiftModalProps {
 }
 
 const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift, onDeleteShift, shift, firstName, surname }) => {
-  console.log('Rendering EditShift with isOpen:', isOpen);
-  console.log('Shift data:', shift);
-
   if (!isOpen) return null;
 
   const [roles, setRoles] = useState<Role[]>([]);
   const [predefineShifts, setPredefineShifts] = useState<PredefinedShifts[]>([]);
-  const [selectedRole, setSelectedRole] = useState<string>(shift.role_name);
-  const [selectedStartTime, setSelectedStartTime] = useState<string>(shift.start.split('T')[1].slice(0, 5));
-  const [selectedEndTime, setSelectedEndTime] = useState<string>(shift.end.split('T')[1].slice(0, 5));
+
+  useEffect(() => {
+    fetch(`http://localhost:8080/api/v1/role/user/${shift.user_id}`)
+      .then(response => response.json())
+      .then(data => setRoles(data))
+      .catch(error => console.error('Error fetching roles:', error));
+
+    fetch('http://localhost:8080/api/v1/predefine-shift')
+      .then(response => response.json())
+      .then(data => setPredefineShifts(data))
+      .catch(error => console.error('Error fetching predefineShifts:', error));
+  }, [shift.user_id]);
+
+  const validationSchema = Yup.object({
+    selectedRole: Yup.string().required('Pole wymagane'),
+    selectedStartTime: Yup.string()
+      .required('Pole wymagane')
+      .test('not-equal', 'Brak chronologii', function (value) {
+        const { selectedEndTime } = this.parent;
+        return value !== selectedEndTime;
+      }),
+    selectedEndTime: Yup.string()
+      .required('Pole wymagane')
+      .test('not-equal', 'Brak chronologii', function (value) {
+        const { selectedStartTime } = this.parent;
+        return value !== selectedStartTime;
+      }),
+  });
 
   const shiftHours: string[] = [];
   for (let hour = 0; hour < 24; hour++) {
@@ -37,166 +61,156 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
     }
   }
 
-  const handleTimeChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setter(event.target.value);
-  };
-
-  const handleStartTimeChange = handleTimeChange(setSelectedStartTime);
-  const handleEndTimeChange = handleTimeChange(setSelectedEndTime);
-
-  const shiftTime = () => {
+  const shiftTime = (startTime: string, endTime: string) => {
     const convertTimeToDecimal = (time: string) => {
       const [hours, minutes] = time.split(':');
-      return parseInt(hours) + (parseInt(minutes) / 60);
+      return parseInt(hours) + parseInt(minutes) / 60;
     };
 
-    const startTime = convertTimeToDecimal(selectedStartTime);
-    const endTime = convertTimeToDecimal(selectedEndTime);
-    const duration = startTime <= endTime ? endTime - startTime : 24 - startTime + endTime;
+    const start = convertTimeToDecimal(startTime);
+    const end = convertTimeToDecimal(endTime);
+    const duration = start <= end ? end - start : 24 - start + end;
 
     return isNaN(duration) ? 0 : duration;
   };
-
-  useEffect(() => {
-    fetch(`http://localhost:8080/api/v1/role/user/${shift.user_id}`)
-      .then(response => response.json())
-      .then(data => {
-        setRoles(data);
-        console.log('Fetched roles:', data);
-      })
-      .catch(error => console.error('Error fetching roles:', error));
-
-    fetch('http://localhost:8080/api/v1/predefine-shift')
-      .then(response => response.json())
-      .then(data => {
-        setPredefineShifts(data);
-        console.log('Fetched predefineShifts:', data);
-      })
-      .catch(error => console.error('Error fetching predefineShifts:', error));
-  }, []);
 
   const newDayFormat = () => {
     return shift.start.split('T')[0].replace(/-/g, '.').split('.').reverse().join('.');
   };
 
-  const handlePredefinedShift = (predefinedShift: PredefinedShifts) => {
-    setSelectedStartTime(predefinedShift.start.slice(0, 5));
-    setSelectedEndTime(predefinedShift.end.slice(0, 5));
-  };
-
-  const handleSubmit = () => {
-    const newStart = `${shift.start.split('T')[0]}T${selectedStartTime}`;
-    const newEnd = `${shift.end.split('T')[0]}T${selectedEndTime}`;
-
-    onEditShift({
-      id: shift.id,
-      start: newStart,
-      end: newEnd,
-      userId: shift.user_id,
-      roleName: selectedRole,
-    });
-
-    onClose();
-  };
-
-  const handleDelete = () => {
-    onDeleteShift(shift.id, shift.user_id);
-    onClose();
-  };
-
-  const handleClose = () => {
-    onClose();
+  const handlePredefinedShift = (predefinedShift: PredefinedShifts, setFieldValue: any) => {
+    setFieldValue('selectedStartTime', predefinedShift.start.slice(0, 5));
+    setFieldValue('selectedEndTime', predefinedShift.end.slice(0, 5));
   };
 
   return (
     <div className={styles.editShiftModalOverlay}>
       <div className={styles.editShiftModalContent}>
-        <div className={styles.titleContainer}>
-          <label className={styles.title}>Edytuj zmianę</label>
-        </div>
-        <div className={styles.basicInfoContainer}>
-          <div className={styles.personFullnameContainer}>
-            <div className={styles.fullNameContainer}>
-              <label className={styles.fullNameLabel}></label>Imie i Nazwisko:
-            </div>
-            <div className={styles.fullNameParagraphContainer}>
-              <p className={styles.firstnameParagraph}>{firstName}</p>
-              <p className={styles.surnameParagraph}>{surname}</p>
-            </div>
-          </div>
-          <div className={styles.dayContainer}>
-            <div className={styles.dayLabelContainer}>
-              <label className={styles.dayLabel}></label>  Data:
-            </div>
-            <div className={styles.dayParagraphContainer}>
-              <p className={styles.dayParagraph}>{newDayFormat()}</p>
-            </div>
-          </div>
-        </div>
-        <div className={styles.hoursConstainerMain}>
-          <div className={styles.hourInfoContainer}>
-            <label className={styles.hourInfoLabel}>Godziny:</label>
-            <label className={styles.hourInfoAdviceLabel}>(wybierz gotowe... lub dodaj własne)</label>
-          </div>
-          <div className={styles.hoursConstainer}>
-            <div className={styles.startHour}>
-              <label className={styles.startHourLabel}>Początek zmiany:</label>
-              <select className={styles.hourSelect} value={selectedStartTime} onChange={handleStartTimeChange}>
-                {shiftHours.map((time, index) => (
-                  <option key={index} value={time}>
-                    {time}
-                  </option>
+        <Formik
+          initialValues={{
+            selectedRole: shift.role_name || '',
+            selectedStartTime: shift.start.split('T')[1].slice(0, 5),
+            selectedEndTime: shift.end.split('T')[1].slice(0, 5),
+          }}
+          validationSchema={validationSchema}
+          onSubmit={(values) => {
+            const newStart = `${shift.start.split('T')[0]}T${values.selectedStartTime}`;
+            const newEnd = `${shift.end.split('T')[0]}T${values.selectedEndTime}`;
+
+            onEditShift({
+              id: shift.id,
+              start: newStart,
+              end: newEnd,
+              userId: shift.user_id,
+              roleName: values.selectedRole,
+            });
+
+            onClose();
+          }}
+        >
+          {({ handleSubmit, values, setFieldValue }) => (
+            <Form onSubmit={handleSubmit} className={styles.editShiftForm}>
+              <div className={styles.titleContainer}>
+                <label className={styles.title}>Edytuj zmianę</label>
+              </div>
+              <div className={styles.basicInfoContainer}>
+                <div className={styles.personFullnameContainer}>
+                  <div className={styles.fullNameContainer}>
+                    <label className={styles.fullNameLabel}>Imię i Nazwisko:</label>
+                  </div>
+                  <div className={styles.fullNameParagraphContainer}>
+                    <p className={styles.firstnameParagraph}>{firstName}</p>
+                    <p className={styles.surnameParagraph}>{surname}</p>
+                  </div>
+                </div>
+                <div className={styles.dayContainer}>
+                  <div className={styles.dayLabelContainer}>
+                    <label className={styles.dayLabel}>Data:</label>
+                  </div>
+                  <div className={styles.dayParagraphContainer}>
+                    <p className={styles.dayParagraph}>{newDayFormat()}</p>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.hoursContainerMain}>
+                <div className={styles.hourInfoContainer}>
+                  <label className={styles.hourInfoLabel}>Godziny:</label>
+                </div>
+                <div className={styles.hoursContainer}>
+                  <div className={styles.startHour}>
+                    <label className={styles.startHourLabel}>Początek zmiany:
+                      <ErrorMessage name="selectedStartTime" component="div" className={styles.errorMessage} />
+                    </label>
+                    <Field as="select" name="selectedStartTime" className={styles.hourSelect}>
+                      {shiftHours.map((time, index) => (
+                        <option key={index} value={time}>
+                          {time}
+                        </option>
+                      ))}
+                    </Field>
+                  </div>
+                  <div className={styles.endHour}>
+                    <label className={styles.endHourLabel}>Koniec zmiany:
+                      <ErrorMessage name="selectedEndTime" component="div" className={styles.errorMessage} />
+                    </label>
+                    <Field as="select" name="selectedEndTime" className={styles.hourSelect}>
+                      {shiftHours.map((time, index) => (
+                        <option key={index} value={time}>
+                          {time}
+                        </option>
+                      ))}
+                    </Field>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.shiftTimeContainer}>
+                <label className={styles.shiftTimeLabel}>Czas trwania zmiany: {shiftTime(values.selectedStartTime, values.selectedEndTime)}h.</label>
+              </div>
+              <div className={styles.predefinedShiftsContainer}>
+                {predefineShifts.map((predefinedShift) => (
+                  <button
+                    type="button"
+                    onClick={() => handlePredefinedShift(predefinedShift, setFieldValue)}
+                    key={predefinedShift.id}
+                    className={styles.predefinedShiftButton}
+                  >
+                    <p className={styles.predefinedShiftParagraph}>{predefinedShift.name}</p>
+                  </button>
                 ))}
-              </select>
-            </div>
-            <div className={styles.endHour}>
-              <label className={styles.endHourLabel}>Koniec zmiany:</label>
-              <select className={styles.hourSelect} value={selectedEndTime} onChange={handleEndTimeChange}>
-                {shiftHours.map((time, index) => (
-                  <option key={index} value={time}>
-                    {time}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-        <div className={styles.shiftTimeContainer}>
-          <label className={styles.shiftTimeLabel}>Czas trwania zmiany: {shiftTime()}h.</label>
-        </div>
-        <div className={styles.predefinedShiftsContainer}>
-          {predefineShifts.map((predefinedShift) => (
-            <button
-              onClick={() => handlePredefinedShift(predefinedShift)}
-              key={predefinedShift.id}
-              className={styles.predefinedShiftButton}
-            >
-              <p className={styles.predefinedShiftParagraph}>{predefinedShift.name}</p>
-            </button>
-          ))}
-        </div>
-        <div className={styles.roleContainer}>
-          <label className={styles.roleLabel}>Rola na zmianie: </label>
-          <select
-            className={styles.roleSelect}
-            value={selectedRole}
-            onChange={(e) => setSelectedRole(e.target.value)}
-          >
-            <option value="" disabled>Wybierz rolę</option>
-            {roles.map((role) => (
-              <option key={role.id} value={role.name}>
-                {role.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className={styles.buttonContainer}>
-          <button className={styles.addShiftButton} onClick={handleSubmit}><FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarPlus} /><p className={styles.buttonParagraph}>Dodaj zmianę</p></button>
-          <button className={styles.deleteShiftButton} onClick={handleDelete}><FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarXmark} /><p className={styles.buttonParagraph}>Usuń zmianę</p></button>
-          <button className={styles.closeButton} onClick={handleClose}><FontAwesomeIcon className={styles.buttonIcon} icon={faArrowTurnUp} style={{ transform: 'rotate(-90deg)' }} /><p className={styles.buttonParagraph}>Anuluj</p></button>
-        </div>
+              </div>
+              <div className={styles.roleContainer}>
+                <label className={styles.roleLabel}>Rola na zmianie:
+                  <ErrorMessage name="selectedRole" component="div" className={styles.errorMessage} />
+                </label>
+                <Field as="select" name="selectedRole" className={styles.roleSelect}>
+                  <option value="" disabled>Wybierz rolę</option>
+                  {roles.map((role) => (
+                    <option key={role.id} value={role.name}>
+                      {role.name}
+                    </option>
+                  ))}
+                </Field>
+              </div>
+              <div className={styles.buttonContainer}>
+                <button type="submit" className={styles.addShiftButton}>
+                  <FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarPlus} />
+                  <p className={styles.buttonParagraph}>Edytuj zmianę</p>
+                </button>
+                <button type="button" className={styles.deleteShiftButton} onClick={() => onDeleteShift(shift.id, shift.user_id)}>
+                  <FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarXmark} />
+                  <p className={styles.buttonParagraph}>Usuń zmianę</p>
+                </button>
+                <button type="button" className={styles.closeButton} onClick={onClose}>
+                  <FontAwesomeIcon className={styles.buttonIcon} icon={faArrowTurnUp} style={{ transform: 'rotate(-90deg)' }} />
+                  <p className={styles.buttonParagraph}>Anuluj</p>
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </div>
     </div>
   );
 };
+
 export default EditShift;
