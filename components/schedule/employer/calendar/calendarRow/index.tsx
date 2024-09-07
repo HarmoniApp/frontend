@@ -250,7 +250,7 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
     if (loading) {
       return <div>Ładowanie danych...</div>;
     }
-
+  
     return users.map((user) => (
       <div key={user.id} className={styles.calendarRowContainerMain}>
         <div className={styles.employeeItemContainer}>
@@ -259,20 +259,24 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
         <div className={styles.shiftItemContainer}>
           {currentWeek.map((day) => {
             const dayStr = day.toISOString().split('T')[0];
-
+  
             const userShifts = schedules[user.id]?.shifts.filter((shift) => shift.start.startsWith(dayStr)) || [];
             const userAbsences = schedules[user.id]?.absences.filter((absence) =>
               new Date(absence.start) <= day && new Date(absence.end) >= day
             ) || [];
-
+  
+            const isAbsence = userAbsences.length > 0;
+  
             return (
               <div key={dayStr} className={styles.shiftsItems}>
                 {userShifts.length === 0 ? (
-                  <div onClick={() => handleAddShiftClick(user, dayStr)}>
+                  <div
+                    onClick={() => !isAbsence && handleAddShiftClick(user, dayStr)}
+                  >
                     <ShiftItem
                       date={dayStr}
                       shifts={[]}
-                      absence={userAbsences.length > 0}
+                      absence={isAbsence}
                     />
                   </div>
                 ) : (
@@ -281,7 +285,7 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
                       <ShiftItem
                         date={dayStr}
                         shifts={[shift]}
-                        absence={userAbsences.length > 0}
+                        absence={isAbsence}
                       />
                     </div>
                   ))

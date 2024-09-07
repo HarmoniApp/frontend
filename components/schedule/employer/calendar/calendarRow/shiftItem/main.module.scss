@@ -29,6 +29,10 @@ $absence-border-colour: #FFD700;
     
     &.absence {
         border-color: darken($absence-border-colour, 10%);
+        cursor: default; 
+        &:hover {
+            transform: none;
+        }
     }
 
     .absence {
