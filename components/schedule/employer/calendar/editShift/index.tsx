@@ -58,7 +58,7 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
   };
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/v1/role')
+    fetch(`http://localhost:8080/api/v1/role/user/${shift.user_id}`)
       .then(response => response.json())
       .then(data => {
         setRoles(data);
@@ -182,7 +182,7 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
             value={selectedRole}
             onChange={(e) => setSelectedRole(e.target.value)}
           >
-            <option value="">Wybierz rolę</option>
+            <option value="" disabled>Wybierz rolę</option>
             {roles.map((role) => (
               <option key={role.id} value={role.name}>
                 {role.name}

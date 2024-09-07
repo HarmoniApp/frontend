@@ -52,7 +52,7 @@ const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShi
     useEffect(() => {
         if (!isOpen) return;
 
-        fetch('http://localhost:8080/api/v1/role')
+        fetch(`http://localhost:8080/api/v1/role/user/${user.id}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -192,7 +192,7 @@ const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShi
                         value={selectedRole}
                         onChange={(e) => setSelectedRole(e.target.value)}
                     >
-                        <option value="">Wybierz rolę</option>
+                        <option value="" disabled>Wybierz rolę</option>
                         {roles.map((role) => (
                             <option key={role.id} value={role.name}>
                                 {role.name}
