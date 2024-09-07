@@ -4,6 +4,14 @@ $shiftItem-font-colour-dark: #000000;
 $shiftItem-box-shadow-colour: rgba(0, 0, 0, 0.1);
 $absence-border-colour: #FFD700;
 
+$breakpoint-md: 768px;
+
+@mixin respond-to-md {
+    @media (max-width: $breakpoint-md) {
+        @content;
+    }
+}
+
 .shiftItemContainerMain {
     display: flex;
     flex-direction: column;
@@ -19,16 +27,21 @@ $absence-border-colour: #FFD700;
     cursor: pointer;
     text-align: center;
 
-    &:hover{
+    &:hover {
         transform: scale(1.05);
     }
 
     &.unpublished {
         border: 2px dashed $shiftItem-border-colour;
     }
-    
+
     &.absence {
         border-color: darken($absence-border-colour, 10%);
+        cursor: default;
+
+        &:hover {
+            transform: none;
+        }
     }
 
     .absence {
@@ -40,10 +53,24 @@ $absence-border-colour: #FFD700;
         height: 7vh;
         width: 100%;
         text-align: center;
-    
+
         .absenceParagraph {
             margin: 0;
             font-size: 18px;
+
+            @include respond-to-md {
+                font-size: 14px;
+            }
+        }
+
+        .buttonIcon {
+            height: 30px;
+            width: 30px;
+
+            @include respond-to-md {
+                height: 15px;
+                width: 15px;
+            }
         }
     }
 
@@ -51,19 +78,30 @@ $absence-border-colour: #FFD700;
         display: flex;
         flex-direction: column;
         align-items: center;
-        font-size: 1rem;
         font-weight: bold;
         color: $shiftItem-font-colour-dark;
+
+        @include respond-to-md {
+            font-size: 0.8rem;
+        }
 
         .shiftTimeParagraph {
             margin: 0;
             font-size: 16px;
+
+            @include respond-to-md {
+                font-size: 12px;
+            }
         }
 
         .shiftRoleParagraph {
             margin: 0;
             font-size: 12px;
             text-overflow: ellipsis;
+
+            @include respond-to-md {
+                font-size: 10px;
+            }
         }
     }
 

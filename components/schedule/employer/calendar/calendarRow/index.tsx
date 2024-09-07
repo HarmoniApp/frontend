@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useMemo, useImperativeHandle, forwardRef } from 'react';
 import EmployeeItem from './employeeItem';
 import ShiftItem from './shiftItem';
-import AddShift from '@/components/schedule/calendar/addShift';
-import EditShift from '@/components/schedule/calendar/editShift';
+import AddShift from '../addShift';
+import EditShift from '../editShift';
 import WeekSchedule from '@/components/types/weekSchedule';
 import User from '@/components/types/user';
 import Shift from '@/components/types/shift';
+import RoleWithColour from '@/components/types/roleWithColour';
 import styles from './main.module.scss';
 
 interface CalendarRowProps {
@@ -22,13 +23,27 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [abortController, setAbortController] = useState<AbortController | null>(null);
+  const [roles, setRoles] = useState<RoleWithColour[]>([]);
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/v1/role');
+        const data = await response.json();
+        setRoles(data);
+      } catch (error) {
+        console.error('Error fetching roles:', error);
+      }
+    };
+
+    fetchRoles();
+  }, []);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/v1/user/simple');
+        const response = await fetch('http://localhost:8080/api/v1/user/simple/empId');
         const data: User[] = await response.json();
-        console.log('Fetched users:', data);
         setUsers(data);
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -62,12 +77,10 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
                 return response.json();
               })
               .then(data => {
-                console.log(`Fetched schedule for user ${user.id}:`, data);
                 return { userId: user.id, data: data };
               })
               .catch(error => {
                 if (error.name === 'AbortError') {
-                  console.log(`Fetch for user ${user.id} was aborted`);
                 } else {
                   console.error(`Error fetching schedule for user ${user.id}:`, error);
                 }
@@ -85,7 +98,6 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
             };
           });
 
-          console.log('Final schedules map:', schedulesMap);
           setSchedules(schedulesMap);
         } catch (error) {
           console.error('Error fetching schedules:', error);
@@ -126,7 +138,6 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
       });
 
       if (response.ok) {
-        console.log('Shift added successfully', shiftData);
         fetchUserSchedule(shiftData.userId);
       } else {
         console.error('Failed to add shift');
@@ -153,7 +164,6 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
       });
 
       if (response.ok) {
-        console.log('Shift edited successfully', shiftData);
         fetchUserSchedule(shiftData.userId);
       } else {
         console.error('Failed to edit shift');
@@ -170,7 +180,6 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
       });
 
       if (response.ok) {
-        console.log('Shift deleted successfully');
         fetchUserSchedule(userId);
       } else {
         console.error('Failed to delete shift');
@@ -198,7 +207,6 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
         });
 
         if (response.ok) {
-          console.log(`Shift ${shift.id} published successfully`);
           setSchedules(prevSchedules => ({
             ...prevSchedules,
             [shift.user_id]: {
@@ -232,7 +240,6 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
       }
 
       const data = await userResponse.json();
-      console.log(`Fetched updated schedule for user ${userId}:`, data);
 
       setSchedules(prevSchedules => ({
         ...prevSchedules,
@@ -250,29 +257,34 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
     if (loading) {
       return <div>Ładowanie danych...</div>;
     }
-
+  
     return users.map((user) => (
       <div key={user.id} className={styles.calendarRowContainerMain}>
         <div className={styles.employeeItemContainer}>
-          <EmployeeItem firstName={user.firstname} surname={user.surname} />
+          <EmployeeItem employeeId={user.employee_id} firstName={user.firstname} surname={user.surname} />
         </div>
         <div className={styles.shiftItemContainer}>
           {currentWeek.map((day) => {
             const dayStr = day.toISOString().split('T')[0];
-
+  
             const userShifts = schedules[user.id]?.shifts.filter((shift) => shift.start.startsWith(dayStr)) || [];
             const userAbsences = schedules[user.id]?.absences.filter((absence) =>
               new Date(absence.start) <= day && new Date(absence.end) >= day
             ) || [];
-
+  
+            const isAbsence = userAbsences.length > 0;
+  
             return (
               <div key={dayStr} className={styles.shiftsItems}>
                 {userShifts.length === 0 ? (
-                  <div onClick={() => handleAddShiftClick(user, dayStr)}>
+                  <div
+                    onClick={() => !isAbsence && handleAddShiftClick(user, dayStr)}
+                  >
                     <ShiftItem
                       date={dayStr}
                       shifts={[]}
-                      absence={userAbsences.length > 0}
+                      absence={isAbsence}
+                      roles={roles}
                     />
                   </div>
                 ) : (
@@ -281,7 +293,8 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
                       <ShiftItem
                         date={dayStr}
                         shifts={[shift]}
-                        absence={userAbsences.length > 0}
+                        absence={isAbsence}
+                        roles={roles}
                       />
                     </div>
                   ))

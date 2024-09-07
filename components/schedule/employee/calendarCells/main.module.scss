@@ -1,0 +1,50 @@
+$employeeCalendar-bg-colour-powderlight: #EEE;
+$employeeCalendar-bg-colour-light: #FFF;
+$employeeCalendar-highlight-colour: #FFCF70;
+$employeeCalendar-border-colour: #CCC;
+$employeeCalendar-font-colour-dark: #000;
+
+.calendarCells {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 10px;
+  width: 100%;
+
+  .daySpan {
+    font-size: 16px;
+    font-weight: bold;
+    color: $employeeCalendar-font-colour-dark;
+  }
+
+  .today {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    width: 14px;
+    height: 14px;
+    background: $employeeCalendar-highlight-colour;
+    color: $employeeCalendar-font-colour-dark;
+    border-radius: 70px;
+    font-weight: bold;
+  }
+
+  .calendarCell {
+    display: flex;
+    flex-direction: column;
+    background-color: $employeeCalendar-bg-colour-light;
+    border: 2px solid $employeeCalendar-highlight-colour;
+    height: 100%; 
+    padding: 5px;
+    color: $employeeCalendar-font-colour-dark;
+    border-radius: 10px;
+
+    .shiftOrAbsenceContainer{
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+  }
+}

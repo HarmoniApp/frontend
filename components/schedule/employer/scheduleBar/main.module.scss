@@ -4,17 +4,37 @@ $scheduleBar-font-colour-dark: #000000;
 $scheduleBar-highlight-colour: #FFCF70;
 $scheduleBar-highlight-colour-hover: #FFBE4D;
 
+$breakpoint-md: 768px;
+
+@mixin respond-to-md {
+    @media (max-width: $breakpoint-md) {
+        @content;
+    }
+}
+
 .scheduleBarContainerMain {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
 
+    @include respond-to-md {
+        flex-direction: column;
+        gap: 10px;
+    }
+
     .buttonContainer {
         display: flex;
         flex: 1;
         gap: 15px;
         margin: 0 30px 0 0;
+
+        @include respond-to-md {
+            flex-direction: row;
+            justify-content: center;
+            gap: 10px;
+            margin: 0;
+        }
 
         .exportButton,
         .publishButton {
@@ -78,7 +98,7 @@ $scheduleBar-highlight-colour-hover: #FFBE4D;
             border-radius: 5px;
             gap: 10px;
 
-            .dateRangeParagraph{
+            .dateRangeParagraph {
                 margin: 0;
                 padding: 0;
                 font-weight: bold;

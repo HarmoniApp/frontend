@@ -6,8 +6,12 @@ $popup-font-colour: #FFFFFF;
 $popup-font-colour-dark: #000000;
 $popup-highlight-colour: #FFCF70;
 $popup-highlight-colour-hover: #FFBE4D;
+$popup-checkbox-bg-colour: #e8e8e8;
+$popup-error-border-colour: #dc3545;
+$popup-error-bg-colour: #ffe6e6;
 
-.addShiftModalOverlay {
+
+.editShiftModalOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -20,7 +24,7 @@ $popup-highlight-colour-hover: #FFBE4D;
   z-index: 1000;
 }
 
-.addShiftModalContent {
+.editShiftModalContent {
   display: flex;
   flex-direction: column;
   border: 2px solid $popup-highlight-colour;
@@ -32,6 +36,13 @@ $popup-highlight-colour-hover: #FFBE4D;
   overflow-y: auto;
   gap: 20px;
   padding: 20px;
+}
+
+.editShiftForm{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
 }
 
 .titleContainer {
@@ -55,7 +66,7 @@ $popup-highlight-colour-hover: #FFBE4D;
   align-items: flex-start;
   justify-content: space-between;
   padding: 0;
-  width: 90.5%;
+  width: 91%;
 
   .personFullnameContainer,
   .dayContainer {
@@ -73,6 +84,7 @@ $popup-highlight-colour-hover: #FFBE4D;
     .fullNameParagraphContainer,
     .dayParagraphContainer {
       display: flex;
+      gap: 5px;
       color: $popup-highlight-colour;
     }
 
@@ -84,7 +96,7 @@ $popup-highlight-colour-hover: #FFBE4D;
   }
 }
 
-.hoursConstainerMain {
+.hoursContainerMain {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -111,14 +123,16 @@ $popup-highlight-colour-hover: #FFBE4D;
     }
   }
 
-  .hoursConstainer {
+  .hoursContainer {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
     justify-content: space-between;
     width: 100%;
+    gap: 10px;
 
-    .startHourLabel, .endHourLabel {
+    .startHourLabel,
+    .endHourLabel {
       font-weight: bold;
       color: $popup-font-colour;
     }
@@ -150,7 +164,7 @@ $popup-highlight-colour-hover: #FFBE4D;
 
 .predefinedShiftsContainer {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
 
   .predefinedShiftButton {
@@ -192,9 +206,11 @@ $popup-highlight-colour-hover: #FFBE4D;
   justify-content: space-between;
   align-self: center;
   width: 100%;
+  gap: 15px;
 
   .addShiftButton,
-  .closeButton {
+  .closeButton,
+  .deleteShiftButton {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -229,10 +245,15 @@ $popup-highlight-colour-hover: #FFBE4D;
   -webkit-appearance: none; // Safari
   -moz-appearance: none; // Firefox
   appearance: none; //Standard
+  width: 100%;
   height: 5vh;
+  border-radius: 5px;
+  border: none;
+  border-bottom: 2px solid $popup-highlight-colour;
   padding: 10px 5vh 10px 10px;
-  border: 2px solid $popup-highlight-colour;
-  border-radius: 4px;
+  color: $popup-font-colour-dark;
+  box-shadow: inset 0 2px 4px $popup-box-shadow-colour;
+  transition: all 0.3s ease;
   background-image:
     linear-gradient(45deg, transparent 50%, $popup-font-colour-dark 50%),
     linear-gradient(135deg, $popup-font-colour-dark 50%, transparent 50%);
@@ -241,7 +262,41 @@ $popup-highlight-colour-hover: #FFBE4D;
     calc(100% - 6px) calc(1em + 5px);
   background-size:
     9px 9px,
-    9px 9px; 
+    9px 9px;
   background-repeat: no-repeat;
   color: $popup-font-colour-dark;
+  cursor: pointer;
+
+  &:hover {
+    border: 2px solid $popup-highlight-colour;
+    outline: none;
+    background-color: lighten($popup-checkbox-bg-colour, 5%);
+  }
+
+  &::placeholder {
+    margin: 0 0 0 10px;
+    color: lighten($popup-font-colour-dark, 30%);
+  }
+}
+
+.startHourLabel,
+.endHourLabel,
+.roleLabel {
+  font-size: 16px;
+  font-weight: bold;
+  color: $popup-font-colour-dark;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.errorMessage {
+  color: $popup-error-border-colour;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  text-align: right;
+  flex-shrink: 0;
 }

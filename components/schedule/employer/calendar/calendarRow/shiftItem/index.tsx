@@ -2,31 +2,25 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarPlus, faPersonThroughWindow } from '@fortawesome/free-solid-svg-icons';
 import Shift from '@/components/types/shift';
+import RoleWithColour from '@/components/types/roleWithColour';
 import styles from './main.module.scss';
 
 interface ShiftItemProps {
   date: string;
   shifts: Shift[];
   absence: boolean;
+  roles: RoleWithColour[];
 }
 
-const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence }) => {
+const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence, roles }) => {
   const formatTime = (dateTime: string) => {
     const date = new Date(dateTime);
     return date.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
   };
 
   const getBackgroundColor = (roleName: string) => {
-    switch (roleName) {
-      case 'admin':
-        return '#FF6347';
-      case 'sup_mid':
-        return '#4682B4';
-      case 'user':
-        return '#32CD32';
-      default:
-        return '#A9A9A9';
-    }
+    const role = roles.find(role => role.name === roleName);
+    return role ? role.color : '#A9A9A9';
   };
 
   const hasUnpublishedShift = shifts.some(shift => !shift.published);
