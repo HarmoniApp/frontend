@@ -7,7 +7,7 @@ import NavbarTop from "./top";
 export default function Navbar() {
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+    const whoIsLogged = true;
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
@@ -15,7 +15,7 @@ export default function Navbar() {
         <div>
             <NavbarTop onAccountIconClick={toggleSidebar} />
             <Account isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-            <NavbarBottom />
+            <NavbarBottom isThisAdmin={whoIsLogged}/>
         </div>
     )
 }
