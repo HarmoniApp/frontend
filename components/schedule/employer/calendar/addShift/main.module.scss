@@ -83,6 +83,7 @@ $popup-error-bg-colour: #ffe6e6;
     .fullNameParagraphContainer,
     .dayParagraphContainer {
       display: flex;
+      gap: 5px;
       color: $popup-highlight-colour;
     }
 
