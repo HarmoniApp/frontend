@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRectangleList, faGrip, faFileImport, faPenToSquare, faUserPlus } from '@fortawesome/free-solid-svg-icons'
-import RolePopUp from '@/components/employees/rolePopUp';
+import { faRectangleList, faGrip, faFileImport, faUserPlus } from '@fortawesome/free-solid-svg-icons'
 import Modal from 'react-modal';
 import styles from './main.module.scss';
 
@@ -14,10 +13,6 @@ interface EmployeeBarProps {
 }
 
 const EmployeeBar: React.FC<EmployeeBarProps> = ({setActiveView, activeView}) => {
-  const [modalIsOpenRole, setModalIsOpenRole] = useState(false);
-
-  const openModalRole = () => setModalIsOpenRole(true);
-  const closeModalRole = () => setModalIsOpenRole(false);
 
   const router = useRouter();
   const onAddEmployee = () => {
@@ -29,7 +24,6 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({setActiveView, activeView}) =>
       <div className={styles.actionContainer}>
         <button className={styles.addEmployeeButton} onClick={onAddEmployee}><FontAwesomeIcon icon={faUserPlus} />dodaj pracownika</button>
         <button className={styles.importEmployeeButton}><FontAwesomeIcon icon={faFileImport} />importuj pracownika</button>
-        <button className={styles.editRoles} onClick={openModalRole}><FontAwesomeIcon icon={faPenToSquare} />edytuj role</button>
       </div>
       <div className={styles.viewContainer}>
         <button
@@ -41,14 +35,6 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({setActiveView, activeView}) =>
           onClick={() => setActiveView('tiles')}><FontAwesomeIcon icon={faGrip} />
         </button>
       </div>
-      <Modal
-        isOpen={modalIsOpenRole}
-        contentLabel="Edit Roles"
-        className={styles.modalContentOfEditRoles}
-        overlayClassName={styles.modalOverlayOfEditRoles}
-      >
-        <RolePopUp onClick={closeModalRole}  /> 
-      </Modal>
     </div>
   );
 }
