@@ -2,6 +2,13 @@ $employeeCalendar-highlight-colour: #FFCF70;
 $employeeCalendar-font-colour-dark: #000;
 $employeeCalendar-font-colour-lightDark: #6c757d;
 
+$breakpoint-md: 768px;
+@mixin respond-to-md {
+  @media (max-width: $breakpoint-md) {
+    @content;
+  }
+}
+
 .shiftInfo {
   display: flex;
   flex-direction: column;
@@ -9,14 +16,18 @@ $employeeCalendar-font-colour-lightDark: #6c757d;
   justify-content: center;
   width: 100%;
   padding: 5px;
-  gap:5px;
+  gap: 5px;
 
-  .shiftTime{
-    color: $employeeCalendar-font-colour-dark;
-
+  @include respond-to-md {
+    padding: 0;
+    font-size: small;
   }
 
-  .shiftRole{
+  .shiftTime {
+    color: $employeeCalendar-font-colour-dark;
+  }
+
+  .shiftRole {
     text-transform: capitalize;
     text-decoration: underline;
     text-underline-offset: 2px;
@@ -24,5 +35,4 @@ $employeeCalendar-font-colour-lightDark: #6c757d;
     text-decoration-color: $employeeCalendar-highlight-colour;
     color: $employeeCalendar-font-colour-lightDark;
   }
-    
 }

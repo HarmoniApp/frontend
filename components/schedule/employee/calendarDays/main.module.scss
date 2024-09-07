@@ -2,6 +2,18 @@ $employeeCalendar-highlight-colour: #FFCF70;
 $employeeCalendar-highlight-colour-dark: #FFBE4D;
 $employeeCalendar-font-colour-dark: #000;
 
+/**
+  * The reference md(only number) is still in index.tsx(11 line) because it changes the full name of the day to the abbreviation. 
+  */
+
+$breakpoint-md: 768px;
+
+@mixin respond-to-md {
+  @media (max-width: $breakpoint-md) {
+    @content;
+  }
+}
+
 .calendarDays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -18,5 +30,9 @@ $employeeCalendar-font-colour-dark: #000;
     border-bottom: 2px solid $employeeCalendar-highlight-colour-dark;
     color: $employeeCalendar-font-colour-dark;
     border-radius: 10px;
+
+    @include respond-to-md {
+      padding: 10px 20px;
+    }
   }
 }
