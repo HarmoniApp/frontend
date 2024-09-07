@@ -3,6 +3,13 @@ $employeeItem-font-colour-dark: #000000;
 $employeeItem-border-colour: #000000;
 $employeeItem-box-shadow-colour: rgba(0, 0, 0, 0.1);
 
+$breakpoint-md: 768px;
+@mixin respond-to-md {
+    @media (max-width: $breakpoint-md) {
+        @content;
+    }
+}
+
 .employeeItemContainerMain {
     display: flex;
     flex-direction: column;
@@ -16,7 +23,12 @@ $employeeItem-box-shadow-colour: rgba(0, 0, 0, 0.1);
     width: 100%;
     height: 7vh;
 
-    .fullNameContainer{
+    @include respond-to-md {
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .fullNameContainer {
         display: flex;
         flex-direction: row;
         align-items: center;
