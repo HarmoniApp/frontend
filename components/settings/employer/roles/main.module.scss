@@ -7,6 +7,10 @@ $popup-highlight-colour: #FFCF70;
 $popup-highlight-colour-hover: #FFBE4D;
 $popup-no-button-colour: #dc3545;
 $popup-yes-button-colour: #008000;
+$popup-box-shadow-colour: rgba(0, 0, 0, 0.1);
+$popup-checkbox-bg-colour: #e8e8e8;
+$popup-error-border-colour: #dc3545;
+$popup-error-bg-colour: #ffe6e6;
 
 .roleContainerMain {
     background-color: $popup-bg-colour;
@@ -25,40 +29,46 @@ $popup-yes-button-colour: #008000;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: minmax(auto, 1fr);
+    grid-auto-rows: 1fr;
     gap: 10px;
 
-    .showRoleConteiner {
+    .showRoleConteinerMain {
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
         align-items: center;
-        height: fit-content;
+        height: 100%;
         padding: 10px;
         background-color: $popup-highlight-colour;
         border-radius: 5px;
         gap: 10px;
 
-        .roleNameParagraph {
+        .showRoleConteiner {
             display: flex;
-            align-items: left;
-            margin: 0;
-            color: $popup-font-colour-dark;
-            font-weight: bold;
-            width: 10vw;
-        }
-
-        .roleNameInput{
-            padding: 5px;
-            border: 2px solid $popup-bg-colour-dark;
-            border-radius: 5px;
-            background-color: $popup-bg-colour-light;
-            color: $popup-font-colour-dark;
-            outline: none;
-            width: 10vw;
-        }
-        .editAndRemoveButtonContainer{
-            display: flex;
-            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
             gap: 10px;
+    
+            .roleInfoContainer{
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+    
+            .roleNameParagraph {
+                display: flex;
+                align-items: left;
+                margin: 0;
+                color: $popup-font-colour-dark;
+                font-weight: bold;
+                width: 10vw;
+            }
+
+            .editAndRemoveButtonContainer{
+                display: flex;
+                flex-direction: row;
+                gap: 10px;
+            }
         }
     }
 }
@@ -122,26 +132,12 @@ $popup-yes-button-colour: #008000;
 .addContainer {
     display: flex;
     flex-direction: row;
+    align-items: stretch;
+    height: 100%;
     gap: 10px;
-    margin: 10px 0 0 0;
 
     .colorPicker{
-        height: auto;
         width: 40px;
-    }
-
-    .addInput {
-        flex-grow: 1;
-        padding: 10px;
-        border: 2px solid $popup-highlight-colour;
-        border-radius: 5px;
-        background-color: $popup-bg-colour-light;
-        color: $popup-font-colour-dark;
-        outline: none;
-
-        &::placeholder {
-            color: $popup-font-colour-dark;
-        }
     }
 
     .addButton {
@@ -158,4 +154,48 @@ $popup-yes-button-colour: #008000;
             background-color: $popup-highlight-colour-hover;
         }
     }
+}
+
+.formInput {
+    -webkit-appearance: none; //Safari
+    -moz-appearance: none; //Firefox
+    appearance: none; //Standard
+    width: 100%;
+    border-radius: 5px;
+    border: 2px solid $popup-font-colour-dark;
+    padding: 10px 5vh 10px 10px;
+    color: $popup-font-colour-dark;
+    transition: all 0.3s ease;
+
+    &:hover {
+        border: 2px solid $popup-highlight-colour;
+        outline: none;
+        background-color: lighten($popup-checkbox-bg-colour, 5%);
+    }
+
+    &::placeholder {
+        margin: 0 0 0 10px;
+        color: lighten($popup-font-colour-dark, 30%);
+    }
+
+    @media (max-width: 768px) {
+        height: 4vh;
+        padding: 8px 2vh 8px 8px;
+    }
+}
+
+.errorMessage {
+    display: flex;
+    align-items: center;
+    color: $popup-error-border-colour;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.errorInput { 
+    border-color: $popup-error-border-colour;
+    background-color: $popup-error-bg-colour;
 }

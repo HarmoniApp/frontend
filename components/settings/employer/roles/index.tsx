@@ -3,15 +3,46 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 import RoleWithColour from '@/components/types/roleWithColour';
+import { Formik, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import classNames from 'classnames';
 import styles from './main.module.scss';
+
+// Funkcja walidująca niedozwolone znaki
+const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
+  const invalidChars = value.split('').filter(char => !allowedPattern.test(char));
+  return Array.from(new Set(invalidChars));
+};
+
+// Walidacja dla dodawania roli
+const addRoleValidationSchema = Yup.object({
+  newRoleName: Yup.string()
+    .required('Pole wymagane')
+    .test('no-invalid-chars', function (value) {
+      const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
+      return invalidChars.length === 0
+        ? true
+        : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
+    }),
+  newRoleColor: Yup.string().required('Kolor wymagany'),
+});
+
+// Walidacja dla edytowania roli
+const editRoleValidationSchema = Yup.object({
+  editedRoleName: Yup.string()
+    .required('Pole wymagane')
+    .test('no-invalid-chars', function (value) {
+      const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
+      return invalidChars.length === 0
+        ? true
+        : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
+    }),
+  editedRoleColor: Yup.string().required('Kolor wymagany'),
+});
 
 const Roles: React.FC = () => {
   const [roles, setRoles] = useState<RoleWithColour[]>([]);
-  const [newRoleName, setNewRoleName] = useState<string>('');
-  const [newRoleColor, setNewRoleColor] = useState<string>('#ffb6c1');
   const [editingRoleId, setEditingRoleId] = useState<number | null>(null);
-  const [editedRoleName, setEditedRoleName] = useState<string>('');
-  const [editedRoleColor, setEditedRoleColor] = useState<string>('');
 
   useEffect(() => {
     fetchRoles();
@@ -38,54 +69,36 @@ const Roles: React.FC = () => {
       .catch(error => console.error('Error deleting role:', error));
   };
 
-  const handleAddRole = () => {
-    if (newRoleName.trim() === '') {
-      return;
-    }
-
+  const handleAddRole = (values: { newRoleName: string; newRoleColor: string }, { resetForm }: any) => {
     fetch('http://localhost:8080/api/v1/role', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name: newRoleName, color: newRoleColor }),
+      body: JSON.stringify({ name: values.newRoleName, color: values.newRoleColor }),
     })
       .then(response => response.json())
       .then(() => {
         fetchRoles();
-        setNewRoleName('');
-        setNewRoleColor('#ffb6c1');
+        resetForm();
       })
       .catch(error => console.error('Error adding role:', error));
   };
 
-  const handleEditRole = (role: RoleWithColour) => {
-    setEditingRoleId(role.id);
-    setEditedRoleName(role.name);
-    setEditedRoleColor(role.color || '#ffb6c1');
-  };
-
-  const handleCancelEdit = () => {
-    setEditingRoleId(null);
-    setEditedRoleName('');
-    setEditedRoleColor('#ffb6c1');
-  };
-
-  const handleSaveEdit = () => {
-    if (editingRoleId !== null && editedRoleName.trim() !== '') {
+  const handleSaveEdit = (values: { editedRoleName: string; editedRoleColor: string }, { resetForm }: any) => {
+    if (editingRoleId !== null) {
       fetch(`http://localhost:8080/api/v1/role/${editingRoleId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name: editedRoleName, color: editedRoleColor }),
+        body: JSON.stringify({ name: values.editedRoleName, color: values.editedRoleColor }),
       })
         .then(response => response.json())
         .then(() => {
           fetchRoles();
           setEditingRoleId(null);
-          setEditedRoleName('');
-          setEditedRoleColor('#ffb6c1');
+          resetForm(); // Resetuje wartości edytowanej roli
         })
         .catch(error => console.error('Error updating role:', error));
     }
@@ -95,80 +108,120 @@ const Roles: React.FC = () => {
     <div className={styles.roleContainerMain}>
       <div className={styles.showRoleMapConteiner}>
         {roles.map(role => (
-          <div key={role.id} className={styles.showRoleConteiner}>
-            <div className={styles.roleInfoContainer}>
-              {editingRoleId === role.id ? (
-                <>
-                  <input
-                    type="text"
-                    value={editedRoleName}
-                    onChange={(e) => setEditedRoleName(e.target.value)}
-                    className={styles.roleNameInput}
-                  />
-                </>
-              ) : (
-                <>
-                  <p className={styles.roleNameParagraph}>{role.name}</p>
-                </>
-              )}
-            </div>
-            <div className={styles.editAndRemoveButtonContainer}>
-              {editingRoleId === role.id ? (
-                <>
-                  <input
-                    type="color"
-                    value={editedRoleColor}
-                    onChange={(e) => setEditedRoleColor(e.target.value)}
-                    className={styles.colorPicker}
-                    style={{ backgroundColor: editedRoleColor }}
-                  />
-                  <button className={styles.yesButton} onClick={handleSaveEdit}>
-                    <FontAwesomeIcon icon={faCheck} />
-                  </button>
-                  <button className={styles.noButton} onClick={handleCancelEdit}>
-                    <FontAwesomeIcon icon={faXmark} />
-                  </button>
-                </>
-              ) : (
-                <>
-                  <input
-                    type="color"
-                    value={role.color}
-                    className={styles.colorPicker}
-                    style={{ backgroundColor: role.color , cursor: 'default' }}
-                    disabled
-                  />
-                  <button className={styles.editButton} onClick={() => handleEditRole(role)}>
-                    <FontAwesomeIcon icon={faPen} />
-                  </button>
-                  <button className={styles.removeButton} onClick={() => handleDeleteRole(role.id)}>
-                    <FontAwesomeIcon icon={faMinus} />
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
+          <Formik
+            key={role.id}
+            initialValues={{ editedRoleName: role.name, editedRoleColor: role.color || '#ffb6c1' }}
+            validationSchema={editRoleValidationSchema}
+            onSubmit={handleSaveEdit}
+          >
+            {({ handleSubmit, handleChange, values, errors, touched, resetForm }) => (
+              <form onSubmit={handleSubmit}>
+                <div className={styles.showRoleConteinerMain}>
+                  <ErrorMessage name="editedRoleName" component="div" className={styles.errorMessage} />
+                  <div className={styles.showRoleConteiner}>
+                    <div className={styles.roleInfoContainer}>
+                      {editingRoleId === role.id ? (
+                        <>
+                          <Field
+                            type="text"
+                            name="editedRoleName"
+                            value={values.editedRoleName}
+                            onChange={handleChange}
+                            className={classNames(styles.formInput, {
+                              [styles.errorInput]: errors.editedRoleName && touched.editedRoleName,
+                            })}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <p className={styles.roleNameParagraph}>{role.name}</p>
+                        </>
+                      )}
+                    </div>
+                    <div className={styles.editAndRemoveButtonContainer}>
+                      {editingRoleId === role.id ? (
+                        <>
+                          <Field
+                            type="color"
+                            name="editedRoleColor"
+                            value={values.editedRoleColor}
+                            onChange={handleChange}
+                            className={styles.colorPicker}
+                            style={{ backgroundColor: values.editedRoleColor }}
+                          />
+                          <ErrorMessage name="editedRoleColor" component="div" className={styles.errorMessage} />
+                          <button type="submit" className={styles.yesButton}>
+                            <FontAwesomeIcon icon={faCheck} />
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.noButton}
+                            onClick={() => {
+                              resetForm();
+                              setEditingRoleId(null);
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faXmark} />
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <input
+                            type="color"
+                            value={role.color}
+                            className={styles.colorPicker}
+                            style={{ backgroundColor: role.color, cursor: 'default' }}
+                            disabled
+                          />
+                          <button className={styles.editButton} onClick={() => setEditingRoleId(role.id)}>
+                            <FontAwesomeIcon icon={faPen} />
+                          </button>
+                          <button className={styles.removeButton} onClick={() => handleDeleteRole(role.id)}>
+                            <FontAwesomeIcon icon={faMinus} />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </form>
+            )}
+          </Formik>
         ))}
       </div>
-      <div className={styles.addContainer}>
-        <input
-          type="text"
-          className={styles.addInput}
-          value={newRoleName}
-          onChange={(e) => setNewRoleName(e.target.value)}
-          placeholder="Wpisz nazwę nowej roli"
-        />
-        <input
-          type="color"
-          value={newRoleColor}
-          onChange={(e) => setNewRoleColor(e.target.value)}
-          className={styles.colorPicker}
-          style={{ backgroundColor: newRoleColor }}
-        />
-        <button className={styles.addButton} onClick={handleAddRole}>
-          <FontAwesomeIcon icon={faPlus} />
-        </button>
-      </div>
+
+      <Formik
+        initialValues={{ newRoleName: '', newRoleColor: '#ffb6c1' }}
+        validationSchema={addRoleValidationSchema}
+        onSubmit={handleAddRole}
+      >
+        {({ values, handleChange, handleSubmit, errors, touched }) => (
+          <form className={styles.addContainer} onSubmit={handleSubmit}>
+            <Field
+              name="newRoleName"
+              value={values.newRoleName}
+              onChange={handleChange}
+              className={classNames(styles.formInput, {
+                [styles.errorInput]: errors.newRoleName && touched.newRoleName,
+              })}
+              placeholder="Wpisz nazwę nowej roli"
+            />
+            <ErrorMessage name="newRoleName" component="div" className={styles.errorMessage} />
+            <Field
+              name="newRoleColor"
+              type="color"
+              value={values.newRoleColor}
+              onChange={handleChange}
+              className={styles.colorPicker}
+              style={{ backgroundColor: values.newRoleColor }}
+            />
+            <ErrorMessage name="newRoleColor" component="div" className={styles.errorMessage} />
+            <button type="submit" className={styles.addButton}>
+              <FontAwesomeIcon icon={faPlus} />
+            </button>
+          </form>
+        )}
+      </Formik>
     </div>
   );
 };
