@@ -8,13 +8,11 @@ import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 
-// Funkcja walidująca niedozwolone znaki
 const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
   const invalidChars = value.split('').filter(char => !allowedPattern.test(char));
   return Array.from(new Set(invalidChars));
 };
 
-// Walidacja dla dodawania roli
 const addRoleValidationSchema = Yup.object({
   newRoleName: Yup.string()
     .required('Pole wymagane')
@@ -27,7 +25,6 @@ const addRoleValidationSchema = Yup.object({
   newRoleColor: Yup.string().required('Kolor wymagany'),
 });
 
-// Walidacja dla edytowania roli
 const editRoleValidationSchema = Yup.object({
   editedRoleName: Yup.string()
     .required('Pole wymagane')

@@ -162,7 +162,7 @@ $popup-error-bg-colour: #ffe6e6;
     appearance: none; //Standard
     width: 100%;
     border-radius: 5px;
-    border: 2px solid $popup-font-colour-dark;
+    border: 2px solid $popup-highlight-colour;
     padding: 10px 5vh 10px 10px;
     color: $popup-font-colour-dark;
     transition: all 0.3s ease;
