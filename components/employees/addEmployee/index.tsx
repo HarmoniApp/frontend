@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
-import Modal from 'react-modal';
 import Flag from 'react-flagkit';
 import AddEmployeeNotificationPopUp from '@/components/employees/addEmployee/addEmplyeeNotification';
 import Role from '@/components/types/role';
@@ -14,9 +13,7 @@ import Department from '@/components/types/department';
 import styles from './main.module.scss';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import classNames from 'classnames'; // Import the classNames library
-
-Modal.setAppElement('#root');
+import classNames from 'classnames';
 
 const languageAbbreviations: { [key: string]: string } = {
   Arabic: 'AE',
@@ -87,12 +84,12 @@ const AddEmployee: React.FC = () => {
     const invalidChars = value.split('').filter(char => !allowedPattern.test(char));
     return Array.from(new Set(invalidChars));
   };
-  
+
   const validationSchema = Yup.object({
     employee_id: Yup.string()
       .required('Pole wymagane')
       .test('no-invalid-chars', function (value) {
-        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
+        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9-]*$/);
         return invalidChars.length === 0
           ? true
           : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
@@ -129,7 +126,7 @@ const AddEmployee: React.FC = () => {
     phone_number: Yup.string()
       .required('Pole wymagane')
       .test('no-invalid-chars', function (value) {
-        const invalidChars = findInvalidCharacters(value || '', /^[0-9]*$/);
+        const invalidChars = findInvalidCharacters(value || '', /^[0-9 +]*$/);
         return invalidChars.length === 0
           ? true
           : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
@@ -540,23 +537,22 @@ const AddEmployee: React.FC = () => {
               </div>
             </div>
 
-            <Modal
-              isOpen={isModalOpen}
-              contentLabel="Employee Added"
-              className={styles.modalContentOfAddEmployee}
-              overlayClassName={styles.modalOverlayOfAddEmployee}
-            >
-              <AddEmployeeNotificationPopUp
-                firstname={values.firstname}
-                surname={values.surname}
-                employeeLink={employeeLink}
-                modalCountdown={modalCountdown}
-                onClose={() => {
-                  setIsModalOpen(false);
-                  onBack();
-                }}
-              />
-            </Modal>
+            {isModalOpen && (
+              <div className={styles.modalOverlayOfAddEmployee}>
+                <div className={styles.modalContentOfAddEmployee}>
+                  <AddEmployeeNotificationPopUp
+                    firstname={values.firstname}
+                    surname={values.surname}
+                    employeeLink={employeeLink}
+                    modalCountdown={modalCountdown}
+                    onClose={() => {
+                      setIsModalOpen(false);
+                      onBack();
+                    }}
+                  />
+                </div>
+              </div>
+            )}
           </Form>
         )}
       </Formik>

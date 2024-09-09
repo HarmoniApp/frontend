@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faPlane, faChartBar, faUserMinus, faUserPen, faUserLock } from '@fortawesome/free-solid-svg-icons';
 import DeleteEmployeePopUp from '@/components/employees/employeeData/deleteEmployee';
@@ -10,8 +9,6 @@ import Department from '@/components/types/department';
 import SupervisorDataSimple from '@/components/types/supervisorDataSimple';
 import Flag from 'react-flagkit';
 import styles from './main.module.scss';
-
-Modal.setAppElement('#root');
 
 const languageAbbreviations: { [key: string]: string } = {
   Arabic: 'AE',
@@ -189,19 +186,18 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
         </div>
       </div>
 
-      <Modal
-        isOpen={modalIsOpenDeleteEmployee}
-        contentLabel="Delete Employee"
-        className={styles.modalContentOfDeleteEmployee}
-        overlayClassName={styles.modalOverlayDeleteEmployee}
-      >
-        <DeleteEmployeePopUp
-          userId={employee.id}
-          firstName={employee.firstname}
-          surname={employee.surname}
-          onClose={closeModalDeleteEmployee}
-        />
-      </Modal>
+      {modalIsOpenDeleteEmployee && (
+        <div className={styles.modalOverlayDeleteEmployee}>
+          <div className={styles.modalContentOfDeleteEmployee}>
+            <DeleteEmployeePopUp
+              userId={employee.id}
+              firstName={employee.firstname}
+              surname={employee.surname}
+              onClose={closeModalDeleteEmployee}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
