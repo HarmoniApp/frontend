@@ -266,7 +266,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     const changedData = getChangedData(values);
 
     fetch(`http://localhost:8080/api/v1/user/${employee.id}`, {
-      method: 'PUT',
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
