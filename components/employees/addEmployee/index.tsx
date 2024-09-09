@@ -89,7 +89,7 @@ const AddEmployee: React.FC = () => {
     employee_id: Yup.string()
       .required('Pole wymagane')
       .test('no-invalid-chars', function (value) {
-        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
+        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9-]*$/);
         return invalidChars.length === 0
           ? true
           : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
@@ -126,7 +126,7 @@ const AddEmployee: React.FC = () => {
     phone_number: Yup.string()
       .required('Pole wymagane')
       .test('no-invalid-chars', function (value) {
-        const invalidChars = findInvalidCharacters(value || '', /^[0-9]*$/);
+        const invalidChars = findInvalidCharacters(value || '', /^[0-9 +]*$/);
         return invalidChars.length === 0
           ? true
           : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
