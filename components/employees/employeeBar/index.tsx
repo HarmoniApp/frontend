@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRectangleList, faGrip, faFileImport, faUserPlus } from '@fortawesome/free-solid-svg-icons'
-import Modal from 'react-modal';
 import styles from './main.module.scss';
 
-Modal.setAppElement('#root');
 
 interface EmployeeBarProps {
   setActiveView: (view: 'tiles' | 'list') => void;
