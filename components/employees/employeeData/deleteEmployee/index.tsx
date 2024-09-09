@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import DeleteEmployeeNotificationPopUp from '@/components/employees/employeeData/deleteEmployee/deleteEmployeeNotification';
+import DeleteEmployeeNotificationPopUp from './deleteEmployeeNotification';
 import styles from './main.module.scss';
 
 interface DeleteEmployeeProps {

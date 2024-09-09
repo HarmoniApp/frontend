@@ -1,5 +1,6 @@
-$popup-border-colour: #dee2e6;
-$popup-box-shadow-colour: rgba(0, 0, 0, 0.1);
+$popup-bg: rgba(0, 0, 0, 0.5);
+$popup-bg-colour: #4F4E4E;
+$popup-highlight-colour: #FFCF70;
 
 $employeeData-font-colour-dark: #000000;
 $employeeData-checkbox-bg-colour: #e8e8e8;
@@ -8,18 +9,36 @@ $employeeData-highlight-colour: #FFCF70;
 $employeeData-highlight-colour-hover: #FFBE4D;
 $employeeData-column-colour: #FFFFFF;
 
-.modalContentOfDeleteEmployee {
+.modalOverlayDeleteEmployee {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: 1px solid $popup-border-colour;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $popup-bg;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContentOfDeleteEmployee {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid $popup-highlight-colour;
     border-radius: 8px;
-    box-shadow: 0px 4px 6px $popup-box-shadow-colour;
+    background-color: $popup-bg-colour;
     text-align: center;
     width: auto;
     max-height: 80vh;
     overflow-y: auto;
+    gap: 20px;
+    padding: 20px;
+
+    @media (max-width: 768px) {
+        width: 90%;
+        max-height: 70vh;
+    }
 }
 
 .employeeDataContainerMain {
@@ -27,9 +46,9 @@ $employeeData-column-colour: #FFFFFF;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap:20px;
+    gap: 20px;
     width: 100%;
-    margin:20px 0;
+    margin: 20px 0;
 }
 
 .rowButtonContainer {
@@ -41,9 +60,9 @@ $employeeData-column-colour: #FFFFFF;
     gap: 20px;
 
     @media (max-width: 1225px) {
-        flex-direction: column;  
+        flex-direction: column;
 
-        .buttonContainer{
+        .buttonContainer {
             width: 100%;
         }
     }
@@ -53,8 +72,8 @@ $employeeData-column-colour: #FFFFFF;
         flex-direction: row;
         align-items: center;
         justify-content: space-evenly;
-        flex:1;
-        padding:20px;
+        flex: 1;
+        padding: 20px;
 
         border-radius: 10px;
         background-color: $employeeData-column-colour;
@@ -75,12 +94,12 @@ $employeeData-column-colour: #FFFFFF;
             border-radius: 10px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            gap:10px;
+            gap: 10px;
 
             &:hover {
                 background-color: $employeeData-highlight-colour-hover;
             }
-            
+
             .buttonIcon {
                 height: 26px;
                 width: 26px;
@@ -91,35 +110,36 @@ $employeeData-column-colour: #FFFFFF;
                 text-align: center;
                 font-size: 20px;
                 margin: 0;
-            } 
+            }
         }
     }
 }
 
-.fullNameAndIdContainer{
+.fullNameAndIdContainer {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: stretch;
-    width:90%;
+    width: 90%;
     gap: 20px;
 
     @media (max-width: 1225px) {
         flex-direction: column;
         gap: 20px;
-        
-        .fullNameColumnContainer, .employeeIdContainer {
+
+        .fullNameColumnContainer,
+        .employeeIdContainer {
             width: 100%;
             gap: 20px;
         }
     }
 
-    .fullNameColumnContainer{
+    .fullNameColumnContainer {
         display: flex;
         flex-direction: row;
         justify-content: space-around;
         align-items: center;
-        flex:1;
+        flex: 1;
         width: 100%;
         height: auto;
 
@@ -127,7 +147,8 @@ $employeeData-column-colour: #FFFFFF;
         border-radius: 10px;
         box-shadow: 0 4px 8px $employeeData-box-shadow-colour;
 
-        .firstNameContainer, .surnameContainer{
+        .firstNameContainer,
+        .surnameContainer {
             display: flex;
             flex-direction: row;
             justify-content: center;
@@ -135,47 +156,47 @@ $employeeData-column-colour: #FFFFFF;
             height: auto;
             gap: 10px;
 
-            .firstNameParagraph{
+            .firstNameParagraph {
                 font-size: 20px;
                 font-weight: bold;
                 color: $employeeData-font-colour-dark;
-                display:inline-block;
-                border-bottom:2px solid $employeeData-column-colour;
+                display: inline-block;
+                border-bottom: 2px solid $employeeData-column-colour;
             }
 
-            .firstNameDataParagraph{
+            .firstNameDataParagraph {
                 font-size: 20px;
                 color: $employeeData-font-colour-dark;
                 text-transform: capitalize;
-                display:inline-block;
-                border-bottom:2px solid $employeeData-highlight-colour;
+                display: inline-block;
+                border-bottom: 2px solid $employeeData-highlight-colour;
             }
 
-            .surnameParagraph{
+            .surnameParagraph {
                 font-size: 20px;
                 font-weight: bold;
                 color: $employeeData-font-colour-dark;
-                display:inline-block;
-                border-bottom:2px solid $employeeData-column-colour;
+                display: inline-block;
+                border-bottom: 2px solid $employeeData-column-colour;
             }
 
-            .surnameDataParagraph{
+            .surnameDataParagraph {
                 font-size: 20px;
                 color: $employeeData-font-colour-dark;
                 text-transform: capitalize;
-                display:inline-block;
-                border-bottom:2px solid $employeeData-highlight-colour;
+                display: inline-block;
+                border-bottom: 2px solid $employeeData-highlight-colour;
             }
 
         }
     }
 
-    .employeeIdContainer{
+    .employeeIdContainer {
         display: flex;
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        flex:1;
+        flex: 1;
         width: 100%;
         gap: 2%;
         height: auto;
@@ -188,23 +209,23 @@ $employeeData-column-colour: #FFFFFF;
         border-radius: 10px;
         box-shadow: 0 4px 8px $employeeData-box-shadow-colour;
 
-        .idParagraph{
+        .idParagraph {
             font-size: 20px;
             font-weight: bold;
             color: $employeeData-font-colour-dark;
             margin: 10px 0;
-            display:inline-block;
-            border-bottom:2px solid $employeeData-column-colour;
-            padding:2px 0;
+            display: inline-block;
+            border-bottom: 2px solid $employeeData-column-colour;
+            padding: 2px 0;
 
         }
 
-        .idDataParagraph{
+        .idDataParagraph {
             font-size: 20px;
             margin: 10px 0;
-            display:inline-block;
-            border-bottom:2px solid $employeeData-highlight-colour;
-            padding:2px 0;
+            display: inline-block;
+            border-bottom: 2px solid $employeeData-highlight-colour;
+            padding: 2px 0;
 
         }
     }
@@ -218,7 +239,7 @@ $employeeData-column-colour: #FFFFFF;
 
     @media (max-width: 1225px) {
         flex-direction: column;
-        
+
         .columnContainer {
             width: 100%;
         }
@@ -239,7 +260,7 @@ $employeeData-column-colour: #FFFFFF;
     border-radius: 10px;
     box-shadow: 0 4px 8px $employeeData-box-shadow-colour;
 
-    
+
     .residenceLabel,
     .supervisorLabel,
     .phoneNumberLabel,
@@ -252,8 +273,8 @@ $employeeData-column-colour: #FFFFFF;
         align-items: center;
         justify-content: space-between;
         padding: 0 10px;
-        color: $employeeData-font-colour-dark;        
-        border-bottom:2px solid $employeeData-highlight-colour;
+        color: $employeeData-font-colour-dark;
+        border-bottom: 2px solid $employeeData-highlight-colour;
 
         .homeAdressParagraph,
         .supervisorParagraph,
@@ -277,7 +298,7 @@ $employeeData-column-colour: #FFFFFF;
     align-items: center;
     gap: 20px;
     width: 90%;
-    
+
 
     @media (max-width: 1225px) {
         flex-direction: column;
