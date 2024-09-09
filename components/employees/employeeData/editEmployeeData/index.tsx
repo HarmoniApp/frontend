@@ -107,7 +107,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     employee_id: Yup.string()
       .required('Pole wymagane')
       .test('no-invalid-chars', function (value) {
-        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
+        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9-]*$/);
         return invalidChars.length === 0
           ? true
           : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
@@ -144,7 +144,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     phone_number: Yup.string()
       .required('Pole wymagane')
       .test('no-invalid-chars', function (value) {
-        const invalidChars = findInvalidCharacters(value || '', /^[0-9]*$/);
+        const invalidChars = findInvalidCharacters(value || '', /^[0-9+ ]*$/);
         return invalidChars.length === 0
           ? true
           : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
