@@ -140,6 +140,7 @@ $absenceTable-highlight-colour-hover: #FFBE4D;
 }
 
 .archiveButton,
+.cancelButton,
 .newAbsenceButton {
   display: flex;
   flex-direction: row;
@@ -158,6 +159,7 @@ $absenceTable-highlight-colour-hover: #FFBE4D;
 }
 
 .archiveButton:hover,
+.cancelButton:hover,
 .newAbsenceButton:hover {
   background-color: $absenceTable-highlight-colour-hover;
   color: $absenceTable-font-colour;
