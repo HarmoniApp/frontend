@@ -88,6 +88,25 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
         }
     };
 
+    const handleCancelAbsence = async (id: number) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/v1/absence/${id}/status/3`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            fetchUserAbsences();
+        } catch (error) {
+            console.error(`Error archiving absence with ID ${id}:`, error);
+        }
+    };
+
     return (
         <div className={styles.absenceEmployeesContainerMain}>
             <div className={styles.absenceHeaderContainer}>
@@ -103,7 +122,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                             <th className={styles.absenceTheadHeadElement}>Do</th>
                             <th className={styles.absenceTheadHeadElement}>Czas trwania</th>
                             <th className={styles.absenceTheadHeadElement}>Status</th>
-                            <th className={styles.absenceTheadHeadElement}>Archiwizuj</th>
+                            <th className={styles.absenceTheadHeadElement}></th>
                         </tr>
                     </thead>
                     <tbody className={styles.absenceDataBody}>
@@ -115,16 +134,21 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                                 <td className={`${styles.absenceDataBodyHeadElement} ${styles.afterElement}`}>{absence.working_days}</td>
                                 <td className={styles.absenceDataBodyHeadElement}>{absence.status.name}</td>
                                 <td className={`${styles.absenceDataBodyHeadElement} ${styles.absenceDataBodyHeadElementButton}`}>
-                                    <button className={styles.archiveButton} onClick={() => handleArchiveAbsence(absence.id)}>
-                                        Tak
-                                    </button>
+
+                                    {absence.status.name === 'awaiting' ? (
+                                        <button className={styles.cancelButton} onClick={() => handleCancelAbsence(absence.id)}>
+                                            Anuluj
+                                        </button>
+                                    ) : 
+                                        <button className={styles.archiveButton} onClick={() => handleArchiveAbsence(absence.id)}>
+                                            Archiwizuj
+                                        </button>}
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
-
             {modalIsOpenAbsenceRequest && (
                 <div className={styles.addAbsencetModalOverlay}>
                     <div className={styles.addAbsenceModalContent}>
