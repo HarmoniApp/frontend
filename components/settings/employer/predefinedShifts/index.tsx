@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 import PredefinedShift from '@/components/types/predefinedShifts';
-import { Formik, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
@@ -100,7 +100,7 @@ const PredefinedShifts: React.FC = () => {
             }}
           >
             {({ handleSubmit, handleChange, values, errors, touched, resetForm }) => (
-              <form onSubmit={handleSubmit}>
+              <Form onSubmit={handleSubmit}>
                 <div className={styles.showShiftContainerMain}>
                   <ErrorMessage name="name" component="div" className={styles.errorMessage} />
                   <ErrorMessage name="start" component="div" className={styles.errorMessage} />
@@ -186,7 +186,7 @@ const PredefinedShifts: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              </form>
+              </Form>
             )}
           </Formik>
         ))}
