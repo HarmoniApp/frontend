@@ -3,7 +3,7 @@ import Employer from './employer';
 import styles from './main.module.scss';
 
 const Absence = () => {
-    const whoIsLogged = false;  //true = employer, false = employee
+    const whoIsLogged = true;  //true = employer, false = employee
     const employeeId = 26;
 
     return (
