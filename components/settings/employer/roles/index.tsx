@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 import RoleWithColour from '@/components/types/roleWithColour';
-import { Formik, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
@@ -95,7 +95,7 @@ const Roles: React.FC = () => {
         .then(() => {
           fetchRoles();
           setEditingRoleId(null);
-          resetForm(); // Resetuje wartości edytowanej roli
+          resetForm();
         })
         .catch(error => console.error('Error updating role:', error));
     }
@@ -112,7 +112,7 @@ const Roles: React.FC = () => {
             onSubmit={handleSaveEdit}
           >
             {({ handleSubmit, handleChange, values, errors, touched, resetForm }) => (
-              <form onSubmit={handleSubmit}>
+              <Form onSubmit={handleSubmit}>
                 <div className={styles.showRoleConteinerMain}>
                   <ErrorMessage name="editedRoleName" component="div" className={styles.errorMessage} />
                   <div className={styles.showRoleConteiner}>
@@ -181,7 +181,7 @@ const Roles: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              </form>
+              </Form>
             )}
           </Formik>
         ))}
@@ -193,7 +193,7 @@ const Roles: React.FC = () => {
         onSubmit={handleAddRole}
       >
         {({ values, handleChange, handleSubmit, errors, touched }) => (
-          <form className={styles.addContainer} onSubmit={handleSubmit}>
+          <Form className={styles.addContainer} onSubmit={handleSubmit}>
             <Field
               name="newRoleName"
               value={values.newRoleName}
@@ -216,7 +216,7 @@ const Roles: React.FC = () => {
             <button type="submit" className={styles.addButton}>
               <FontAwesomeIcon icon={faPlus} />
             </button>
-          </form>
+          </Form>
         )}
       </Formik>
     </div>
