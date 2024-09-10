@@ -3,43 +3,19 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 import RoleWithColour from '@/components/types/roleWithColour';
+import AddNotification from '../popUps/addNotification';
+import DeleteConfirmation from '../popUps/deleteConfirmation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 
-const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
-  const invalidChars = value.split('').filter(char => !allowedPattern.test(char));
-  return Array.from(new Set(invalidChars));
-};
-
-const addRoleValidationSchema = Yup.object({
-  newRoleName: Yup.string()
-    .required('Pole wymagane')
-    .test('no-invalid-chars', function (value) {
-      const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
-      return invalidChars.length === 0
-        ? true
-        : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
-    }),
-  newRoleColor: Yup.string().required('Kolor wymagany'),
-});
-
-const editRoleValidationSchema = Yup.object({
-  editedRoleName: Yup.string()
-    .required('Pole wymagane')
-    .test('no-invalid-chars', function (value) {
-      const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
-      return invalidChars.length === 0
-        ? true
-        : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
-    }),
-  editedRoleColor: Yup.string().required('Kolor wymagany'),
-});
-
 const Roles: React.FC = () => {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [roles, setRoles] = useState<RoleWithColour[]>([]);
   const [editingRoleId, setEditingRoleId] = useState<number | null>(null);
+  const [addedRoleName, setAddedRoleName] = useState<string>('');
 
   useEffect(() => {
     fetchRoles();
@@ -75,7 +51,9 @@ const Roles: React.FC = () => {
       body: JSON.stringify({ name: values.newRoleName, color: values.newRoleColor }),
     })
       .then(response => response.json())
-      .then(() => {
+      .then((newRole) => {
+        setAddedRoleName(newRole.name);
+        setIsAddModalOpen(true);
         fetchRoles();
         resetForm();
       })
@@ -100,6 +78,35 @@ const Roles: React.FC = () => {
         .catch(error => console.error('Error updating role:', error));
     }
   };
+
+  const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
+    const invalidChars = value.split('').filter(char => !allowedPattern.test(char));
+    return Array.from(new Set(invalidChars));
+  };
+
+  const addRoleValidationSchema = Yup.object({
+    newRoleName: Yup.string()
+      .required('Pole wymagane')
+      .test('no-invalid-chars', function (value) {
+        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
+        return invalidChars.length === 0
+          ? true
+          : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
+      }),
+    newRoleColor: Yup.string().required('Kolor wymagany'),
+  });
+
+  const editRoleValidationSchema = Yup.object({
+    editedRoleName: Yup.string()
+      .required('Pole wymagane')
+      .test('no-invalid-chars', function (value) {
+        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
+        return invalidChars.length === 0
+          ? true
+          : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
+      }),
+    editedRoleColor: Yup.string().required('Kolor wymagany'),
+  });
 
   return (
     <div className={styles.roleContainerMain}>
@@ -178,6 +185,19 @@ const Roles: React.FC = () => {
                           </button>
                         </>
                       )}
+                      {isDeleteModalOpen &&(
+                        <>
+                        <div className={styles.modalOverlayOfDelete}>
+                          <div className={styles.modalContentOfDelete}>
+                            {/* <DeleteConfirmation
+                              onClose={() => setIsDeleteModalOpen(false)}
+                              onDelete={() => handleDeleteRole(role.id)}
+                              info={role.name}
+                            /> */}
+                          </div>
+                        </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -216,6 +236,14 @@ const Roles: React.FC = () => {
             <button type="submit" className={styles.addButton}>
               <FontAwesomeIcon icon={faPlus} />
             </button>
+
+            {isAddModalOpen && (
+              <div className={styles.modalOverlayOfAdd}>
+                <div className={styles.modalContentOfAdd}>
+                  <AddNotification onClose={() => setIsAddModalOpen(false)} info={addedRoleName} />
+                </div>
+              </div>
+            )}
           </Form>
         )}
       </Formik>
