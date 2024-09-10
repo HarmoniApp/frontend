@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
-import Modal from 'react-modal';
 import Flag from 'react-flagkit';
 import EditEmployeeNotificationPopUp from '@/components/employees/employeeData/editEmployeeData/editEmployeeDataNotification';
 import EmployeeDataWorkAdressOnlyId from '@/components/types/employeeDataWorkAdressOnlyId';
@@ -15,8 +14,6 @@ import styles from './main.module.scss';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
-
-Modal.setAppElement('#root');
 
 const languageAbbreviations: { [key: string]: string } = {
   Arabic: 'AE',
@@ -110,7 +107,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     employee_id: Yup.string()
       .required('Pole wymagane')
       .test('no-invalid-chars', function (value) {
-        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
+        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9-]*$/);
         return invalidChars.length === 0
           ? true
           : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
@@ -147,7 +144,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     phone_number: Yup.string()
       .required('Pole wymagane')
       .test('no-invalid-chars', function (value) {
-        const invalidChars = findInvalidCharacters(value || '', /^[0-9]*$/);
+        const invalidChars = findInvalidCharacters(value || '', /^[0-9+ ]*$/);
         return invalidChars.length === 0
           ? true
           : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
@@ -269,7 +266,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     const changedData = getChangedData(values);
 
     fetch(`http://localhost:8080/api/v1/user/${employee.id}`, {
-      method: 'PUT',
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -596,13 +593,10 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
               </div>
             </div>
 
-            <Modal
-              isOpen={isModalOpen}
-              contentLabel="Employee Updated"
-              className={styles.modalContentEditEmployeeNotification}
-              overlayClassName={styles.modalOverlayEditEmployeeNotification}
-            >
-              <EditEmployeeNotificationPopUp
+            {isModalOpen && (
+              <div className={styles.modalOverlayEditEmployeeNotification}>
+                <div className={styles.modalContentEditEmployeeNotification}>
+                <EditEmployeeNotificationPopUp
                 onClose={() => {
                   setIsModalOpen(false);
                   onCloseEdit();
@@ -610,7 +604,9 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
                 changedData={changedData}
                 onCloseEditData={onCloseEdit}
               />
-            </Modal>
+                </div>
+              </div>
+            )}
           </Form>
         )}
       </Formik>

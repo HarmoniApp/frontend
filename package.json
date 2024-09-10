@@ -11,6 +11,7 @@
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@stomp/stompjs": "^7.0.0",
     "@types/react-modal": "^3.16.3",
     "classnames": "^2.5.1",
     "formik": "^2.4.6",
@@ -20,12 +21,14 @@
     "react-flagkit": "^2.0.4",
     "react-modal": "^3.16.1",
     "sass": "^1.77.6",
+    "sockjs-client": "^1.6.1",
     "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/sockjs-client": "^1.5.4",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
     "postcss": "^8",
