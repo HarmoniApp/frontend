@@ -153,7 +153,7 @@ const Departments: React.FC = () => {
                         }}
                         context={{ dirty: true }}
                     >
-                        {({ handleSubmit, handleChange, values, errors, touched, dirty, isSubmitting }) => (
+                        {({ handleSubmit, handleChange, values, errors, touched, dirty, isSubmitting, resetForm }) => (
                             <Form onSubmit={(e) => {
                                 e.preventDefault();
                                
@@ -286,7 +286,10 @@ const Departments: React.FC = () => {
                                                 <button
                                                     type="button"
                                                     className={styles.noButton}
-                                                    onClick={() => setEditingDepartmentId(null)}
+                                                    onClick={() => {
+                                                        resetForm();
+                                                        setEditingDepartmentId(null);
+                                                    }}
                                                 >
                                                     <FontAwesomeIcon icon={faXmark} />
                                                 </button>
