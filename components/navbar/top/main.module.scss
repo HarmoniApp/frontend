@@ -1,8 +1,44 @@
+$popup-bg: rgba(0, 0, 0, 0.5);
+$popup-bg-colour: #4F4E4E;
+$popup-highlight-colour: #FFCF70;
+
 $bg-color: #4F4E4E;
 $font-color: #FFFFFF;
 $highlight-color: #FFCF70;
 $padding: 10px;
 $logo-size: 24px;
+
+.modalOverlayOfNotification {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $popup-bg;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .modalContentOfNotification{
+    display: flex;
+    flex-direction: column;
+    border: 2px solid $popup-highlight-colour;
+    border-radius: 8px;
+    background-color: $popup-bg-colour;
+    text-align: center;
+    width: auto;
+    max-height: 80vh;
+    overflow-y: auto;
+    gap: 20px;
+    padding: 20px;
+
+    @media (max-width: 768px) {
+        width: 90%;
+        max-height: 70vh;
+    }
+  }
 
 .navbar {
     display: flex;
