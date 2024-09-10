@@ -83,6 +83,11 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
     setFieldValue('selectedEndTime', predefinedShift.end.slice(0, 5));
   };
 
+  const handleDeleteShift = (shiftId: number, userId: number) => {
+    onDeleteShift(shiftId, userId);
+    onClose();
+  }
+
   return (
     <div className={styles.editShiftModalOverlay}>
       <div className={styles.editShiftModalContent}>
@@ -196,7 +201,7 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
                   <FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarPlus} />
                   <p className={styles.buttonParagraph}>Edytuj zmianę</p>
                 </button>
-                <button type="button" className={styles.deleteShiftButton} onClick={() => onDeleteShift(shift.id, shift.user_id)}>
+                <button type="button" className={styles.deleteShiftButton} onClick={() => handleDeleteShift(shift.id, shift.user_id)}>
                   <FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarXmark} />
                   <p className={styles.buttonParagraph}>Usuń zmianę</p>
                 </button>
