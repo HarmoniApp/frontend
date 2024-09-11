@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import Absence from '@/components/types/absence';
 import AbsenceRequest from '@/components/absence/employee/absenceRequest';
+import CancelConfirmation from './popUps/cancelConfirmation';
+import ArchiveConfirmation from './popUps/archiveConfirmation';
 import styles from './main.module.scss';
 
 interface AbsenceEmployeesProps {
@@ -10,10 +12,14 @@ interface AbsenceEmployeesProps {
 
 const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
     const [modalIsOpenAbsenceRequest, setModalIsOpenAbsenceRequest] = useState(false);
-    const openModalAbsenceRequest = () => setModalIsOpenAbsenceRequest(true);
-    const closeModalAbsenceRequest = () => setModalIsOpenAbsenceRequest(false);
+    const [modalIsOpenCancelAbsence, setModalIsOpenCancelAbsence] = useState(false);
+    const [modalIsOpenArchiveAbsence, setModalIsOpenArchiveAbsence] = useState(false);
     const [absences, setAbsences] = useState<Absence[]>([]);
     const [absenceTypeNames, setAbsenceTypeNames] = useState<{ [key: number]: string }>({});
+    const [selectedAbsenceId, setSelectedAbsenceId] = useState<number | null>(null);
+    const [selectedAbsenceType, setSelectedAbsenceType] = useState<string>('');
+    const [selectedAbsenceStart, setSelectedAbsenceStart] = useState<string>('');
+    const [selectedAbsenceEnd, setSelectedAbsenceEnd] = useState<string>('');
 
     useEffect(() => {
         fetchUserAbsences();
@@ -69,9 +75,11 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
         }
     };
 
-    const handleArchiveAbsence = async (id: number) => {
+    const handleArchiveAbsence = async () => {
+        if (selectedAbsenceId === null) return;
+
         try {
-            const response = await fetch(`http://localhost:8080/api/v1/absence/archive/${id}?archived=true`, {
+            const response = await fetch(`http://localhost:8080/api/v1/absence/archive/${selectedAbsenceId}?archived=true`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -84,13 +92,15 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
 
             fetchUserAbsences();
         } catch (error) {
-            console.error(`Error archiving absence with ID ${id}:`, error);
+            console.error(`Error archiving absence with ID ${selectedAbsenceId}:`, error);
         }
     };
 
-    const handleCancelAbsence = async (id: number) => {
+    const handleCancelAbsence = async () => {
+        if (selectedAbsenceId === null) return;
+
         try {
-            const response = await fetch(`http://localhost:8080/api/v1/absence/${id}/status/3`, {
+            const response = await fetch(`http://localhost:8080/api/v1/absence/${selectedAbsenceId}/status/3`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -103,7 +113,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
 
             fetchUserAbsences();
         } catch (error) {
-            console.error(`Error archiving absence with ID ${id}:`, error);
+            console.error(`Error canceling absence with ID ${selectedAbsenceId}:`, error);
         }
     };
 
@@ -111,7 +121,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
         <div className={styles.absenceEmployeesContainerMain}>
             <div className={styles.absenceHeaderContainer}>
                 <label className={styles.title}>Twoje urlopy</label>
-                <button className={styles.newAbsenceButton} onClick={openModalAbsenceRequest}>Złóż wniosek o urlop</button>
+                <button className={styles.newAbsenceButton} onClick={() => setModalIsOpenAbsenceRequest(true)}>Złóż wniosek o urlop</button>
             </div>
             <div className={styles.tableContainer}>
                 <table className={styles.absenceTable}>
@@ -134,29 +144,74 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                                 <td className={`${styles.absenceDataBodyHeadElement} ${styles.afterElement}`}>{absence.working_days}</td>
                                 <td className={styles.absenceDataBodyHeadElement}>{absence.status.name}</td>
                                 <td className={`${styles.absenceDataBodyHeadElement} ${styles.absenceDataBodyHeadElementButton}`}>
-
                                     {absence.status.name === 'awaiting' ? (
-                                        <button className={styles.cancelButton} onClick={() => handleCancelAbsence(absence.id)}>
+                                        <button
+                                            className={styles.cancelButton}
+                                            onClick={() => {
+                                                setSelectedAbsenceId(absence.id);
+                                                setSelectedAbsenceType(absenceTypeNames[absence.absence_type_id]);
+                                                setSelectedAbsenceStart(new Date(absence.start).toLocaleDateString());
+                                                setSelectedAbsenceEnd(new Date(absence.end).toLocaleDateString());
+                                                setModalIsOpenCancelAbsence(true);
+                                            }}
+                                        >
                                             Anuluj
                                         </button>
-                                    ) : 
-                                        <button className={styles.archiveButton} onClick={() => handleArchiveAbsence(absence.id)}>
+                                    ) : (
+                                        <button
+                                            className={styles.archiveButton}
+                                            onClick={() => {
+                                                setSelectedAbsenceId(absence.id);
+                                                setSelectedAbsenceType(absenceTypeNames[absence.absence_type_id]);
+                                                setSelectedAbsenceStart(new Date(absence.start).toLocaleDateString());
+                                                setSelectedAbsenceEnd(new Date(absence.end).toLocaleDateString());
+                                                setModalIsOpenArchiveAbsence(true);
+                                            }}
+                                        >
                                             Archiwizuj
-                                        </button>}
+                                        </button>
+                                    )}
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
+
             {modalIsOpenAbsenceRequest && (
                 <div className={styles.addAbsencetModalOverlay}>
                     <div className={styles.addAbsenceModalContent}>
-                        <AbsenceRequest onSend={userId} onClose={closeModalAbsenceRequest} />
+                        <AbsenceRequest onSend={userId} onClose={() => setModalIsOpenAbsenceRequest(false)} onRefresh={fetchUserAbsences} />
+                    </div>
+                </div>
+            )}
+
+            {modalIsOpenCancelAbsence && (
+                <div className={styles.addAbsencetModalOverlay}>
+                    <div className={styles.addAbsenceModalContent}>
+                        <CancelConfirmation
+                            onCancel={handleCancelAbsence}
+                            onClose={() => setModalIsOpenCancelAbsence(false)}
+                            absenceType={selectedAbsenceType}
+                            absenceStartAndEnd={selectedAbsenceStart + ' - ' + selectedAbsenceEnd}
+                        />
+                    </div>
+                </div>
+            )}
+
+            {modalIsOpenArchiveAbsence && (
+                <div className={styles.addAbsencetModalOverlay}>
+                    <div className={styles.addAbsenceModalContent}>
+                        <ArchiveConfirmation
+                            onArchive={handleArchiveAbsence}
+                            onClose={() => setModalIsOpenArchiveAbsence(false)}
+                            absenceType={selectedAbsenceType}
+                            absenceStartAndEnd={selectedAbsenceStart + ' - ' + selectedAbsenceEnd}
+                        />
                     </div>
                 </div>
             )}
         </div>
     );
-}
+};
 export default AbsenceEmployees;

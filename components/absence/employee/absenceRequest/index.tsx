@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck, faArrowTurnUp } from '@fortawesome/free-solid-svg-icons';
+import { faCircleCheck, faArrowTurnUp, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import AbsenceType from '@/components/types/absenceType';
@@ -10,10 +10,13 @@ import styles from './main.module.scss';
 interface AbsenceEmployeesRequestProps {
     onClose: () => void;
     onSend: number;
+    onRefresh: () => void;
 }
 
-const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClose, onSend }) => {
+const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClose, onSend, onRefresh }) => {
     const [absenceTypes, setAbsenceTypes] = useState<AbsenceType[]>([]);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [modalCountdown, setModalCountdown] = useState(10);
 
     useEffect(() => {
         fetch('http://localhost:8080/api/v1/absence-type')
@@ -21,6 +24,23 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
             .then(data => setAbsenceTypes(data))
             .catch(error => console.error('Error fetching absence types:', error));
     }, []);
+
+    useEffect(() => {
+        if (isSubmitted) {
+            const countdownInterval = setInterval(() => {
+                setModalCountdown((prev) => {
+                    if (prev === 1) {
+                        clearInterval(countdownInterval);
+                        onClose();
+                        onRefresh(); 
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+
+            return () => clearInterval(countdownInterval);
+        }
+    }, [isSubmitted, onClose, onRefresh]);
 
     const validationSchema = Yup.object({
         absence_type_id: Yup.string().required('Pole wymagane'),
@@ -33,93 +53,116 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
     });
 
     return (
-        <Formik
-            initialValues={{
-                start: '',
-                end: '',
-                absence_type_id: ''
-            }}
-            validationSchema={validationSchema}
-            onSubmit={(values) => {
-                fetch('http://localhost:8080/api/v1/absence', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        absence_type_id: values.absence_type_id,
-                        start: values.start,
-                        end: values.end,
-                        user_id: onSend,
-                    }),
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Absence request submitted successfully:', data);
-                        onClose();
-                    })
-                    .catch(error => console.error('Error submitting absence request:', error));
-            }}
-        >
-            {({ errors, touched }) => (
-                <Form className={styles.absenceForm}>
-                    <div className={styles.formTitle}>
-                        <label className={styles.title}>Złóż wniosek o urlop</label>
+        <div>
+            {isSubmitted ? (
+                <div className={styles.addAbsenceNotificationContainerMain}>
+                    <div className={styles.headerContainer}>
+                        <label className={styles.headerLabel}>Wniosek złożony pomyślnie!</label>
                     </div>
-                    <label className={styles.dataLabel}>
-                        Wybierz powód urlopu
-                        <ErrorMessage name="absence_type_id" component="div" className={styles.errorMessage} />
-                    </label>
-                    <Field
-                        as="select"
-                        className={classNames(styles.formInput, styles.formSelect, styles.pointer, {
-                            [styles.errorInput]: errors.absence_type_id && touched.absence_type_id,
-                        })}
-                        name="absence_type_id"
-                    >
-                        <option className={styles.defaultOption} value="" disabled>Wybierz rodzaj urlopu</option>
-                        {absenceTypes.map((type) => (
-                            <option key={type.id} value={type.id}>{type.name}</option>
-                        ))}
-                    </Field>
-
-                    <label className={styles.dataLabel}>
-                        Data rozpoczęcia
-                        <ErrorMessage name="start" component="div" className={styles.errorMessage} />
-                    </label>
-                    <Field
-                        type="date"
-                        name="start"
-                        className={classNames(styles.formInput, styles.pointer, {
-                            [styles.errorInput]: errors.start && touched.start,
-                        })}
-                    />
-
-                    <label className={styles.dataLabel}>
-                        Data zakończenia
-                        <ErrorMessage name="end" component="div" className={styles.errorMessage} />
-                    </label>
-                    <Field
-                        type="date"
-                        name="end"
-                        className={classNames(styles.formInput, styles.pointer,{
-                            [styles.errorInput]: errors.end && touched.end,
-                        })}
-                    />
-                    <div className={styles.buttonContainer}>
-                        <button className={styles.backButton} type="button" onClick={onClose}>
-                            <FontAwesomeIcon className={styles.buttonIcon} icon={faArrowTurnUp} style={{ transform: 'rotate(-90deg)' }} />
-                            <p className={styles.buttonParagraph}>Cofnij</p>
-                        </button>
-                        <button className={styles.addButton} type="submit">
-                            <FontAwesomeIcon className={styles.buttonIcon} icon={faCircleCheck} />
-                            <p className={styles.buttonParagraph}>Złóż wniosek</p>
+                    <div className={styles.counterContainter}>
+                        <p className={styles.counterParagraph}>Zamkniecie okna za:</p>
+                        <div className={styles.counterTimerContainer}>
+                            <label className={styles.highlightTimeLabel}>{modalCountdown}</label>
+                            <label className={styles.counterTimerLabel}>sekund.</label>
+                        </div>
+                    </div>
+                    <div className={styles.buttonConianer}>
+                        <button className={styles.closeButton} onClick={() => { onClose(); onRefresh(); }}>
+                            <FontAwesomeIcon className={styles.buttonIcon} icon={faCircleXmark} />
+                            <p className={styles.buttonParagraph}>Zamknij</p>
                         </button>
                     </div>
-                </Form>
+                </div>
+            ) : (
+                <Formik
+                    initialValues={{
+                        start: '',
+                        end: '',
+                        absence_type_id: ''
+                    }}
+                    validationSchema={validationSchema}
+                    onSubmit={(values) => {
+                        fetch('http://localhost:8080/api/v1/absence', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                absence_type_id: values.absence_type_id,
+                                start: values.start,
+                                end: values.end,
+                                user_id: onSend,
+                            }),
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                setIsSubmitted(true);
+                                onRefresh();
+                            })
+                            .catch(error => console.error('Error submitting absence request:', error));
+                    }}
+                >
+                    {({ errors, touched }) => (
+                        <Form className={styles.absenceForm}>
+                            <div className={styles.formTitle}>
+                                <label className={styles.title}>Złóż wniosek o urlop</label>
+                            </div>
+
+                            <label className={styles.dataLabel}>
+                                Wybierz powód urlopu
+                                <ErrorMessage name="absence_type_id" component="div" className={styles.errorMessage} />
+                            </label>
+                            <Field
+                                as="select"
+                                className={classNames(styles.formInput, styles.formSelect, styles.pointer, {
+                                    [styles.errorInput]: errors.absence_type_id && touched.absence_type_id,
+                                })}
+                                name="absence_type_id"
+                            >
+                                <option className={styles.defaultOption} value="" disabled>Wybierz rodzaj urlopu</option>
+                                {absenceTypes.map((type) => (
+                                    <option key={type.id} value={type.id}>{type.name}</option>
+                                ))}
+                            </Field>
+
+                            <label className={styles.dataLabel}>
+                                Data rozpoczęcia
+                                <ErrorMessage name="start" component="div" className={styles.errorMessage} />
+                            </label>
+                            <Field
+                                type="date"
+                                name="start"
+                                className={classNames(styles.formInput, styles.pointer, {
+                                    [styles.errorInput]: errors.start && touched.start,
+                                })}
+                            />
+
+                            <label className={styles.dataLabel}>
+                                Data zakończenia
+                                <ErrorMessage name="end" component="div" className={styles.errorMessage} />
+                            </label>
+                            <Field
+                                type="date"
+                                name="end"
+                                className={classNames(styles.formInput, styles.pointer, {
+                                    [styles.errorInput]: errors.end && touched.end,
+                                })}
+                            />
+                            <div className={styles.buttonContainer}>
+                                <button className={styles.backButton} type="button" onClick={onClose}>
+                                    <FontAwesomeIcon className={styles.buttonIcon} icon={faArrowTurnUp} style={{ transform: 'rotate(-90deg)' }} />
+                                    <p className={styles.buttonParagraph}>Cofnij</p>
+                                </button>
+                                <button className={styles.addButton} type="submit">
+                                    <FontAwesomeIcon className={styles.buttonIcon} icon={faCircleCheck} />
+                                    <p className={styles.buttonParagraph}>Złóż wniosek</p>
+                                </button>
+                            </div>
+                        </Form>
+                    )}
+                </Formik>
             )}
-        </Formik>
+        </div>
     );
 }
-
 export default AbsenceEmployeesRequest;
