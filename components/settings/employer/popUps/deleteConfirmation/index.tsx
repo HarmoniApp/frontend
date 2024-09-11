@@ -1,28 +1,38 @@
+'use client';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleXmark, faTrash } from '@fortawesome/free-solid-svg-icons';
+import styles from './main.module.scss';
+
 interface DeleteConfirmationProps {
     onClose: () => void;
     onDelete: () => void;
     info: string;
 }
 
-const DeleteConfirmation:React.FC <DeleteConfirmationProps> = ({onClose, onDelete, info}) => {
+const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({ onClose, onDelete, info }) => {
 
     const handleDelete = () => {
         onDelete();
         onClose();
     }
-    // console.log("Render DeleteConfirmation for:", info);
     return (
-        <div className="delete-confirmation">
-            <div className="delete-confirmation__content">
-                <h2 className="delete-confirmation__title">Delete Confirmation</h2>
-                <p className="delete-confirmation__text">Are you sure you want to delete: {info}?</p>
-                <div className="delete-confirmation__buttons">
-                    <button className="delete-confirmation__button" onClick={onClose}>Cancel</button>
-                    <button className="delete-confirmation__button" onClick={handleDelete}>Delete</button>
-                </div>
+        <div className={styles.deleteContainerMain}>
+            <div className={styles.headerContainer}>
+                <label className={styles.headerLabel}>Czy na pewno chcesz usunąć:</label>
+                <label className={styles.highlight}>{info}</label>
+                <label className={styles.headerLabel}>?</label>
+            </div>
+            <div className={styles.butonContainter}>
+                <button className={styles.closeButton} onClick={onClose}>
+                    <FontAwesomeIcon className={styles.buttonIcon} icon={faCircleXmark} />
+                    <p className={styles.buttonParagraph}>Zamknij</p>
+                </button>
+                <button className={styles.deleteButton} onClick={handleDelete}>
+                    <FontAwesomeIcon className={styles.buttonIcon} icon={faTrash} />
+                    <p className={styles.buttonParagraph}>Usuń</p>
+                </button>
             </div>
         </div>
     );
 };
-
 export default DeleteConfirmation;

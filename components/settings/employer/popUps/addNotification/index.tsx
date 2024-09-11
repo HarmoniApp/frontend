@@ -31,6 +31,7 @@ const AddNotification: React.FC<AddNotificationProps> = ({ onClose, info }) => {
             <div className={styles.headerContainer}>
                 <label className={styles.headerLabel}>Właśnie dodałeś:</label>
                 <label className={styles.highlight}>{info}</label>
+                <label className={styles.headerLabel}>!</label>
             </div>
             <div className={styles.counterContainter}>
                 <p className={styles.counterParagraph}>Zamkniecie okna za:</p>
