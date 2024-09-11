@@ -6,20 +6,22 @@ $absenceRequest-highlight-colour: #FFCF70;
 $absenceRequest-highlight-colour-hover: #FFBE4D;
 $absenceRequest-error-border-colour: #dc3545;
 $absenceRequest-error-bg-colour: #ffe6e6;
+$absenceRequest-yes-button-colour: #008000;
+$absenceRequest-yes-button-colour-hover: #00a000;
 
 .absenceForm {
     display: flex;
     flex-direction: column;
     flex: 1;
 
-    .formTitle{
+    .formTitle {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         width: 100%;
 
-        .title{
+        .title {
             font-size: 24px;
             font-weight: bold;
             text-transform: uppercase;
@@ -113,8 +115,7 @@ $absenceRequest-error-bg-colour: #ffe6e6;
     width: 100%;
     margin: 20px 0 0 0;
 
-    .backButton,
-    .addButton {
+    .backButton {
         display: flex;
         align-items: center;
         background-color: $absenceRequest-highlight-colour;
@@ -127,6 +128,33 @@ $absenceRequest-error-bg-colour: #ffe6e6;
 
         &:hover {
             background-color: $absenceRequest-highlight-colour-hover;
+        }
+
+        .buttonParagraph {
+            text-align: center;
+            margin: 0 0 0 10px;
+            font-size: 16px;
+        }
+
+        .buttonIcon {
+            height: 18px;
+            width: 18px;
+        }
+    }
+
+    .addButton {
+        display: flex;
+        align-items: center;
+        background-color: $absenceRequest-yes-button-colour;
+        color: $absenceRequest-font-colour-light;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: $absenceRequest-yes-button-colour-hover;
         }
 
         .buttonParagraph {
