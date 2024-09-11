@@ -15,6 +15,9 @@ const ArchiveConfirmation: React.FC<ArchiveConfirmationProps> = ({ onArchive, on
         onArchive();
         onClose();
     }
+    
+    absenceStartAndEnd = absenceStartAndEnd.replace(/\//g, '.');
+
     return (
         <div className={styles.archiveConfirmationContainerMain}>
             <div className={styles.headerContainer}>

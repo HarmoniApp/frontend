@@ -16,6 +16,9 @@ const CancelConfirmation: React.FC<CancelConfirmationProps> = ({ onCancel, onClo
         onCancel();
         onClose();
     }
+
+    absenceStartAndEnd = absenceStartAndEnd.replace(/\//g, '.');
+
     return (
         <div className={styles.CancelContainerMain}>
             <div className={styles.headerContainer}>
