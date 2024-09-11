@@ -1,6 +1,6 @@
 'use client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleXmark, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faArrowTurnUp, faTrash } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 
 interface DeleteConfirmationProps {
@@ -24,8 +24,8 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({ onClose, onDele
             </div>
             <div className={styles.butonContainter}>
                 <button className={styles.closeButton} onClick={onClose}>
-                    <FontAwesomeIcon className={styles.buttonIcon} icon={faCircleXmark} />
-                    <p className={styles.buttonParagraph}>Zamknij</p>
+                    <FontAwesomeIcon className={styles.buttonIcon} icon={faArrowTurnUp} style={{ transform: 'rotate(-90deg)' }} />
+                    <p className={styles.buttonParagraph}>Cofnij</p>
                 </button>
                 <button className={styles.deleteButton} onClick={handleDelete}>
                     <FontAwesomeIcon className={styles.buttonIcon} icon={faTrash} />
