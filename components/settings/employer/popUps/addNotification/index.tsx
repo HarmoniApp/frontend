@@ -1,5 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 
 interface AddNotificationProps {
@@ -25,17 +27,25 @@ const AddNotification: React.FC<AddNotificationProps> = ({ onClose, info }) => {
     }, [onClose]);
 
     return (
-        <div className={styles.addNotificationContainerMain}>
-            <div className="add-confirmation__content">
-                <h2 className="add-confirmation__title">ADD Information</h2>
-                <p className="add-confirmation__text">Własnie dodales: {info}</p>
-                <p className="add-confirmation__text">Zamkniecie okna za: {modalCountdown}</p>
-                <div className="add-confirmation__buttons">
-                    <button className="add-confirmation__button" onClick={onClose}>Cancel</button>
+        <div className={styles.addSettingsNotificationContainerMain}>
+            <div className={styles.headerContainer}>
+                <label className={styles.headerLabel}>Właśnie dodałeś:</label>
+                <label className={styles.highlight}>{info}</label>
+            </div>
+            <div className={styles.counterContainter}>
+                <p className={styles.counterParagraph}>Zamkniecie okna za:</p>
+                <div className={styles.counterTimerContainer}>
+                    <label className={styles.highlightTimeLabel}>{modalCountdown}</label>
+                    <label className={styles.counterTimerLabel}>sekund.</label>
                 </div>
+            </div>
+            <div className={styles.buttonConianer}>
+                <button className={styles.closeButton} onClick={onClose}>
+                    <FontAwesomeIcon className={styles.buttonIcon} icon={faCircleXmark} />
+                    <p className={styles.buttonParagraph}>Zamknij</p>
+                </button>
             </div>
         </div>
     );
 };
-
 export default AddNotification;
