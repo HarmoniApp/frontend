@@ -3,42 +3,25 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 import PredefinedShift from '@/components/types/predefinedShifts';
+import AddNotification from '../popUps/addNotification';
+import DeleteConfirmation from '../popUps/deleteConfirmation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 
-const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
-  const invalidChars = value.split('').filter(char => !allowedPattern.test(char));
-  return Array.from(new Set(invalidChars));
-};
-
-const shiftValidationSchema = Yup.object({
-  name: Yup.string()
-    .required('Pole wymagane')
-    .test('no-invalid-chars', function (value) {
-      const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9\s]*$/);
-      return invalidChars.length === 0
-        ? true
-        : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
-    }),
-  start: Yup.string()
-    .required('Wybierz godzinę rozpoczęcia')
-    .test('start-before-end', 'Brak chronologii', function (start, context) {
-      const { end } = context.parent;
-      return start !== end;
-    }),
-  end: Yup.string()
-    .required('Wybierz godzinę zakończenia')
-    .test('start-before-end', 'Brak chronologii', function (end, context) {
-      const { start } = context.parent;
-      return start !== end;
-    }),
-});
-
 const PredefinedShifts: React.FC = () => {
   const [shifts, setShifts] = useState<PredefinedShift[]>([]);
   const [editingShiftId, setEditingShiftId] = useState<number | null>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [addedPredefineShiftName, setAddedPredefineShiftName] = useState<string>('');
+  const [deleteShiftId, setDeleteShiftId] = useState<number | null>(null);
+
+  const openDeleteModal = (shiftId: number) => {
+    setDeleteShiftId(shiftId);
+    setIsDeleteModalOpen(true); 
+  };
 
   const shiftHours: string[] = [];
   for (let hour = 0; hour < 24; hour++) {
@@ -73,6 +56,34 @@ const PredefinedShifts: React.FC = () => {
       })
       .catch(error => console.error('Error deleting shift:', error));
   };
+
+  const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
+    const invalidChars = value.split('').filter(char => !allowedPattern.test(char));
+    return Array.from(new Set(invalidChars));
+  };
+
+  const shiftValidationSchema = Yup.object({
+    name: Yup.string()
+      .required('Pole wymagane')
+      .test('no-invalid-chars', function (value) {
+        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9\s]*$/);
+        return invalidChars.length === 0
+          ? true
+          : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
+      }),
+    start: Yup.string()
+      .required('Wybierz godzinę rozpoczęcia')
+      .test('start-before-end', 'Brak chronologii', function (start, context) {
+        const { end } = context.parent;
+        return start !== end;
+      }),
+    end: Yup.string()
+      .required('Wybierz godzinę zakończenia')
+      .test('start-before-end', 'Brak chronologii', function (end, context) {
+        const { start } = context.parent;
+        return start !== end;
+      }),
+  });
 
   return (
     <div className={styles.predefinedShiftsContainerMain}>
@@ -178,7 +189,7 @@ const PredefinedShifts: React.FC = () => {
                           <button className={styles.editButton} onClick={() => setEditingShiftId(shift.id)}>
                             <FontAwesomeIcon icon={faPen} />
                           </button>
-                          <button className={styles.removeButton} onClick={() => handleDeleteShift(shift.id)}>
+                          <button className={styles.removeButton} onClick={() => openDeleteModal(shift.id)}>
                             <FontAwesomeIcon icon={faMinus} />
                           </button>
                         </>
@@ -186,6 +197,19 @@ const PredefinedShifts: React.FC = () => {
                     </div>
                   </div>
                 </div>
+                {isDeleteModalOpen && deleteShiftId === shift.id && (
+                  <>
+                    <div className={styles.modalOverlayOfDelete}>
+                      <div className={styles.modalContentOfDelete}>
+                        <DeleteConfirmation
+                          onClose={() => setIsDeleteModalOpen(false)}
+                          onDelete={() => handleDeleteShift(shift.id)}
+                          info={shift.name}
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
               </Form>
             )}
           </Formik>
@@ -204,6 +228,8 @@ const PredefinedShifts: React.FC = () => {
           })
             .then(response => response.json())
             .then((data: PredefinedShift) => {
+              setAddedPredefineShiftName(data.name);
+              setIsAddModalOpen(true);
               setShifts([...shifts, data]);
               resetForm();
             })
@@ -211,7 +237,7 @@ const PredefinedShifts: React.FC = () => {
         }}
       >
         {({ handleSubmit, handleChange, values, errors, touched }) => (
-          <form className={styles.addContainer} onSubmit={handleSubmit}>
+          <Form className={styles.addContainer} onSubmit={handleSubmit}>
             <Field
               name="name"
               value={values.name}
@@ -257,7 +283,15 @@ const PredefinedShifts: React.FC = () => {
             <button className={styles.addButton} type="submit">
               <FontAwesomeIcon icon={faPlus} />
             </button>
-          </form>
+
+            {isAddModalOpen && (
+              <div className={styles.modalOverlayOfAdd}>
+                <div className={styles.modalContentOfAdd}>
+                  <AddNotification onClose={() => setIsAddModalOpen(false)} info={addedPredefineShiftName} />
+                </div>
+              </div>
+            )}
+          </Form>
         )}
       </Formik>
     </div>

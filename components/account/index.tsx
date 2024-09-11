@@ -27,10 +27,10 @@ const settingsToGo = () => {
                     <span>Moje konto</span>
                 </div>
                 <div className={styles.content}>
-                    <div className={styles.item}>
+                    {/* <div className={styles.item}>
                         <FontAwesomeIcon icon={faEdit} className={styles.icon} />
                         <span>Edytuj Dane Konta</span>
-                    </div>
+                    </div> */}
                     <div className={styles.item}>
                         <FontAwesomeIcon icon={faQuestionCircle} className={styles.icon} />
                         <span>Pomoc i Wsparcie</span>

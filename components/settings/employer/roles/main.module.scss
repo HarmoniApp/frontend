@@ -1,3 +1,4 @@
+$popup-bg: rgba(0, 0, 0, 0.5);
 $popup-bg-colour: #4F4E4E;
 $popup-bg-colour-dark: #000000;
 $popup-bg-colour-light: #FFFFFF;
@@ -11,6 +12,38 @@ $popup-box-shadow-colour: rgba(0, 0, 0, 0.1);
 $popup-checkbox-bg-colour: #e8e8e8;
 $popup-error-border-colour: #dc3545;
 $popup-error-bg-colour: #ffe6e6;
+
+.modalOverlayOfAdd, .modalOverlayOfDelete { 
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $popup-bg;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContentOfAdd, .modalContentOfDelete {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid $popup-highlight-colour;
+    border-radius: 8px;
+    background-color: $popup-bg-colour;
+    text-align: center;
+    width: auto;
+    max-height: 80vh;
+    overflow-y: auto;
+    gap: 20px;
+    padding: 20px;
+
+    @media (max-width: 768px) {
+        width: 90%;
+        max-height: 70vh;
+    }
+}
 
 .roleContainerMain {
     background-color: $popup-bg-colour;
@@ -48,13 +81,13 @@ $popup-error-bg-colour: #ffe6e6;
             align-items: center;
             height: 100%;
             gap: 10px;
-    
-            .roleInfoContainer{
+
+            .roleInfoContainer {
                 display: flex;
                 flex-direction: column;
                 gap: 5px;
             }
-    
+
             .roleNameParagraph {
                 display: flex;
                 align-items: left;
@@ -64,7 +97,7 @@ $popup-error-bg-colour: #ffe6e6;
                 width: 10vw;
             }
 
-            .editAndRemoveButtonContainer{
+            .editAndRemoveButtonContainer {
                 display: flex;
                 flex-direction: row;
                 gap: 10px;
@@ -94,7 +127,10 @@ $popup-error-bg-colour: #ffe6e6;
 }
 
 
-.removeButton, .editButton, .yesButton, .noButton {
+.removeButton,
+.editButton,
+.yesButton,
+.noButton {
     background-color: transparent;
     border: 2px solid $popup-font-colour-dark;
     color: $popup-font-colour-dark;
@@ -110,7 +146,7 @@ $popup-error-bg-colour: #ffe6e6;
 
 }
 
-.colorPicker{
+.colorPicker {
     border: 2px solid $popup-bg-colour-dark;
     border-radius: 5px;
     background-color: $popup-highlight-colour;
@@ -119,12 +155,12 @@ $popup-error-bg-colour: #ffe6e6;
     cursor: pointer;
 }
 
-.yesButton:hover{
+.yesButton:hover {
     background-color: $popup-yes-button-colour;
     color: $popup-font-colour-dark;
 }
 
-.noButton:hover{
+.noButton:hover {
     background-color: $popup-no-button-colour;
     color: $popup-font-colour-dark;
 }
@@ -136,7 +172,7 @@ $popup-error-bg-colour: #ffe6e6;
     height: 100%;
     gap: 10px;
 
-    .colorPicker{
+    .colorPicker {
         width: 40px;
     }
 
@@ -195,7 +231,7 @@ $popup-error-bg-colour: #ffe6e6;
     flex-shrink: 0;
 }
 
-.errorInput { 
+.errorInput {
     border-color: $popup-error-border-colour;
     background-color: $popup-error-bg-colour;
 }
