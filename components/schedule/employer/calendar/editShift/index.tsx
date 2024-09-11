@@ -197,17 +197,17 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
                 </Field>
               </div>
               <div className={styles.buttonContainer}>
-                <button type="submit" className={styles.addShiftButton}>
-                  <FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarPlus} />
-                  <p className={styles.buttonParagraph}>Edytuj zmianę</p>
+                <button type="button" className={styles.closeButton} onClick={onClose}>
+                  <FontAwesomeIcon className={styles.buttonIcon} icon={faArrowTurnUp} style={{ transform: 'rotate(-90deg)' }} />
+                  <p className={styles.buttonParagraph}>Cofnij</p>
                 </button>
                 <button type="button" className={styles.deleteShiftButton} onClick={() => handleDeleteShift(shift.id, shift.user_id)}>
                   <FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarXmark} />
                   <p className={styles.buttonParagraph}>Usuń zmianę</p>
                 </button>
-                <button type="button" className={styles.closeButton} onClick={onClose}>
-                  <FontAwesomeIcon className={styles.buttonIcon} icon={faArrowTurnUp} style={{ transform: 'rotate(-90deg)' }} />
-                  <p className={styles.buttonParagraph}>Anuluj</p>
+                <button type="submit" className={styles.addShiftButton}>
+                  <FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarPlus} />
+                  <p className={styles.buttonParagraph}>Edytuj zmianę</p>
                 </button>
               </div>
             </Form>

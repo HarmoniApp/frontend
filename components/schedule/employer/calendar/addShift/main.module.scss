@@ -2,13 +2,15 @@ $popup-border-colour: #dee2e6;
 $popup-box-shadow-colour: rgba(0, 0, 0, 0.1);
 $popup-bg: rgba(0, 0, 0, 0.5);
 $popup-bg-colour: #4F4E4E;
-$popup-font-colour: #FFFFFF;
+$popup-font-colour-light: #FFFFFF;
 $popup-font-colour-dark: #000000;
 $popup-highlight-colour: #FFCF70;
 $popup-highlight-colour-hover: #FFBE4D;
 $popup-checkbox-bg-colour: #e8e8e8;
 $popup-error-border-colour: #dc3545;
 $popup-error-bg-colour: #ffe6e6;
+$popup-add-button-colour: #008000;
+$popup-add-button-colour-hover: #00a000;
 
 .addShiftModalOverlay {
   position: fixed;
@@ -78,7 +80,7 @@ $popup-error-bg-colour: #ffe6e6;
       display: flex;
       align-items: center;
       font-weight: bold;
-      color: $popup-font-colour;
+      color: $popup-font-colour-light;
     }
 
     .fullNameParagraphContainer,
@@ -119,7 +121,7 @@ $popup-error-bg-colour: #ffe6e6;
 
     .hourInfoAdviceLabel {
       font-size: x-small;
-      color: $popup-font-colour;
+      color: $popup-font-colour-light;
     }
   }
 
@@ -134,7 +136,7 @@ $popup-error-bg-colour: #ffe6e6;
     .startHourLabel,
     .endHourLabel {
       font-weight: bold;
-      color: $popup-font-colour;
+      color: $popup-font-colour-light;
     }
 
     .startHour,
@@ -159,7 +161,7 @@ $popup-error-bg-colour: #ffe6e6;
 
   .shiftTimeLabel {
     font-weight: bold;
-    color: $popup-font-colour;
+    color: $popup-font-colour-light;
   }
 }
 
@@ -208,7 +210,35 @@ $popup-error-bg-colour: #ffe6e6;
   align-self: center;
   width: 100%;
 
-  .addShiftButton,
+  .addShiftButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: $popup-add-button-colour;
+    color: $popup-font-colour-light;
+    padding: 10px 15px;
+
+    .buttonIcon {
+      height: 20px;
+      width: 20px;
+    }
+
+    .buttonParagraph {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    &:hover {
+      background-color: $popup-add-button-colour-hover;
+    }
+  }
+
   .closeButton {
     display: flex;
     flex-direction: row;

@@ -227,13 +227,13 @@ const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShi
                                 </Field>
                             </div>
                             <div className={styles.buttonContainer}>
+                                <button className={styles.closeButton} type="button" onClick={onClose}>
+                                    <FontAwesomeIcon className={styles.buttonIcon} icon={faArrowTurnUp} style={{ transform: 'rotate(-90deg)' }} />
+                                    <p className={styles.buttonParagraph}>Cofnij</p>
+                                </button>
                                 <button className={styles.addShiftButton} type="submit">
                                     <FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarPlus} />
                                     <p className={styles.buttonParagraph}>Dodaj zmianę</p>
-                                </button>
-                                <button className={styles.closeButton} type="button" onClick={onClose}>
-                                    <FontAwesomeIcon className={styles.buttonIcon} icon={faArrowTurnUp} style={{ transform: 'rotate(-90deg)' }} />
-                                    <p className={styles.buttonParagraph}>Anuluj</p>
                                 </button>
                             </div>
                         </Form>
