@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPen, faCheck, faXmark, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import AddNotification from '../popUps/addNotification';
+import DeleteConfirmation from '../popUps/deleteConfirmation';
 import * as Yup from "yup";
 import classNames from "classnames";
 import DepartmentAddress from "@/components/types/departmentAddress";
@@ -13,6 +15,81 @@ const Departments: React.FC = () => {
     const [departments, setDepartments] = useState<DepartmentAddress[]>([]);
     const [editingDepartmentId, setEditingDepartmentId] = useState<number | null>(null);
     const [noChangesError, setNoChangesError] = useState<string | null>(null);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [addedDepartmentName, setAddedDepartmentName] = useState<string>('');
+    const [deleteDepartmentId, setDeleteDepartmentId] = useState<number | null>(null);
+
+    const openDeleteModal = (departmentId: number) => {
+        setDeleteDepartmentId(departmentId);
+        setIsDeleteModalOpen(true);
+    };
+
+    useEffect(() => {
+        fetchDepartments();
+    }, []);
+
+    const fetchDepartments = () => {
+        fetch("http://localhost:8080/api/v1/address")
+            .then((response) => response.json())
+            .then((data) => {
+                const filteredDepartments = data.filter((dept: DepartmentAddress) => dept.department_name !== null);
+                setDepartments(filteredDepartments);
+            })
+            .catch((error) => console.error("Error fetching departments:", error));
+    };
+
+    const handleAddDepartment = (values: DepartmentAddress, { resetForm }: any) => {
+        fetch("http://localhost:8080/api/v1/address", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(values),
+        })
+            .then((response) => response.json())
+            .then((addedDepartment) => {
+                setAddedDepartmentName(addedDepartment.department_name);
+                setIsAddModalOpen(true);
+                setDepartments([...departments, addedDepartment]);
+                resetForm();
+            })
+            .catch((error) => console.error("Error adding department:", error));
+    };
+
+    const handleSaveEdit = (values: DepartmentAddress) => {
+        if (editingDepartmentId !== null) {
+            fetch(`http://localhost:8080/api/v1/address/${editingDepartmentId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values),
+            })
+                .then((response) => response.json())
+                .then((updatedDepartment) => {
+                    setDepartments((prevDepartments) =>
+                        prevDepartments.map((dept) => (dept.id === updatedDepartment.id ? updatedDepartment : dept))
+                    );
+                    setEditingDepartmentId(null);
+                })
+                .catch((error) => console.error("Error updating department:", error));
+        }
+    };
+
+    const handleDeleteDepartment = (departmentId: number) => {
+        fetch(`http://localhost:8080/api/v1/address/${departmentId}`, {
+            method: "DELETE",
+        })
+            .then((response) => {
+                if (response.ok) {
+                    setDepartments(departments.filter((dept) => dept.id !== departmentId));
+                } else {
+                    console.error("Failed to delete department");
+                }
+            })
+            .catch((error) => console.error("Error deleting department:", error));
+    };
 
     const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
         const invalidChars = value.split('').filter(char => !allowedPattern.test(char));
@@ -62,72 +139,8 @@ const Departments: React.FC = () => {
                     : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
             }),
         apartment: Yup.string()
-            .notRequired(),        
+            .notRequired(),
     });
-
-    useEffect(() => {
-        fetchDepartments();
-    }, []);
-
-    const fetchDepartments = () => {
-        fetch("http://localhost:8080/api/v1/address")
-            .then((response) => response.json())
-            .then((data) => {
-                const filteredDepartments = data.filter((dept: DepartmentAddress) => dept.department_name !== null);
-                setDepartments(filteredDepartments);
-            })
-            .catch((error) => console.error("Error fetching departments:", error));
-    };
-
-    const handleAddDepartment = (values: DepartmentAddress, { resetForm }: any) => {
-        fetch("http://localhost:8080/api/v1/address", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(values),
-        })
-            .then((response) => response.json())
-            .then((addedDepartment) => {
-                setDepartments([...departments, addedDepartment]);
-                resetForm();
-            })
-            .catch((error) => console.error("Error adding department:", error));
-    };
-
-    const handleSaveEdit = (values: DepartmentAddress) => {
-        if (editingDepartmentId !== null) {
-            fetch(`http://localhost:8080/api/v1/address/${editingDepartmentId}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(values),
-            })
-                .then((response) => response.json())
-                .then((updatedDepartment) => {
-                    setDepartments((prevDepartments) =>
-                        prevDepartments.map((dept) => (dept.id === updatedDepartment.id ? updatedDepartment : dept))
-                    );
-                    setEditingDepartmentId(null);
-                })
-                .catch((error) => console.error("Error updating department:", error));
-        }
-    };
-
-    const handleDeleteDepartment = (departmentId: number) => {
-        fetch(`http://localhost:8080/api/v1/address/${departmentId}`, {
-            method: "DELETE",
-        })
-            .then((response) => {
-                if (response.ok) {
-                    setDepartments(departments.filter((dept) => dept.id !== departmentId));
-                } else {
-                    console.error("Failed to delete department");
-                }
-            })
-            .catch((error) => console.error("Error deleting department:", error));
-    };
 
     return (
         <div className={styles.departmentContainerMain}>
@@ -153,16 +166,16 @@ const Departments: React.FC = () => {
                         }}
                         context={{ dirty: true }}
                     >
-                        {({ handleSubmit, handleChange, values, errors, touched, dirty, isSubmitting, resetForm }) => (
+                        {({ handleSubmit, handleChange, values, errors, touched, dirty, resetForm }) => (
                             <Form onSubmit={(e) => {
                                 e.preventDefault();
-                               
+
                                 if (!dirty) {
                                     setNoChangesError("Brak zmian!");
                                     return;
                                 }
                                 handleSubmit();
-                                
+
                             }} className={styles.departmentForm}>
                                 <div className={styles.showDepartmentContainer}>
                                     <div className={styles.departmentInfoContainer}>
@@ -299,13 +312,26 @@ const Departments: React.FC = () => {
                                                 <button className={styles.editButton} onClick={() => setEditingDepartmentId(department.id)}>
                                                     <FontAwesomeIcon icon={faPen} />
                                                 </button>
-                                                <button className={styles.removeButton} onClick={() => handleDeleteDepartment(department.id)}>
+                                                <button className={styles.removeButton} onClick={() => openDeleteModal(department.id)}>
                                                     <FontAwesomeIcon icon={faMinus} />
                                                 </button>
                                             </>
                                         )}
                                     </div>
                                 </div>
+                                {isDeleteModalOpen && deleteDepartmentId === department.id && (
+                                    <>
+                                        <div className={styles.modalOverlayOfDelete}>
+                                            <div className={styles.modalContentOfDelete}>
+                                                <DeleteConfirmation
+                                                    onClose={() => setIsDeleteModalOpen(false)}
+                                                    onDelete={() => handleDeleteDepartment(department.id)}
+                                                    info={department.department_name}
+                                                />
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
                             </Form>
                         )}
                     </Formik>
@@ -415,6 +441,15 @@ const Departments: React.FC = () => {
                                 <FontAwesomeIcon icon={faPlus} />
                             </button>
                         </div>
+                        {isAddModalOpen && (
+                            <div className={styles.modalOverlayOfAdd}>
+                                <div className={styles.modalContentOfAdd}>
+                                    <AddNotification 
+                                        onClose={() => setIsAddModalOpen(false)} 
+                                        info={addedDepartmentName} />
+                                </div>
+                            </div>
+                        )}
                     </Form>
                 )}
             </Formik>

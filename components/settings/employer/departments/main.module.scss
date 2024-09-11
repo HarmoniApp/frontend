@@ -1,3 +1,4 @@
+$popup-bg: rgba(0, 0, 0, 0.5);
 $popup-bg-colour: #4F4E4E;
 $popup-bg-colour-dark: #000000;
 $popup-bg-colour-light: #FFFFFF;
@@ -12,6 +13,38 @@ $popup-box-shadow-colour: rgba(0, 0, 0, 0.1);
 $popup-checkbox-bg-colour: #e8e8e8;
 $popup-error-border-colour: #dc3545;
 $popup-error-bg-colour: #ffe6e6;
+
+.modalOverlayOfAdd, .modalOverlayOfDelete { 
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $popup-bg;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContentOfAdd, .modalContentOfDelete {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid $popup-highlight-colour;
+    border-radius: 8px;
+    background-color: $popup-bg-colour;
+    text-align: center;
+    width: auto;
+    max-height: 80vh;
+    overflow-y: auto;
+    gap: 20px;
+    padding: 20px;
+
+    @media (max-width: 768px) {
+        width: 90%;
+        max-height: 70vh;
+    }
+}
 
 .departmentContainerMain {
     background-color: $popup-bg-colour;
