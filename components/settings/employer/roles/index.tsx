@@ -16,6 +16,12 @@ const Roles: React.FC = () => {
   const [roles, setRoles] = useState<RoleWithColour[]>([]);
   const [editingRoleId, setEditingRoleId] = useState<number | null>(null);
   const [addedRoleName, setAddedRoleName] = useState<string>('');
+  const [deleteRoleId, setDeleteRoleId] = useState<number | null>(null);
+
+  const openDeleteModal = (roleId: number) => {
+    setDeleteRoleId(roleId);
+    setIsDeleteModalOpen(true); 
+  };
 
   useEffect(() => {
     fetchRoles();
@@ -180,27 +186,27 @@ const Roles: React.FC = () => {
                           <button className={styles.editButton} onClick={() => setEditingRoleId(role.id)}>
                             <FontAwesomeIcon icon={faPen} />
                           </button>
-                          <button className={styles.removeButton} onClick={() => handleDeleteRole(role.id)}>
+                          <button className={styles.removeButton} onClick={() => openDeleteModal(role.id)}>
                             <FontAwesomeIcon icon={faMinus} />
                           </button>
-                        </>
-                      )}
-                      {isDeleteModalOpen &&(
-                        <>
-                        <div className={styles.modalOverlayOfDelete}>
-                          <div className={styles.modalContentOfDelete}>
-                            {/* <DeleteConfirmation
-                              onClose={() => setIsDeleteModalOpen(false)}
-                              onDelete={() => handleDeleteRole(role.id)}
-                              info={role.name}
-                            /> */}
-                          </div>
-                        </div>
                         </>
                       )}
                     </div>
                   </div>
                 </div>
+                {isDeleteModalOpen && deleteRoleId === role.id && (
+                  <>
+                    <div className={styles.modalOverlayOfDelete}>
+                      <div className={styles.modalContentOfDelete}>
+                        <DeleteConfirmation
+                          onClose={() => setIsDeleteModalOpen(false)}
+                          onDelete={() => handleDeleteRole(role.id)}
+                          info={role.name}
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
               </Form>
             )}
           </Formik>
