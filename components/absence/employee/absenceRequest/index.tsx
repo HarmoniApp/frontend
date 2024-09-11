@@ -10,9 +10,10 @@ import styles from './main.module.scss';
 interface AbsenceEmployeesRequestProps {
     onClose: () => void;
     onSend: number;
+    onRefresh: () => void;
 }
 
-const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClose, onSend }) => {
+const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClose, onSend, onRefresh }) => {
     const [absenceTypes, setAbsenceTypes] = useState<AbsenceType[]>([]);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [modalCountdown, setModalCountdown] = useState(10);
@@ -31,6 +32,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                     if (prev === 1) {
                         clearInterval(countdownInterval);
                         onClose();
+                        onRefresh(); 
                     }
                     return prev - 1;
                 });
@@ -38,7 +40,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
 
             return () => clearInterval(countdownInterval);
         }
-    }, [isSubmitted, onClose]);
+    }, [isSubmitted, onClose, onRefresh]);
 
     const validationSchema = Yup.object({
         absence_type_id: Yup.string().required('Pole wymagane'),
@@ -65,7 +67,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                         </div>
                     </div>
                     <div className={styles.buttonConianer}>
-                        <button className={styles.closeButton} onClick={onClose}>
+                        <button className={styles.closeButton} onClick={() => { onClose(); onRefresh(); }}>
                             <FontAwesomeIcon className={styles.buttonIcon} icon={faCircleXmark} />
                             <p className={styles.buttonParagraph}>Zamknij</p>
                         </button>
@@ -94,8 +96,8 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                         })
                             .then(response => response.json())
                             .then(data => {
-                                console.log('Absence request submitted successfully:', data);
                                 setIsSubmitted(true);
+                                onRefresh();
                             })
                             .catch(error => console.error('Error submitting absence request:', error));
                     }}

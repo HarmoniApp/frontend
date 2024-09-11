@@ -181,7 +181,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
             {modalIsOpenAbsenceRequest && (
                 <div className={styles.addAbsencetModalOverlay}>
                     <div className={styles.addAbsenceModalContent}>
-                        <AbsenceRequest onSend={userId} onClose={() => setModalIsOpenAbsenceRequest(false)} />
+                        <AbsenceRequest onSend={userId} onClose={() => setModalIsOpenAbsenceRequest(false)} onRefresh={fetchUserAbsences} />
                     </div>
                 </div>
             )}
