@@ -59,7 +59,7 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
         abortController.abort();
       }
 
-      const newAbortController = new AbortController(); 
+      const newAbortController = new AbortController();
       setAbortController(newAbortController);
       const fetchSchedules = async () => {
         try {
@@ -211,7 +211,7 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
             ...prevSchedules,
             [shift.user_id]: {
               ...prevSchedules[shift.user_id],
-              shifts: prevSchedules[shift.user_id].shifts.map(s => 
+              shifts: prevSchedules[shift.user_id].shifts.map(s =>
                 s.id === shift.id ? { ...s, published: true } : s
               ),
             },
@@ -257,23 +257,28 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
     if (loading) {
       return <div>Ładowanie danych...</div>;
     }
-  
+
+    const getMoreInfoOfEmployee = (user_id: number) => {
+      const url = `http://localhost:3000/employees/user/${user_id}`;
+      window.open(url, '_blank');
+    }
+
     return users.map((user) => (
       <div key={user.id} className={styles.calendarRowContainerMain}>
-        <div className={styles.employeeItemContainer}>
+        <div className={styles.employeeItemContainer} onClick={() => getMoreInfoOfEmployee(user.id)}>
           <EmployeeItem employeeId={user.employee_id} firstName={user.firstname} surname={user.surname} />
         </div>
         <div className={styles.shiftItemContainer}>
           {currentWeek.map((day) => {
             const dayStr = day.toISOString().split('T')[0];
-  
+
             const userShifts = schedules[user.id]?.shifts.filter((shift) => shift.start.startsWith(dayStr)) || [];
             const userAbsences = schedules[user.id]?.absences.filter((absence) =>
               new Date(absence.start) <= day && new Date(absence.end) >= day
             ) || [];
-  
+
             const isAbsence = userAbsences.length > 0;
-  
+
             return (
               <div key={dayStr} className={styles.shiftsItems}>
                 {userShifts.length === 0 ? (

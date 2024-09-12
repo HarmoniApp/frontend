@@ -21,6 +21,7 @@ $breakpoint-md: 768px;
     flex: 1;
     display: flex;
     align-items: center;
+    cursor: pointer;
 
     @include respond-to-md {
       width: 100%;
