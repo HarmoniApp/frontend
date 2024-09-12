@@ -1,5 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleInfo, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 
 interface AddEmployeeConfirmationProps {
@@ -28,13 +30,19 @@ const AddEmployeeNotification: React.FC<AddEmployeeConfirmationProps> = ({ first
       <div className={styles.counterContainter}>
         <p className={styles.counterParagraph}>Powrót do listy pracowników za:</p>
         <div className={styles.counterTimerContainer}>
-          <span className={styles.highlight}>{modalCountdown}</span>
-          <p className={styles.counterTimerParagraph}>sekund.</p>
+          <label className={styles.highlightTimeLabel}>{modalCountdown}</label>
+          <label className={styles.counterTimerLabel}>sekund.</label>
         </div>
       </div>
       <div className={styles.buttonConianer}>
-        <button className={styles.employeeInfo} onClick={handleDetailsClick}>Szczegóły</button>
-        <button className={styles.closeButton} onClick={onClose}>Zamknij</button>
+        <button className={styles.closeButton} onClick={onClose}>
+          <FontAwesomeIcon className={styles.buttonIcon} icon={faCircleXmark} />
+          <p className={styles.buttonParagraph}>Zamknij</p>
+        </button>
+        <button className={styles.detailsButton} onClick={handleDetailsClick}>
+          <FontAwesomeIcon className={styles.buttonIcon} icon={faCircleInfo} />
+          <p className={styles.buttonParagraph}>Szczegóły</p>
+        </button>
       </div>
     </div>
   );
