@@ -39,7 +39,7 @@ $popup-add-button-colour-hover: #00a000;
   padding: 20px;
 }
 
-.editShiftForm{
+.editShiftForm {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -68,7 +68,7 @@ $popup-add-button-colour-hover: #00a000;
   justify-content: space-between;
   padding: 0;
   width: 90.5%;
-  margin:10px 0;
+  margin: 10px 0;
 
   .personFullnameContainer,
   .dayContainer {
@@ -157,7 +157,7 @@ $popup-add-button-colour-hover: #00a000;
 
 .shiftTimeContainer {
   text-align: center;
-  margin:10px 0;
+  margin: 10px 0;
 
   .shiftTimeLabel {
     font-weight: bold;
@@ -328,4 +328,130 @@ $popup-add-button-colour-hover: #00a000;
   margin: 0;
   text-align: right;
   flex-shrink: 0;
+}
+
+.addShiftNotificationContainerMain {
+  display: flex;
+  background-color: $popup-bg-colour;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 40px;
+  box-sizing: border-box;
+  gap: 20px;
+}
+
+.headerContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+  gap: 5px;
+
+  .headerLabel {
+    text-align: center;
+    color: $popup-font-colour-light;
+    margin: 0;
+  }
+
+  .highlight {
+    color: $popup-highlight-colour;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: capitalize;
+  }
+}
+
+.counterContainter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+  gap: 5px;
+
+  .counterParagraph {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: $popup-font-colour-light;
+    margin: 0;
+  }
+
+  .counterTimerContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: $popup-font-colour-light;
+    margin: 0;
+    gap: 3px;
+
+    .highlightTimeLabel {
+      color: $popup-highlight-colour;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .counterTimerLabel {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: $popup-font-colour-light;
+    }
+  }
+}
+
+.buttonConianer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+
+  .employeeInfo {
+    text-align: center;
+    background-color: $popup-highlight-colour;
+    color: $popup-font-colour-dark;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: $popup-highlight-colour-hover;
+    }
+  }
+
+  .closeButton {
+    display: flex;
+    align-items: center;
+    background-color: $popup-highlight-colour;
+    color: $popup-font-colour-dark;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: $popup-highlight-colour-hover;
+    }
+
+    .buttonParagraph {
+      text-align: center;
+      margin: 0 0 0 10px;
+      font-size: 16px;
+    }
+
+    .buttonIcon {
+      height: 18px;
+      width: 18px;
+    }
+  }
 }
