@@ -87,6 +87,8 @@ const AddEmployee: React.FC = () => {
 
   const validationSchema = Yup.object({
     employee_id: Yup.string()
+      .min(1, 'Min 1 znaków')
+      .max(20, 'Max 20 znaków')
       .required('Pole wymagane')
       .test('no-invalid-chars', function (value) {
         const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9-]*$/);
@@ -95,6 +97,8 @@ const AddEmployee: React.FC = () => {
           : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
       }),
     firstname: Yup.string()
+      .min(2, 'Min 2 znaków')
+      .max(50, 'Max 50 znaków')
       .required('Pole wymagane')
       .test('no-invalid-chars', function (value) {
         const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z]*$/);
@@ -103,9 +107,11 @@ const AddEmployee: React.FC = () => {
           : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
       }),
     surname: Yup.string()
+      .min(2, 'Min 2 znaków')
+      .max(50, 'Max 50 znaków')
       .required('Pole wymagane')
       .test('no-invalid-chars', function (value) {
-        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z]*$/);
+        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z ]*$/);
         return invalidChars.length === 0
           ? true
           : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
@@ -124,6 +130,8 @@ const AddEmployee: React.FC = () => {
         return !invalidPattern.test(value || '');
       }),
     phone_number: Yup.string()
+      .min(9, 'Min 9 znaków')
+      .max(15, 'Max 15 znaków')
       .required('Pole wymagane')
       .test('no-invalid-chars', function (value) {
         const invalidChars = findInvalidCharacters(value || '', /^[0-9 +]*$/);
@@ -133,22 +141,28 @@ const AddEmployee: React.FC = () => {
       }),
     residence: Yup.object().shape({
       city: Yup.string()
+        .min(1, 'Min 1 znaków')
+        .max(50, 'Max 50 znaków')
         .required('Pole wymagane')
         .test('no-invalid-chars', function (value) {
-          const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9\s]*$/);
+          const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z ]*$/);
           return invalidChars.length === 0
             ? true
             : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
         }),
       street: Yup.string()
+        .min(1, 'Min 1 znaków')
+        .max(100, 'Max 100 znaków')
         .required('Pole wymagane')
         .test('no-invalid-chars', function (value) {
-          const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9\s]*$/);
+          const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z ]*$/);
           return invalidChars.length === 0
             ? true
             : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
         }),
       building_number: Yup.string()
+        .min(1, 'Min 1 znaków')
+        .max(10, 'Max 10 znaków')
         .required('Pole wymagane')
         .test('no-invalid-chars', function (value) {
           const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
@@ -156,13 +170,18 @@ const AddEmployee: React.FC = () => {
             ? true
             : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
         }),
-      apartment: Yup.string().test('no-invalid-chars', function (value) {
-        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
-        return invalidChars.length === 0
-          ? true
-          : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
-      }),
+      apartment: Yup.string()
+        .min(1, 'Min 1 znaków')
+        .max(10, 'Max 10 znaków')
+        .test('no-invalid-chars', function (value) {
+          const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
+          return invalidChars.length === 0
+            ? true
+            : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
+        }),
       zip_code: Yup.string()
+        .min(5, 'Min 5 znaków')
+        .max(10, 'Max 10 znaków')
         .required('Pole wymagane')
         .test('no-invalid-chars', function (value) {
           const invalidChars = findInvalidCharacters(value || '', /^[0-9-]*$/);
