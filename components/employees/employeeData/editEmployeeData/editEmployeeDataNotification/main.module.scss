@@ -14,14 +14,14 @@ $popup-highlight-colour-hover: #FFBE4D;
     max-width: 500px;
     padding: 20px 40px;
     box-sizing: border-box;
-    margin: 0 auto; 
+    margin: 0 auto;
 
     @media (max-width: 600px) {
-        padding: 15px 20px; 
+        padding: 15px 20px;
     }
 
     @media (max-width: 400px) {
-        padding: 10px 15px; 
+        padding: 10px 15px;
     }
 }
 
@@ -50,7 +50,7 @@ $popup-highlight-colour-hover: #FFBE4D;
 
 .changedDataContainer {
     width: 100%;
-    
+
     .changedDataList {
         list-style-type: none;
         padding-left: 0;
@@ -67,9 +67,9 @@ $popup-highlight-colour-hover: #FFBE4D;
         color: $popup-font-colour;
 
         @media (max-width: 400px) {
-            flex-direction: column; 
+            flex-direction: column;
             align-items: flex-start;
-            text-align: left; 
+            text-align: left;
         }
 
         .changedDataKey {
@@ -101,7 +101,6 @@ $popup-highlight-colour-hover: #FFBE4D;
     align-items: center;
     justify-content: center;
     width: 100%;
-    margin: 20px 0 0 0;
 
     .timerParagraph {
         display: flex;
@@ -130,7 +129,7 @@ $popup-highlight-colour-hover: #FFBE4D;
             margin: 0 0 10px 0;
 
             @media (max-width: 400px) {
-                font-size: 18px; 
+                font-size: 18px;
             }
         }
 
@@ -156,12 +155,13 @@ $popup-highlight-colour-hover: #FFBE4D;
     width: 100%;
 
     .closeButton {
-        text-align: center;
+        display: flex;
+        align-items: center;
         background-color: $popup-highlight-colour;
         color: $popup-font-colour-dark;
         padding: 10px 20px;
         border: none;
-        border-radius: 4px;
+        border-radius: 10px;
         cursor: pointer;
         transition: background-colour 0.3s ease;
 
@@ -169,9 +169,20 @@ $popup-highlight-colour-hover: #FFBE4D;
             background-color: $popup-highlight-colour-hover;
         }
 
+        .buttonParagraph {
+            text-align: center;
+            margin: 0 0 0 10px;
+            font-size: 16px;
+        }
+
+        .buttonIcon {
+            height: 18px;
+            width: 18px;
+        }
+
         @media (max-width: 400px) {
             padding: 8px 16px;
-            font-size: 14px; 
+            font-size: 14px;
         }
     }
 }
