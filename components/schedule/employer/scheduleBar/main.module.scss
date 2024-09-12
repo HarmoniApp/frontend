@@ -1,3 +1,7 @@
+$popup-bg: rgba(0, 0, 0, 0.5);
+$popup-bg-colour: #4F4E4E;
+$popup-highlight-colour: #FFCF70;
+
 $scheduleBar-button-bg-colour: #FFFFFF;
 $scheduleBar-font-colour: #FFFFFF;
 $scheduleBar-font-colour-dark: #000000;
@@ -11,6 +15,33 @@ $breakpoint-md: 768px;
         @content;
     }
 }
+
+.publishModalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $popup-bg;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .publishModalContent {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid $popup-highlight-colour;
+    border-radius: 8px;
+    background-color: $popup-bg-colour;
+    text-align: center;
+    width: auto;
+    max-height: 80vh;
+    overflow-y: auto;
+    gap: 20px;
+    padding: 20px;
+  }
 
 .scheduleBarContainerMain {
     display: flex;
