@@ -278,7 +278,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
         setIsModalOpen(true);
       })
       .catch(error => {
-        alert('Błąd podczas aktualizacji danych pracownika');
+        console.error('Błąd podczas aktualizacji danych pracownika');
       });
   };
 
