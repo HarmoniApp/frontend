@@ -10,12 +10,13 @@ $popup-highlight-colour-hover: #FFBE4D;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;;
-    padding:20px 40px;
+    width: 100%;
+    ;
+    padding: 0px 40px;
     box-sizing: border-box;
 }
 
-.headerContainer{
+.headerContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -24,9 +25,9 @@ $popup-highlight-colour-hover: #FFBE4D;
     width: 100%;
     margin: 0;
 
-    .headerParagraph{
+    .headerParagraph {
         text-align: center;
-        gap:2px;
+        gap: 2px;
         color: $popup-font-colour;
         margin: 0;
     }
@@ -40,7 +41,7 @@ $popup-highlight-colour-hover: #FFBE4D;
     }
 }
 
-.counterContainter{
+.counterContainter {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -48,7 +49,7 @@ $popup-highlight-colour-hover: #FFBE4D;
     width: 100%;
     margin: 0;
 
-    .counterParagraph{
+    .counterParagraph {
         display: flex;
         align-items: center;
         text-align: center;
@@ -56,7 +57,7 @@ $popup-highlight-colour-hover: #FFBE4D;
         margin: 0;
     }
 
-    .counterTimer{
+    .counterTimer {
         display: flex;
         align-items: center;
         text-align: center;
@@ -70,8 +71,8 @@ $popup-highlight-colour-hover: #FFBE4D;
             font-weight: bold;
             margin: 0 0 10px 0;
         }
-        
-        .counterTimerParagraph{
+
+        .counterTimerParagraph {
             display: flex;
             align-items: center;
             text-align: center;
@@ -81,14 +82,14 @@ $popup-highlight-colour-hover: #FFBE4D;
     }
 }
 
-.buttonConianer{
+.buttonConianer {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     width: 100%;
 
-    .closeButton {
+    .employeeInfo {
         text-align: center;
         background-color: $popup-highlight-colour;
         color: $popup-font-colour-dark;
@@ -97,14 +98,36 @@ $popup-highlight-colour-hover: #FFBE4D;
         border-radius: 4px;
         cursor: pointer;
         transition: background-color 0.3s ease;
-    
-        .a {
-            text-decoration: none;
-            color: $popup-font-colour-dark;
-        }
-        
-        :hover {
+
+        &:hover {
             background-color: $popup-highlight-colour-hover;
+        }
+    }
+
+    .closeButton {
+        display: flex;
+        align-items: center;
+        background-color: $popup-highlight-colour;
+        color: $popup-font-colour-dark;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: $popup-highlight-colour-hover;
+        }
+
+        .buttonParagraph {
+            text-align: center;
+            margin: 0 0 0 10px;
+            font-size: 16px;
+        }
+
+        .buttonIcon {
+            height: 18px;
+            width: 18px;
         }
     }
 }

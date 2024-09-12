@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserSlash, faArrowTurnUp } from '@fortawesome/free-solid-svg-icons';
 import DeleteEmployeeNotificationPopUp from './deleteEmployeeNotification';
 import styles from './main.module.scss';
 
@@ -45,11 +47,17 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
     <div>
       {modalStage === 'confirm' ? (
         <div className={styles.deleteContainerMain}>
-          <h2 className={styles.questionHeader}>Czy na pewno chcesz usunąć użytkownika:</h2>
-          <p className={styles.fullNameParagraph}>{firstName} {surname}</p>
-          <div className={styles.butonContainter}>
-            <button className={styles.deleteButton} onClick={handleDeleteEmployee}>Usuń</button>
-            <button className={styles.backButton} onClick={onClose}>Cofnij</button>
+          <label className={styles.questionHeader}>Czy na pewno chcesz usunąć użytkownika:</label>
+          <label className={styles.fullNameLabel}>{firstName} {surname}</label>
+          <div className={styles.buttonContainer}>
+            <button className={styles.closeButton} onClick={onClose}>
+              <FontAwesomeIcon className={styles.buttonIcon} icon={faArrowTurnUp} style={{ transform: 'rotate(-90deg)' }} />
+              <p className={styles.buttonParagraph}>Cofnij</p>
+            </button>
+            <button className={styles.deleteButton} onClick={handleDeleteEmployee}>
+              <FontAwesomeIcon className={styles.buttonIcon} icon={faUserSlash} />
+              <p className={styles.buttonParagraph}>Usuń</p>
+            </button>
           </div>
         </div>
       ) : (
