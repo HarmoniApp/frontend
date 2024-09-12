@@ -1,5 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 
 interface DeleteEmployeeNotificationPopUpProps {
@@ -16,7 +18,7 @@ const DeleteEmployeeNotificationPopUp: React.FC<DeleteEmployeeNotificationPopUpP
   return (
     <div className={styles.deleteConfirmationContainerMain}>
       <div className={styles.headerContainer}>
-      <p className={styles.headerParagraph}>Pracownik został usuniety z listy:</p>
+        <p className={styles.headerParagraph}>Pracownik został usuniety z listy:</p>
         <span className={styles.highlight}>{firstName}&nbsp;{surname}</span>
       </div>
       <div className={styles.counterContainter}>
@@ -27,7 +29,10 @@ const DeleteEmployeeNotificationPopUp: React.FC<DeleteEmployeeNotificationPopUpP
         </div>
       </div>
       <div className={styles.buttonConianer}>
-        <button className={styles.closeButton} onClick={handleImmediateRedirect}>Zamknij</button>
+        <button className={styles.closeButton} onClick={handleImmediateRedirect}>
+          <FontAwesomeIcon className={styles.buttonIcon} icon={faCircleXmark} />
+          <p className={styles.buttonParagraph}>Zamknij</p>
+        </button>
       </div>
     </div>
   );

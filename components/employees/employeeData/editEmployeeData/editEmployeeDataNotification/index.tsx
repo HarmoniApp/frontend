@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 
 interface EditEmployeeDataNotificationPopUpProps {
@@ -57,7 +59,11 @@ const EditEmployeeDataNotificationPopUp: React.FC<EditEmployeeDataNotificationPo
 
             </div>
             <div className={styles.buttonConianer}>
-                <button className={styles.closeButton }onClick={() => { onClose(); onCloseEditData(); }}>Zamknij</button>
+
+                <button className={styles.closeButton} onClick={() => { onClose(); onCloseEditData(); }}>
+                    <FontAwesomeIcon className={styles.buttonIcon} icon={faCircleXmark} />
+                    <p className={styles.buttonParagraph}>Zamknij</p>
+                </button>
             </div>
         </div>
     )
