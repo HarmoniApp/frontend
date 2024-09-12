@@ -226,7 +226,7 @@ const AddEmployee: React.FC = () => {
         setEmployeeLink(`/employees/user/${userId}`);
       })
       .catch((error) => {
-        alert('Błąd podczas dodawania pracownika');
+        console.error('Błąd podczas dodawania pracownika');
       });
   };
 
