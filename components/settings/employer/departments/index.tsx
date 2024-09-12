@@ -98,6 +98,8 @@ const Departments: React.FC = () => {
 
     const departmentValidationSchema = Yup.object().shape({
         department_name: Yup.string()
+            .min(1, 'Min 1 znaków')
+            .max(100, 'Max 100 znaków')
             .required("Pole wymagane")
             .test('no-invalid-chars', function (value) {
                 const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z ]*$/);
@@ -106,6 +108,8 @@ const Departments: React.FC = () => {
                     : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
             }),
         city: Yup.string()
+            .min(1, 'Min 1 znaków')
+            .max(50, 'Max 50 znaków')
             .required("Pole wymagane")
             .test('no-invalid-chars', function (value) {
                 const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z ]*$/);
@@ -114,15 +118,18 @@ const Departments: React.FC = () => {
                     : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
             }),
         zip_code: Yup.string()
+            .min(5, 'Min 5 znaków')
+            .max(10, 'Max 10 znaków')
             .required("Pole wymagane")
             .test('no-invalid-chars', function (value) {
                 const invalidChars = findInvalidCharacters(value || '', /^[0-9-]*$/);
                 return invalidChars.length === 0
                     ? true
                     : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
-            })
-            .matches(/^\d{2}-\d{3}$/, "Niepoprawny format (XX-XXX)"),
+            }),
         street: Yup.string()
+            .min(1, 'Min 1 znaków')
+            .max(100, 'Max 100 znaków')
             .required("Pole wymagane")
             .test('no-invalid-chars', function (value) {
                 const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z ]*$/);
@@ -131,6 +138,8 @@ const Departments: React.FC = () => {
                     : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
             }),
         building_number: Yup.string()
+            .min(1, 'Min 1 znaków')
+            .max(10, 'Max 10 znaków')
             .required("Pole wymagane")
             .test('no-invalid-chars', function (value) {
                 const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
@@ -444,8 +453,8 @@ const Departments: React.FC = () => {
                         {isAddModalOpen && (
                             <div className={styles.modalOverlayOfAdd}>
                                 <div className={styles.modalContentOfAdd}>
-                                    <AddNotification 
-                                        onClose={() => setIsAddModalOpen(false)} 
+                                    <AddNotification
+                                        onClose={() => setIsAddModalOpen(false)}
                                         info={addedDepartmentName} />
                                 </div>
                             </div>
