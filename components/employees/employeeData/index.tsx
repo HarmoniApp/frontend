@@ -10,27 +10,6 @@ import SupervisorDataSimple from '@/components/types/supervisorDataSimple';
 import Flag from 'react-flagkit';
 import styles from './main.module.scss';
 
-const languageAbbreviations: { [key: string]: string } = {
-  Arabic: 'AE',
-  Bengali: 'BD',
-  English: 'GB',
-  French: 'FR',
-  German: 'DE',
-  Hindi: 'IN',
-  Italian: 'IT',
-  Japanese: 'JP',
-  Korean: 'KR',
-  Mandarin: 'CN',
-  Other: 'IL',
-  Persian: 'IR',
-  Polish: 'PL',
-  Portuguese: 'PT',
-  Russian: 'RU',
-  Spanish: 'ES',
-  Turkish: 'TR',
-  Vietnamese: 'VN',
-};
-
 export default function EmployeeDataComponent({ userId }: { userId: number }) {
   const [employee, setEmployee] = useState<EmployeeData | null>(null);
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -176,10 +155,10 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
         <div className={styles.columnContainer}>
           <p className={styles.languageParagraph}>Ten pracownik posługuję się tymi językami</p>
           <div className={styles.languagesContainer}>
-            {employee.languages.map((lang) => (
-              <label key={lang.id} className={styles.languageLabel}>
-                <span className={styles.languageName}>{lang.name}</span>
-                <Flag className={styles.languageFlag} country={languageAbbreviations[lang.name]} />
+            {employee.languages.map((language) => (
+              <label key={language.id} className={styles.languageLabel}>
+                <span className={styles.languageName}>{language.name}</span>
+                <Flag className={styles.languageFlag} country={language.code.toUpperCase()} />
               </label>
             ))}
           </div>

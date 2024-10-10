@@ -3,28 +3,6 @@ import { useRouter } from 'next/navigation';
 import styles from './main.module.scss';
 import PersonTile from '@/components/types/personTile';
 import Flag from 'react-flagkit';
-
-const languageAbbreviations: { [key: string]: string } = {
-  Arabic: 'AE', 
-  Bengali: 'BD', 
-  English: 'GB', 
-  French: 'FR', 
-  German: 'DE', 
-  Hindi: 'IN', 
-  Italian: 'IT', 
-  Japanese: 'JP', 
-  Korean: 'KR', 
-  Mandarin: 'CN', 
-  Other: 'IL', 
-  Persian: 'IR',
-  Polish: 'PL', 
-  Portuguese: 'PT', 
-  Russian: 'RU',
-  Spanish: 'ES', 
-  Turkish: 'TR',
-  Vietnamese: 'VN',
-};
-
 interface LanguageTileProps {
   person: PersonTile;
   view: 'tiles' | 'list'; 
@@ -46,7 +24,7 @@ const Tile: React.FC<LanguageTileProps> = ({ person, view }) => {
       </div>
       <div className={styles.languagesContainer}>
         {person.languages.map((language, index) => (
-          <Flag key={index} className={styles.languageFlag} country={languageAbbreviations[language.name]} />
+          <Flag key={index} className={styles.languageFlag} country={language.code.toUpperCase()} />
         ))}
       </div>
     </div>

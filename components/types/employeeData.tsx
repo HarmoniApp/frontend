@@ -18,6 +18,7 @@ export default interface EmployeeData {
     languages: {
       id: number;
       name: string;
+      code: string;
     }[];
     contract_type: {
       id: number;
