@@ -21,7 +21,7 @@ const Dashboard = () => {
         router.push('/chat');
     };
     const vacationToGo = () => {
-        router.push('/vacation');
+        router.push('/absence');
     };
     const statisticsToGo = () => {
         router.push('/statistics');

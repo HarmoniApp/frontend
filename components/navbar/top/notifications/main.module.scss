@@ -1,0 +1,77 @@
+$popup-border-colour: #FFCF70;
+$popup-bg-colour-light: #ffeaae;
+$popup-bg-colour-dark: #FFCF70;
+$popup-font-colour-dark: #000000;
+$popup-font-colour-light: #FFFFFF;
+
+$popup-notification-colour: #f9f9f9;
+$popup-notification-colour-hover: #f1f1f1;
+
+
+
+.popupHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.notificationLabel {
+    flex-grow: 1;
+    text-align: center;
+    margin: 0;
+}
+
+.backButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: $popup-border-colour;
+}
+
+.icon {
+    height: 18px;
+    width: 18px;
+}
+
+.notificationItem {
+    background-color: $popup-notification-colour;
+    border: 2px solid $popup-border-colour;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.notificationItem:hover {
+    background-color: $popup-notification-colour-hover;
+}
+
+.unread {
+    background-color: $popup-bg-colour-light;
+    border: none;
+    border-left: 5px solid $popup-border-colour;
+}
+
+.notificationItem strong {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: $popup-font-colour-dark;
+}
+
+.notificationItem p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: $popup-font-colour-dark;
+}
+
+.notificationItem small {
+    font-size: 12px;
+    color: #666;
+}

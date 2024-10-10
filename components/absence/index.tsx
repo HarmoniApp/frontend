@@ -1,14 +1,16 @@
+'use client';
+import React, { useState } from 'react';
 import Employee from './employee';
 import Employer from './employer';
+import { loggedUserRoleAdmin, loggedUserID } from '@/components/variables';
 import styles from './main.module.scss';
 
 const Absence = () => {
-    const whoIsLogged = false;  //true = employer, false = employee
-    const employeeId = 26;
+    const [isAdmin] = useState<boolean>(loggedUserRoleAdmin);
 
     return (
         <div className={styles.absenceContainerMain}>
-            {whoIsLogged ? <Employer /> : <Employee userId={employeeId}/>}
+            {isAdmin ? <Employer /> : <Employee userId={loggedUserID}/>}
         </div>
     )
 }
