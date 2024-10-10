@@ -15,27 +15,6 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 
-const languageAbbreviations: { [key: string]: string } = {
-  Arabic: 'AE',
-  Bengali: 'BD',
-  English: 'GB',
-  French: 'FR',
-  German: 'DE',
-  Hindi: 'IN',
-  Italian: 'IT',
-  Japanese: 'JP',
-  Korean: 'KR',
-  Mandarin: 'CN',
-  Other: 'IL',
-  Persian: 'IR',
-  Polish: 'PL',
-  Portuguese: 'PT',
-  Russian: 'RU',
-  Spanish: 'ES',
-  Turkish: 'TR',
-  Vietnamese: 'VN',
-};
-
 interface EditEmployeeDataProps {
   employee: EmployeeDataWorkAdressOnlyId;
   onCloseEdit: () => void;
@@ -592,7 +571,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
                         }}
                       />
                       <span className={styles.languageCheckboxLabel}>{language.name}</span>
-                      <Flag className={styles.languageFlag} country={languageAbbreviations[language.name]} />
+                      <Flag className={styles.languageFlag} country={language.code.toUpperCase()} />
                     </label>
                   ))}
                 </div>

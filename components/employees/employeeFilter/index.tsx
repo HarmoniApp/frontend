@@ -1,40 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import Language from '@/components/types/language';
+import Role from '@/components/types/role';
 import styles from './main.module.scss';
 import Flag from 'react-flagkit';
-
-interface Role {
-  id: number;
-  name: string;
-}
-
-interface Language {
-  id: number;
-  name: string;
-}
-
-const languageAbbreviations: { [key: string]: string } = {
-  Arabic: 'AE',
-  Bengali: 'BD',
-  English: 'GB',
-  French: 'FR',
-  German: 'DE',
-  Hindi: 'IN',
-  Italian: 'IT',
-  Japanese: 'JP',
-  Korean: 'KR',
-  Mandarin: 'CN',
-  Other: 'IL',
-  Persian: 'IR',
-  Polish: 'PL',
-  Portuguese: 'PT',
-  Russian: 'RU',
-  Spanish: 'ES',
-  Turkish: 'TR',
-  Vietnamese: 'VN',
-};
-
 interface FilterEmployeeProps {
   onApplyFilters: (filters: { roles?: number[]; languages?: number[]; order?: string }) => void;
 }
@@ -99,7 +69,6 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
     onApplyFilters({});
   };
 
-  // Stany dla rozwijania/zamykania sekcji
   const [isPositionOpen, setIsPositionOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
@@ -177,7 +146,7 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
                 onChange={() => handleLanguageChange(language.id)}
               />
               <span className={styles.languageCheckboxLabel}>{language.name}</span>
-              <Flag className={styles.languageFlag} country={languageAbbreviations[language.name]} />
+              <Flag className={styles.languageFlag} country={language.code.toUpperCase()} />
             </label>
           ))}
         </div>
