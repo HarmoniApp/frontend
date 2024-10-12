@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRectangleList, faGrip } from '@fortawesome/free-solid-svg-icons';
+import { faRectangleList, faGrip, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import AbsenceCard from '@/components/absence/employer/absenceCard';
 import Absence from '@/components/types/absence';
 import AbsenceStatus from '@/components/types/absenceStatus';
@@ -12,7 +12,7 @@ const AbsenceEmployer: React.FC = () => {
   const [absencesStatus, setAbsencesStatus] = useState<AbsenceStatus[]>([]);
   const [viewMode, setViewMode] = useState('tiles');
   const [selectedStatus, setSelectedStatus] = useState<number | undefined>(undefined);
-  const [loading, setLoading] = useState<boolean>(true); 
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchAbsences = () => {
@@ -89,6 +89,10 @@ const AbsenceEmployer: React.FC = () => {
               ))}
               <option className={styles.clearFilter} value="clear">Wyczyść filtry</option>
             </select>
+            <div className={styles.searchContainer}>
+              <input type="text" placeholder="Wyszukaj" className={styles.searchInput}/>
+              <FontAwesomeIcon icon={faMagnifyingGlass} className={styles.searchIcon} />
+            </div>
           </div>
           <div className={styles.viewContainer}>
             <button
