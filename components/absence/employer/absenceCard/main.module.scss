@@ -1,3 +1,7 @@
+$popup-bg: rgba(0, 0, 0, 0.5);
+$popup-bg-colour: #4F4E4E;
+$popup-highlight-colour: #FFCF70;
+
 $employerAbsenceCard-chechbox-bg-colour: #e8e8e8;
 $employerAbsenceCard-bg-colour-light: #FFFFFF;
 $employerAbsenceCard-font-colour: #FFFFFF;
@@ -9,6 +13,33 @@ $employerAbsenceCard-approveAbsence-button-colour: #28a745;
 $employerAbsenceCard-approveAbsence-button-colour-hover: #218838;
 $employerAbsenceCard-cancelAbsence-button-colour: #dc3545;
 $employerAbsenceCard-cancelAbsence-button-colour-hover: #c82333;
+
+.addAbsencetModalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $popup-bg;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .addAbsenceModalContent {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid $popup-highlight-colour;
+    border-radius: 8px;
+    background-color: $popup-bg-colour;
+    text-align: center;
+    width: auto;
+    max-height: 80vh;
+    overflow-y: auto;
+    gap: 20px;
+    padding: 20px;
+  }
 
 .absenceCardContainerMain {
     background-color: $employerAbsenceCard-bg-colour-light;

@@ -4,6 +4,8 @@ import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import Absence from '@/components/types/absence';
 import AbsenceType from '@/components/types/absenceType';
 import AbsenceUser from '@/components/types/absenceUser';
+import CancelConfirmation from './popUps/cancelConfirmation';
+import AproveConfirmation from './popUps/aproveConfirmation';
 import styles from './main.module.scss';
 
 interface AbsenceCardProps {
@@ -14,6 +16,8 @@ interface AbsenceCardProps {
 const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpdate }) => {
     const [absenceType, setAbsenceType] = useState<AbsenceType | null>(null);
     const [user, setUser] = useState<AbsenceUser | null>(null);
+    const [modalIsOpenCancelAbsence, setModalIsOpenCancelAbsence] = useState(false);
+    const [modalIsOpenAproveAbsence, setModalIsOpenAproveAbsence] = useState(false);
 
     useEffect(() => {
         fetch(`http://localhost:8080/api/v1/absence-type/${absence.absence_type_id}`)
@@ -86,7 +90,8 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                     <div className={styles.buttonContainer}>
                         <button 
                             className={styles.declineButton}
-                            onClick={handleDeclineClick}
+                            // onClick={handleDeclineClick}
+                            onClick={() => setModalIsOpenCancelAbsence(true)}
                         >
                             <FontAwesomeIcon icon={faXmark} />
                             <p className={styles.buttonParagraph}>Odmów</p>
@@ -104,14 +109,16 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                     <div className={styles.buttonContainer}>
                         <button 
                             className={styles.acceptButton}
-                            onClick={handleAcceptClick}
+                            // onClick={handleAcceptClick}
+                            onClick={() => setModalIsOpenAproveAbsence(true)}
                         >
                             <FontAwesomeIcon className={styles.buttonIcon} icon={faCheck} />
                             <p className={styles.buttonParagraph}>Akceptuj</p>
                         </button>
                         <button 
                             className={styles.declineButton}
-                            onClick={handleDeclineClick}
+                            // onClick={handleDeclineClick}
+                            onClick={() => setModalIsOpenCancelAbsence(true)}
                         >
                             <FontAwesomeIcon icon={faXmark} />
                             <p className={styles.buttonParagraph}>Odmów</p>
@@ -169,6 +176,32 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                 </div>
             </div>
             {renderButtons()}
+
+            {modalIsOpenCancelAbsence && (
+                <div className={styles.addAbsencetModalOverlay}>
+                    <div className={styles.addAbsenceModalContent}>
+                        <CancelConfirmation
+                            onCancel={handleDeclineClick}
+                            onClose={() => setModalIsOpenCancelAbsence(false)}
+                            absenceType={absenceType?.name ?? 'Unknown'}
+                            absenceStartAndEnd={startDate() + ' - ' + endDate()}
+                        />
+                    </div>
+                </div>
+            )}
+
+            {modalIsOpenAproveAbsence && (
+                <div className={styles.addAbsencetModalOverlay}>
+                    <div className={styles.addAbsenceModalContent}>
+                        <AproveConfirmation
+                            onAprove={handleAcceptClick}
+                            onClose={() => setModalIsOpenAproveAbsence(false)}
+                            absenceType={absenceType?.name ?? 'Unknown'}
+                            absenceStartAndEnd={startDate() + ' - ' + endDate()}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
