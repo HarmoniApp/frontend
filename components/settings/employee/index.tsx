@@ -67,7 +67,8 @@ const SettingsEmployee: React.FC<SettingsEmployeeProps> = ({ userId }) => {
 
     return (
         <div className={styles.absenceEmployeesContainerMain}>
-            <div className={styles.absenceHeaderContainer}>
+            <p>Tu bedzie cos ale jeszcze nie wiem co bedzie wydaje mi sie ze nie bedzie nic</p>
+            {/* <div className={styles.absenceHeaderContainer}>
                 <label className={styles.title}>Twoje archiwalne urlopy</label>
             </div>
             <div className={styles.tableContainer}>
@@ -93,7 +94,7 @@ const SettingsEmployee: React.FC<SettingsEmployeeProps> = ({ userId }) => {
                         ))}
                     </tbody>
                 </table>
-            </div>
+            </div> */}
         </div>
     );
 }

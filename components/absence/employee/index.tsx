@@ -75,26 +75,26 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
         }
     };
 
-    const handleArchiveAbsence = async () => {
-        if (selectedAbsenceId === null) return;
+    // const handleArchiveAbsence = async () => {
+    //     if (selectedAbsenceId === null) return;
 
-        try {
-            const response = await fetch(`http://localhost:8080/api/v1/absence/archive/${selectedAbsenceId}?archived=true`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+    //     try {
+    //         const response = await fetch(`http://localhost:8080/api/v1/absence/archive/${selectedAbsenceId}?archived=true`, {
+    //             method: 'PATCH',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //         });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP error! Status: ${response.status}`);
+    //         }
 
-            fetchUserAbsences();
-        } catch (error) {
-            console.error(`Error archiving absence with ID ${selectedAbsenceId}:`, error);
-        }
-    };
+    //         fetchUserAbsences();
+    //     } catch (error) {
+    //         console.error(`Error archiving absence with ID ${selectedAbsenceId}:`, error);
+    //     }
+    // };
 
     const handleCancelAbsence = async () => {
         if (selectedAbsenceId === null) return;
@@ -158,18 +158,19 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                                             Anuluj
                                         </button>
                                     ) : (
-                                        <button
-                                            className={styles.archiveButton}
-                                            onClick={() => {
-                                                setSelectedAbsenceId(absence.id);
-                                                setSelectedAbsenceType(absenceTypeNames[absence.absence_type_id]);
-                                                setSelectedAbsenceStart(new Date(absence.start).toLocaleDateString());
-                                                setSelectedAbsenceEnd(new Date(absence.end).toLocaleDateString());
-                                                setModalIsOpenArchiveAbsence(true);
-                                            }}
-                                        >
-                                            Archiwizuj
-                                        </button>
+                                        // <button
+                                        //     className={styles.archiveButton}
+                                        //     onClick={() => {
+                                        //         setSelectedAbsenceId(absence.id);
+                                        //         setSelectedAbsenceType(absenceTypeNames[absence.absence_type_id]);
+                                        //         setSelectedAbsenceStart(new Date(absence.start).toLocaleDateString());
+                                        //         setSelectedAbsenceEnd(new Date(absence.end).toLocaleDateString());
+                                        //         setModalIsOpenArchiveAbsence(true);
+                                        //     }}
+                                        // >
+                                        //     Archiwizuj
+                                        // </button>
+                                        <></>
                                     )}
                                 </td>
                             </tr>
@@ -199,7 +200,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                 </div>
             )}
 
-            {modalIsOpenArchiveAbsence && (
+            {/* {modalIsOpenArchiveAbsence && (
                 <div className={styles.addAbsencetModalOverlay}>
                     <div className={styles.addAbsenceModalContent}>
                         <ArchiveConfirmation
@@ -210,7 +211,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                         />
                     </div>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };
