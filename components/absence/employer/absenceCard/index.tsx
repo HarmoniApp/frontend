@@ -65,7 +65,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     };
 
     const handleDeclineClick = () => {
-        fetch(`http://localhost:8080/api/v1/absence/${absence.id}`, {
+        fetch(`http://localhost:8080/api/v1/absence/${absence.id}/status/4`, {
             method: 'DELETE',
         })
             .then(() => {
