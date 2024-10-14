@@ -3,9 +3,9 @@ $popup-font-colour-light: #FFFFFF;
 $popup-font-colour-dark: #000000;
 $popup-highlight-colour: #FFCF70;
 $popup-highlight-colour-hover: #FFBE4D;
-$popup-delete-button-colour: #dc3545;
-$popup-detete-button-colour-hover: #c82333;
-.archiveConfirmationContainerMain {
+$popup-delete-button-colour: #28a745;
+$popup-detete-button-colour-hover: #218838;
+.aproveConfirmationContainerMain {
     display: flex;
     background-color: $popup-bg-colour;
     flex-direction: column;
@@ -47,7 +47,7 @@ $popup-detete-button-colour-hover: #c82333;
     justify-content: space-evenly;
     width: 100%;
 
-    .archiveButton {
+    .aproveButton {
         display: flex;
         align-items: center;
         background-color: $popup-delete-button-colour;

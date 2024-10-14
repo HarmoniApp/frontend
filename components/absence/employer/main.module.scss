@@ -11,14 +11,14 @@ $employer-cancelAbsence-button-colour: #dc3545;
 $employer-cancelAbsence-button-colour-hover: #c82333;
 
 
-.absenceEmployerContainerMain{
+.absenceEmployerContainerMain {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
 
-    .absenceEmployerContainer{
+    .absenceEmployerContainer {
         display: flex;
         flex-direction: column;
         width: 90%;
@@ -27,15 +27,18 @@ $employer-cancelAbsence-button-colour-hover: #c82333;
     }
 }
 
-.buttonContainer{
+.buttonContainer {
     display: flex;
     justify-content: space-between;
-    margin:0;
+    margin: 0;
 
     .roleSelect {
-        -webkit-appearance: none; /* Safari */
-        -moz-appearance: none; /* Firefox */
-        appearance: none; /* Standard */
+        -webkit-appearance: none;
+        /* Safari */
+        -moz-appearance: none;
+        /* Firefox */
+        appearance: none;
+        /* Standard */
         width: 100%;
         height: 5vh;
         border-radius: 5px;
@@ -46,13 +49,13 @@ $employer-cancelAbsence-button-colour-hover: #c82333;
         box-shadow: inset 0 2px 4px $employer-box-shadow-colour;
         transition: all 0.3s ease;
 
-        background-image: 
+        background-image:
             linear-gradient(45deg, transparent 50%, $employer-font-colour-dark 50%),
             linear-gradient(135deg, $employer-font-colour-dark 50%, transparent 50%);
-        background-position: 
+        background-position:
             calc(100% - 15px) calc(1em + 5px),
             calc(100% - 6px) calc(1em + 5px);
-        background-size: 
+        background-size:
             9px 9px,
             9px 9px;
         background-repeat: no-repeat;
@@ -75,7 +78,7 @@ $employer-cancelAbsence-button-colour-hover: #c82333;
         display: flex;
         gap: 15px;
         margin: 0 10px;
-    
+
         .listViewButton,
         .tilesViewButton {
             display: inline-flex;
@@ -88,7 +91,7 @@ $employer-cancelAbsence-button-colour-hover: #c82333;
             cursor: pointer;
 
         }
-    
+
         .active {
             display: inline-flex;
             align-items: center;
@@ -103,18 +106,54 @@ $employer-cancelAbsence-button-colour-hover: #c82333;
     }
 }
 
-.cardsViewContainerTiles{
+.selectContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.searchInput {
+    width: 15rem;
+    height: 5vh;
+    border-radius: 5px;
+    border: none;
+    border-bottom: 2px solid $employer-highlight-colour;
+    padding: 10px 5vh 10px 10px;
+    color: $employer-font-colour-dark;
+    box-shadow: inset 0 2px 4px $employer-box-shadow-colour;
+    transition: all 0.3s ease;
+    padding-right: 30px;
+
+    &:hover {
+        border: 2px solid $employer-highlight-colour;
+        outline: none;
+        background-color: lighten($employer-chechbox-bg-colour, 5%);
+    }
+}
+
+.cardsViewContainerTiles {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap:20px;
+    gap: 20px;
 
     @media (max-width: 768px) {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-.cardsViewContainerList{
+.cardsViewContainerList {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
-    gap:20px;    
+    gap: 20px;
+}
+
+.searchContainer{
+    position: relative;
+}
+
+.searchIcon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
 }

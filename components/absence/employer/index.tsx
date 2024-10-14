@@ -1,18 +1,21 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRectangleList, faGrip } from '@fortawesome/free-solid-svg-icons';
+import { faRectangleList, faGrip, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import AbsenceCard from '@/components/absence/employer/absenceCard';
 import Absence from '@/components/types/absence';
 import AbsenceStatus from '@/components/types/absenceStatus';
+import User from '@/components/types/user';
 import styles from './main.module.scss';
 
 const AbsenceEmployer: React.FC = () => {
   const [absences, setAbsences] = useState<Absence[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [absencesStatus, setAbsencesStatus] = useState<AbsenceStatus[]>([]);
   const [viewMode, setViewMode] = useState('tiles');
   const [selectedStatus, setSelectedStatus] = useState<number | undefined>(undefined);
-  const [loading, setLoading] = useState<boolean>(true); 
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchAbsences = () => {
@@ -32,8 +35,16 @@ const AbsenceEmployer: React.FC = () => {
       });
   };
 
+  const fetchUsers = () => {
+    fetch('http://localhost:8080/api/v1/user/simple')
+      .then(response => response.json())
+      .then(data => setUsers(data))
+      .catch(error => console.error('Error fetching users:', error));
+  };
+
   useEffect(() => {
     fetchAbsences();
+    fetchUsers();
 
     fetch('http://localhost:8080/api/v1/status')
       .then(response => response.json())
@@ -66,6 +77,20 @@ const AbsenceEmployer: React.FC = () => {
     }
   };
 
+  const getUserById = (userId: number): User | undefined => {
+    return users.find(user => user.id === userId);
+  };
+
+  const filteredAbsences = absences.filter(absence => {
+    const user = getUserById(absence.user_id);
+
+    const absenceTypeMatches = absence.status?.name?.toLowerCase().includes(searchQuery.toLowerCase());
+    const userMatches = user?.firstname?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user?.surname?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return absenceTypeMatches || userMatches;
+  });
+
   return (
     <div className={styles.absenceEmployerContainerMain}>
       <div className={styles.absenceEmployerContainer}>
@@ -89,6 +114,16 @@ const AbsenceEmployer: React.FC = () => {
               ))}
               <option className={styles.clearFilter} value="clear">Wyczyść filtry</option>
             </select>
+            <div className={styles.searchContainer}>
+              <input
+                type="text"
+                placeholder="Wyszukaj"
+                className={styles.searchInput}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <FontAwesomeIcon icon={faMagnifyingGlass} className={styles.searchIcon} />
+            </div>
           </div>
           <div className={styles.viewContainer}>
             <button
@@ -105,16 +140,17 @@ const AbsenceEmployer: React.FC = () => {
             </button>
           </div>
         </div>
+
         {loading && <div>Ładowanie danych...</div>}
         {error && <div>Błąd: {error}</div>}
-        {!loading && !error && absences.length === 0 && <div>Brak dostępnych danych</div>}
-        {!loading && !error && absences.length > 0 && (
+        {!loading && !error && filteredAbsences.length === 0 && <div>Brak dostępnych danych</div>}
+        {!loading && !error && filteredAbsences.length > 0 && (
           <div className={
             viewMode === 'tiles'
               ? styles.cardsViewContainerTiles
               : styles.cardsViewContainerList
           }>
-            {absences.map(absence => (
+            {filteredAbsences.map(absence => (
               <AbsenceCard key={absence.id} absence={absence} onStatusUpdate={fetchAbsences} />
             ))}
           </div>
@@ -123,4 +159,5 @@ const AbsenceEmployer: React.FC = () => {
     </div>
   );
 };
+
 export default AbsenceEmployer;

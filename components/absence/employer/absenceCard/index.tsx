@@ -4,6 +4,8 @@ import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import Absence from '@/components/types/absence';
 import AbsenceType from '@/components/types/absenceType';
 import AbsenceUser from '@/components/types/absenceUser';
+import CancelConfirmation from './popUps/cancelConfirmation';
+import AproveConfirmation from './popUps/aproveConfirmation';
 import styles from './main.module.scss';
 
 interface AbsenceCardProps {
@@ -14,6 +16,8 @@ interface AbsenceCardProps {
 const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpdate }) => {
     const [absenceType, setAbsenceType] = useState<AbsenceType | null>(null);
     const [user, setUser] = useState<AbsenceUser | null>(null);
+    const [modalIsOpenCancelAbsence, setModalIsOpenCancelAbsence] = useState(false);
+    const [modalIsOpenAproveAbsence, setModalIsOpenAproveAbsence] = useState(false);
 
     useEffect(() => {
         fetch(`http://localhost:8080/api/v1/absence-type/${absence.absence_type_id}`)
@@ -43,8 +47,8 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
         return absence.working_days ?? 0;
     }
 
-    const updateAbsenceStatus = (absenceId: number, statusId: number): Promise<void> => {
-        return fetch(`http://localhost:8080/api/v1/absence/${absenceId}/status/${statusId}`, {
+    const handleAcceptClick = () => {
+        fetch(`http://localhost:8080/api/v1/absence/${absence.id}/status/2`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -54,16 +58,6 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                 if (!response.ok) {
                     throw new Error('Error updating absence status');
                 }
-            })
-            .catch(error => {
-                console.error('Error updating absence status:', error);
-                throw error;
-            });
-    };
-
-    const handleAcceptClick = () => {
-        updateAbsenceStatus(absence.id, 2)
-            .then(() => {
                 console.log('Absence approved');
                 onStatusUpdate();
             })
@@ -71,7 +65,9 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     };
 
     const handleDeclineClick = () => {
-        updateAbsenceStatus(absence.id, 4)
+        fetch(`http://localhost:8080/api/v1/absence/${absence.id}`, {
+            method: 'DELETE',
+        })
             .then(() => {
                 console.log('Absence rejected');
                 onStatusUpdate();
@@ -86,7 +82,8 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                     <div className={styles.buttonContainer}>
                         <button 
                             className={styles.declineButton}
-                            onClick={handleDeclineClick}
+                            // onClick={handleDeclineClick}
+                            onClick={() => setModalIsOpenCancelAbsence(true)}
                         >
                             <FontAwesomeIcon icon={faXmark} />
                             <p className={styles.buttonParagraph}>Odmów</p>
@@ -104,14 +101,16 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                     <div className={styles.buttonContainer}>
                         <button 
                             className={styles.acceptButton}
-                            onClick={handleAcceptClick}
+                            // onClick={handleAcceptClick}
+                            onClick={() => setModalIsOpenAproveAbsence(true)}
                         >
                             <FontAwesomeIcon className={styles.buttonIcon} icon={faCheck} />
                             <p className={styles.buttonParagraph}>Akceptuj</p>
                         </button>
                         <button 
                             className={styles.declineButton}
-                            onClick={handleDeclineClick}
+                            // onClick={handleDeclineClick}
+                            onClick={() => setModalIsOpenCancelAbsence(true)}
                         >
                             <FontAwesomeIcon icon={faXmark} />
                             <p className={styles.buttonParagraph}>Odmów</p>
@@ -169,6 +168,32 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                 </div>
             </div>
             {renderButtons()}
+
+            {modalIsOpenCancelAbsence && (
+                <div className={styles.addAbsencetModalOverlay}>
+                    <div className={styles.addAbsenceModalContent}>
+                        <CancelConfirmation
+                            onCancel={handleDeclineClick}
+                            onClose={() => setModalIsOpenCancelAbsence(false)}
+                            absenceType={absenceType?.name ?? 'Unknown'}
+                            absenceStartAndEnd={startDate() + ' - ' + endDate()}
+                        />
+                    </div>
+                </div>
+            )}
+
+            {modalIsOpenAproveAbsence && (
+                <div className={styles.addAbsencetModalOverlay}>
+                    <div className={styles.addAbsenceModalContent}>
+                        <AproveConfirmation
+                            onAprove={handleAcceptClick}
+                            onClose={() => setModalIsOpenAproveAbsence(false)}
+                            absenceType={absenceType?.name ?? 'Unknown'}
+                            absenceStartAndEnd={startDate() + ' - ' + endDate()}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
