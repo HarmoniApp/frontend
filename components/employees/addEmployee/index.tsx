@@ -29,6 +29,7 @@ const AddEmployee: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalCountdown, setModalCountdown] = useState(10);
   const [employeeLink, setEmployeeLink] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (modalCountdown === 0) onBack();
 
@@ -200,6 +201,9 @@ const AddEmployee: React.FC = () => {
   });
 
   const handleSubmit = (values: typeof initialValues) => {
+    if (isSubmitting) return; 
+    setIsSubmitting(true); 
+
     fetch('http://localhost:8080/api/v1/user', {
       method: 'POST',
       headers: {
@@ -225,6 +229,9 @@ const AddEmployee: React.FC = () => {
       })
       .catch((error) => {
         console.error('Błąd podczas dodawania pracownika');
+      })
+      .finally(() => {
+        setIsSubmitting(false);
       });
   };
 
