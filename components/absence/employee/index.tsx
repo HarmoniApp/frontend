@@ -77,7 +77,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
         if (selectedAbsenceId === null) return;
 
         try {
-            fetch(`http://localhost:8080/api/v1/absence/${selectedAbsenceId}`, {
+            fetch(`http://localhost:8080/api/v1/absence/${selectedAbsenceId}/status/3`, {
                 method: 'DELETE',
             })
                 .then(() => {
