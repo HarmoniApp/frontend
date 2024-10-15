@@ -6,8 +6,8 @@ $tile-box-shadow-colour: rgba(0, 0, 0, 0.1);
 
 .tileContainerMain {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
   background-color: $tile-bg-colour;
   border: 1px solid $tile-border-colour;
@@ -22,25 +22,51 @@ $tile-box-shadow-colour: rgba(0, 0, 0, 0.1);
     background-color: $tile-bg-colour-hover;
     transform: scale(1.05);
   }
-}
 
-.tileContainerMain .fullNameContainer .fullNameParagraph {
-  text-align: center;
-  font-weight: bold;
-  color: $tile-font-colour-dark;
-  font-size: 20px;
-  margin: 5px 0;
-}
+  .employeeImageContainer {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    margin-left: 10px;
 
-.languagesContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    .employeeImage {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
 
-  .languageFlag {
-    margin: 5px;
-    width: 30px;
-    height: 30px;
+  .fullNameContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    gap:3px;
+
+    .fullNameParagraph {
+      text-align: left;
+      font-weight: bold;
+      color: $tile-font-colour-dark;
+      font-size: 20px;
+      word-wrap: break-word;
+    }
+  }
+
+  .languagesContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    margin-right: 10px;
+
+    .languageFlag {
+      margin: 0 5px;
+      width: 30px;
+      height: 30px;
+    }
   }
 }
 

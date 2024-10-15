@@ -9,7 +9,7 @@ interface LanguageTileProps {
 }
 
 const Tile: React.FC<LanguageTileProps> = ({ person, view }) => {
-  const router = useRouter();
+  const router = useRouter()
 
   const handleClick = () => {
     router.push(`/employees/user/${person.id}`);
@@ -19,8 +19,12 @@ const Tile: React.FC<LanguageTileProps> = ({ person, view }) => {
 
   return (
     <div onClick={handleClick} className={tileClassName}>
+      <div className={styles.employeeImageContainer}>
+        <img className={styles.employeeImage} src={`http://localhost:8080/api/v1/userPhoto/${person.photo}`} alt="User Photo" />  
+      </div>
       <div className={styles.fullNameContainer}>
-        <p className={styles.fullNameParagraph}>{`${person.firstname} ${person.surname}`}</p>
+        <label className={styles.fullNameParagraph}>{person.firstname}</label>
+        <label className={styles.fullNameParagraph}>{person.surname}</label>
       </div>
       <div className={styles.languagesContainer}>
         {person.languages.map((language, index) => (
