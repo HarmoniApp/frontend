@@ -28,8 +28,7 @@ const AddEmployee: React.FC = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalCountdown, setModalCountdown] = useState(10);
-  const [employeeLink, setEmployeeLink] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [employeeLink, setEmployeeLink] = useState<number | null>(null);
 
   if (modalCountdown === 0) onBack();
 
@@ -200,10 +199,7 @@ const AddEmployee: React.FC = () => {
     languages: Yup.array().min(1, 'Przynajmniej jeden język jest wymagany'),
   });
 
-  const handleSubmit = (values: typeof initialValues) => {
-    if (isSubmitting) return; 
-    setIsSubmitting(true); 
-
+  const handleSubmit = (values: typeof initialValues,  { resetForm }: { resetForm: () => void }) => {
     fetch('http://localhost:8080/api/v1/user', {
       method: 'POST',
       headers: {
@@ -215,6 +211,8 @@ const AddEmployee: React.FC = () => {
       .then((data) => {
         const userId = data.id;
         setIsModalOpen(true);
+        setEmployeeLink(userId);
+        resetForm();
         const countdownInterval = setInterval(() => {
           setModalCountdown((prev) => {
             if (prev === 1) {
@@ -224,15 +222,10 @@ const AddEmployee: React.FC = () => {
             return prev - 1;
           });
         }, 1000);
-
-        setEmployeeLink(`/employees/user/${userId}`);
       })
       .catch((error) => {
         console.error('Błąd podczas dodawania pracownika');
       })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
   };
 
   const initialValues = {
@@ -548,7 +541,7 @@ const AddEmployee: React.FC = () => {
                   <AddEmployeeNotificationPopUp
                     firstname={values.firstname}
                     surname={values.surname}
-                    employeeLink={employeeLink}
+                    employeeId={employeeLink}
                     modalCountdown={modalCountdown}
                     onClose={() => {
                       setIsModalOpen(false);
