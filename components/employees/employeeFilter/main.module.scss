@@ -9,7 +9,7 @@ $employeeFilter-box-shadow-colour-orange: rgba(255, 165, 0, 0.8);
 
 .employeesFilerContainerMain {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
@@ -22,17 +22,18 @@ $employeeFilter-box-shadow-colour-orange: rgba(255, 165, 0, 0.8);
 .sortContainer,
 .languagesContainer,
 .positionContainer {
-  // margin: 0 0 20px 0;
+  margin: 0 0 20px 0;
+  width: 100%;
 }
 
 .searchInputContainer {
   display: flex;
   position: relative;
   align-items: center;
-  // margin: 0 0 20px 0;
+  margin: 0 0 20px 0;
   background-color: $employeeFilter-highlight-colour;
   border-radius: 8px;
-  // width: 100%;
+  width: 100%;
   padding: 10px 15px;
 }
 
@@ -161,6 +162,7 @@ $employeeFilter-box-shadow-colour-orange: rgba(255, 165, 0, 0.8);
 
 .buttonContainer {
   text-align: center;
+  width: 100%;
 
   .clearButtonIcon {
     margin: 0 10px 0 0;
