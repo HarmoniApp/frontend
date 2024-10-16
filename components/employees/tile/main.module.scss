@@ -1,8 +1,10 @@
 $tile-bg-colour: #FFCF70;
+$tile-bg-colour-white: #FFFFFF;
 $tile-bg-colour-hover: #FFBE4D;
 $tile-font-colour-dark: #000000;
 $tile-border-colour: #000000;
 $tile-box-shadow-colour: rgba(0, 0, 0, 0.1);
+
 
 .tileContainerMain {
   display: flex;
@@ -61,11 +63,43 @@ $tile-box-shadow-colour: rgba(0, 0, 0, 0.1);
     justify-content: flex-end;
     align-items: center;
     margin-right: 10px;
-
+  
     .languageFlag {
       margin: 0 5px;
       width: 30px;
       height: 30px;
+    }
+  
+    .moreFlagsTooltip {
+      position: relative;
+      cursor: pointer;
+      margin-left: 5px;
+      font-weight: bold;
+      color: $tile-font-colour-dark;
+  
+      &:hover .tooltipContent {
+        display: flex;
+      }
+  
+      .tooltipContent {
+        display: none;
+        position: absolute;
+        top: 20px;
+        background-color: $tile-bg-colour-white;
+        border: 2px solid $tile-bg-colour;
+        border-radius: 5px;
+        padding: 10px;
+        box-shadow: 0px 4px 6px $tile-box-shadow-colour;
+        z-index: 10;
+        flex-direction: row;
+        justify-content: center; 
+  
+        .languageFlag {
+          margin: 5px;
+          width: 30px;
+          height: 30px;
+        }
+      }
     }
   }
 }
