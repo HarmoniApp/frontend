@@ -18,14 +18,13 @@ const Tile: React.FC<LanguageTileProps> = ({ person, view }) => {
   const tileClassName = view === 'tiles' ? styles.tileContainerMain : styles.listContainerMain;
 
   const maxVisibleFlags = 2;
-
-  const visibleLanguages = person.languages.length > maxVisibleFlags 
+  const visibleLanguages = view === 'tiles' && person.languages.length > maxVisibleFlags
     ? person.languages.slice(0, 1)
-    : person.languages.slice(0, maxVisibleFlags);
-  
-  const hiddenLanguages = person.languages.length > maxVisibleFlags 
-    ? person.languages.slice(1) 
-    : []; 
+    : person.languages;
+
+  const hiddenLanguages = view === 'tiles' && person.languages.length > maxVisibleFlags
+    ? person.languages.slice(1)
+    : [];
 
   return (
     <div onClick={handleClick} className={tileClassName}>
@@ -41,13 +40,13 @@ const Tile: React.FC<LanguageTileProps> = ({ person, view }) => {
           <Flag key={index} className={styles.languageFlag} country={language.code.toUpperCase()} />
         ))}
 
-        {hiddenLanguages.length > 0 && (
+        {view === 'tiles' && hiddenLanguages.length > 0 && (
           <div className={styles.moreFlagsTooltip}>
             +{hiddenLanguages.length}
             <div className={styles.tooltipContent}
-            style={{
-              left: `${-20 * hiddenLanguages.length}px`
-            }}>
+              style={{
+                left: `${-20 * hiddenLanguages.length}px`
+              }}>
               {hiddenLanguages.map((language, index) => (
                 <Flag key={index} className={styles.languageFlag} country={language.code.toUpperCase()} />
               ))}
