@@ -5,6 +5,7 @@ $employeeFilter-font-colour-dark: #000000;
 $employeeFilter-highlight-colour: #FFCF70;
 $employeeFilter-highlight-colour-hover: #FFBE4D;
 $employeeFilter-box-shadow-colour: rgba(0, 0, 0, 0.1);
+$employeeFilter-box-shadow-colour-orange: rgba(255, 165, 0, 0.8);
 
 .employeesFilerContainerMain {
   padding: 20px;
@@ -18,6 +19,43 @@ $employeeFilter-box-shadow-colour: rgba(0, 0, 0, 0.1);
 .languagesContainer,
 .positionContainer {
   margin: 0 0 20px 0;
+}
+
+.searchInputContainer {
+  position: relative;
+  margin: 0 0 20px 0;
+  background-color: $employeeFilter-highlight-colour;
+  border-radius: 8px;
+  width: 100%;
+  padding: 10px 15px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 25px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+  width: 20px;
+}
+
+.searchInput {
+  border-radius: 8px;
+  border: none;
+  height: 40px;
+  font-size: 14px;
+  text-align: right;
+  padding-right: 10px;
+
+  &::placeholder {
+    opacity: 1;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $employeeFilter-highlight-colour-hover;
+    box-shadow: 0 0 5px $employeeFilter-box-shadow-colour-orange;
+  }
 }
 
 .positionTitleContainer,
@@ -61,8 +99,6 @@ $employeeFilter-box-shadow-colour: rgba(0, 0, 0, 0.1);
   }
 
 }
-
-
 
 .listContainer {
   height: 0;

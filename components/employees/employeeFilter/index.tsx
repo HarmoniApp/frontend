@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faTrashCan, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import Language from '@/components/types/language';
 import Role from '@/components/types/role';
 import styles from './main.module.scss';
@@ -93,6 +93,16 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
 
   return (
     <div className={styles.employeesFilerContainerMain}>
+      <div className={styles.searchInputContainer}>
+        <>
+          <FontAwesomeIcon icon={faMagnifyingGlass} className={styles.searchIcon} />
+          <input
+            type="text"
+            placeholder="Wyszukaj"
+            className={styles.searchInput}
+          />
+        </>
+      </div>
       <div className={styles.sortContainer}>
         <div className={styles.sortTitleContainer} onClick={() => toggleSection(setIsSortOpen, sortListRef)}>
           <FontAwesomeIcon
