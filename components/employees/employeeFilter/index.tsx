@@ -36,7 +36,6 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
       if (selectedRoles.length) filters.roles = selectedRoles;
       if (selectedLanguages.length) filters.languages = selectedLanguages;
       if (order) filters.order = order;
-      console.log('Filters before applying:', filters);
       onApplyFilters(filters);
     }, 300);
 
@@ -92,6 +91,25 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
     });
   };
 
+  const [searchQuery, setSearchQuery] = useState<string>(''); 
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      const filters: { roles?: number[]; languages?: number[]; order?: string; query?: string } = {};
+      if (selectedRoles.length) filters.roles = selectedRoles;
+      if (selectedLanguages.length) filters.languages = selectedLanguages;
+      if (order) filters.order = order;
+      if (searchQuery) filters.query = searchQuery; 
+      onApplyFilters(filters);
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [selectedRoles, selectedLanguages, order, searchQuery]);
+
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
   return (
     <div className={styles.employeesFilerContainerMain}>
       <div className={styles.searchInputContainer}>
@@ -99,6 +117,8 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
           <FontAwesomeIcon icon={faMagnifyingGlass} className={styles.searchIcon} />
           <input
             type="text"
+            value={searchQuery}
+            onChange={handleSearchInputChange}
             placeholder="Wyszukaj"
             className={styles.searchInput}
           />

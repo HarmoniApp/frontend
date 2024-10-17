@@ -11,7 +11,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
-import 'primereact/resources/themes/saga-blue/theme.css'; 
+import 'primereact/resources/themes/saga-blue/theme.css';
 
 const EmployeesComponent: React.FC = () => {
   const [activeView, setActiveView] = useState<'tiles' | 'list'>('tiles');
@@ -21,31 +21,36 @@ const EmployeesComponent: React.FC = () => {
 
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(21);
-  const [totalRecords, setTotalRecords] = useState(0); 
+  const [totalRecords, setTotalRecords] = useState(0);
 
-  const fetchFilteredData = (filters: { roles?: number[]; languages?: number[]; order?: string } = {}, pageNumber: number = 1, pageSize: number = 21) => {
+  const fetchFilteredData = (filters: { roles?: number[]; languages?: number[]; order?: string; query?: string } = {}, pageNumber: number = 1, pageSize: number = 21) => {
     setLoading(true);
-    console.log('Applied filters:', filters);
-    console.log('Page number:', pageNumber, 'Page size:', pageSize);
 
-    let url = `http://localhost:8080/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=${pageSize}`;
-    const params = new URLSearchParams();
+    let url = '';
 
-    if (filters.roles && filters.roles.length) {
-      filters.roles.forEach(role => params.append('role', role.toString()));
+    if (filters.query && filters.query.trim() !== '') {
+      url = `http://localhost:8080/api/v1/user/simple/search?q=${filters.query}`;
+    } else {
+      url = `http://localhost:8080/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+
+      const params = new URLSearchParams();
+
+      if (filters.roles && filters.roles.length) {
+        filters.roles.forEach(role => params.append('role', role.toString()));
+      }
+      if (filters.languages && filters.languages.length) {
+        filters.languages.forEach(language => params.append('language', language.toString()));
+      }
+      if (filters.order) params.append('order', filters.order);
+
+      if (params.toString()) {
+        url += `&${params.toString()}`;
+      }
     }
-    if (filters.languages && filters.languages.length) {
-      filters.languages.forEach(language => params.append('language', language.toString()));
-    }
-    if (filters.order) params.append('order', filters.order);
 
-    if (params.toString()) url += `&${params.toString()}`;
-
-    console.log('Fetching data from URL:', url);
 
     fetch(url)
       .then(response => {
-        console.log('API Response:', response);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -55,6 +60,8 @@ const EmployeesComponent: React.FC = () => {
         if (responseData && responseData.content) {
           setData(responseData.content);
           setTotalRecords(responseData.pageSize * responseData.totalPages);
+        } else if (responseData && responseData.length > 0) {
+          setData(responseData);
         } else {
           setData([]);
           setTotalRecords(0);
@@ -69,16 +76,13 @@ const EmployeesComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log('Initial data fetch with rows:', rows);
     fetchFilteredData({}, 1, rows);
   }, [rows]);
 
   const onPageChange = (e: PaginatorPageChangeEvent) => {
-    console.log('Page change event:', e);
     setFirst(e.first);
     setRows(e.rows);
     const pageNumber = Math.floor(e.first / e.rows) + 1;
-    console.log('Fetching page:', pageNumber, 'with pageSize:', e.rows);
     fetchFilteredData({}, pageNumber, e.rows);
   };
 
@@ -93,19 +97,19 @@ const EmployeesComponent: React.FC = () => {
         </div>
         <div className={`${styles.employeesListcontainer} ${activeView === 'tiles' ? styles.tilesView : styles.listView}`}>
           {loading && <div className={styles.spinnerContainer}><ProgressSpinner /></div>}
-          {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessage}/>}
+          {!loading && error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessage} />}
           {!loading && !error && data.length === 0 && <Card title="No Data" className={styles.noDataCard}><p>There is no data available at the moment.</p></Card>}
           {!loading && !error && data.length > 0 && data.map((person, index) => (
             <Tile key={index} person={person} view={activeView} />
           ))}
         </div>
       </div>
-      
-      <Paginator 
-        first={first} 
-        rows={rows} 
-        totalRecords={totalRecords} 
-        rowsPerPageOptions={[21, 49, 70]} 
+
+      <Paginator
+        first={first}
+        rows={rows}
+        totalRecords={totalRecords}
+        rowsPerPageOptions={[21, 49, 70]}
         onPageChange={onPageChange}
       />
     </div>
