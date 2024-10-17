@@ -31,3 +31,18 @@
     gap: 10px;
   }
 }
+
+.spinnerContainer {
+  background-color: white;
+  display: flex;
+  border-radius: 8px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  border: 1px solid #FFCF70;
+}

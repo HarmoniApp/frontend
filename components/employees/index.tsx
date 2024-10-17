@@ -7,6 +7,7 @@ import PersonTile from '@/components/types/personTile';
 import styles from './main.module.scss';
 import './main.css';
 
+import { ProgressSpinner } from 'primereact/progressspinner';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import 'primereact/resources/themes/saga-blue/theme.css'; 
 
@@ -85,7 +86,7 @@ const EmployeesComponent: React.FC = () => {
           <EmployeeFilter onApplyFilters={(filters) => fetchFilteredData(filters, 1, rows)} />
         </div>
         <div className={`${styles.employeesListcontainer} ${activeView === 'tiles' ? styles.tilesView : styles.listView}`}>
-          {loading && <div>Loading...</div>}
+          {loading && <div className={styles.spinnerContainer}><ProgressSpinner /> Ładowanie</div>}
           {error && <div>Error: {error}</div>}
           {!loading && !error && data.length === 0 && <div>No data available</div>}
           {!loading && !error && data.length > 0 && data.map((person, index) => (
