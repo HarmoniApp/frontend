@@ -21,7 +21,11 @@ const EmployeesComponent: React.FC = () => {
   const [rows, setRows] = useState(21);
   const [totalRecords, setTotalRecords] = useState(0); 
 
-  const fetchFilteredData = (filters: { roles?: number[]; languages?: number[]; order?: string } = {}, pageNumber: number = 1, pageSize: number = 10) => {
+  const fetchFilteredData = (filters: { roles?: number[]; languages?: number[]; order?: string } = {}, pageNumber: number = 1, pageSize: number = 21) => {
+    setLoading(true);
+    console.log('Applied filters:', filters);
+    console.log('Page number:', pageNumber, 'Page size:', pageSize);
+
     let url = `http://localhost:8080/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=${pageSize}`;
     const params = new URLSearchParams();
 
@@ -86,7 +90,7 @@ const EmployeesComponent: React.FC = () => {
           <EmployeeFilter onApplyFilters={(filters) => fetchFilteredData(filters, 1, rows)} />
         </div>
         <div className={`${styles.employeesListcontainer} ${activeView === 'tiles' ? styles.tilesView : styles.listView}`}>
-          {loading && <div className={styles.spinnerContainer}><ProgressSpinner /> Ładowanie</div>}
+          {loading && <div className={styles.spinnerContainer}><ProgressSpinner /></div>}
           {error && <div>Error: {error}</div>}
           {!loading && !error && data.length === 0 && <div>No data available</div>}
           {!loading && !error && data.length > 0 && data.map((person, index) => (

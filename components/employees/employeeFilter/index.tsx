@@ -36,6 +36,7 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
       if (selectedRoles.length) filters.roles = selectedRoles;
       if (selectedLanguages.length) filters.languages = selectedLanguages;
       if (order) filters.order = order;
+      console.log('Filters before applying:', filters);
       onApplyFilters(filters);
     }, 300);
 
