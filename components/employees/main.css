@@ -1,0 +1,24 @@
+.p-paginator {
+    background-color: #FFF;
+    border: 1px solid #FFBE4D;
+    border-radius: 10px;
+    margin: 30px;
+  }
+  
+  .p-paginator .p-paginator-next,
+  .p-paginator .p-paginator-prev {
+    background-color: #FFCF70;
+    color: #000000;
+  }
+  
+  .p-paginator .p-paginator-page {
+    padding: 10px;
+    background-color: #FFFFFF;
+    color: #333333;
+    border: 1px solid #FFBE4D;
+  }
+  
+  .p-paginator .p-paginator-page.p-highlight {
+    background-color: #FFCF70;
+    color: #FFFFFF;
+  }
