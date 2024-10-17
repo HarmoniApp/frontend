@@ -50,7 +50,9 @@ const AddEmployee: React.FC = () => {
 
     fetch('http://localhost:8080/api/v1/user/supervisor')
       .then((response) => response.json())
-      .then((data) => setSupervisors(data))
+      .then((data) => {
+        setSupervisors(data.content);
+      })
       .catch((error) => console.error('Error fetching supervisors:', error));
 
     fetch('http://localhost:8080/api/v1/address/departments')
