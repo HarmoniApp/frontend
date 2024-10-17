@@ -34,9 +34,7 @@
 }
 
 .spinnerContainer {
-  background-color: white;
   display: flex;
-  border-radius: 8px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -45,7 +43,6 @@
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 9999;
-  border: 1px solid #FFCF70;
   margin-top: 200px;
 }
 .noDataCard{
