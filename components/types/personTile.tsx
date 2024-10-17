@@ -5,4 +5,5 @@ export default interface PersonTile {
     firstname: string;
     surname: string;
     languages: Language[];
+    photo: string;
   }

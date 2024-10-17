@@ -7,18 +7,16 @@ import styles from './main.module.scss';
 interface AddEmployeeConfirmationProps {
   firstname: string;
   surname: string;
-  employeeLink: string | null;
+  employeeId: number | null;
   modalCountdown: number;
   onClose: () => void;
 }
 
-const AddEmployeeNotification: React.FC<AddEmployeeConfirmationProps> = ({ firstname, surname, employeeLink, modalCountdown, onClose }) => {
+const AddEmployeeNotification: React.FC<AddEmployeeConfirmationProps> = ({ firstname, surname, employeeId, modalCountdown, onClose }) => {
   const router = useRouter();
 
   const handleDetailsClick = () => {
-    if (employeeLink) {
-      router.push(employeeLink);
-    }
+      router.push(`/employees/user/${employeeId}`);
   };
 
   return (

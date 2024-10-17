@@ -1,13 +1,15 @@
 $tile-bg-colour: #FFCF70;
+$tile-bg-colour-white: #FFFFFF;
 $tile-bg-colour-hover: #FFBE4D;
 $tile-font-colour-dark: #000000;
 $tile-border-colour: #000000;
 $tile-box-shadow-colour: rgba(0, 0, 0, 0.1);
 
+
 .tileContainerMain {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
   background-color: $tile-bg-colour;
   border: 1px solid $tile-border-colour;
@@ -22,25 +24,83 @@ $tile-box-shadow-colour: rgba(0, 0, 0, 0.1);
     background-color: $tile-bg-colour-hover;
     transform: scale(1.05);
   }
-}
 
-.tileContainerMain .fullNameContainer .fullNameParagraph {
-  text-align: center;
-  font-weight: bold;
-  color: $tile-font-colour-dark;
-  font-size: 20px;
-  margin: 5px 0;
-}
+  .employeeImageContainer {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    margin-left: 10px;
 
-.languagesContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    .employeeImage {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
 
-  .languageFlag {
-    margin: 5px;
-    width: 30px;
-    height: 30px;
+  .fullNameContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    gap:3px;
+
+    .fullNameParagraph {
+      text-align: left;
+      font-weight: bold;
+      color: $tile-font-colour-dark;
+      font-size: 20px;
+      word-wrap: break-word;
+    }
+  }
+
+  .languagesContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    margin-right: 10px;
+  
+    .languageFlag {
+      margin: 0 5px;
+      width: 30px;
+      height: 30px;
+    }
+  
+    .moreFlagsTooltip {
+      position: relative;
+      cursor: pointer;
+      margin-left: 5px;
+      font-weight: bold;
+      color: $tile-font-colour-dark;
+  
+      &:hover .tooltipContent {
+        display: flex;
+      }
+  
+      .tooltipContent {
+        display: none;
+        position: absolute;
+        top: 20px;
+        background-color: $tile-bg-colour-white;
+        border: 2px solid $tile-bg-colour;
+        border-radius: 5px;
+        padding: 10px;
+        box-shadow: 0px 4px 6px $tile-box-shadow-colour;
+        z-index: 10;
+        flex-direction: row;
+        justify-content: center; 
+  
+        .languageFlag {
+          margin: 5px;
+          width: 30px;
+          height: 30px;
+        }
+      }
+    }
   }
 }
 
@@ -63,14 +123,52 @@ $tile-box-shadow-colour: rgba(0, 0, 0, 0.1);
     background-color: $tile-bg-colour-hover;
     transform: scale(1.02);
   }
-}
 
-.listContainerMain .fullNameContainer .fullNameParagraph {
-  text-align: left;
-  font-weight: bold;
-  margin: 0;
-}
+  .employeeImageContainer {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    margin-left: 10px;
 
-.listContainerMain .languagesContainer {
-  justify-content: flex-end;
+    .employeeImage {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .fullNameContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    gap:3px;
+
+    .fullNameParagraph {
+      text-align: left;
+      font-weight: bold;
+      color: $tile-font-colour-dark;
+      font-size: 20px;
+      word-wrap: break-word;
+    }
+  }
+
+  .listContainerMain .fullNameContainer .fullNameParagraph {
+    text-align: left;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .listContainerMain .languagesContainer {
+    justify-content: flex-end;
+  }
+  
+  .languageFlag {
+    margin: 5px;
+    width: 30px;
+    height: 30px;
+  }
 }
