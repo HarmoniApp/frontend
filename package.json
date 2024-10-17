@@ -15,7 +15,7 @@
     "@types/react-modal": "^3.16.3",
     "classnames": "^2.5.1",
     "formik": "^2.4.6",
-    "next": "14.2.4",
+    "next": "14.2.15",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-flagkit": "^2.0.4",
