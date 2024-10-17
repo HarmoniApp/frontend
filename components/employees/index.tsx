@@ -8,6 +8,8 @@ import styles from './main.module.scss';
 import './main.css';
 
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { Card } from 'primereact/card';
+import { Message } from 'primereact/message';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import 'primereact/resources/themes/saga-blue/theme.css'; 
 
@@ -91,8 +93,8 @@ const EmployeesComponent: React.FC = () => {
         </div>
         <div className={`${styles.employeesListcontainer} ${activeView === 'tiles' ? styles.tilesView : styles.listView}`}>
           {loading && <div className={styles.spinnerContainer}><ProgressSpinner /></div>}
-          {error && <div>Error: {error}</div>}
-          {!loading && !error && data.length === 0 && <div>No data available</div>}
+          {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessage}/>}
+          {!loading && !error && data.length === 0 && <Card title="No Data" className={styles.noDataCard}><p>There is no data available at the moment.</p></Card>}
           {!loading && !error && data.length > 0 && data.map((person, index) => (
             <Tile key={index} person={person} view={activeView} />
           ))}
