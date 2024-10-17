@@ -57,9 +57,9 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     fetch('http://localhost:8080/api/v1/user/supervisor')
       .then(response => response.json())
       .then(data => {
-        setSupervisors(data);
+        setSupervisors(data.content);
         const supervisorMap: { [key: number]: string } = {};
-        data.forEach((supervisor: Supervisor) => {
+        data.content.forEach((supervisor: Supervisor) => {
           supervisorMap[supervisor.id] = `${supervisor.firstname} ${supervisor.surname}`;
         });
         setSupervisorMap(supervisorMap);
