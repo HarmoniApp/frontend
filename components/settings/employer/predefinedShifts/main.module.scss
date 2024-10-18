@@ -7,6 +7,7 @@ $predefineShift-bg-colour-dark: #000000;
 $predefineShift-bg-colour-light: #FFFFFF;
 $predefineShift-font-colour: #FFFFFF;
 $predefineShift-font-colour-dark: #000000;
+$predefineSHift-tile-background-color: #f9f9f9;
 $predefineShift-highlight-colour: #FFCF70;
 $predefineShift-highlight-colour-hover: #FFBE4D;
 $predefineShift-no-button-colour: #dc3545;
@@ -73,7 +74,7 @@ $predefineShift-error-bg-colour: #ffe6e6;
         align-items: center;
         height: 100%;
         padding: 10px;
-        background-color: $predefineShift-highlight-colour;
+        background-color: $predefineSHift-tile-background-color;
         border-radius: 5px;
         gap: 15px;
 
@@ -154,7 +155,7 @@ $predefineShift-error-bg-colour: #ffe6e6;
 .editButton,
 .yesButton,
 .noButton {
-    background-color: transparent;
+    background-color: $predefineShift-highlight-colour;
     border: 2px solid $predefineShift-font-colour-dark;
     color: $predefineShift-font-colour-dark;
     padding: 5px 10px;

@@ -1,0 +1,38 @@
+$pdf-colour: #e74c3c;
+$pdf-tile-background-colour: #f9f9f9;
+$pdf-tile-background-colour-hover: #fde29c;
+
+.archivedSheduleContainer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 20px 0 0 0;
+    width: 100%;
+  }
+  
+  .shiftItemContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+    padding: 10px;
+    border-radius: 8px; 
+    background-color: $pdf-tile-background-colour;
+    cursor: pointer;
+    transition: transform 0.5s ease, background-color 0.3s ease;
+
+
+    &:hover {
+        background-color: $pdf-tile-background-colour-hover;
+        transform: translateY(-5px);
+      }
+  }
+  
+  .pdfIcon {
+    font-size: 1.5rem;
+    color: $pdf-colour;
+  }
+  
+  .scheduleTitle {
+    font-size: 1.1rem;
+    font-weight: bold;
+  }

@@ -447,7 +447,8 @@ const Departments: React.FC = () => {
                         </div>
                         <div className={styles.buttonContainer}>
                             <button type="submit" className={styles.addButton}>
-                                <FontAwesomeIcon icon={faPlus} />
+                                <FontAwesomeIcon icon={faPlus} className={styles.icon}/>
+                                <label className={styles.addButtonLabel}>Dodaj nowy oddział</label>
                             </button>
                         </div>
                         {isAddModalOpen && (

@@ -4,6 +4,7 @@ $popup-bg-colour-dark: #000000;
 $popup-bg-colour-light: #FFFFFF;
 $popup-font-colour: #FFFFFF;
 $popup-font-colour-dark: #000000;
+$popup-tile-background-color: #f9f9f9;
 $popup-highlight-colour: #FFCF70;
 $popup-highlight-colour-hover: #FFBE4D;
 $popup-no-button-colour: #dc3545;
@@ -71,7 +72,7 @@ $popup-error-bg-colour: #ffe6e6;
         align-items: center;
         height: 100%;
         padding: 10px;
-        background-color: $popup-highlight-colour;
+        background-color: $popup-tile-background-color;
         border-radius: 5px;
         gap: 10px;
 
@@ -131,7 +132,7 @@ $popup-error-bg-colour: #ffe6e6;
 .editButton,
 .yesButton,
 .noButton {
-    background-color: transparent;
+    background-color: $popup-highlight-colour;
     border: 2px solid $popup-font-colour-dark;
     color: $popup-font-colour-dark;
     padding: 5px 10px;
