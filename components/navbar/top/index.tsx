@@ -101,7 +101,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId}) => {
                 <span className={styles.logo}>HA</span>
             </div>
             <div className={styles.rightSection}>
-                {!mustBeBackButton && <p><FontAwesomeIcon icon={faSearch} className={`${styles.icon} ${pathname !== '/schedule' && pathname !== '/employees' ? styles.hidden : ''}`} /></p>}
+                {/* {!mustBeBackButton && <p><FontAwesomeIcon icon={faSearch} className={`${styles.icon} ${pathname !== '/schedule' && pathname !== '/employees' ? styles.hidden : ''}`} /></p>} */}
                 {!mustBeAccoutButton && (
                     <div className={styles.notificationIconWrapper}>
                         <p onClick={handleBellClick} className={styles.notificationIcon}>
