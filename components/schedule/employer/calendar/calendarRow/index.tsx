@@ -9,6 +9,10 @@ import Shift from '@/components/types/shift';
 import RoleWithColour from '@/components/types/roleWithColour';
 import styles from './main.module.scss';
 
+import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
+import 'primereact/resources/themes/saga-blue/theme.css';
+import './main.css'
+
 interface CalendarRowProps {
   currentWeek: Date[];
 }
@@ -24,6 +28,10 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [abortController, setAbortController] = useState<AbortController | null>(null);
   const [roles, setRoles] = useState<RoleWithColour[]>([]);
+
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -42,16 +50,17 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/v1/user/simple/empId');
-        const data: User[] = await response.json();
-        setUsers(data);
+        const response = await fetch(`http://localhost:8080/api/v1/user/simple/empId?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+        const data = await response.json();
+        setUsers(data.content);
+        setTotalPages(data.totalPages * pageSize); 
       } catch (error) {
         console.error('Error fetching users:', error);
       }
     };
-
+  
     fetchUsers();
-  }, []);
+  }, [pageNumber, pageSize]);
 
   useEffect(() => {
     if (users.length > 0) {
@@ -315,6 +324,17 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
   return (
     <div>
       {renderedRows}
+      <Paginator
+      first={(pageNumber - 1) * pageSize}
+      rows={pageSize}
+      totalRecords={totalPages}
+      rowsPerPageOptions={[20, 50, 100]}
+      onPageChange={(event: PaginatorPageChangeEvent) => {
+        setPageNumber(Math.floor(event.first / event.rows) + 1);
+        setPageSize(event.rows);
+      }}
+    />
+
       {isAddModalOpen && selectedUser && selectedDay && (
         <AddShift
           isOpen={isAddModalOpen}
