@@ -4,9 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRectangleList, faGrip, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import AbsenceCard from '@/components/absence/employer/absenceCard';
 import Absence from '@/components/types/absence';
+import AbsenceUser from '@/components/types/absenceUser';
 import AbsenceStatus from '@/components/types/absenceStatus';
 import User from '@/components/types/user';
 import styles from './main.module.scss';
+
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { Card } from 'primereact/card';
+import { Message } from 'primereact/message';
 
 const AbsenceEmployer: React.FC = () => {
   const [absences, setAbsences] = useState<Absence[]>([]);
@@ -25,7 +30,7 @@ const AbsenceEmployer: React.FC = () => {
     fetch('http://localhost:8080/api/v1/absence')
       .then(response => response.json())
       .then(data => {
-        setAbsences(data);
+        setAbsences(data.content);
         setLoading(false);
       })
       .catch(error => {
@@ -35,11 +40,28 @@ const AbsenceEmployer: React.FC = () => {
       });
   };
 
-  const fetchUsers = () => {
-    fetch('http://localhost:8080/api/v1/user/simple')
-      .then(response => response.json())
-      .then(data => setUsers(data))
-      .catch(error => console.error('Error fetching users:', error));
+  const fetchUsers = async () => {
+    setLoading(true);
+    let pageNumber = 0;
+    let totalPages = 1;
+    const allUsers = [];
+  
+    try {
+      while (pageNumber < totalPages) {
+        const response = await fetch(`http://localhost:8080/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=10`);
+        const data = await response.json();
+        
+        allUsers.push(...data.content);  
+        totalPages = data.totalPages; 
+        pageNumber += 1;                 
+      }
+  
+      setUsers(allUsers);
+    } catch (error) {
+      console.error('Error fetching users:', error); 
+    } finally {
+      setLoading(false); 
+    }
   };
 
   useEffect(() => {
@@ -66,7 +88,7 @@ const AbsenceEmployer: React.FC = () => {
       fetch(`http://localhost:8080/api/v1/absence/status/${statusId}`)
         .then(response => response.json())
         .then(data => {
-          setAbsences(data);
+          setAbsences(data.content);
           setLoading(false);
         })
         .catch(error => {
@@ -77,18 +99,21 @@ const AbsenceEmployer: React.FC = () => {
     }
   };
 
-  const getUserById = (userId: number): User | undefined => {
+  const getUserById = (userId: number): AbsenceUser | undefined => {
     return users.find(user => user.id === userId);
   };
-
+  
   const filteredAbsences = absences.filter(absence => {
     const user = getUserById(absence.user_id);
-
-    const absenceTypeMatches = absence.status?.name?.toLowerCase().includes(searchQuery.toLowerCase());
-    const userMatches = user?.firstname?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user?.surname?.toLowerCase().includes(searchQuery.toLowerCase());
-
-    return absenceTypeMatches || userMatches;
+  
+    if (searchQuery === '') {
+      return true;
+    }
+  
+    const userFirstNameMatches = user?.firstname?.toLowerCase().includes(searchQuery.toLowerCase());
+    const userSurnameMatches = user?.surname?.toLowerCase().includes(searchQuery.toLowerCase());
+  
+    return userFirstNameMatches || userSurnameMatches;
   });
 
   return (
@@ -120,7 +145,9 @@ const AbsenceEmployer: React.FC = () => {
                 placeholder="Wyszukaj"
                 className={styles.searchInput}
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                }}
               />
               <FontAwesomeIcon icon={faMagnifyingGlass} className={styles.searchIcon} />
             </div>
@@ -141,9 +168,9 @@ const AbsenceEmployer: React.FC = () => {
           </div>
         </div>
 
-        {loading && <div>Ładowanie danych...</div>}
-        {error && <div>Błąd: {error}</div>}
-        {!loading && !error && filteredAbsences.length === 0 && <div>Brak dostępnych danych</div>}
+        {loading && <div className={styles.spinnerContainer}><ProgressSpinner /></div>}
+        {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessage} />}
+        {!loading && !error && filteredAbsences.length === 0 && <Card title="No Data" className={styles.noDataCard}><p>There is no data available at the moment.</p></Card>}
         {!loading && !error && filteredAbsences.length > 0 && (
           <div className={
             viewMode === 'tiles'
