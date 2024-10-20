@@ -47,8 +47,8 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
         return absence.working_days ?? 0;
     }
 
-    const handleAcceptClick = () => {
-        fetch(`http://localhost:8080/api/v1/absence/${absence.id}/status/2`, {
+    const updateAbsenceStatus = (absenceId: number, statusId: number): Promise<void> => {
+        return fetch(`http://localhost:8080/api/v1/absence/${absenceId}/status/${statusId}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -58,6 +58,16 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                 if (!response.ok) {
                     throw new Error('Error updating absence status');
                 }
+            })
+            .catch(error => {
+                console.error('Error updating absence status:', error);
+                throw error;
+            });
+    };
+
+    const handleAcceptClick = () => {
+        updateAbsenceStatus(absence.id, 2)
+            .then(() => {
                 console.log('Absence approved');
                 onStatusUpdate();
             })
@@ -65,9 +75,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     };
 
     const handleDeclineClick = () => {
-        fetch(`http://localhost:8080/api/v1/absence/${absence.id}/status/4`, {
-            method: 'DELETE',
-        })
+        updateAbsenceStatus(absence.id, 4)
             .then(() => {
                 console.log('Absence rejected');
                 onStatusUpdate();
@@ -168,7 +176,6 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                 </div>
             </div>
             {renderButtons()}
-
             {modalIsOpenCancelAbsence && (
                 <div className={styles.addAbsencetModalOverlay}>
                     <div className={styles.addAbsenceModalContent}>
@@ -181,7 +188,6 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                     </div>
                 </div>
             )}
-
             {modalIsOpenAproveAbsence && (
                 <div className={styles.addAbsencetModalOverlay}>
                     <div className={styles.addAbsenceModalContent}>

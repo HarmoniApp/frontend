@@ -18,38 +18,47 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
     const [selectedAbsenceType, setSelectedAbsenceType] = useState<string>('');
     const [selectedAbsenceStart, setSelectedAbsenceStart] = useState<string>('');
     const [selectedAbsenceEnd, setSelectedAbsenceEnd] = useState<string>('');
+    const [error, setError] = useState<boolean>(false);
 
     useEffect(() => {
         fetchUserAbsences();
     }, []);
 
-    const fetchUserAbsences = async () => {
-        try {
-            const response = await fetch(`http://localhost:8080/api/v1/absence/user/${userId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
+    const fetchUserAbsences = () => {
+        fetch(`http://localhost:8080/api/v1/absence/user/${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then((response) => {
             if (!response.ok) {
+                setError(true);
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-
-            const data: Absence[] = await response.json();
-            setAbsences(data);
-
+            return response.json();
+        })
+        .then((data) => {
+            const absences = data.content; 
+            setAbsences(absences);
+    
             const typeNames: { [key: number]: string } = {};
-            for (const absence of data) {
+            const typePromises = absences.map((absence:any) => {
                 if (!(absence.absence_type_id in typeNames)) {
-                    const typeName = await fetchAbsenceTypeName(absence.absence_type_id);
-                    typeNames[absence.absence_type_id] = typeName;
+                    return fetchAbsenceTypeName(absence.absence_type_id).then((typeName) => {
+                        typeNames[absence.absence_type_id] = typeName;
+                    });
                 }
-            }
-            setAbsenceTypeNames(typeNames);
-        } catch (error) {
+                return Promise.resolve();
+            });
+    
+            return Promise.all(typePromises).then(() => {
+                setAbsenceTypeNames(typeNames);
+            });
+        })
+        .catch((error) => {
             console.error('Error fetching user absences:', error);
-        }
+        });
     };
 
     const fetchAbsenceTypeName = async (id: number): Promise<string> => {
@@ -95,47 +104,50 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                 <label className={styles.title}>Twoje urlopy</label>
                 <button className={styles.newAbsenceButton} onClick={() => setModalIsOpenAbsenceRequest(true)}>Złóż wniosek o urlop</button>
             </div>
-            <div className={styles.tableContainer}>
-                <table className={styles.absenceTable}>
-                    <thead className={styles.absenceThead}>
-                        <tr className={styles.absenceTheadRowElement}>
-                            <th className={styles.absenceTheadHeadElement}>Rodzaj</th>
-                            <th className={styles.absenceTheadHeadElement}>Od</th>
-                            <th className={styles.absenceTheadHeadElement}>Do</th>
-                            <th className={styles.absenceTheadHeadElement}>Czas trwania</th>
-                            <th className={styles.absenceTheadHeadElement}>Status</th>
-                            <th className={styles.absenceTheadHeadElement}></th>
-                        </tr>
-                    </thead>
-                    <tbody className={styles.absenceDataBody}>
-                        {absences.map((absence) => (
-                            <tr key={absence.id} className={styles.absenceDataBodyRowElement}>
-                                <td className={styles.absenceDataBodyHeadElement}>{absenceTypeNames[absence.absence_type_id] || 'Ładowanie...'}</td>
-                                <td className={styles.absenceDataBodyHeadElement}>{new Date(absence.start).toLocaleDateString()}</td>
-                                <td className={styles.absenceDataBodyHeadElement}>{new Date(absence.end).toLocaleDateString()}</td>
-                                <td className={`${styles.absenceDataBodyHeadElement} ${styles.afterElement}`}>{absence.working_days}</td>
-                                <td className={styles.absenceDataBodyHeadElement}>{absence.status.name}</td>
-                                <td className={`${styles.absenceDataBodyHeadElement} ${styles.absenceDataBodyHeadElementButton}`}>
 
-                                    <button
-                                        className={styles.cancelButton}
-                                        onClick={() => {
-                                            setSelectedAbsenceId(absence.id);
-                                            setSelectedAbsenceType(absenceTypeNames[absence.absence_type_id]);
-                                            setSelectedAbsenceStart(new Date(absence.start).toLocaleDateString());
-                                            setSelectedAbsenceEnd(new Date(absence.end).toLocaleDateString());
-                                            setModalIsOpenCancelAbsence(true);
-                                        }}
-                                    >
-                                        Anuluj
-                                    </button>
-
-                                </td>
+            {error ? <div className={styles.error}>Wystąpił błąd podczas ładowania danych</div> :
+                <div className={styles.tableContainer}>
+                    <table className={styles.absenceTable}>
+                        <thead className={styles.absenceThead}>
+                            <tr className={styles.absenceTheadRowElement}>
+                                <th className={styles.absenceTheadHeadElement}>Rodzaj</th>
+                                <th className={styles.absenceTheadHeadElement}>Od</th>
+                                <th className={styles.absenceTheadHeadElement}>Do</th>
+                                <th className={styles.absenceTheadHeadElement}>Czas trwania</th>
+                                <th className={styles.absenceTheadHeadElement}>Status</th>
+                                <th className={styles.absenceTheadHeadElement}></th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody className={styles.absenceDataBody}>
+                            {absences.map((absence) => (
+                                <tr key={absence.id} className={styles.absenceDataBodyRowElement}>
+                                    <td className={styles.absenceDataBodyHeadElement}>{absenceTypeNames[absence.absence_type_id] || 'Ładowanie...'}</td>
+                                    <td className={styles.absenceDataBodyHeadElement}>{new Date(absence.start).toLocaleDateString()}</td>
+                                    <td className={styles.absenceDataBodyHeadElement}>{new Date(absence.end).toLocaleDateString()}</td>
+                                    <td className={`${styles.absenceDataBodyHeadElement} ${styles.afterElement}`}>{absence.working_days}</td>
+                                    <td className={styles.absenceDataBodyHeadElement}>{absence.status.name}</td>
+                                    <td className={`${styles.absenceDataBodyHeadElement} ${styles.absenceDataBodyHeadElementButton}`}>
+
+                                        <button
+                                            className={styles.cancelButton}
+                                            onClick={() => {
+                                                setSelectedAbsenceId(absence.id);
+                                                setSelectedAbsenceType(absenceTypeNames[absence.absence_type_id]);
+                                                setSelectedAbsenceStart(new Date(absence.start).toLocaleDateString());
+                                                setSelectedAbsenceEnd(new Date(absence.end).toLocaleDateString());
+                                                setModalIsOpenCancelAbsence(true);
+                                            }}
+                                        >
+                                            Anuluj
+                                        </button>
+
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            }
 
             {modalIsOpenAbsenceRequest && (
                 <div className={styles.addAbsencetModalOverlay}>
