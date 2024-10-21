@@ -8,6 +8,8 @@ $scheduleBar-font-colour-dark: #000000;
 $scheduleBar-highlight-colour: #FFCF70;
 $scheduleBar-highlight-colour-hover: #FFBE4D;
 
+$scheduleBar-dropdown-bg-colour: #e8e8e8;
+
 $breakpoint-md: 768px;
 
 @mixin respond-to-md {
@@ -142,4 +144,36 @@ $breakpoint-md: 768px;
 .buttonIcon {
     height: 20px;
     width: 20px;
+}
+
+.exportDropdownContainer {
+    position: relative;
+    display: inline-block;
+
+    .exportDropdownMenu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        transition: height 0.3s ease-out;
+        z-index: 1000;
+
+        button {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            text-align: center;
+            background-color: $scheduleBar-dropdown-bg-colour;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin: 5px 0;
+            
+
+            &:hover {
+                background-color: $scheduleBar-highlight-colour-hover;
+            }
+        }
+    }
 }
