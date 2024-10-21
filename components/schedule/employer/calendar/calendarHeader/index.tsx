@@ -1,5 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 
 interface CalendarHeaderProps {
@@ -38,7 +40,18 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({ weekData }) => {
 
   return (
     <div className={styles.calendarHeaderContainerMain}>
-      <div className={styles.nameContainer}></div>
+      <div className={styles.searchContainer}>
+        <input
+          type="text"
+          placeholder="Wyszukaj"
+          className={styles.searchInput}
+          // value={searchQuery}
+          // onChange={(e) => {
+          //   setSearchQuery(e.target.value);
+          // }}
+        />
+        <FontAwesomeIcon icon={faMagnifyingGlass} className={styles.searchIcon} />
+      </div>
       <div className={styles.calendarDayContainer}>
         {weekData.map((day, index) => (
           <div
