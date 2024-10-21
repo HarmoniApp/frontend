@@ -10,15 +10,17 @@ import RoleWithColour from '@/components/types/roleWithColour';
 import styles from './main.module.scss';
 
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { Card } from 'primereact/card';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import 'primereact/resources/themes/saga-blue/theme.css';
-import './main.css'
+import './main.css';
 
 interface CalendarRowProps {
   currentWeek: Date[];
+  searchQuery: string;
 }
 
-const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
+const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, ref) => {
   const [users, setUsers] = useState<User[]>([]);
   const [schedules, setSchedules] = useState<Record<number, WeekSchedule>>({});
   const [loading, setLoading] = useState<boolean>(true);
@@ -55,23 +57,44 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
     fetchRoles();
   }, []);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      setLoadingUsers(true);
-      try {
-        const response = await fetch(`http://localhost:8080/api/v1/user/simple/empId?pageNumber=${pageNumber}&pageSize=${pageSize}`);
-        const data = await response.json();
-        setUsers(data.content);
-        setTotalPages(data.totalPages * pageSize);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      } finally {
-        setLoadingUsers(false);
-      }
-    };
+  const fetchFilteredUsers = (filters: { query?: string } = {}, pageNumber: number = 1, pageSize: number = 20) => {
+    setLoadingUsers(true);
 
-    fetchUsers();
-  }, [pageNumber, pageSize]);
+    let url = `http://localhost:8080/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+
+    if (filters.query && filters.query.trim() !== '') {
+      url = `http://localhost:8080/api/v1/user/simple/search?q=${filters.query}`;
+    }
+
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(responseData => {
+        const usersData = responseData.content || responseData;
+
+        if (Array.isArray(usersData)) {
+          setUsers(usersData);
+        } else {
+          console.error('Unexpected response format, expected an array but got:', usersData);
+          setUsers([]);
+        }
+        setTotalPages(responseData.totalPages * pageSize);
+      })
+      .catch(error => {
+        console.error('Error fetching users:', error);
+      })
+      .finally(() => {
+        setLoadingUsers(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchFilteredUsers({ query: searchQuery }, pageNumber, pageSize);
+  }, [searchQuery, pageNumber, pageSize]);
 
   useEffect(() => {
     if (users.length > 0) {
@@ -278,61 +301,71 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
     const getMoreInfoOfEmployee = (user_id: number) => {
       const url = `http://localhost:3000/employees/user/${user_id}`;
       window.open(url, '_blank');
-    }
+    };
 
-    return users.map((user) => (
-      <div key={user.id} className={styles.calendarRowContainerMain}>
-        <div className={styles.employeeItemContainer} onClick={() => getMoreInfoOfEmployee(user.id)}>
-          <EmployeeItem employeeId={user.employee_id} firstName={user.firstname} surname={user.surname} />
-        </div>
-        <div className={styles.shiftItemContainer}>
-          {currentWeek.map((day) => {
-            const dayStr = day.toISOString().split('T')[0];
+    return users.map((user) => {
+      const employeeId = user.employee_id || 'Brak';
+      const firstname = user.firstname || 'Brak';
+      const surname = user.surname || 'Brak';
 
-            const userShifts = schedules[user.id]?.shifts.filter((shift) => shift.start.startsWith(dayStr)) || [];
-            const userAbsences = schedules[user.id]?.absences.filter((absence) =>
-              new Date(absence.start) <= day && new Date(absence.end) >= day
-            ) || [];
+      return (
+        <div key={user.id} className={styles.calendarRowContainerMain}>
+          <div className={styles.employeeItemContainer} onClick={() => getMoreInfoOfEmployee(user.id)}>
+            <EmployeeItem employeeId={employeeId} firstName={firstname} surname={surname} />
+          </div>
+          <div className={styles.shiftItemContainer}>
+            {currentWeek.map((day) => {
+              const dayStr = day.toISOString().split('T')[0];
 
-            const isAbsence = userAbsences.length > 0;
+              const userShifts = schedules[user.id]?.shifts.filter((shift) => shift.start.startsWith(dayStr)) || [];
+              const userAbsences = schedules[user.id]?.absences.filter((absence) =>
+                new Date(absence.start) <= day && new Date(absence.end) >= day
+              ) || [];
 
-            return (
-              <div key={dayStr} className={styles.shiftsItems}>
-                {userShifts.length === 0 ? (
-                  <div
-                    onClick={() => !isAbsence && handleAddShiftClick(user, dayStr)}
-                  >
-                    <ShiftItem
-                      date={dayStr}
-                      shifts={[]}
-                      absence={isAbsence}
-                      roles={roles}
-                    />
-                  </div>
-                ) : (
-                  userShifts.map(shift => (
-                    <div key={shift.id} onClick={() => handleEditShiftClick(shift)}>
+              const isAbsence = userAbsences.length > 0;
+
+              return (
+                <div key={dayStr} className={styles.shiftsItems}>
+                  {userShifts.length === 0 ? (
+                    <div
+                      onClick={() => !isAbsence && handleAddShiftClick(user, dayStr)}
+                    >
                       <ShiftItem
                         date={dayStr}
-                        shifts={[shift]}
+                        shifts={[]}
                         absence={isAbsence}
                         roles={roles}
                       />
                     </div>
-                  ))
-                )}
-              </div>
-            );
-          })}
+                  ) : (
+                    userShifts.map(shift => (
+                      <div key={shift.id} onClick={() => handleEditShiftClick(shift)}>
+                        <ShiftItem
+                          date={dayStr}
+                          shifts={[shift]}
+                          absence={isAbsence}
+                          roles={roles}
+                        />
+                      </div>
+                    ))
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
-    ));
+      );
+    });
   }, [users, schedules, currentWeek, loadingUsers, loadingRoles, loadingSchedules]);
 
   return (
     <div>
       {loadingUsers || loadingRoles || loadingSchedules ? (
         <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+      ) : !users || users.length === 0 ? (
+        <Card title="No Data" className={styles.noDataCard}>
+          <p>There is no data available at the moment.</p>
+        </Card>
       ) : (
         <>
           {renderedRows}
@@ -365,8 +398,8 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
           onEditShift={handleEditShift}
           onDeleteShift={handleDeleteShift}
           shift={selectedShift}
-          firstName={users.find(user => user.id === selectedShift.user_id)?.firstname || ''}
-          surname={users.find(user => user.id === selectedShift.user_id)?.surname || ''}
+          firstName={users.find(user => user.id === selectedShift.user_id)?.firstname || 'test'}
+          surname={users.find(user => user.id === selectedShift.user_id)?.surname || 'test'}
         />
       )}
     </div>

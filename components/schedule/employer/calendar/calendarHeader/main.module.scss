@@ -1,8 +1,10 @@
 $calendarHeader-border-colour-dark: #000000;
 $calendarHeader-font-colour-dark: #000000;
+$calendarHeader-border-colour-dark: #000000;
 $calendarHeader-box-shadow-colour: rgba(0, 0, 0, 0.1);
 $calendarHeader-highlight-colour: #FFCF70;
 $calendarHeader-highlight-colour-dark: #FFBE4D;
+$calendarHeader-box-shadow-colour-orange: rgba(255, 165, 0, 0.8);
 
 /**
   * The reference md(only number) is still in index.tsx(21 line) because it changes the full name of the day to the abbreviation. 
@@ -34,10 +36,45 @@ $breakpoint-md: 768px;
     gap: 15px;
   }
 
-  .nameContainer {
-    flex: 1;
+  .searchContainer {
     display: flex;
+    position: relative;
+    flex:1;
     align-items: center;
+    background-color: $calendarHeader-highlight-colour;
+    border-radius: 8px;
+    width: 100%;
+    padding: 10px 15px;
+    max-width: 259px;
+  
+    .searchIcon {
+      position: absolute;
+      left: 25px;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 18px;
+      width: 18px;
+    }
+  
+    .searchInput {
+      border-radius: 8px;
+      border: none;
+      height: 40px;
+      font-size: 14px;
+      text-align: right;
+      padding-right: 10px;
+      width: 100%;
+  
+      &::placeholder {
+        opacity: 1;
+      }
+  
+      &:focus {
+        outline: none;
+        border-color: $calendarHeader-highlight-colour-dark;
+        box-shadow: 0 0 5px $calendarHeader-box-shadow-colour-orange;
+      }
+    }
   }
 
   .calendarDayContainer {
@@ -88,7 +125,6 @@ $breakpoint-md: 768px;
       color: $calendarHeader-font-colour-dark;
       box-shadow: 0px 4px 8px $calendarHeader-box-shadow-colour;
       border-radius: 12px;
-      padding: 10px;
       font-weight: bold;
       transform: scale(1.1);
       transition: background-color 0.3s ease, transform 0.3s ease;
