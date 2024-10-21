@@ -9,6 +9,11 @@ import Shift from '@/components/types/shift';
 import RoleWithColour from '@/components/types/roleWithColour';
 import styles from './main.module.scss';
 
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
+import 'primereact/resources/themes/saga-blue/theme.css';
+import './main.css'
+
 interface CalendarRowProps {
   currentWeek: Date[];
 }
@@ -17,6 +22,10 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
   const [users, setUsers] = useState<User[]>([]);
   const [schedules, setSchedules] = useState<Record<number, WeekSchedule>>({});
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingRoles, setLoadingRoles] = useState<boolean>(true);
+  const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
+  const [loadingSchedules, setLoadingSchedules] = useState<boolean>(true);
+
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -25,14 +34,21 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
   const [abortController, setAbortController] = useState<AbortController | null>(null);
   const [roles, setRoles] = useState<RoleWithColour[]>([]);
 
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+  const [totalPages, setTotalPages] = useState(0);
+
   useEffect(() => {
     const fetchRoles = async () => {
+      setLoadingRoles(true);
       try {
         const response = await fetch('http://localhost:8080/api/v1/role');
         const data = await response.json();
         setRoles(data);
       } catch (error) {
         console.error('Error fetching roles:', error);
+      } finally {
+        setLoadingRoles(false);
       }
     };
 
@@ -41,20 +57,25 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
 
   useEffect(() => {
     const fetchUsers = async () => {
+      setLoadingUsers(true);
       try {
-        const response = await fetch('http://localhost:8080/api/v1/user/simple/empId');
-        const data: User[] = await response.json();
-        setUsers(data);
+        const response = await fetch(`http://localhost:8080/api/v1/user/simple/empId?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+        const data = await response.json();
+        setUsers(data.content);
+        setTotalPages(data.totalPages * pageSize);
       } catch (error) {
         console.error('Error fetching users:', error);
+      } finally {
+        setLoadingUsers(false);
       }
     };
 
     fetchUsers();
-  }, []);
+  }, [pageNumber, pageSize]);
 
   useEffect(() => {
     if (users.length > 0) {
+      setLoadingSchedules(true);
       if (abortController) {
         abortController.abort();
       }
@@ -102,7 +123,7 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
         } catch (error) {
           console.error('Error fetching schedules:', error);
         } finally {
-          setLoading(false);
+          setLoadingSchedules(false);
         }
       };
 
@@ -254,10 +275,6 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
   };
 
   const renderedRows = useMemo(() => {
-    if (loading) {
-      return <div>Ładowanie danych...</div>;
-    }
-
     const getMoreInfoOfEmployee = (user_id: number) => {
       const url = `http://localhost:3000/employees/user/${user_id}`;
       window.open(url, '_blank');
@@ -310,11 +327,28 @@ const CalendarRow = forwardRef(({ currentWeek }: CalendarRowProps, ref) => {
         </div>
       </div>
     ));
-  }, [users, schedules, currentWeek, loading]);
+  }, [users, schedules, currentWeek, loadingUsers, loadingRoles, loadingSchedules]);
 
   return (
     <div>
-      {renderedRows}
+      {loadingUsers || loadingRoles || loadingSchedules ? (
+        <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+      ) : (
+        <>
+          {renderedRows}
+          <Paginator
+            first={(pageNumber - 1) * pageSize}
+            rows={pageSize}
+            totalRecords={totalPages}
+            rowsPerPageOptions={[20, 50, 100]}
+            onPageChange={(event: PaginatorPageChangeEvent) => {
+              setPageNumber(Math.floor(event.first / event.rows) + 1);
+              setPageSize(event.rows);
+            }}
+          />
+        </>
+      )}
+
       {isAddModalOpen && selectedUser && selectedDay && (
         <AddShift
           isOpen={isAddModalOpen}
