@@ -2,6 +2,7 @@ $popup-border-colour: #dee2e6;
 $popup-box-shadow-colour: rgba(0, 0, 0, 0.1);
 
 $employeeBar-button-bg-colour: #FFFFFF;
+$employeeBar-dropdown-bg-colour: #e8e8e8;
 $employeeBar-font-colour: #FFFFFF;
 $employeeBar-font-colour-dark: #000000;
 $employeeBar-highlight-colour: #FFCF70;
@@ -90,3 +91,34 @@ $employeeBar-highlight-colour-hover: #FFBE4D;
     }
 }
 
+.exportDropdownContainer {
+    position: relative;
+    display: inline-block;
+
+    .exportDropdownMenu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        transition: height 0.3s ease-out;
+        z-index: 1000;
+
+        button {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            text-align: center;
+            background-color: $employeeBar-dropdown-bg-colour;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin: 5px 0;
+            
+
+            &:hover {
+                background-color: $employeeBar-highlight-colour-hover;
+            }
+        }
+    }
+}
