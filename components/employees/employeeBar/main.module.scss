@@ -8,6 +8,8 @@ $employeeBar-font-colour-dark: #000000;
 $employeeBar-highlight-colour: #FFCF70;
 $employeeBar-highlight-colour-hover: #FFBE4D;
 
+$loading-bg-colour: rgba(0, 0, 0, 0.5);
+
 .modalContentOfEditRoles {
     position: fixed;
     top: 50%;
@@ -114,7 +116,7 @@ $employeeBar-highlight-colour-hover: #FFBE4D;
             cursor: pointer;
             width: 100%;
             margin: 5px 0;
-            
+
 
             &:hover {
                 background-color: $employeeBar-highlight-colour-hover;
@@ -122,3 +124,22 @@ $employeeBar-highlight-colour-hover: #FFBE4D;
         }
     }
 }
+
+.spinnerOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $loading-bg-colour;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .spinnerContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
