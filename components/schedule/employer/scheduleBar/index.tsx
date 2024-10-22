@@ -61,18 +61,30 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
     link.remove();
   };
 
+  const formatDate = (date: Date) => {
+    const [year, month, day] = date.toISOString().split('T')[0].split('-');
+    return `${day}.${month}.${year}`;
+  };
+  
   const getThisWeek = () => {
-    const startOfWeek = currentWeek[0].toISOString().split('T')[0].replace(/-/g, '.');
-    const endOfWeek = currentWeek[6].toISOString().split('T')[0].replace(/-/g, '.');
-
+    const startOfWeek = formatDate(currentWeek[0]);
+    const endOfWeek = formatDate(currentWeek[6]);
+  
     return `${startOfWeek} - ${endOfWeek}`;
   };
 
   const handleExport = (format: string) => {
     setDropdownVisible(false);
+    const weekRange = getThisWeek();
+    const confirmDownload = window.confirm(`Czy na pewno chcesz pobrać plik w formacie ${format.toUpperCase()} na ten tydzień: ${weekRange}?`);
+
+    if (!confirmDownload) {
+      return;
+    }
+
     if (format === 'pdf') {
       downloadPdf();
-    } else if (format === 'excel') {
+    } else if (format === 'xlsx') {
       downloadXLSX();
     }
   };
@@ -96,7 +108,7 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
           {dropdownVisible && ( 
             <div className={styles.exportDropdownMenu}>
               <button onClick={() => handleExport('pdf')}>Eksportuj do PDF</button>
-              <button onClick={() => handleExport('excel')}>Eksportuj do Excel</button>
+              <button onClick={() => handleExport('xlsx')}>Eksportuj do Excel</button>
             </div>
           )}
         </div>
