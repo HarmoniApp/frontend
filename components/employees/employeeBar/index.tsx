@@ -65,6 +65,14 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
 
   const handleExport = (format: string) => {
     setDropdownVisible(false);
+
+    const confirmDownload = window.confirm(
+      `Czy na pewno chcesz pobrać plik w formacie ${format.toUpperCase()}?`
+    );
+
+    if (!confirmDownload) {
+      return;
+    }
     if (format === 'pdf') {
       downloadPDF();
     } else if (format === 'xlsx') {
