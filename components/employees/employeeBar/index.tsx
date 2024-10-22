@@ -21,12 +21,54 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
     setDropdownVisible(!dropdownVisible);
   };
 
+  const downloadPDF = async () => {
+    const responsePDF = await fetch(`http://localhost:8080/api/v1/pdf/generate-pdf-all-employees`);
+
+    if (!responsePDF.ok) {
+      console.error('Error downloading PDF');
+      return;
+    }
+
+    const blob = await responsePDF.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+
+    const filename = `allUsers.pdf`;
+
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  };
+
+  const downloadXLSX = async () => {
+    const responseXLSX = await fetch(`http://localhost:8080/api/v1/excel/users/export-excel`);
+
+    if (!responseXLSX.ok) {
+      console.error('Error downloading XLSX');
+      return;
+    }
+
+    const blob = await responseXLSX.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+
+    const filename = `allUsers.xlsx`;
+
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  };
+
   const handleExport = (format: string) => {
     setDropdownVisible(false);
     if (format === 'pdf') {
-      console.log('Eksportuj do PDF');
-    } else if (format === 'excel') {
-      console.log('Eksportuj do Excel');
+      downloadPDF();
+    } else if (format === 'xlsx') {
+      downloadXLSX();
     }
   };
 
@@ -47,7 +89,7 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
           {dropdownVisible && (
             <div className={styles.exportDropdownMenu}>
               <button onClick={() => handleExport('pdf')}>Eksportuj do PDF</button>
-              <button onClick={() => handleExport('excel')}>Eksportuj do Excel</button>
+              <button onClick={() => handleExport('xlsx')}>Eksportuj do Excel</button>
             </div>
           )}
         </div>
