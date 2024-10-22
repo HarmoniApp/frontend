@@ -18,14 +18,14 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
   const downloadPdf = async () => {
     const startOfWeek = currentWeek[0].toISOString().split('T')[0];
     const endOfWeek = currentWeek[6].toISOString().split('T')[0];
-    const response = await fetch(`http://localhost:8080/api/v1/archived-shifts/generate-pdf?startOfWeek=${startOfWeek}`);
+    const responsePDF = await fetch(`http://localhost:8080/api/v1/pdf/generate-pdf-shift?startOfWeek=${startOfWeek}`);
 
-    if (!response.ok) {
+    if (!responsePDF.ok) {
       console.error('Error downloading PDF');
       return;
     }
 
-    const blob = await response.blob();
+    const blob = await responsePDF.blob();
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -38,21 +38,57 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
     link.remove();
   };
 
-  const getThisWeek = () => {
-    const startOfWeek = currentWeek[0].toISOString().split('T')[0].replace(/-/g, '.');
-    const endOfWeek = currentWeek[6].toISOString().split('T')[0].replace(/-/g, '.');
+  const downloadXLSX = async () => {
+    const startOfWeek = currentWeek[0].toISOString().split('T')[0];
+    const endOfWeek = currentWeek[6].toISOString().split('T')[0];
+    const responseXLSX = await fetch(`http://localhost:8080/api/v1/excel/shifts/export-excel?start=${startOfWeek}&end=${endOfWeek}`);
 
+    if (!responseXLSX.ok) {
+      console.error('Error downloading XLSX');
+      return;
+    }
+
+    const blob = await responseXLSX.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+
+    const filename = `shifts_${startOfWeek} - ${endOfWeek}.xlsx`;
+
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  };
+
+  const formatDate = (date: Date) => {
+    const [year, month, day] = date.toISOString().split('T')[0].split('-');
+    return `${day}.${month}.${year}`;
+  };
+  
+  const getThisWeek = () => {
+    const startOfWeek = formatDate(currentWeek[0]);
+    const endOfWeek = formatDate(currentWeek[6]);
+  
     return `${startOfWeek} - ${endOfWeek}`;
   };
 
   const handleExport = (format: string) => {
     setDropdownVisible(false);
+    const weekRange = getThisWeek();
+    const confirmDownload = window.confirm(`Czy na pewno chcesz pobrać plik w formacie ${format.toUpperCase()} na ten tydzień: ${weekRange}?`);
+
+    if (!confirmDownload) {
+      return;
+    }
+
     if (format === 'pdf') {
       downloadPdf();
-    } else if (format === 'excel') {
-      console.log('Eksportuj do Excel');
+    } else if (format === 'xlsx') {
+      downloadXLSX();
     }
   };
+  
 
   return (
     <div className={styles.scheduleBarContainerMain}>
@@ -72,7 +108,7 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
           {dropdownVisible && ( 
             <div className={styles.exportDropdownMenu}>
               <button onClick={() => handleExport('pdf')}>Eksportuj do PDF</button>
-              <button onClick={() => handleExport('excel')}>Eksportuj do Excel</button>
+              <button onClick={() => handleExport('xlsx')}>Eksportuj do Excel</button>
             </div>
           )}
         </div>

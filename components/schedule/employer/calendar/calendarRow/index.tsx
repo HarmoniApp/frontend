@@ -60,10 +60,10 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const fetchFilteredUsers = (filters: { query?: string } = {}, pageNumber: number = 1, pageSize: number = 20) => {
     setLoadingUsers(true);
 
-    let url = `http://localhost:8080/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+    let url = `http://localhost:8080/api/v1/user/simple/empId?pageNumber=${pageNumber}&pageSize=${pageSize}`;
 
     if (filters.query && filters.query.trim() !== '') {
-      url = `http://localhost:8080/api/v1/user/simple/search?q=${filters.query}`;
+      url = `http://localhost:8080/api/v1/user/simple/empId/search?q=${filters.query}`;
     }
 
     fetch(url)
@@ -304,14 +304,10 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     };
 
     return users.map((user) => {
-      const employeeId = user.employee_id || 'Brak';
-      const firstname = user.firstname || 'Brak';
-      const surname = user.surname || 'Brak';
-
       return (
         <div key={user.id} className={styles.calendarRowContainerMain}>
           <div className={styles.employeeItemContainer} onClick={() => getMoreInfoOfEmployee(user.id)}>
-            <EmployeeItem employeeId={employeeId} firstName={firstname} surname={surname} />
+            <EmployeeItem employeeId={user.employee_id} firstName={user.firstname} surname={user.surname} />
           </div>
           <div className={styles.shiftItemContainer}>
             {currentWeek.map((day) => {
