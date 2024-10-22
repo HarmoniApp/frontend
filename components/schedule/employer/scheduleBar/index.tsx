@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faCloudArrowDown, faCalendarCheck } from '@fortawesome/free-solid-svg-icons';
 import PublishConfirmation from './publishConfirmation';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import styles from './main.module.scss';
 
 interface ScheduleBarProps {
@@ -14,8 +15,10 @@ interface ScheduleBarProps {
 const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPreviousWeek, onPublishAll }) => {
   const [modalIsOpenPublish, setModalIsOpenPublish] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const downloadPdf = async () => {
+    setLoading(true);
     const startOfWeek = currentWeek[0].toISOString().split('T')[0];
     const endOfWeek = currentWeek[6].toISOString().split('T')[0];
     const responsePDF = await fetch(`http://localhost:8080/api/v1/pdf/generate-pdf-shift?startOfWeek=${startOfWeek}`);
@@ -36,9 +39,11 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
     document.body.appendChild(link);
     link.click();
     link.remove();
+    setLoading(false);
   };
 
   const downloadXLSX = async () => {
+    setLoading(true);
     const startOfWeek = currentWeek[0].toISOString().split('T')[0];
     const endOfWeek = currentWeek[6].toISOString().split('T')[0];
     const responseXLSX = await fetch(`http://localhost:8080/api/v1/excel/shifts/export-excel?start=${startOfWeek}&end=${endOfWeek}`);
@@ -59,17 +64,18 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
     document.body.appendChild(link);
     link.click();
     link.remove();
+    setLoading(false);
   };
 
   const formatDate = (date: Date) => {
     const [year, month, day] = date.toISOString().split('T')[0].split('-');
     return `${day}.${month}.${year}`;
   };
-  
+
   const getThisWeek = () => {
     const startOfWeek = formatDate(currentWeek[0]);
     const endOfWeek = formatDate(currentWeek[6]);
-  
+
     return `${startOfWeek} - ${endOfWeek}`;
   };
 
@@ -88,7 +94,6 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
       downloadXLSX();
     }
   };
-  
 
   return (
     <div className={styles.scheduleBarContainerMain}>
@@ -100,12 +105,12 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
         <div className={styles.exportDropdownContainer}>
           <button
             className={styles.exportButton}
-            onClick={() => setDropdownVisible(prev => !prev)} 
+            onClick={() => setDropdownVisible(prev => !prev)}
           >
             <FontAwesomeIcon className={styles.buttonIcon} icon={faCloudArrowDown} />Exportuj
           </button>
-          
-          {dropdownVisible && ( 
+
+          {dropdownVisible && (
             <div className={styles.exportDropdownMenu}>
               <button onClick={() => handleExport('pdf')}>Eksportuj do PDF</button>
               <button onClick={() => handleExport('xlsx')}>Eksportuj do Excel</button>
@@ -139,6 +144,14 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
               onClose={() => setModalIsOpenPublish(false)}
               week={getThisWeek()}
             />
+          </div>
+        </div>
+      )}
+
+      {loading && (
+        <div className={styles.spinnerOverlay}>
+          <div className={styles.spinnerContainer}>
+            <ProgressSpinner />
           </div>
         </div>
       )}
