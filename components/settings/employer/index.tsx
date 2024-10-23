@@ -2,6 +2,7 @@ import React from 'react';
 import Roles from './roles';
 import Departments from './departments';
 import PredefinedShifts from './predefinedShifts';
+import ContractTypes from './contractTypes';
 import SchedulesArchive from './schedulesArchive';
 import styles from './main.module.scss';
 
@@ -33,6 +34,13 @@ const SettingsEmployer = () => {
                     <label className={styles.predefinedShiftsDescription}>Dodaj nowe predefiniowane zmiany, edytuj istniejące godziny pracy lub usuń te, które już się nie przydadzą. Twoje zmiany, Twoje zasady!</label>
                 </div>
                 <PredefinedShifts />
+            </div>
+            <div className={styles.contractTypesContainer}>
+                <div className={styles.contractTypesTitleContainer}>
+                    <label className={styles.contractTypesTitle}>Zarządzaj typami umów i dniami urlopowymi!</label>
+                    <label className={styles.contractTypesDescription}>Ustal liczbę dni urlopowych dla każdego typu umowy zgodnie z polityką firmy. Dodawaj nowe typy umów lub aktualizuj istniejące, aby łatwo zarządzać czasem wolnym swoich pracowników.</label>
+                </div>
+                <ContractTypes />
             </div>
             <div className={styles.schedulesArchiveContainer}>
                 <div className={styles.schedulesArchiveTitleContainer}>
