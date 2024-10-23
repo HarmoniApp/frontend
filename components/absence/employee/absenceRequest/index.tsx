@@ -32,7 +32,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                     if (prev === 1) {
                         clearInterval(countdownInterval);
                         onClose();
-                        onRefresh(); 
+                        onRefresh();
                     }
                     return prev - 1;
                 });
@@ -94,12 +94,22 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                                 user_id: onSend,
                             }),
                         })
-                            .then(response => response.json())
+                            .then(response => {
+                                if (!response.ok) {
+                                    return response.json().then(errorData => {
+                                        throw new Error(`Server error: ${errorData.message || 'Unknown error'}`);
+                                    });
+                                }
+                                return response.json();
+                            })
                             .then(data => {
                                 setIsSubmitted(true);
                                 onRefresh();
                             })
-                            .catch(error => console.error('Error submitting absence request:', error));
+                            .catch(error => {
+                                console.error('Error submitting absence request:', error);
+                                alert(`Błąd podczas wysyłania żądania: ${error.message}`);
+                            });
                     }}
                 >
                     {({ errors, touched }) => (
