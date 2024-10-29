@@ -1,17 +1,20 @@
-"use client";
-import React, { useState } from 'react';
+'use client';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import styles from './main.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import * as Yup from 'yup';
+import styles from './main.module.scss';
 import { jwtDecode } from "jwt-decode";
 import MyJwtPayload from '@/components/types/myJwtPayload';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
+  const [passwordPath, setPasswordPath] = useState<string>('');
+  const [xsrfToken, setXsrfToken] = useState<string | null>(null);
   const router = useRouter();
 
   const togglePasswordVisibility = () => {
@@ -24,6 +27,37 @@ const Login = () => {
       .required('Pole wymagane'),
     password: Yup.string().required('Hasło jest wymagane'),
   });
+
+  const changePasswordSchema = Yup.object().shape({
+    newPassword: Yup.string()
+      .required('Wymagane nowe hasło'),
+      // .min(8, 'Hasło musi mieć co najmniej 8 znaków'),
+    repeatPassword: Yup.string()
+      .oneOf([Yup.ref('newPassword')], 'Hasła muszą być takie same')
+      .required('Potwierdzenie hasła jest wymagane'),
+  });
+
+  const getCookieToken = async (token:string) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/v1/csrf`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("COOKIE TOKEN:", data.token);
+        setXsrfToken(data.token);
+      } else {
+        console.error("Failed to retrieve CSRF token:", response.statusText);
+      }
+    } catch (error) {
+      console.error("An error occurred while retrieving CSRF token:", error);
+    }
+  };
 
   const handleSubmit = async (values: any) => {
     try {
@@ -38,27 +72,35 @@ const Login = () => {
         }),
       });
 
+      console.log("Response status:", response.status);
+
       if (response.ok) {
         setLoginError(null);
         const data = await response.json();
         const token = data.jwtToken;
+        setPasswordPath(data.path);
         const decodedToken = jwtDecode<MyJwtPayload>(token);
+        getCookieToken(token);
+
+        const oneTimeUsedPass = data.path || '';
+        if (oneTimeUsedPass.length > 0) {
+          setIsChangePasswordModalOpen(true);
+          return;
+        }
 
         const userId = decodedToken.id;
-        console.log('userId', userId);
         const isAdmin = decodedToken.authorities === 'ROLE_ADMIN';
-        console.log('isAdmin', isAdmin);
-
 
         localStorage.setItem('token', token);
         localStorage.setItem('userId', userId.toString());
         localStorage.setItem('isAdmin', JSON.stringify(isAdmin));
 
-        if (isAdmin) {
-          router.push('/dashboard');
-        } else {
-          router.push('/schedule');
-        }
+        // if (isAdmin) {
+        //   router.push('/dashboard');
+        // } else {
+        //   router.push('/schedule');
+        // }
+        console.log("Login successful");
       } else if (response.status === 401) {
         setLoginError("Niepoprawne hasło lub login.");
       } else {
@@ -67,6 +109,30 @@ const Login = () => {
     } catch (error) {
       console.error("An error occurred:", error);
       setLoginError("Wystąpił błąd podczas logowania.");
+    }
+  };
+
+  const handlePasswordChangeSubmit = async (values: any) => {
+    try {
+      const newPassword = values.newPassword;
+      const response = await fetch(`http://localhost:8080${passwordPath}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'X-XSRF-TOKEN': xsrfToken || '',
+        },
+        body: JSON.stringify(newPassword),
+      });
+
+      if (response.ok) {
+        console.log("Password changed successfully");
+        setIsChangePasswordModalOpen(false);
+      } else {
+        console.error("Failed to change password:", response.statusText);
+      }
+    } catch (error) {
+      console.error("An error occurred while changing password:", error);
     }
   };
 
@@ -111,6 +177,33 @@ const Login = () => {
           </Form>
         )}
       </Formik>
+
+      {isChangePasswordModalOpen && (
+        <div className={styles.passwordChangemModalOverlay}>
+          <div className={styles.passwordChangemModalContent}>
+            <h2>Zmień hasło</h2>
+            <Formik
+              initialValues={{ newPassword: '', repeatPassword: '' }}
+              validationSchema={changePasswordSchema}
+              onSubmit={handlePasswordChangeSubmit}
+            >
+              {({ errors, touched }) => (
+                <Form>
+                  <label>Nowe Hasło</label>
+                  <Field type="password" name="newPassword" className={`${styles.input} ${errors.newPassword && touched.newPassword ? styles.errorInput : ''}`} />
+                  <ErrorMessage name="newPassword" component="div" className={styles.error} />
+
+                  <label>Powtórz Nowe Hasło</label>
+                  <Field type="password" name="repeatPassword" className={`${styles.input} ${errors.repeatPassword && touched.repeatPassword ? styles.errorInput : ''}`} />
+                  <ErrorMessage name="repeatPassword" component="div" className={styles.error} />
+
+                  <button type="submit" className={styles.button}>Zapisz</button>
+                </Form>
+              )}
+            </Formik>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
