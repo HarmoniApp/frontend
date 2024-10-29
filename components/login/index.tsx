@@ -71,6 +71,7 @@ const Login = () => {
     }
   };
 
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Harmoni App</h1>
@@ -119,3 +120,15 @@ const Login = () => {
   );
 };
 export default Login;
+
+export const decodeToken = (token: string): MyJwtPayload => {
+  return jwtDecode<MyJwtPayload>(token);
+};
+
+export const getUserId = (decodedToken: MyJwtPayload): number => {
+  return decodedToken.id;
+};
+
+export const isUserAdmin = (decodedToken: MyJwtPayload): boolean => {
+  return decodedToken.authorities === 'ROLE_ADMIN';
+};

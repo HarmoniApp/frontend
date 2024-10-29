@@ -1,5 +1,4 @@
-export const loggedUserID = 26;
-export const loggedUserRoleAdmin = false;
+import { getUserId, isUserAdmin } from  '@/components/login'
 
-// export const loggedUserID = 1;
-// export const loggedUserRoleAdmin = true;
+export const loggedUserID = getUserId;
+export const loggedUserRoleAdmin = isUserAdmin;
