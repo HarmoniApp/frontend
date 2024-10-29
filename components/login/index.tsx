@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import styles from './main.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -35,15 +36,42 @@ const Login = () => {
     password: Yup.string().required('Hasło jest wymagane'),
   });
 
+  const handleSubmit = async (values: any) => {
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: values.email,
+          password: values.password,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        const token = data.jwtToken;
+        console.log("Token:", token);
+
+        const decoded = jwtDecode(token);
+        console.log("Decoded token:", decoded);
+      } else {
+        console.error("Login failed:", response.statusText);
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Harmoni App</h1>
       <Formik
         initialValues={{ email: '', password: '' }}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
-          console.log(values);
-        }}
+        onSubmit={handleSubmit}
       >
         {({ errors, touched }) => (
           <Form className={styles.form}>
@@ -84,5 +112,4 @@ const Login = () => {
     </div>
   );
 };
-
 export default Login;
