@@ -6,6 +6,7 @@ import styles from './main.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { jwtDecode } from "jwt-decode";
+import MyJwtPayload  from '@/components/types/myJwtPayload';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -51,12 +52,17 @@ const Login = () => {
 
       if (response.ok) {
         const data = await response.json();
-
         const token = data.jwtToken;
         console.log("Token:", token);
 
-        const decoded = jwtDecode(token);
-        console.log("Decoded token:", decoded);
+        const decodedToken = jwtDecode<MyJwtPayload>(token);
+        console.log("Decoded token:", decodedToken);
+
+        const userId = decodedToken.id;
+        console.log("User ID:", userId);
+
+        const userAuthorities = decodedToken.authorities;
+        console.log("User authorities:", userAuthorities);
       } else {
         console.error("Login failed:", response.statusText);
       }
