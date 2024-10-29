@@ -14,6 +14,7 @@ const Login = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const [passwordPath, setPasswordPath] = useState<string>('');
+  const [tokenJWT, setTokenJWT] = useState<string | null>(null);
   const [xsrfToken, setXsrfToken] = useState<string | null>(null);
   const router = useRouter();
 
@@ -37,104 +38,122 @@ const Login = () => {
       .required('Potwierdzenie hasła jest wymagane'),
   });
 
-  const getCookieToken = async (token:string) => {
-    try {
+  useEffect(() => {
+    if (xsrfToken) {
+        console.log("XSRF TOKEN after set:", xsrfToken); 
+    }
+}, [xsrfToken]);
+
+const getCookieToken = async (token: string) => {
+  try {
       const response = await fetch(`http://localhost:8080/api/v1/csrf`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        }
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+          }
       });
 
       if (response.ok) {
-        const data = await response.json();
-        console.log("COOKIE TOKEN:", data.token);
-        setXsrfToken(data.token);
+          const data = await response.json();
+          console.log("COOKIE TOKEN:", data.token);
+          setXsrfToken(data.token);
       } else {
-        console.error("Failed to retrieve CSRF token:", response.statusText);
+          console.error("Failed to retrieve CSRF token:", response.statusText);
       }
-    } catch (error) {
+  } catch (error) {
       console.error("An error occurred while retrieving CSRF token:", error);
+  }
+};
+
+  useEffect(() => {
+    if (tokenJWT) {
+        console.log("TokenJWT after set:", tokenJWT);
+        getCookieToken(tokenJWT);
     }
-  };
+}, [tokenJWT]);
 
-  const handleSubmit = async (values: any) => {
+const handleSubmit = async (values: any) => {
     try {
-      const response = await fetch('http://localhost:8080/api/v1/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: values.email,
-          password: values.password,
-        }),
-      });
+        const response = await fetch('http://localhost:8080/api/v1/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: values.email,
+                password: values.password,
+            }),
+        });
 
-      console.log("Response status:", response.status);
+        console.log("Response status:", response.status);
 
-      if (response.ok) {
-        setLoginError(null);
-        const data = await response.json();
-        const token = data.jwtToken;
-        setPasswordPath(data.path);
-        const decodedToken = jwtDecode<MyJwtPayload>(token);
-        getCookieToken(token);
+        if (response.ok) {
+            setLoginError(null);
+            const data = await response.json();
+            const token = data.jwtToken;
+            setTokenJWT(token);
+            setPasswordPath(data.path);
 
-        const oneTimeUsedPass = data.path || '';
-        if (oneTimeUsedPass.length > 0) {
-          setIsChangePasswordModalOpen(true);
-          return;
+            const decodedToken = jwtDecode<MyJwtPayload>(token);
+            const oneTimeUsedPass = data.path || '';
+            if (oneTimeUsedPass.length > 0) {
+                setIsChangePasswordModalOpen(true);
+                return;
+            }
+
+            const userId = decodedToken.id;
+            const isAdmin = decodedToken.authorities === 'ROLE_ADMIN';
+
+            localStorage.setItem('token', token);
+            localStorage.setItem('userId', userId.toString());
+            localStorage.setItem('isAdmin', JSON.stringify(isAdmin));
+
+            console.log("Login successful");
+        } else if (response.status === 401) {
+            setLoginError("Niepoprawne hasło lub login.");
+        } else {
+            setLoginError("Wystąpił błąd podczas logowania.");
         }
-
-        const userId = decodedToken.id;
-        const isAdmin = decodedToken.authorities === 'ROLE_ADMIN';
-
-        localStorage.setItem('token', token);
-        localStorage.setItem('userId', userId.toString());
-        localStorage.setItem('isAdmin', JSON.stringify(isAdmin));
-
-        // if (isAdmin) {
-        //   router.push('/dashboard');
-        // } else {
-        //   router.push('/schedule');
-        // }
-        console.log("Login successful");
-      } else if (response.status === 401) {
-        setLoginError("Niepoprawne hasło lub login.");
-      } else {
+    } catch (error) {
+        console.error("An error occurred:", error);
         setLoginError("Wystąpił błąd podczas logowania.");
-      }
-    } catch (error) {
-      console.error("An error occurred:", error);
-      setLoginError("Wystąpił błąd podczas logowania.");
     }
-  };
+};
 
-  const handlePasswordChangeSubmit = async (values: any) => {
-    try {
-      const newPassword = values.newPassword;
-      const response = await fetch(`http://localhost:8080${passwordPath}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'X-XSRF-TOKEN': xsrfToken || '',
-        },
-        body: JSON.stringify(newPassword),
-      });
+const handlePasswordChangeSubmit = async (values: any) => {
+  try {
+    const response = await fetch(`http://localhost:8080${passwordPath}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokenJWT}`,
+        'X-XSRF-TOKEN': xsrfToken || '',
+      },
+      body: JSON.stringify({
+        newPassword: values.newPassword, 
+      }),
+    });
 
-      if (response.ok) {
-        console.log("Password changed successfully");
-        setIsChangePasswordModalOpen(false);
-      } else {
-        console.error("Failed to change password:", response.statusText);
-      }
-    } catch (error) {
-      console.error("An error occurred while changing password:", error);
+    console.log("Headers:", {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${tokenJWT}`,
+      'X-XSRF-TOKEN': xsrfToken || '',
+    });
+    console.log("Body:", {
+      newPassword: values.newPassword, 
+    });
+
+    if (response.ok) {
+      console.log("Password changed successfully to:", values.newPassword);
+      setIsChangePasswordModalOpen(false);
+    } else {
+      console.error("Failed to change password:", response.statusText);
     }
-  };
+  } catch (error) {
+    console.error("An error occurred while changing password:", error);
+  }
+};
 
   return (
     <div className={styles.container}>
