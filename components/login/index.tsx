@@ -6,10 +6,11 @@ import styles from './main.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { jwtDecode } from "jwt-decode";
-import MyJwtPayload  from '@/components/types/myJwtPayload';
+import MyJwtPayload from '@/components/types/myJwtPayload';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -51,26 +52,40 @@ const Login = () => {
       });
 
       if (response.ok) {
+        setLoginError(null);
         const data = await response.json();
         const token = data.jwtToken;
-        console.log("Token:", token);
+        // console.log("Token:", token);
 
         const decodedToken = jwtDecode<MyJwtPayload>(token);
-        console.log("Decoded token:", decodedToken);
 
-        const userId = decodedToken.id;
-        console.log("User ID:", userId);
+        if (!decodedToken || !decodedToken.authorities) {
+          console.error("Decoded token is missing authorities or other properties.");
+          setLoginError("Wystąpił błąd podczas logowania.");
+          return;
+        }
 
-        const userAuthorities = decodedToken.authorities;
-        console.log("User authorities:", userAuthorities);
+        // const decodedToken = jwtDecode<MyJwtPayload>(token);
+        // console.log("Decoded token:", decodedToken);
+
+        // const userId = decodedToken.id;
+        // console.log("User ID:", userId);
+
+        // const userAuthorities = decodedToken.authorities;
+        // console.log("User authorities:", userAuthorities);
+
+        // TODO: push to dashboard if admin elsa schedule
+      } else if (response.status === 401) {
+        setLoginError("Niepoprawne hasło lub login.");
       } else {
         console.error("Login failed:", response.statusText);
+        setLoginError("Wystąpił błąd podczas logowania.");
       }
     } catch (error) {
       console.error("An error occurred:", error);
+      setLoginError("Wystąpił błąd podczas logowania.");
     }
   };
-
 
   return (
     <div className={styles.container}>
@@ -82,6 +97,7 @@ const Login = () => {
       >
         {({ errors, touched }) => (
           <Form className={styles.form}>
+            {loginError && <div className={styles.errorMessage}>{loginError}</div>}
             <label className={styles.label} htmlFor="email">Adres Email</label>
             <Field
               className={`${styles.input} ${errors.email && touched.email ? styles.errorInput : ''}`}
@@ -112,10 +128,10 @@ const Login = () => {
           </Form>
         )}
       </Formik>
-      <div className={styles.links}>
+      {/* <div className={styles.links}>
         <a href="#" className={styles.link}>Zapomniałeś hasła?</a>
-        {/* <a href="/register" className={styles.link}>Nie masz konta? Utwórz je!</a> */}
-      </div>
+        <a href="/register" className={styles.link}>Nie masz konta? Utwórz je!</a>
+      </div> */}
     </div>
   );
 };
@@ -129,6 +145,6 @@ export const getUserId = (decodedToken: MyJwtPayload): number => {
   return decodedToken.id;
 };
 
-export const isUserAdmin = (decodedToken: MyJwtPayload): boolean => {
-  return decodedToken.authorities === 'ROLE_ADMIN';
+export const isUserAdmin = (decodedToken: MyJwtPayload | undefined): boolean => {
+  return decodedToken?.authorities === 'ROLE_ADMIN';
 };
