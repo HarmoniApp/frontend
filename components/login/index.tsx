@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import styles from './main.module.scss';
@@ -11,6 +12,7 @@ import MyJwtPayload from '@/components/types/myJwtPayload';
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const router = useRouter();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -55,8 +57,6 @@ const Login = () => {
         setLoginError(null);
         const data = await response.json();
         const token = data.jwtToken;
-        // console.log("Token:", token);
-
         const decodedToken = jwtDecode<MyJwtPayload>(token);
 
         if (!decodedToken || !decodedToken.authorities) {
@@ -65,16 +65,12 @@ const Login = () => {
           return;
         }
 
-        // const decodedToken = jwtDecode<MyJwtPayload>(token);
-        // console.log("Decoded token:", decodedToken);
+        if (decodedToken.authorities === 'ROLE_ADMIN') {
+          router.push('/dashboard');
+        } else {
+          router.push('/schedule');
+        }
 
-        // const userId = decodedToken.id;
-        // console.log("User ID:", userId);
-
-        // const userAuthorities = decodedToken.authorities;
-        // console.log("User authorities:", userAuthorities);
-
-        // TODO: push to dashboard if admin elsa schedule
       } else if (response.status === 401) {
         setLoginError("Niepoprawne hasło lub login.");
       } else {
