@@ -1,7 +1,8 @@
-import React from 'react';
+'use client';
+import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faEdit, faQuestionCircle, faClipboard, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faEdit, faImage, faQuestionCircle, faClipboard, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import Flag from 'react-flagkit';
 import styles from './main.module.scss';
 
@@ -13,12 +14,22 @@ interface SidebarProps {
 
 const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
 
-const pathname = usePathname();
-const router = useRouter();
+    const pathname = usePathname();
+    const router = useRouter();
 
-const settingsToGo = () => {
-    router.push('/settings');
-  };
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        const storedIsAdmin = localStorage.getItem('isAdmin');
+
+        if (storedIsAdmin !== null) {
+            setIsAdmin(JSON.parse(storedIsAdmin));
+        }
+    }, []);
+
+    const settingsToGo = () => {
+        router.push('/settings');
+    };
     return (
         <>
             <div className={`${styles.sidebarContainer} ${isOpen ? styles.open : ''}`}>
@@ -39,10 +50,12 @@ const settingsToGo = () => {
                         <FontAwesomeIcon icon={faClipboard} className={styles.icon} />
                         <span>Przekaż Opinię</span>
                     </div>
+
                     <div className={`${styles.item} ${pathname === '/settings' ? styles.active : ''}`} onClick={settingsToGo}>
-                        <FontAwesomeIcon icon={faCog} className={styles.icon} />
-                        <span>Ustawienia</span>
+                    <FontAwesomeIcon icon={isAdmin ? faCog : faImage} className={styles.icon} />
+                        <span>{isAdmin ? "Ustawienia" : "Zmień zdjęcie"}</span>
                     </div>
+
                     <div className={styles.logout}>
                         <FontAwesomeIcon icon={faSignOutAlt} className={styles.icon} />
                         <span>Wyloguj się</span>

@@ -1,17 +1,30 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Employee from './employee';
 import Employer from './employer';
-import { loggedUserRoleAdmin, loggedUserID } from '@/components/variables';
 import styles from './main.module.scss';
 
 const Schedule = () => {
-    const [isAdmin] = useState<boolean>(loggedUserRoleAdmin);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [userId, setUserId] = useState<number>(0);
 
-    return (
-        <div className={styles.absenceContainerMain}>
-            {isAdmin ? <Employer /> : <Employee userId={loggedUserID}/>}
-        </div>
-    )
-}
+  useEffect(() => {
+    const storedIsAdmin = localStorage.getItem('isAdmin');
+    const storedUserId = localStorage.getItem('userId');
+
+    if (storedIsAdmin !== null) {
+      setIsAdmin(JSON.parse(storedIsAdmin));
+    }
+    if (storedUserId !== null) {
+      setUserId(Number(storedUserId));
+    }
+  }, []);
+
+  return (
+    <div className={styles.absenceContainerMain}>
+      {isAdmin ? <Employer /> : <Employee userId={userId} />}
+    </div>
+  );
+};
+
 export default Schedule;

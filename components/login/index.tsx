@@ -18,25 +18,10 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
-  const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
-    const invalidChars = value.split('').filter(char => !allowedPattern.test(char));
-    return Array.from(new Set(invalidChars));
-  };
-
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email('Niepoprawny adres e-mail.')
-      .required('Pole wymagane')
-      .test('no-invalid-chars', function (value) {
-        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9@.-]*$/);
-        return invalidChars.length === 0
-          ? true
-          : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
-      })
-      .test('no-consecutive-special-chars', 'Niedozwolone znaki', function (value) {
-        const invalidPattern = /(\.\.|--|@@)/;
-        return !invalidPattern.test(value || '');
-      }),
+      .required('Pole wymagane'),
     password: Yup.string().required('Hasło jest wymagane'),
   });
 
@@ -59,22 +44,24 @@ const Login = () => {
         const token = data.jwtToken;
         const decodedToken = jwtDecode<MyJwtPayload>(token);
 
-        if (!decodedToken || !decodedToken.authorities) {
-          console.error("Decoded token is missing authorities or other properties.");
-          setLoginError("Wystąpił błąd podczas logowania.");
-          return;
-        }
+        const userId = decodedToken.id;
+        console.log('userId', userId);
+        const isAdmin = decodedToken.authorities === 'ROLE_ADMIN';
+        console.log('isAdmin', isAdmin);
 
-        if (decodedToken.authorities === 'ROLE_ADMIN') {
+
+        localStorage.setItem('token', token);
+        localStorage.setItem('userId', userId.toString());
+        localStorage.setItem('isAdmin', JSON.stringify(isAdmin));
+
+        if (isAdmin) {
           router.push('/dashboard');
         } else {
           router.push('/schedule');
         }
-
       } else if (response.status === 401) {
         setLoginError("Niepoprawne hasło lub login.");
       } else {
-        console.error("Login failed:", response.statusText);
         setLoginError("Wystąpił błąd podczas logowania.");
       }
     } catch (error) {
@@ -124,23 +111,8 @@ const Login = () => {
           </Form>
         )}
       </Formik>
-      {/* <div className={styles.links}>
-        <a href="#" className={styles.link}>Zapomniałeś hasła?</a>
-        <a href="/register" className={styles.link}>Nie masz konta? Utwórz je!</a>
-      </div> */}
     </div>
   );
 };
+
 export default Login;
-
-export const decodeToken = (token: string): MyJwtPayload => {
-  return jwtDecode<MyJwtPayload>(token);
-};
-
-export const getUserId = (decodedToken: MyJwtPayload): number => {
-  return decodedToken.id;
-};
-
-export const isUserAdmin = (decodedToken: MyJwtPayload | undefined): boolean => {
-  return decodedToken?.authorities === 'ROLE_ADMIN';
-};
