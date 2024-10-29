@@ -13,8 +13,25 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
+  const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
+    const invalidChars = value.split('').filter(char => !allowedPattern.test(char));
+    return Array.from(new Set(invalidChars));
+  };
+
   const validationSchema = Yup.object().shape({
-    email: Yup.string().email('Nieprawidłowy email').required('Email jest wymagany'),
+    email: Yup.string()
+      .email('Niepoprawny adres e-mail.')
+      .required('Pole wymagane')
+      .test('no-invalid-chars', function (value) {
+        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9@.-]*$/);
+        return invalidChars.length === 0
+          ? true
+          : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
+      })
+      .test('no-consecutive-special-chars', 'Niedozwolone znaki', function (value) {
+        const invalidPattern = /(\.\.|--|@@)/;
+        return !invalidPattern.test(value || '');
+      }),
     password: Yup.string().required('Hasło jest wymagane'),
   });
 
@@ -33,7 +50,6 @@ const Login = () => {
             <label className={styles.label} htmlFor="email">Adres Email</label>
             <Field
               className={`${styles.input} ${errors.email && touched.email ? styles.errorInput : ''}`}
-              type="email"
               id="email"
               name="email"
               placeholder="my_email@example.com"
@@ -63,7 +79,7 @@ const Login = () => {
       </Formik>
       <div className={styles.links}>
         <a href="#" className={styles.link}>Zapomniałeś hasła?</a>
-        <a href="/register" className={styles.link}>Nie masz konta? Utwórz je!</a>
+        {/* <a href="/register" className={styles.link}>Nie masz konta? Utwórz je!</a> */}
       </div>
     </div>
   );
