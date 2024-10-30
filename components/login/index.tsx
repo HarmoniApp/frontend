@@ -14,7 +14,8 @@ const Login = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const [passwordPath, setPasswordPath] = useState<string>('');
-  const [xsrfToken, setXsrfToken] = useState<string | null>(null);
+  const [tokenJWT, setTokenJWT] = useState<string>('');
+  const [xsrfToken, setXsrfToken] = useState<string>('');
   const router = useRouter();
 
   const togglePasswordVisibility = () => {
@@ -30,14 +31,20 @@ const Login = () => {
 
   const changePasswordSchema = Yup.object().shape({
     newPassword: Yup.string()
-      .required('Wymagane nowe hasło'),
-      // .min(8, 'Hasło musi mieć co najmniej 8 znaków'),
+      .required('Wymagane nowe hasło')
+      .min(8, 'Hasło musi mieć co najmniej 8 znaków'),
     repeatPassword: Yup.string()
       .oneOf([Yup.ref('newPassword')], 'Hasła muszą być takie same')
       .required('Potwierdzenie hasła jest wymagane'),
   });
 
-  const getCookieToken = async (token:string) => {
+  useEffect(() => {
+    if (xsrfToken) {
+      console.log("XSRF TOKEN after set:", xsrfToken);
+    }
+  }, [xsrfToken]);
+
+  const getCookieToken = async (token: string) => {
     try {
       const response = await fetch(`http://localhost:8080/api/v1/csrf`, {
         method: 'GET',
@@ -59,6 +66,13 @@ const Login = () => {
     }
   };
 
+  useEffect(() => {
+    if (tokenJWT) {
+      console.log("TokenJWT after set:", tokenJWT);
+      getCookieToken(tokenJWT);
+    }
+  }, [tokenJWT]);
+
   const handleSubmit = async (values: any) => {
     try {
       const response = await fetch('http://localhost:8080/api/v1/login', {
@@ -77,29 +91,29 @@ const Login = () => {
       if (response.ok) {
         setLoginError(null);
         const data = await response.json();
-        const token = data.jwtToken;
+        const tokenJTW = data.jwtToken;
         setPasswordPath(data.path);
-        const decodedToken = jwtDecode<MyJwtPayload>(token);
-        getCookieToken(token);
+        setTokenJWT(tokenJTW);
 
+        const decodedToken = jwtDecode<MyJwtPayload>(tokenJTW);
         const oneTimeUsedPass = data.path || '';
         if (oneTimeUsedPass.length > 0) {
           setIsChangePasswordModalOpen(true);
-          return;
         }
 
         const userId = decodedToken.id;
         const isAdmin = decodedToken.authorities === 'ROLE_ADMIN';
 
-        localStorage.setItem('token', token);
-        localStorage.setItem('userId', userId.toString());
-        localStorage.setItem('isAdmin', JSON.stringify(isAdmin));
+        sessionStorage.setItem('tokenJWT', tokenJTW);
+        sessionStorage.setItem('userId', userId.toString());
+        sessionStorage.setItem('isAdmin', JSON.stringify(isAdmin));
 
-        // if (isAdmin) {
-        //   router.push('/dashboard');
-        // } else {
-        //   router.push('/schedule');
-        // }
+        if (isAdmin) {
+          router.push('/dashboard');
+        } else {
+          router.push('/schedule');
+        }
+
         console.log("Login successful");
       } else if (response.status === 401) {
         setLoginError("Niepoprawne hasło lub login.");
@@ -114,19 +128,29 @@ const Login = () => {
 
   const handlePasswordChangeSubmit = async (values: any) => {
     try {
-      const newPassword = values.newPassword;
       const response = await fetch(`http://localhost:8080${passwordPath}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${tokenJWT}`,
           'X-XSRF-TOKEN': xsrfToken || '',
         },
-        body: JSON.stringify(newPassword),
+        body: JSON.stringify({
+          newPassword: values.newPassword,
+        }),
+      });
+
+      console.log("Headers:", {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokenJWT}`,
+        'X-XSRF-TOKEN': xsrfToken || '',
+      });
+      console.log("Body:", {
+        newPassword: values.newPassword,
       });
 
       if (response.ok) {
-        console.log("Password changed successfully");
+        console.log("Password changed successfully to:", values.newPassword);
         setIsChangePasswordModalOpen(false);
       } else {
         console.error("Failed to change password:", response.statusText);
