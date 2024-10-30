@@ -10,7 +10,7 @@ $popup-bg: rgba(0, 0, 0, 0.5);
 $popup-bg-colour: #4F4E4E;
 $popup-highlight-colour: #FFCF70;
 
-.passwordChangemModalOverlay {
+.passwordChangeModalOverlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -23,7 +23,7 @@ $popup-highlight-colour: #FFCF70;
     z-index: 1000;
   }
   
-  .passwordChangemModalContent {
+  .passwordChangeModalContent {
     display: flex;
     flex-direction: column;
     border: 2px solid $popup-highlight-colour;

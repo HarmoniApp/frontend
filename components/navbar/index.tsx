@@ -10,8 +10,8 @@ export default function Navbar() {
     const [userId, setUserId] = useState<number>(0);
 
     useEffect(() => {
-        const storedIsAdmin = localStorage.getItem('isAdmin');
-        const storedUserId = localStorage.getItem('userId');
+        const storedIsAdmin = sessionStorage.getItem('isAdmin');
+        const storedUserId = sessionStorage.getItem('userId');
 
         if (storedIsAdmin !== null) {
             setIsAdmin(JSON.parse(storedIsAdmin));
