@@ -6,6 +6,8 @@ import styles from './main.module.scss';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Message from '@/components/types/message';
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 
 type ChatProps = {
   userId: number;
@@ -22,6 +24,38 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
   const [chatPartners, setChatPartners] = useState<ChatPartner[]>([]);
   const [selectedChat, setSelectedChat] = useState<ChatPartner | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+
+  useEffect(() => {
+    const socket = new SockJS('http://localhost:8080/api/v1/ws');
+    const stompClient = new Client({
+        webSocketFactory: () => socket,
+        debug: (str) => console.log(str),
+        onConnect: () => {
+            console.log('Connected to STOMP WebSocket');
+            
+            stompClient.subscribe(`/client/messages/${userId}`, (message) => {
+                console.log("Received message:", message.body);
+                const newMessage: Message = JSON.parse(message.body);
+                
+                setMessages((prevMessages) =>
+                    selectedChat && 
+                    (newMessage.sender_id === selectedChat.id || newMessage.receiver_id === selectedChat.id) 
+                        ? [...prevMessages, newMessage]
+                        : prevMessages
+                );
+            });
+        },
+        onStompError: (error) => {
+            console.error('STOMP WebSocket error:', error);
+        }
+    });
+
+    stompClient.activate();
+
+    return () => {
+        stompClient.deactivate();
+    };
+}, [userId, selectedChat]);
 
   useEffect(() => {
     const fetchChatPartners = async () => {
@@ -79,7 +113,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
         const errorData = await response.json();
         throw new Error(`Błąd podczas wysyłania wiadomości: ${errorData.message || 'Nieznany błąd'}`);
       }
-  
+
       const data = await response.json();
       setMessages((prevMessages) => [...prevMessages, data]);
     }
