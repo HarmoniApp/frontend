@@ -7,10 +7,11 @@ export default function Employees() {
     return (
         <div>
             <Navbar />
-            <div className={styles.overlay}></div>
-            <div className={styles.centeredText}>Funkcjonalnosc narazie nie jest dosteona. Pracujemy nad tym. Za utrudnienia przepraszamy</div>
+            {/* <div className={styles.overlay}></div> */}
+            {/* <div className={styles.centeredText}>Funkcjonalnosc narazie nie jest dosteona. Pracujemy nad tym. Za utrudnienia przepraszamy</div> */}
             <div className={styles.chatContainer}>
-                <Chat />
+                {/* TODO: change it to real userId */}
+                <Chat userId={47}/> 
             </div>
         </div>
     )
