@@ -1,93 +1,26 @@
-// import React from 'react';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faCommentDots, faPaperPlane, faImage, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
-// import styles from './main.module.scss';
-
-// const Chat = () => {
-//   return (
-//     <div className={styles.chatContainer}>
-//       <div className={styles.sidebar}>
-//         <div className={styles.sidebarHeader}>
-//           <FontAwesomeIcon icon={faCommentDots} className={styles.icon} />
-//           <h2>CZATY</h2>
-//           <FontAwesomeIcon icon={faPlus} className={styles.icon} />
-//         </div>
-//         <div className={styles.searchBar}>
-//           <FontAwesomeIcon icon={faSearch} className={styles.icon} />
-//           <input type="text" placeholder="Wyszukaj pracownika lub grupę" disabled />
-//         </div>
-//         <ul className={styles.chatList}>
-//           <li className={`${styles.chatItem} ${styles.activeChat}`}>
-//             <div className={styles.chatAvatar}></div>
-//             <div>
-//               <p className={styles.chatName}>Michał Szybki</p>
-//               <p className={styles.chatMessage}>Witam. Załatwię to jak najsz...</p>
-//             </div>
-//           </li>
-//           <li className={styles.chatItem}>
-//             <div className={styles.chatAvatar}></div>
-//             <div>
-//               <p className={styles.chatName}>Mariola Nowak</p>
-//               <p className={styles.chatMessage}>Za tydzień mam urlop. Nie...</p>
-//             </div>
-//           </li>
-//           <li className={styles.chatItem}>
-//             <div className={styles.chatAvatar}></div>
-//             <div>
-//               <p className={styles.chatName}>Wszyscy</p>
-//               <p className={styles.chatMessage}>Karol: Uwaga dziś owocowy...</p>
-//             </div>
-//           </li>
-//         </ul>
-//       </div>
-//       <div className={styles.chatWindow}>
-//         <div className={styles.chatHeader}>
-//           <div className={styles.chatAvatar}></div>
-//           <h2>Michał Szybki</h2>
-//         </div>
-//         <div className={styles.chatMessages}>
-//           <div className={`${styles.message} ${styles.otherMessage}`}>
-//             <div className={styles.messageAvatar}></div>
-//             <p>Hej, nie będzie mnie w piątek. Dałbyś radę zanieść dokumenty Marioli?</p>
-//           </div>
-//           <div className={`${styles.message} ${styles.highlightedMessage} ${styles.selfMessage}`}>
-//             <p>Której Marioli? Nowak czy Żak?</p>
-//           </div>
-//           <div className={`${styles.message} ${styles.otherMessage}`}>
-//             <div className={styles.messageAvatar}></div>
-//             <p>Marioli Nowak.</p>
-//           </div>
-//           <div className={`${styles.message} ${styles.highlightedMessage} ${styles.selfMessage}`}>
-//             <p>Jasne dostarczę.</p>
-//           </div>
-//         </div>
-//         <div className={styles.messageInputContainer}>
-//           <FontAwesomeIcon icon={faImage} className={styles.icon} />
-//           <input type="text" placeholder="Wpisz wiadomość" disabled />
-//           <FontAwesomeIcon icon={faPaperPlane} className={styles.icon} />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Chat;
-
 "use client";
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCommentDots, faPaperPlane, faImage, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
+import { Formik, Form, Field } from 'formik';
+import * as Yup from 'yup';
 import Message from '@/components/types/message';
-
 
 type ChatProps = {
   userId: number;
 };
 
+type ChatPartner = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  photo: string;
+};
+
 const Chat: React.FC<ChatProps> = ({ userId }) => {
-  const [chatPartners, setChatPartners] = useState<number[]>([]);
-  const [selectedChat, setSelectedChat] = useState<number | null>(null);
+  const [chatPartners, setChatPartners] = useState<ChatPartner[]>([]);
+  const [selectedChat, setSelectedChat] = useState<ChatPartner | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState<string>('');
 
@@ -96,38 +29,60 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
         const response = await fetch(`http://localhost:8080/api/v1/message/chat-partners?userId=${userId}`);
         if (!response.ok) throw new Error('Błąd podczas pobierania partnerów czatu');
         const data = await response.json();
-        setChatPartners(data);
+
+        const partnersWithDetails = await Promise.all(
+          data.map(async (partnerId: number) => await fetchUserDetails(partnerId))
+        );
+
+        setChatPartners(partnersWithDetails);
     };
 
     fetchChatPartners();
   }, [userId]);
 
-  const fetchChatHistory = async (partnerId: number) => {
-      const response = await fetch(`http://localhost:8080/api/v1/message/history?userId1=${userId}&userId2=${partnerId}`);
-      if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
-      const data = await response.json();
-      console.log(data);
-      setMessages(data);
-      setSelectedChat(partnerId);
+  const fetchUserDetails = async (id: number): Promise<ChatPartner> => {
+    const response = await fetch(`http://localhost:8080/api/v1/user/simple/empId/${id}`);
+    if (!response.ok) throw new Error(`Błąd podczas pobierania danych użytkownika o ID ${id}`);
+    const data = await response.json();
+    return {
+      id: id,
+      firstName: data.firstname,
+      lastName: data.surname,
+      photo: data.photo,
+    };
+  };
+
+  const fetchChatHistory = async (partner: ChatPartner) => {
+    const response = await fetch(`http://localhost:8080/api/v1/message/history?userId1=${userId}&userId2=${partner.id}`);
+    if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
+    const data = await response.json();
+    setMessages(data);
+    setSelectedChat(partner);
   };
 
   const handleSendMessage = async () => {
     if (newMessage.trim() && selectedChat !== null) {
-        const response = await fetch(`http://localhost:8080/api/v1/message/send`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            senderId: userId,
-            receiverId: selectedChat,
-            content: newMessage,
-          }),
-        });
-        if (!response.ok) throw new Error('Błąd podczas wysyłania wiadomości');
-        const data = await response.json();
-        setMessages((prevMessages) => [...prevMessages, data]);
-        setNewMessage('');
+      console.log("senderId:", userId);
+      console.log("receiverId:", selectedChat.id);
+      console.log("content:", newMessage);
+
+      const response = await fetch(`http://localhost:8080/api/v1/message/send`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          senderId: userId,
+          receiverId: selectedChat.id,
+          content: newMessage,
+        }),
+      });
+      console.log('Response:', response);
+
+      if (!response.ok) throw new Error('Błąd podczas wysyłania wiadomości');
+      const data = await response.json();
+      setMessages((prevMessages) => [...prevMessages, data]);
+      setNewMessage('');
     }
   };
 
@@ -144,15 +99,15 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
           <input type="text" placeholder="Wyszukaj pracownika lub grupę" disabled />
         </div>
         <ul className={styles.chatList}>
-          {chatPartners.map((partnerId) => (
+          {chatPartners.map((partner) => (
             <li
-              key={partnerId}
-              className={`${styles.chatItem} ${selectedChat === partnerId ? styles.activeChat : ''}`}
-              onClick={() => fetchChatHistory(partnerId)}
+              key={partner.id}
+              className={`${styles.chatItem} ${selectedChat === partner ? styles.activeChat : ''}`}
+              onClick={() => fetchChatHistory(partner)}
             >
-              <div className={styles.chatAvatar}></div>
+              <img className={styles.chatAvatar} src={`http://localhost:8080/api/v1/userPhoto/${partner.photo}`} alt="User Photo" />
               <div>
-                <p className={styles.chatName}>Użytkownik ID: {partnerId}</p>
+                <p className={styles.chatName}>{partner.firstName} {partner.lastName}</p>
                 <p className={styles.chatMessage}>Ostatnia wiadomość...</p>
               </div>
             </li>
@@ -163,8 +118,8 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
         {selectedChat ? (
           <>
             <div className={styles.chatHeader}>
-              <div className={styles.chatAvatar}></div>
-              <h2>Użytkownik ID: {selectedChat}</h2>
+              <img className={styles.chatAvatar} src={`http://localhost:8080/api/v1/userPhoto/${selectedChat.photo}`} alt="User Photo" />
+              <h2>{selectedChat.firstName} {selectedChat.lastName}</h2>
             </div>
             <div className={styles.chatMessages}>
               {messages.map((message) => (
@@ -172,7 +127,9 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                   key={message.id}
                   className={`${styles.message} ${message.sender_id === userId ? styles.selfMessage : styles.otherMessage}`}
                 >
-                  {message.sender_id !== userId && <div className={styles.messageAvatar}></div>}
+                  {message.sender_id !== userId && <div className={styles.messageAvatar}>
+                  <img className={styles.chatAvatar} src={`http://localhost:8080/api/v1/userPhoto/${selectedChat.photo}`} alt="User Photo" />
+                    </div>}
                   <p>{message.content}</p>
                   <span className={styles.timestamp}>{message.sent_at}</span>
                 </div>
