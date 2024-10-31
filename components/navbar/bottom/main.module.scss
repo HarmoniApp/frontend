@@ -1,13 +1,8 @@
-$bg-color: #817F7F;
-$font-color: #FFFFFF;
-$highlight-color: #FFCF70;
-$padding: 10px;
-$active-color: #FFCF70;
-$active-font-weight: bold;
+@import '@/styles/variables.scss';
 
 .navbar {
-    background-color: $bg-color;
-    padding: $padding;
+    background-color: $gray-powder;
+    padding: 10px;
 }
 
 .navList {
@@ -20,18 +15,18 @@ $active-font-weight: bold;
 }
 
 .navItem {
-    color: $font-color;
-    padding: $padding;
+    color: $font-light-colour;
+    padding: 10px;
     cursor: pointer;
     transition: color 0.3s ease;
 
     &:hover {
-        color: $highlight-color;
+        color: $main-colour;
     }
 }
 
 .active {
-    color: $active-color;
-    font-weight: $active-font-weight;
-    border-bottom: 2px solid $active-color;
+    color: $main-colour;
+    font-weight: bold;
+    border-bottom: 2px solid $main-colour;
 }

@@ -26,8 +26,13 @@ const ScheduleEmployee: React.FC<ScheduleEmployeeProps> = ({ userId }) => {
     const fetchShiftsAndAbsences = async () => {
         try {
             const { startDate, endDate } = getMonthStartAndEnd();
-            console.log('Pobieram dane dla zakresu:', startDate, endDate);
-            const response = await fetch(`http://localhost:8080/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}&published=true`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}&published=true`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                }
+            });
             const data: WeekSchedule = await response.json();
             setWeekSchedule(data);
         } catch (error) {

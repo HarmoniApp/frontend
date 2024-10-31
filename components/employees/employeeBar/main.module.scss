@@ -1,23 +1,13 @@
-$popup-border-colour: #dee2e6;
-$popup-box-shadow-colour: rgba(0, 0, 0, 0.1);
-
-$employeeBar-button-bg-colour: #FFFFFF;
-$employeeBar-dropdown-bg-colour: #e8e8e8;
-$employeeBar-font-colour: #FFFFFF;
-$employeeBar-font-colour-dark: #000000;
-$employeeBar-highlight-colour: #FFCF70;
-$employeeBar-highlight-colour-hover: #FFBE4D;
-
-$loading-bg-colour: rgba(0, 0, 0, 0.5);
+@import '@/styles/variables.scss';
 
 .modalContentOfEditRoles {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border: 1px solid $popup-border-colour;
+    border: 1px solid $main-colour;
     border-radius: 8px;
-    box-shadow: 0px 4px 6px $popup-box-shadow-colour;
+    box-shadow: 0px 4px 6px $black-transparency-01;
     text-align: center;
     width: auto;
     max-height: 80vh;
@@ -43,9 +33,9 @@ $loading-bg-colour: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     padding: 10px;
-    background-color: $employeeBar-button-bg-colour;
-    color: $employeeBar-font-colour-dark;
-    border: 2px solid $employeeBar-highlight-colour;
+    background-color: $white;
+    color: $font-dark-colour;
+    border: 2px solid $main-colour;
     border-radius: 5px;
     font-size: 14px;
     gap: 10px;
@@ -58,9 +48,9 @@ $loading-bg-colour: rgba(0, 0, 0, 0.5);
 .addEmployeeButton:hover,
 .importEmployeeButton:hover,
 .editRoles:hover {
-    background-color: $employeeBar-highlight-colour-hover;
-    color: $employeeBar-font-colour;
-    border-color: $employeeBar-highlight-colour-hover;
+    background-color: $main-colour-hover;
+    color: $font-light-colour;
+    border-color: $main-colour-hover;
 }
 
 .viewContainer {
@@ -89,7 +79,7 @@ $loading-bg-colour: rgba(0, 0, 0, 0.5);
         padding: 0;
         font-size: 35px;
         cursor: pointer;
-        color: $employeeBar-highlight-colour;
+        color: $main-colour;
     }
 }
 
@@ -110,7 +100,7 @@ $loading-bg-colour: rgba(0, 0, 0, 0.5);
             align-items: center;
             justify-content: space-between;
             text-align: center;
-            background-color: $employeeBar-dropdown-bg-colour;
+            background-color: $white-4;
             padding: 10px;
             border-radius: 5px;
             cursor: pointer;
@@ -119,7 +109,7 @@ $loading-bg-colour: rgba(0, 0, 0, 0.5);
 
 
             &:hover {
-                background-color: $employeeBar-highlight-colour-hover;
+                background-color: $main-colour-hover;
             }
         }
     }
@@ -131,7 +121,6 @@ $loading-bg-colour: rgba(0, 0, 0, 0.5);
     left: 0;
     right: 0;
     bottom: 0;
-    background: $loading-bg-colour;
     display: flex;
     align-items: center;
     justify-content: center;

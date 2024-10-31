@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import Employee from './employee';
 import Employer from './employer';
 import styles from './main.module.scss';
@@ -21,8 +22,12 @@ const Schedule = () => {
   }, []);
 
   return (
-    <div className={styles.absenceContainerMain}>
-      {isAdmin ? <Employer /> : <Employee userId={userId} />}
+    <div className={styles.scheduleContainerMain}>
+      {userId !== 0 ? (
+        isAdmin ? <Employer /> : <Employee userId={userId} />
+      ) : (
+        <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+      )}
     </div>
   );
 };

@@ -29,7 +29,7 @@ const Tile: React.FC<LanguageTileProps> = ({ person, view }) => {
   return (
     <div onClick={handleClick} className={tileClassName}>
       <div className={styles.employeeImageContainer}>
-        <img className={styles.employeeImage} src={`http://localhost:8080/api/v1/userPhoto/${person.photo}`} alt="User Photo" />
+        <img className={styles.employeeImage} src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${person.photo}`} alt="User Photo" />
       </div>
       <div className={styles.fullNameContainer}>
         <label className={styles.fullNameParagraph}>{person.firstname}</label>

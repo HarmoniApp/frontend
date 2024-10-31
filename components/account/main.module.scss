@@ -1,8 +1,4 @@
-$bg-color: #4F4E4E;
-$font-color: #FFFFFF;
-$highlight-color: #FFCF70;
-$padding: 10px;
-$logo-size: 24px;
+@import '@/styles/variables.scss';
 
 .sidebarContainer {
     position: fixed;
@@ -10,14 +6,14 @@ $logo-size: 24px;
     right: -350px;
     width: 350px;
     height: 100%;
-    background-color: #fff;
-    color: #333;
+    background-color: $white;
+    color: $font-dark-colour;
     transition: right 0.3s ease-in-out;
     z-index: 1000;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+    box-shadow: -2px 0 5px $black-transparency-05;
 }
 
 .open {
@@ -25,14 +21,14 @@ $logo-size: 24px;
 }
 
 .active {
-    color: $highlight-color;
+    color: $main-colour;
     font-weight: bold;
-    border-bottom: 2px solid $highlight-color;
+    border-bottom: 2px solid $main-colour;
 }
 
 .header {
-    background-color: $bg-color;
-    color: $highlight-color;
+    background-color: $gray;
+    color: $main-colour;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -53,10 +49,6 @@ $logo-size: 24px;
     margin-top:20px;
 }
 
-.content div:last-of-type{
-    margin-top: 380px;
-}
-
 .item {
     display: flex;
     align-items: center;
@@ -70,7 +62,7 @@ $logo-size: 24px;
 
 .footer {
     padding: 20px;
-    background-color: $bg-color;
+    background-color: $gray;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -80,13 +72,15 @@ $logo-size: 24px;
 
 .logout {
     display: flex;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    color: $white;
     cursor: pointer;
 }
 
 .logout .icon {
     margin-right: 10px;
+    color: $main-colour;
 }
 
 .languages {
@@ -112,7 +106,7 @@ $logo-size: 24px;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: $black-transparency-05;
     z-index: 999;
 }
 
@@ -121,13 +115,13 @@ $logo-size: 24px;
 }
 
 .logo {
-    font-size: $logo-size;
+    font-size: 24px;
     font-weight: bold;
     margin-left: 10px;
-    color: white;
+    color: $white;
     letter-spacing: -25%;
 }
 
 .logo::first-letter {
-    color: $highlight-color;
+    color: $main-colour;
 }

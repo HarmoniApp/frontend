@@ -1,13 +1,4 @@
-$popup-bg: rgba(0, 0, 0, 0.5);
-$popup-bg-colour: #4F4E4E;
-$popup-highlight-colour: #FFCF70;
-
-$employeeData-font-colour-dark: #000000;
-$employeeData-checkbox-bg-colour: #e8e8e8;
-$employeeData-box-shadow-colour: rgba(0, 0, 0, 0.1);
-$employeeData-highlight-colour: #FFCF70;
-$employeeData-highlight-colour-hover: #FFBE4D;
-$employeeData-column-colour: #FFFFFF;
+@import '@/styles/variables.scss';
 
 .modalOverlayDeleteEmployee {
     position: fixed;
@@ -15,7 +6,7 @@ $employeeData-column-colour: #FFFFFF;
     left: 0;
     right: 0;
     bottom: 0;
-    background: $popup-bg;
+    background: $black-transparency-05;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -25,9 +16,9 @@ $employeeData-column-colour: #FFFFFF;
 .modalContentOfDeleteEmployee {
     display: flex;
     flex-direction: column;
-    border: 2px solid $popup-highlight-colour;
+    border: 2px solid $main-colour;
     border-radius: 8px;
-    background-color: $popup-bg-colour;
+    background-color: $gray;
     text-align: center;
     width: auto;
     max-height: 80vh;
@@ -76,8 +67,8 @@ $employeeData-column-colour: #FFFFFF;
         padding: 20px;
 
         border-radius: 10px;
-        background-color: $employeeData-column-colour;
-        box-shadow: 0 4px 8px $employeeData-box-shadow-colour;
+        background-color: $white;
+        box-shadow: 0 4px 8px $black-transparency-01;
 
         .statisticsButton,
         .absencesButton,
@@ -87,8 +78,8 @@ $employeeData-column-colour: #FFFFFF;
         .deleteButton {
             display: flex;
             align-items: center;
-            background-color: $employeeData-highlight-colour;
-            color: $employeeData-font-colour-dark;
+            background-color: $main-colour;
+            color: $font-dark-colour;
             padding: 10px 20px;
             border: none;
             border-radius: 10px;
@@ -97,7 +88,7 @@ $employeeData-column-colour: #FFFFFF;
             gap: 10px;
 
             &:hover {
-                background-color: $employeeData-highlight-colour-hover;
+                background-color: $main-colour-hover;
             }
 
             .buttonIcon {
@@ -143,9 +134,9 @@ $employeeData-column-colour: #FFFFFF;
         width: 100%;
         height: auto;
 
-        background-color: $employeeData-column-colour;
+        background-color: $white;
         border-radius: 10px;
-        box-shadow: 0 4px 8px $employeeData-box-shadow-colour;
+        box-shadow: 0 4px 8px $black-transparency-01;
 
         .firstNameContainer,
         .surnameContainer {
@@ -159,33 +150,33 @@ $employeeData-column-colour: #FFFFFF;
             .firstNameParagraph {
                 font-size: 20px;
                 font-weight: bold;
-                color: $employeeData-font-colour-dark;
+                color: $font-dark-colour;
                 display: inline-block;
-                border-bottom: 2px solid $employeeData-column-colour;
+                border-bottom: 2px solid $white;
             }
 
             .firstNameDataParagraph {
                 font-size: 20px;
-                color: $employeeData-font-colour-dark;
+                color: $font-dark-colour;
                 text-transform: capitalize;
                 display: inline-block;
-                border-bottom: 2px solid $employeeData-highlight-colour;
+                border-bottom: 2px solid $main-colour;
             }
 
             .surnameParagraph {
                 font-size: 20px;
                 font-weight: bold;
-                color: $employeeData-font-colour-dark;
+                color: $font-dark-colour;
                 display: inline-block;
-                border-bottom: 2px solid $employeeData-column-colour;
+                border-bottom: 2px solid $white;
             }
 
             .surnameDataParagraph {
                 font-size: 20px;
-                color: $employeeData-font-colour-dark;
+                color: $font-dark-colour;
                 text-transform: capitalize;
                 display: inline-block;
-                border-bottom: 2px solid $employeeData-highlight-colour;
+                border-bottom: 2px solid $main-colour;
             }
 
         }
@@ -205,17 +196,17 @@ $employeeData-column-colour: #FFFFFF;
             padding: 10px;
         }
 
-        background-color: $employeeData-column-colour;
+        background-color: $white;
         border-radius: 10px;
-        box-shadow: 0 4px 8px $employeeData-box-shadow-colour;
+        box-shadow: 0 4px 8px $black-transparency-01;
 
         .idParagraph {
             font-size: 20px;
             font-weight: bold;
-            color: $employeeData-font-colour-dark;
+            color: $font-dark-colour;
             margin: 10px 0;
             display: inline-block;
-            border-bottom: 2px solid $employeeData-column-colour;
+            border-bottom: 2px solid $white;
             padding: 2px 0;
 
         }
@@ -224,7 +215,7 @@ $employeeData-column-colour: #FFFFFF;
             font-size: 20px;
             margin: 10px 0;
             display: inline-block;
-            border-bottom: 2px solid $employeeData-highlight-colour;
+            border-bottom: 2px solid $main-colour;
             padding: 2px 0;
 
         }
@@ -256,9 +247,9 @@ $employeeData-column-colour: #FFFFFF;
     flex-direction: column;
     flex: 1;
     padding: 20px;
-    background-color: $employeeData-column-colour;
+    background-color: $white;
     border-radius: 10px;
-    box-shadow: 0 4px 8px $employeeData-box-shadow-colour;
+    box-shadow: 0 4px 8px $black-transparency-01;
 
 
     .residenceLabel,
@@ -273,8 +264,8 @@ $employeeData-column-colour: #FFFFFF;
         align-items: center;
         justify-content: space-between;
         padding: 0 10px;
-        color: $employeeData-font-colour-dark;
-        border-bottom: 2px solid $employeeData-highlight-colour;
+        color: $font-dark-colour;
+        border-bottom: 2px solid $main-colour;
 
         .homeAdressParagraph,
         .supervisorParagraph,
@@ -320,8 +311,8 @@ $employeeData-column-colour: #FFFFFF;
         align-items: center;
         max-height: 45vh;
         border-radius: 10px;
-        background-color: $employeeData-column-colour;
-        box-shadow: 0 4px 8px $employeeData-box-shadow-colour;
+        background-color: $white;
+        box-shadow: 0 4px 8px $black-transparency-01;
 
         @media (max-width: 768px) {
             margin: 10px;
@@ -333,7 +324,7 @@ $employeeData-column-colour: #FFFFFF;
         .roleParagraph {
             font-size: 16px;
             font-weight: bold;
-            color: $employeeData-font-colour-dark;
+            color: $font-dark-colour;
             margin: 10px 0;
         }
 
@@ -371,12 +362,12 @@ $employeeData-column-colour: #FFFFFF;
                 justify-content: space-between;
                 text-align: center;
                 gap: 10px;
-                background-color: $employeeData-checkbox-bg-colour;
+                background-color: $white-4;
                 border-radius: 5px;
-                box-shadow: 0px 2px 5px $employeeData-box-shadow-colour;
-                border: 2px solid $employeeData-highlight-colour;
+                box-shadow: 0px 2px 5px $black-transparency-01;
+                border: 2px solid $main-colour;
                 font-size: 16px;
-                color: $employeeData-font-colour-dark;
+                color: $font-dark-colour;
                 width: 100%;
                 padding: 10px;
 
@@ -419,12 +410,12 @@ $employeeData-column-colour: #FFFFFF;
                 justify-content: space-between;
                 text-align: center;
                 gap: 10px;
-                background-color: $employeeData-checkbox-bg-colour;
+                background-color: $white-4;
                 border-radius: 5px;
-                box-shadow: 0px 2px 5px $employeeData-box-shadow-colour;
+                box-shadow: 0px 2px 5px $black-transparency-01;
                 font-size: 16px;
-                color: $employeeData-font-colour-dark;
-                border: 2px solid $employeeData-highlight-colour;
+                color: $font-dark-colour;
+                border: 2px solid $main-colour;
                 width: 100%;
                 padding: 10px;
 

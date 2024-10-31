@@ -36,45 +36,104 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [changedData, setChangedData] = useState<ChangedData>({});
 
+  const fetchContracts = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setContracts(data);
+    } catch (error) {
+      console.error('Error fetching contracts:', error);
+    }
+  };
+
+  const fetchDepartments = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/departments`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setDepartments(data);
+
+      const deptMap: { [key: number]: string } = {};
+      data.forEach((dept: Department) => {
+        deptMap[dept.id] = dept.departmentName;
+      });
+      setDepartmentMap(deptMap);
+    } catch (error) {
+      console.error('Error fetching departments:', error);
+    }
+  };
+
+  const fetchSupervisors = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/supervisor`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setSupervisors(data.content);
+
+      const supervisorMap: { [key: number]: string } = {};
+      data.content.forEach((supervisor: Supervisor) => {
+        supervisorMap[supervisor.id] = `${supervisor.firstname} ${supervisor.surname}`;
+      });
+      setSupervisorMap(supervisorMap);
+    } catch (error) {
+      console.error('Error fetching supervisors:', error);
+    }
+  };
+
+  const fetchRoles = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setRoles(data);
+    } catch (error) {
+      console.error('Error fetching roles:', error);
+    }
+  };
+
+  const fetchLanguages = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/language`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setLanguages(data);
+    } catch (error) {
+      console.error('Error fetching languages:', error);
+    }
+  };
+
   useEffect(() => {
-    fetch('http://localhost:8080/api/v1/contract-type')
-      .then(response => response.json())
-      .then(data => setContracts(data))
-      .catch(error => console.error('Error fetching contracts:', error));
-
-    fetch('http://localhost:8080/api/v1/address/departments')
-      .then(response => response.json())
-      .then(data => {
-        setDepartments(data);
-        const deptMap: { [key: number]: string } = {};
-        data.forEach((dept: Department) => {
-          deptMap[dept.id] = dept.departmentName;
-        });
-        setDepartmentMap(deptMap);
-      })
-      .catch(error => console.error('Error fetching departments:', error));
-
-    fetch('http://localhost:8080/api/v1/user/supervisor')
-      .then(response => response.json())
-      .then(data => {
-        setSupervisors(data.content);
-        const supervisorMap: { [key: number]: string } = {};
-        data.content.forEach((supervisor: Supervisor) => {
-          supervisorMap[supervisor.id] = `${supervisor.firstname} ${supervisor.surname}`;
-        });
-        setSupervisorMap(supervisorMap);
-      })
-      .catch(error => console.error('Error fetching supervisors:', error));
-
-    fetch('http://localhost:8080/api/v1/role')
-      .then(response => response.json())
-      .then(data => setRoles(data))
-      .catch(error => console.error('Error fetching roles:', error));
-
-    fetch('http://localhost:8080/api/v1/language')
-      .then(response => response.json())
-      .then(data => setLanguages(data))
-      .catch(error => console.error('Error fetching languages:', error));
+    fetchContracts();
+    fetchDepartments();
+    fetchSupervisors();
+    fetchRoles();
+    fetchLanguages();
   }, []);
 
   const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {

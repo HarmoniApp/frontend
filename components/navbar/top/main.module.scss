@@ -1,13 +1,4 @@
-$popup-bg: rgba(0, 0, 0, 0.5);
-$popup-bg-colour: #4F4E4E;
-$popup-highlight-colour: #FFCF70;
-
-$bg-color: #4F4E4E;
-$font-color: #FFFFFF;
-$font-color-dark: #000000;
-$highlight-color: #FFCF70;
-$padding: 10px;
-$logo-size: 24px;
+@import '@/styles/variables.scss';
 
 .modalOverlayOfNotification {
     position: fixed;
@@ -15,7 +6,7 @@ $logo-size: 24px;
     left: 0;
     right: 0;
     bottom: 0;
-    background: $popup-bg;
+    background: $black-transparency-05;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -25,9 +16,9 @@ $logo-size: 24px;
   .modalContentOfNotification{
     display: flex;
     flex-direction: column;
-    border: 2px solid $popup-highlight-colour;
+    border: 2px solid $main-colour;
     border-radius: 8px;
-    background-color: $popup-bg-colour;
+    background-color: $gray;
     text-align: center;
     width: auto;
     max-height: 80vh;
@@ -45,9 +36,9 @@ $logo-size: 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: $bg-color;
-    color: $font-color;
-    padding: $padding;
+    background-color: $gray;
+    color: $font-light-colour;
+    padding: 10px;
 }
 
 .leftSection,
@@ -57,15 +48,16 @@ $logo-size: 24px;
 }
 
 .leftSection .logo {
-    font-size: $logo-size;
+    font-size: 24px;
     font-weight: bold;
     margin-left: 10px;
-    color: $font-color;
+    color: $font-light-colour;
     letter-spacing: -25%;
+    cursor: pointer;
 }
 
 .logo::first-letter {
-    color: $highlight-color;
+    color: $main-colour;
 }
 
 .icon {
@@ -75,7 +67,7 @@ $logo-size: 24px;
 }
 
 .active {
-    color: $highlight-color;
+    color: $main-colour;
 }
 
 .hidden {
@@ -109,8 +101,8 @@ $logo-size: 24px;
     position: absolute;
     top: -10px;
     right: -10px;
-    background-color: $highlight-color;
-    color: $font-color-dark;
+    background-color: $main-colour;
+    color: $font-dark-colour;
     border-radius: 50%;
     padding: 4px 8px;
     font-size: 12px;

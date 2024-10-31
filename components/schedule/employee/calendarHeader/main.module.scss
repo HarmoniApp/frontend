@@ -1,8 +1,4 @@
-$employeeCalendar-button-bg-colour: #FFFFFF;
-$employeeCalendar-font-colour: #FFFFFF;
-$employeeCalendar-font-colour-dark: #000000;
-$employeeCalendar-highlight-colour: #FFCF70;
-$employeeCalendar-highlight-colour-hover: #FFBE4D;
+@import '@/styles/variables.scss';
 
 .calendarHeader {
   display: flex;
@@ -18,14 +14,14 @@ $employeeCalendar-highlight-colour-hover: #FFBE4D;
     padding: 0;
     font-weight: bold;
     text-transform: capitalize;
-    color: $employeeCalendar-font-colour-dark;
-    border-bottom: 2px solid $employeeCalendar-highlight-colour;
+    color: $font-dark-colour;
+    border-bottom: 2px solid $main-colour;
   }
 
   .changeMonthButton {
-    background-color: $employeeCalendar-button-bg-colour;
-    color: $employeeCalendar-font-colour-dark;
-    border: 2px solid $employeeCalendar-highlight-colour;
+    background-color: $white;
+    color: $font-dark-colour;
+    border: 2px solid $main-colour;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
@@ -36,9 +32,9 @@ $employeeCalendar-highlight-colour-hover: #FFBE4D;
     }
 
     &:hover {
-      background-color: $employeeCalendar-highlight-colour-hover;
-      color: $employeeCalendar-font-colour;
-      border-color: $employeeCalendar-highlight-colour-hover;
+      background-color: $main-colour-hover;
+      color: $font-light-colour;
+      border-color: $main-colour-hover;
     }
   }
 }

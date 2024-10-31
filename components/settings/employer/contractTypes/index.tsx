@@ -27,25 +27,40 @@ const ContractTypes: React.FC = () => {
     fetchContractsWithDays();
   }, []);
 
-  const fetchContractsWithDays = () => {
-    fetch('http://localhost:8080/api/v1/contract-type')
-      .then(response => response.json())
-      .then(data => setContracts(data))
-      .catch(error => console.error('Error fetching contract types:', error));
+  const fetchContractsWithDays = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        }
+      });
+      const data = await response.json();
+      setContracts(data);
+    }
+    catch (error) {
+      console.error('Error fetching contract types:', error);
+    }
   };
 
-  const handleDeleteContractType = (contractId: number) => {
-    fetch(`http://localhost:8080/api/v1/contract-type/${contractId}`, {
-      method: 'DELETE',
-    })
-      .then(response => {
-        if (response.ok) {
-          setContracts(contracts.filter((contract) => contract.id !== contractId));
-        } else {
-          console.error('Failed to delete contract type');
+  const handleDeleteContractType = async (contractId: number) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type/${contractId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
         }
-      })
-      .catch(error => console.error('Error deleting contract type:', error));
+      });
+      if (response.ok) {
+        setContracts(contracts.filter((contract) => contract.id !== contractId));
+      } else {
+        console.error("Failed to delete department");
+      }
+    } catch (error) {
+      console.error('Error deleting contract type:', error);
+    }
   };
 
   const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
@@ -79,21 +94,23 @@ const ContractTypes: React.FC = () => {
             initialValues={{ name: contract.name, absence_days: contract.absence_days }}
             validationSchema={contractValidationSchema}
             enableReinitialize={true}
-            onSubmit={(values, { resetForm }) => {
-              fetch(`http://localhost:8080/api/v1/contract-type/${contract.id}`, {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(values),
-              })
-                .then(response => response.json())
-                .then((data: ContractWithDays) => {
-                  setContracts(contracts.map(c => (c.id === data.id ? data : c)));
-                  setEditingContractId(null);
-                  resetForm();
-                })
-                .catch(error => console.error('Error updating contract type:', error));
+            onSubmit={async (values, { resetForm }) => {
+              try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type/${contract.id}`, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                  },
+                  body: JSON.stringify(values),
+                });
+                const data: ContractWithDays = await response.json();
+                setContracts(contracts.map(c => (c.id === data.id ? data : c)));
+                setEditingContractId(null);
+                resetForm();
+              } catch (error) {
+                console.error('Error updating contract type:', error);
+              }
             }}
           >
             {({ handleSubmit, handleChange, values, errors, touched, resetForm }) => (
@@ -128,8 +145,8 @@ const ContractTypes: React.FC = () => {
                           <Field
                             component="input"
                             type="number"
-                            name="absence_days"  // Użyj 'absence_days'
-                            value={values.absence_days}  // Sprawdź 'absence_days'
+                            name="absence_days" 
+                            value={values.absence_days}  
                             onChange={handleChange}
                             className={classNames(styles.absenceDaysInput, {
                               [styles.errorInput]: errors.absence_days && touched.absence_days,
@@ -183,23 +200,24 @@ const ContractTypes: React.FC = () => {
       <Formik
         initialValues={{ name: '', absence_days: 0 }}
         validationSchema={contractValidationSchema}
-        onSubmit={(values, { resetForm }) => {
-          console.log('Submitting values:', values);
-          fetch('http://localhost:8080/api/v1/contract-type', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(values),
-          })
-            .then(response => response.json())
-            .then((data: ContractWithDays) => {
-              setAddedContractName(data.name);
-              setIsAddModalOpen(true);
-              setContracts([...contracts, data]);
-              resetForm();
-            })
-            .catch(error => console.error('Error adding contract type:', error));
+        onSubmit={async (values, { resetForm }) => {
+          try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+              },
+              body: JSON.stringify(values),
+            });
+            const data: ContractWithDays = await response.json();
+            setAddedContractName(data.name);
+            setIsAddModalOpen(true);
+            setContracts([...contracts, data]);
+            resetForm();
+          } catch (error) {
+            console.error('Error adding contract type:', error);
+          }
         }}
       >
         {({ handleSubmit, handleChange, values, errors, touched }) => (
@@ -222,7 +240,7 @@ const ContractTypes: React.FC = () => {
               className={classNames(styles.absenceDaysInput, {
                 [styles.errorInput]: errors.absence_days && touched.absence_days,
               })}
-              
+
             />
             <ErrorMessage name="absence_days" component="div" className={styles.errorMessage} />
             <button className={styles.addButton} type="submit">

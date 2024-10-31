@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEdit, faImage, faQuestionCircle, faClipboard, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import Flag from 'react-flagkit';
+// import Flag from 'react-flagkit';
 import styles from './main.module.scss';
+// import { log } from 'console';
 
 
 interface SidebarProps {
@@ -20,7 +21,7 @@ const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
     const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
-        const storedIsAdmin = localStorage.getItem('isAdmin');
+        const storedIsAdmin = sessionStorage.getItem('isAdmin');
 
         if (storedIsAdmin !== null) {
             setIsAdmin(JSON.parse(storedIsAdmin));
@@ -30,6 +31,12 @@ const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
     const settingsToGo = () => {
         router.push('/settings');
     };
+
+    const logout = () => {
+        localStorage.clear();
+        sessionStorage.clear();
+        router.push('/login');        
+    }
     return (
         <>
             <div className={`${styles.sidebarContainer} ${isOpen ? styles.open : ''}`}>
@@ -56,19 +63,23 @@ const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
                         <span>{isAdmin ? "Ustawienia" : "Zmień zdjęcie"}</span>
                     </div>
 
-                    <div className={styles.logout}>
+                    {/* <div className={styles.logout}>
                         <FontAwesomeIcon icon={faSignOutAlt} className={styles.icon} />
                         <span>Wyloguj się</span>
-                    </div>
+                    </div> */}
                 </div>
                 <div className={styles.footer}>
                     <div className={styles.logoContainer}>
                         <p className={styles.logo}>HA</p>
                     </div>
-                    <div className={styles.languages}>
+                    {/* <div className={styles.languages}>
                         <Flag className={styles.para} country="PL" />
                         <Flag className={styles.para} country="GB" />
                         <Flag className={styles.para} country="ES" />
+                    </div> */}
+                    <div className={styles.logout} onClick={logout}>
+                        <FontAwesomeIcon icon={faSignOutAlt} className={styles.icon} />
+                        <span>Wyloguj się</span>
                     </div>
                 </div>
             </div>

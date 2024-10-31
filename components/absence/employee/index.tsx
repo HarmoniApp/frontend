@@ -24,49 +24,60 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
         fetchUserAbsences();
     }, []);
 
-    const fetchUserAbsences = () => {
-        fetch(`http://localhost:8080/api/v1/absence/user/${userId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-        .then((response) => {
+    const fetchUserAbsences = async () => {
+        try {
+            // console.log('Rozpoczęcie pobierania nieobecności użytkownika.');
+            
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/user/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                },
+            });
+    
+            console.log('Otrzymano odpowiedź:', response);
+    
             if (!response.ok) {
                 setError(true);
+                console.error('Błąd odpowiedzi HTTP:', response.status);
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            return response.json();
-        })
-        .then((data) => {
-            const absences = data.content; 
+    
+            const data = await response.json();
+            console.log('Dane pobrane:', data);
+    
+            const absences = data.content;
             setAbsences(absences);
     
+            // console.log('Przetwarzanie typów nieobecności.');
             const typeNames: { [key: number]: string } = {};
-            const typePromises = absences.map((absence:any) => {
+            const typePromises = absences.map((absence: any) => {
                 if (!(absence.absence_type_id in typeNames)) {
                     return fetchAbsenceTypeName(absence.absence_type_id).then((typeName) => {
+                        // console.log(`Typ nieobecności dla ID ${absence.absence_type_id}:`, typeName);
                         typeNames[absence.absence_type_id] = typeName;
                     });
                 }
                 return Promise.resolve();
             });
     
-            return Promise.all(typePromises).then(() => {
-                setAbsenceTypeNames(typeNames);
-            });
-        })
-        .catch((error) => {
+            await Promise.all(typePromises);
+            setAbsenceTypeNames(typeNames);
+            // console.log('Ustawiono typy nieobecności:', typeNames);
+    
+        } catch (error) {
             console.error('Error fetching user absences:', error);
-        });
+        }
     };
 
     const fetchAbsenceTypeName = async (id: number): Promise<string> => {
         try {
-            const response = await fetch(`http://localhost:8080/api/v1/absence-type/${id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence-type/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
                 },
             });
 
@@ -86,13 +97,20 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
         if (selectedAbsenceId === null) return;
 
         try {
-            fetch(`http://localhost:8080/api/v1/absence/${selectedAbsenceId}/status/3`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/${selectedAbsenceId}/status/3`, {
                 method: 'DELETE',
-            })
-                .then(() => {
-                    console.log('Absence canceled');
-                    fetchUserAbsences();
-                })
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                },
+            });
+
+            if (response.ok) {
+                console.log('Absence canceled');
+                fetchUserAbsences();
+            } else {
+                throw new Error(`Failed to cancel absence with ID ${selectedAbsenceId}`);
+            }
         } catch (error) {
             console.error(`Error canceling absence with ID ${selectedAbsenceId}:`, error);
         }
@@ -105,7 +123,9 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                 <button className={styles.newAbsenceButton} onClick={() => setModalIsOpenAbsenceRequest(true)}>Złóż wniosek o urlop</button>
             </div>
 
-            {error ? <div className={styles.error}>Wystąpił błąd podczas ładowania danych</div> :
+            {error ? (
+                <div className={styles.error}>Wystąpił błąd podczas ładowania danych</div>
+            ) : (
                 <div className={styles.tableContainer}>
                     <table className={styles.absenceTable}>
                         <thead className={styles.absenceThead}>
@@ -121,13 +141,22 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                         <tbody className={styles.absenceDataBody}>
                             {absences.map((absence) => (
                                 <tr key={absence.id} className={styles.absenceDataBodyRowElement}>
-                                    <td className={styles.absenceDataBodyHeadElement}>{absenceTypeNames[absence.absence_type_id] || 'Ładowanie...'}</td>
-                                    <td className={styles.absenceDataBodyHeadElement}>{new Date(absence.start).toLocaleDateString()}</td>
-                                    <td className={styles.absenceDataBodyHeadElement}>{new Date(absence.end).toLocaleDateString()}</td>
-                                    <td className={`${styles.absenceDataBodyHeadElement} ${styles.afterElement}`}>{absence.working_days}</td>
-                                    <td className={styles.absenceDataBodyHeadElement}>{absence.status.name}</td>
+                                    <td className={styles.absenceDataBodyHeadElement}>
+                                        {absenceTypeNames[absence.absence_type_id] || 'Ładowanie...'}
+                                    </td>
+                                    <td className={styles.absenceDataBodyHeadElement}>
+                                        {new Date(absence.start).toLocaleDateString()}
+                                    </td>
+                                    <td className={styles.absenceDataBodyHeadElement}>
+                                        {new Date(absence.end).toLocaleDateString()}
+                                    </td>
+                                    <td className={`${styles.absenceDataBodyHeadElement} ${styles.afterElement}`}>
+                                        {absence.working_days}
+                                    </td>
+                                    <td className={styles.absenceDataBodyHeadElement}>
+                                        {absence.status.name}
+                                    </td>
                                     <td className={`${styles.absenceDataBodyHeadElement} ${styles.absenceDataBodyHeadElementButton}`}>
-
                                         <button
                                             className={styles.cancelButton}
                                             onClick={() => {
@@ -140,14 +169,13 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                                         >
                                             Anuluj
                                         </button>
-
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
-            }
+            )}
 
             {modalIsOpenAbsenceRequest && (
                 <div className={styles.addAbsencetModalOverlay}>
@@ -164,7 +192,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                             onCancel={handleCancelAbsence}
                             onClose={() => setModalIsOpenCancelAbsence(false)}
                             absenceType={selectedAbsenceType}
-                            absenceStartAndEnd={selectedAbsenceStart + ' - ' + selectedAbsenceEnd}
+                            absenceStartAndEnd={`${selectedAbsenceStart} - ${selectedAbsenceEnd}`}
                         />
                     </div>
                 </div>

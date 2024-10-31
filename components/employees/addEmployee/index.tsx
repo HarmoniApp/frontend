@@ -32,33 +32,92 @@ const AddEmployee: React.FC = () => {
 
   if (modalCountdown === 0) onBack();
 
+  const fetchRoles = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setRoles(data);
+    } catch (error) {
+      console.error('Error fetching roles:', error);
+    }
+  };
+
+  const fetchContracts = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setContracts(data);
+    } catch (error) {
+      console.error('Error fetching contract types:', error);
+    }
+  };
+
+  const fetchLanguages = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/language`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setLanguages(data);
+    } catch (error) {
+      console.error('Error fetching languages:', error);
+    }
+  };
+
+  const fetchSupervisors = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/supervisor`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setSupervisors(data.content);
+    } catch (error) {
+      console.error('Error fetching supervisors:', error);
+    }
+  };
+
+  const fetchDepartments = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/departments`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setDepartments(data);
+    } catch (error) {
+      console.error('Error fetching departments:', error);
+    }
+  };
+
   useEffect(() => {
-    fetch('http://localhost:8080/api/v1/role')
-      .then((response) => response.json())
-      .then((data) => setRoles(data))
-      .catch((error) => console.error('Error fetching roles:', error));
-
-    fetch('http://localhost:8080/api/v1/contract-type')
-      .then((response) => response.json())
-      .then((data) => setContracts(data))
-      .catch((error) => console.error('Error fetching contract-type:', error));
-
-    fetch('http://localhost:8080/api/v1/language')
-      .then((response) => response.json())
-      .then((data) => setLanguages(data))
-      .catch((error) => console.error('Error fetching languages:', error));
-
-    fetch('http://localhost:8080/api/v1/user/supervisor')
-      .then((response) => response.json())
-      .then((data) => {
-        setSupervisors(data.content);
-      })
-      .catch((error) => console.error('Error fetching supervisors:', error));
-
-    fetch('http://localhost:8080/api/v1/address/departments')
-      .then((response) => response.json())
-      .then((data) => setDepartments(data))
-      .catch((error) => console.error('Error fetching departments:', error));
+    fetchRoles();
+    fetchContracts();
+    fetchLanguages();
+    fetchSupervisors();
+    fetchDepartments();
   }, []);
 
   const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
@@ -201,33 +260,36 @@ const AddEmployee: React.FC = () => {
     languages: Yup.array().min(1, 'Przynajmniej jeden język jest wymagany'),
   });
 
-  const handleSubmit = (values: typeof initialValues,  { resetForm }: { resetForm: () => void }) => {
-    fetch('http://localhost:8080/api/v1/user', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(values),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const userId = data.id;
-        setIsModalOpen(true);
-        setEmployeeLink(userId);
-        resetForm();
-        const countdownInterval = setInterval(() => {
-          setModalCountdown((prev) => {
-            if (prev === 1) {
-              clearInterval(countdownInterval);
-              setIsModalOpen(false);
-            }
-            return prev - 1;
-          });
-        }, 1000);
-      })
-      .catch((error) => {
-        console.error('Błąd podczas dodawania pracownika');
-      })
+  const handleSubmit = async (values: typeof initialValues, { resetForm }: { resetForm: () => void }) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) throw new Error('Error adding employee');
+
+      const data = await response.json();
+      setEmployeeLink(data.id);
+      setIsModalOpen(true);
+      resetForm();
+
+      const countdownInterval = setInterval(() => {
+        setModalCountdown((prev) => {
+          if (prev === 1) {
+            clearInterval(countdownInterval);
+            setIsModalOpen(false);
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } catch (error) {
+      console.error('Błąd podczas dodawania pracownika:', error);
+    }
   };
 
   const initialValues = {

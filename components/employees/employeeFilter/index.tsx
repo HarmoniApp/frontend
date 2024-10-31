@@ -16,18 +16,44 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
   const [selectedLanguages, setSelectedLanguages] = useState<number[]>([]);
   const [order, setOrder] = useState<string | null>(null);
 
+  const fetchRoles = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setRoles(data);
+    } catch (error) {
+      console.error('Error fetching roles:', error);
+    }
+  };
+
+  const fetchLanguages = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/language`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setLanguages(data);
+    } catch (error) {
+      console.error('Error fetching languages:', error);
+    }
+  };
+
   useEffect(() => {
-    fetch('http://localhost:8080/api/v1/role')
-      .then(response => response.json())
-      .then(data => setRoles(data))
-      .catch(error => console.error('Error fetching roles:', error));
+    fetchRoles();
   }, []);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/v1/language')
-      .then(response => response.json())
-      .then(data => setLanguages(data))
-      .catch(error => console.error('Error fetching languages:', error));
+    fetchLanguages();
   }, []);
 
   useEffect(() => {
@@ -91,7 +117,7 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
     });
   };
 
-  const [searchQuery, setSearchQuery] = useState<string>(''); 
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -99,7 +125,7 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
       if (selectedRoles.length) filters.roles = selectedRoles;
       if (selectedLanguages.length) filters.languages = selectedLanguages;
       if (order) filters.order = order;
-      if (searchQuery) filters.query = searchQuery; 
+      if (searchQuery) filters.query = searchQuery;
       onApplyFilters(filters);
     }, 300);
 

@@ -29,66 +29,83 @@ const Departments: React.FC = () => {
         fetchDepartments();
     }, []);
 
-    const fetchDepartments = () => {
-        fetch("http://localhost:8080/api/v1/address")
-            .then((response) => response.json())
-            .then((data) => {
-                const filteredDepartments = data.filter((dept: DepartmentAddress) => dept.department_name !== null);
-                setDepartments(filteredDepartments);
-            })
-            .catch((error) => console.error("Error fetching departments:", error));
-    };
-
-    const handleAddDepartment = (values: DepartmentAddress, { resetForm }: any) => {
-        fetch("http://localhost:8080/api/v1/address", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(values),
-        })
-            .then((response) => response.json())
-            .then((addedDepartment) => {
-                setAddedDepartmentName(addedDepartment.department_name);
-                setIsAddModalOpen(true);
-                setDepartments([...departments, addedDepartment]);
-                resetForm();
-            })
-            .catch((error) => console.error("Error adding department:", error));
-    };
-
-    const handleSaveEdit = (values: DepartmentAddress) => {
-        if (editingDepartmentId !== null) {
-            fetch(`http://localhost:8080/api/v1/address/${editingDepartmentId}`, {
-                method: "PUT",
+    const fetchDepartments = async () => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address`, {
+                method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                },
-                body: JSON.stringify(values),
-            })
-                .then((response) => response.json())
-                .then((updatedDepartment) => {
-                    setDepartments((prevDepartments) =>
-                        prevDepartments.map((dept) => (dept.id === updatedDepartment.id ? updatedDepartment : dept))
-                    );
-                    setEditingDepartmentId(null);
-                })
-                .catch((error) => console.error("Error updating department:", error));
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                }
+            });
+            const data = await response.json();
+            const filteredDepartments = data.filter((dept: DepartmentAddress) => dept.department_name !== null);
+            setDepartments(filteredDepartments);
+        }
+        catch (error) {
+            console.error("Error fetching departments:", error);
         }
     };
 
-    const handleDeleteDepartment = (departmentId: number) => {
-        fetch(`http://localhost:8080/api/v1/address/${departmentId}`, {
-            method: "DELETE",
-        })
-            .then((response) => {
-                if (response.ok) {
-                    setDepartments(departments.filter((dept) => dept.id !== departmentId));
-                } else {
-                    console.error("Failed to delete department");
+    const handleAddDepartment = async (values: DepartmentAddress, { resetForm }: any) => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                },
+                body: JSON.stringify(values),
+            });
+            const addedDepartment = await response.json();
+            setAddedDepartmentName(addedDepartment.department_name);
+            setIsAddModalOpen(true);
+            setDepartments([...departments, addedDepartment]);
+            resetForm();
+        } catch (error) {
+            console.error("Error adding department:", error);
+        }
+    };
+
+    const handleSaveEdit = async (values: DepartmentAddress) => {
+        if (editingDepartmentId !== null) {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${editingDepartmentId}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    },
+                    body: JSON.stringify(values),
+                });
+                const updatedDepartment = await response.json();
+                setDepartments((prevDepartments) =>
+                    prevDepartments.map((dept) => (dept.id === updatedDepartment.id ? updatedDepartment : dept))
+                );
+                setEditingDepartmentId(null);
+            } catch (error) {
+                console.error("Error updating department:", error);
+            }
+        }
+    };
+
+    const handleDeleteDepartment = async (departmentId: number) => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${departmentId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
                 }
-            })
-            .catch((error) => console.error("Error deleting department:", error));
+            });
+            if (response.ok) {
+                setDepartments(departments.filter((dept) => dept.id !== departmentId));
+            } else {
+                console.error("Failed to delete department");
+            }
+        } catch (error) {
+            console.error("Error deleting department:", error);
+        }
     };
 
     const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
@@ -447,7 +464,7 @@ const Departments: React.FC = () => {
                         </div>
                         <div className={styles.buttonContainer}>
                             <button type="submit" className={styles.addButton}>
-                                <FontAwesomeIcon icon={faPlus} className={styles.icon}/>
+                                <FontAwesomeIcon icon={faPlus} className={styles.icon} />
                                 <label className={styles.addButtonLabel}>Dodaj nowy oddział</label>
                             </button>
                         </div>

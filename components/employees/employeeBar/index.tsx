@@ -25,7 +25,13 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
 
   const downloadPDF = async () => {
     setLoading(true);
-    const responsePDF = await fetch(`http://localhost:8080/api/v1/pdf/generate-pdf-all-employees`);
+    const responsePDF = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/pdf/generate-pdf-all-employees`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+      }
+    });
 
     if (!responsePDF.ok) {
       console.error('Error downloading PDF');
@@ -49,7 +55,13 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
 
   const downloadXLSX = async () => {
     setLoading(true);
-    const responseXLSX = await fetch(`http://localhost:8080/api/v1/excel/users/export-excel`);
+    const responseXLSX = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/excel/users/export-excel`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+      }
+    });
 
     if (!responseXLSX.ok) {
       console.error('Error downloading XLSX');

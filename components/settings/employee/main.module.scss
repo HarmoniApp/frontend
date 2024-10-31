@@ -1,19 +1,4 @@
-$popup-bg: rgba(0, 0, 0, 0.5);
-$popup-bg-colour: #4F4E4E;
-$popup-highlight-colour: #FFCF70;
-
-$absenceTable-highlight-colour: #FFCF70;
-$absenceTable-highlight-hover-colour: #FFBE4D;
-$absenceTable-font-colour-light: #ffffff;
-$absenceTable-font-colour-dark: #000000;
-$absenceTable-bg-colour-light: #f5f5f5;
-$absenceTable-bg-colour-dark: #4F4E4E;
-
-$absenceTable-button-bg-colour: #FFFFFF;
-$absenceTable-font-colour: #FFFFFF;
-$absenceTable-font-colour-dark: #000000;
-$absenceTable-highlight-colour: #FFCF70;
-$absenceTable-highlight-colour-hover: #FFBE4D;
+@import '@/styles/variables.scss';
 
 .addAbsencetModalOverlay {
   position: fixed;
@@ -21,7 +6,7 @@ $absenceTable-highlight-colour-hover: #FFBE4D;
   left: 0;
   right: 0;
   bottom: 0;
-  background: $popup-bg;
+  background: $black-transparency-05;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -31,9 +16,9 @@ $absenceTable-highlight-colour-hover: #FFBE4D;
 .addAbsenceModalContent {
   display: flex;
   flex-direction: column;
-  border: 2px solid $popup-highlight-colour;
+  border: 2px solid $main-colour;
   border-radius: 8px;
-  background-color: $popup-bg-colour;
+  background-color: $gray;
   text-align: center;
   width: auto;
   max-height: 80vh;
@@ -57,8 +42,8 @@ $absenceTable-highlight-colour-hover: #FFBE4D;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  background-color: $popup-bg-colour;
-  border: 2px solid $absenceTable-highlight-colour;
+  background-color: $gray;
+  border: 2px solid $main-colour;
   border-radius: 10px;
   padding: 20px 40px;
   width: 100%;
@@ -66,7 +51,7 @@ $absenceTable-highlight-colour-hover: #FFBE4D;
   .title{
     font-size: 24px;
     font-weight: bold;
-    color: $absenceTable-highlight-colour;
+    color: $main-colour;
     text-transform: uppercase;
     text-decoration: underline;
 
@@ -77,8 +62,8 @@ $absenceTable-highlight-colour-hover: #FFBE4D;
   display: flex;
   flex-direction: column;
   align-self: center;
-  background-color: $popup-bg-colour;
-  border: 2px solid $absenceTable-highlight-colour;
+  background-color: $gray;
+  border: 2px solid $main-colour;
   border-radius: 10px;
   padding: 40px;
   width: 100%;
@@ -86,45 +71,45 @@ $absenceTable-highlight-colour-hover: #FFBE4D;
 
 .absenceTable {
   border-collapse: collapse;
-  background-color: $absenceTable-bg-colour-dark;
+  background-color: $gray;
 
 }
 
 .absenceThead {
   text-align: center;
-  background-color: $absenceTable-highlight-colour;
+  background-color: $main-colour;
   font-weight: bold;
   text-transform: uppercase;
 }
 
 .absenceTheadRowElement {
-  border-bottom: 2px solid $absenceTable-highlight-colour;
+  border-bottom: 2px solid $main-colour;
 }
 
 .absenceTheadHeadElement {
   padding: 15px;
   font-size: 16px;
-  color: $absenceTable-font-colour-dark;
+  color: $font-dark-colour;
 }
 
 .absenceDataBody {
-  color: $absenceTable-font-colour-dark;
+  color: $font-dark-colour;
   text-align: center;
 }
 
 .absenceDataBodyRowElement {
-  border-bottom: 2px solid $absenceTable-highlight-colour;
+  border-bottom: 2px solid $main-colour;
   transition: background-color 0.3s ease;
 }
 
 .absenceDataBodyRowElement:hover {
-  background-color: $absenceTable-highlight-colour;
+  background-color: $main-colour;
 }
 
 .absenceDataBodyHeadElement {
   padding: 15px;
   font-size: 14px;
-  color: $absenceTable-font-colour-light;
+  color: $font-light-colour;
   text-transform: capitalize;
 }
 
@@ -146,9 +131,9 @@ $absenceTable-highlight-colour-hover: #FFBE4D;
   align-items: center;
   justify-content: center;
   padding: 10px;
-  background-color: $absenceTable-button-bg-colour;
-  color: $absenceTable-font-colour-dark;
-  border: 2px solid $absenceTable-highlight-colour;
+  background-color: $white;
+  color: $font-dark-colour;
+  border: 2px solid $main-colour;
   border-radius: 5px;
   font-size: 14px;
   font-weight: bold;
@@ -159,7 +144,7 @@ $absenceTable-highlight-colour-hover: #FFBE4D;
 
 .archiveButton:hover,
 .newAbsenceButton:hover {
-  background-color: $absenceTable-highlight-colour-hover;
-  color: $absenceTable-font-colour;
-  border-color: $absenceTable-highlight-colour-hover;
+  background-color: $main-colour-hover;
+  color: $font-light-colour;
+  border-color: $main-colour-hover;
 }

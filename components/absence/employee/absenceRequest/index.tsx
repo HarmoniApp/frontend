@@ -19,10 +19,22 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
     const [modalCountdown, setModalCountdown] = useState(10);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/v1/absence-type')
-            .then(response => response.json())
-            .then(data => setAbsenceTypes(data))
-            .catch(error => console.error('Error fetching absence types:', error));
+        const fetchAbsenceTypes = async () => {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence-type`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    },
+                });
+                const data = await response.json();
+                setAbsenceTypes(data);
+            } catch (error) {
+                console.error('Error fetching absence types:', error);
+            }
+        };
+
+        fetchAbsenceTypes();
     }, []);
 
     useEffect(() => {
@@ -81,35 +93,33 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                         absence_type_id: ''
                     }}
                     validationSchema={validationSchema}
-                    onSubmit={(values) => {
-                        fetch('http://localhost:8080/api/v1/absence', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                absence_type_id: values.absence_type_id,
-                                start: values.start,
-                                end: values.end,
-                                user_id: onSend,
-                            }),
-                        })
-                            .then(response => {
-                                if (!response.ok) {
-                                    return response.json().then(errorData => {
-                                        throw new Error(`Server error: ${errorData.message || 'Unknown error'}`);
-                                    });
-                                }
-                                return response.json();
-                            })
-                            .then(data => {
-                                setIsSubmitted(true);
-                                onRefresh();
-                            })
-                            .catch(error => {
-                                console.error('Error submitting absence request:', error);
-                                alert(`Błąd podczas wysyłania żądania: ${error.message}`);
+                    onSubmit={async (values) => {
+                        try {
+                            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                                },
+                                body: JSON.stringify({
+                                    absence_type_id: values.absence_type_id,
+                                    start: values.start,
+                                    end: values.end,
+                                    user_id: onSend,
+                                }),
                             });
+
+                            if (!response.ok) {
+                                const errorData = await response.json();
+                                throw new Error(`Server error: ${errorData.message || 'Unknown error'}`);
+                            }
+
+                            setIsSubmitted(true);
+                            onRefresh();
+                        } catch (error) {
+                            console.error('Error submitting absence request:', error);
+                            alert(`Błąd podczas wysyłania żądania: ${error.message}`);
+                        }
                     }}
                 >
                     {({ errors, touched }) => (

@@ -1,14 +1,8 @@
-$popup-bg-colour: #4F4E4E;
-$popup-font-colour-light: #FFFFFF;
-$popup-font-colour-dark: #000000;
-$popup-highlight-colour: #FFCF70;
-$popup-highlight-colour-hover: #FFBE4D;
-$popup-details-button-colour: #008000;
-$popup-details-button-colour-hover: #00a000;
+@import '@/styles/variables.scss';
 
 .addEmplyeeConfirmationContainerMain {
     display: flex;
-    background-color: $popup-bg-colour;
+    background-color: $gray;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -30,12 +24,12 @@ $popup-details-button-colour-hover: #00a000;
     .headerParagraph{
         text-align: center;
         gap:2px;
-        color: $popup-font-colour-light;
+        color: $font-light-colour;
         margin: 0;
     }
 
     .highlight {
-        color: $popup-highlight-colour;
+        color: $main-colour;
         font-size: 20px;
         font-weight: bold;
         text-transform: capitalize;
@@ -55,7 +49,7 @@ $popup-details-button-colour-hover: #00a000;
         display: flex;
         align-items: center;
         text-align: center;
-        color: $popup-font-colour-light;
+        color: $font-light-colour;
         margin: 0;
     }
 
@@ -64,12 +58,12 @@ $popup-details-button-colour-hover: #00a000;
         align-items: center;
         justify-content: center;
         text-align: center;
-        color: $popup-font-colour-light;
+        color: $font-light-colour;
         margin: 0;
         gap: 3px;
 
         .highlightTimeLabel {
-            color: $popup-highlight-colour;
+            color: $main-colour;
             font-size: 20px;
             font-weight: bold;
         }
@@ -78,7 +72,7 @@ $popup-details-button-colour-hover: #00a000;
             display: flex;
             align-items: center;
             text-align: center;
-            color: $popup-font-colour-light;
+            color: $font-light-colour;
         }
     }
 }
@@ -93,8 +87,8 @@ $popup-details-button-colour-hover: #00a000;
 
     .employeeInfo {
         text-align: center;
-        background-color: $popup-highlight-colour;
-        color: $popup-font-colour-dark;
+        background-color: $main-colour;
+        color: $font-dark-colour;
         padding: 10px 20px;
         border: none;
         border-radius: 4px;
@@ -102,15 +96,15 @@ $popup-details-button-colour-hover: #00a000;
         transition: background-color 0.3s ease;
         
         &:hover {
-            background-color: $popup-highlight-colour-hover;
+            background-color: $main-colour-hover;
         }
     }
 
     .closeButton {
         display: flex;
         align-items: center;
-        background-color: $popup-highlight-colour;
-        color: $popup-font-colour-dark;
+        background-color: $main-colour;
+        color: $font-dark-colour;
         padding: 10px 20px;
         border: none;
         border-radius: 10px;
@@ -118,7 +112,7 @@ $popup-details-button-colour-hover: #00a000;
         transition: background-color 0.3s ease;
 
         &:hover {
-            background-color: $popup-highlight-colour-hover;
+            background-color: $main-colour-hover;
         }
 
         .buttonParagraph {
@@ -136,8 +130,8 @@ $popup-details-button-colour-hover: #00a000;
     .detailsButton {
         display: flex;
         align-items: center;
-        background-color: $popup-details-button-colour;
-        color: $popup-font-colour-light;
+        background-color: $green;
+        color: $font-light-colour;
         padding: 10px 20px;
         border: none;
         border-radius: 10px;
@@ -145,7 +139,7 @@ $popup-details-button-colour-hover: #00a000;
         transition: background-color 0.3s ease;
 
         &:hover {
-            background-color: $popup-details-button-colour-hover;
+            background-color: $green-hover;
         }
 
         .buttonParagraph {
