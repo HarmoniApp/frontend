@@ -20,7 +20,7 @@ const PredefinedShifts: React.FC = () => {
 
   const openDeleteModal = (shiftId: number) => {
     setDeleteShiftId(shiftId);
-    setIsDeleteModalOpen(true); 
+    setIsDeleteModalOpen(true);
   };
 
   const shiftHours: string[] = [];
@@ -36,25 +36,39 @@ const PredefinedShifts: React.FC = () => {
     fetchPredefinedShifts();
   }, []);
 
-  const fetchPredefinedShifts = () => {
-    fetch('http://localhost:8080/api/v1/predefine-shift')
-      .then(response => response.json())
-      .then(data => setShifts(data))
-      .catch(error => console.error('Error fetching predefined shifts:', error));
+  const fetchPredefinedShifts = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        }
+      });
+      const data = await response.json();
+      setShifts(data);
+    } catch (error) {
+      console.error('Error fetching predefined shifts:', error);
+    }
   };
 
-  const handleDeleteShift = (shiftId: number) => {
-    fetch(`http://localhost:8080/api/v1/predefine-shift/${shiftId}`, {
-      method: 'DELETE',
-    })
-      .then(response => {
-        if (response.ok) {
-          setShifts(shifts.filter((shift) => shift.id !== shiftId));
-        } else {
-          console.error('Failed to delete shift');
+  const handleDeleteShift = async (shiftId: number) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${shiftId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
         }
-      })
-      .catch(error => console.error('Error deleting shift:', error));
+      });
+      if (response.ok) {
+        setShifts(shifts.filter((shift) => shift.id !== shiftId));
+      } else {
+        console.error('Failed to delete shift');
+      }
+    } catch (error) {
+      console.error('Error deleting shift:', error);
+    }
   };
 
   const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
@@ -93,21 +107,23 @@ const PredefinedShifts: React.FC = () => {
             key={shift.id}
             initialValues={{ name: shift.name, start: shift.start.slice(0, 5), end: shift.end.slice(0, 5) }}
             validationSchema={shiftValidationSchema}
-            onSubmit={(values, { resetForm }) => {
-              fetch(`http://localhost:8080/api/v1/predefine-shift/${shift.id}`, {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(values),
-              })
-                .then(response => response.json())
-                .then((data: PredefinedShift) => {
-                  setShifts(shifts.map(s => (s.id === data.id ? data : s)));
-                  setEditingShiftId(null);
-                  resetForm();
-                })
-                .catch(error => console.error('Error updating shift:', error));
+            onSubmit={async (values, { resetForm }) => {
+              try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${shift.id}`, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                  },
+                  body: JSON.stringify(values),
+                });
+                const data: PredefinedShift = await response.json();
+                setShifts(shifts.map(s => (s.id === data.id ? data : s)));
+                setEditingShiftId(null);
+                resetForm();
+              } catch (error) {
+                console.error('Error updating shift:', error);
+              }
             }}
           >
             {({ handleSubmit, handleChange, values, errors, touched, resetForm }) => (

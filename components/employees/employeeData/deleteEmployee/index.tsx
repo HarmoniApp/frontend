@@ -25,10 +25,17 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
   }, [modalStage, modalCountdown, router, onClose]);
 
   const handleDeleteEmployee = () => {
-    fetch(`http://localhost:8080/api/v1/user/${userId}`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}`, {
       method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+      },
     })
-      .then(() => {
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Failed to delete employee with status: ${response.status}`);
+        }
         setModalStage('delete');
         const countdownInterval = setInterval(() => {
           setModalCountdown(prev => {

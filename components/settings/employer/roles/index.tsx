@@ -20,68 +20,86 @@ const Roles: React.FC = () => {
 
   const openDeleteModal = (roleId: number) => {
     setDeleteRoleId(roleId);
-    setIsDeleteModalOpen(true); 
+    setIsDeleteModalOpen(true);
   };
 
   useEffect(() => {
     fetchRoles();
   }, []);
 
-  const fetchRoles = () => {
-    fetch('http://localhost:8080/api/v1/role')
-      .then(response => response.json())
-      .then(data => setRoles(data))
-      .catch(error => console.error('Error fetching roles:', error));
-  };
-
-  const handleDeleteRole = (roleId: number) => {
-    fetch(`http://localhost:8080/api/v1/role/${roleId}`, {
-      method: 'DELETE',
-    })
-      .then(response => {
-        if (response.ok) {
-          fetchRoles();
-        } else {
-          console.error('Failed to delete role');
-        }
-      })
-      .catch(error => console.error('Error deleting role:', error));
-  };
-
-  const handleAddRole = (values: { newRoleName: string; newRoleColor: string }, { resetForm }: any) => {
-    fetch('http://localhost:8080/api/v1/role', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name: values.newRoleName, color: values.newRoleColor }),
-    })
-      .then(response => response.json())
-      .then((newRole) => {
-        setAddedRoleName(newRole.name);
-        setIsAddModalOpen(true);
-        fetchRoles();
-        resetForm();
-      })
-      .catch(error => console.error('Error adding role:', error));
-  };
-
-  const handleSaveEdit = (values: { editedRoleName: string; editedRoleColor: string }, { resetForm }: any) => {
-    if (editingRoleId !== null) {
-      fetch(`http://localhost:8080/api/v1/role/${editingRoleId}`, {
-        method: 'PUT',
+  const fetchRoles = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        }
+      });
+      const data = await response.json();
+      setRoles(data);
+    } catch (error) {
+      console.error('Error fetching roles:', error);
+    }
+  };
+
+  const handleDeleteRole = async (roleId: number) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/${roleId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        }
+      });
+      if (response.ok) {
+        await fetchRoles();
+      } else {
+        console.error('Failed to delete role');
+      }
+    } catch (error) {
+      console.error('Error deleting role:', error);
+    }
+  };
+
+  const handleAddRole = async (values: { newRoleName: string; newRoleColor: string }, { resetForm }: any) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
         },
-        body: JSON.stringify({ name: values.editedRoleName, color: values.editedRoleColor }),
-      })
-        .then(response => response.json())
-        .then(() => {
-          fetchRoles();
-          setEditingRoleId(null);
-          resetForm();
-        })
-        .catch(error => console.error('Error updating role:', error));
+        body: JSON.stringify({ name: values.newRoleName, color: values.newRoleColor }),
+      });
+      const newRole = await response.json();
+      setAddedRoleName(newRole.name);
+      setIsAddModalOpen(true);
+      await fetchRoles();
+      resetForm();
+    } catch (error) {
+      console.error('Error adding role:', error);
+    }
+  };
+
+  const handleSaveEdit = async (values: { editedRoleName: string; editedRoleColor: string }, { resetForm }: any) => {
+    if (editingRoleId !== null) {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/${editingRoleId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          },
+          body: JSON.stringify({ name: values.editedRoleName, color: values.editedRoleColor }),
+        });
+        await response.json();
+        await fetchRoles();
+        setEditingRoleId(null);
+        resetForm();
+      } catch (error) {
+        console.error('Error updating role:', error);
+      }
     }
   };
 

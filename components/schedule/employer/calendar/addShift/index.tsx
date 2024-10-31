@@ -80,35 +80,40 @@ const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShi
 
     useEffect(() => {
         if (!isOpen) return;
-
-        fetch(`http://localhost:8080/api/v1/role/user/${user.id}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+    
+        const fetchRolesAndShifts = async () => {
+            try {
+                const rolesResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/user/${user.id}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    },
+                });
+                if (!rolesResponse.ok) {
+                    throw new Error(`HTTP error! status: ${rolesResponse.status}`);
                 }
-                return response.json();
-            })
-            .then((data) => {
-                setRoles(data);
-            })
-            .catch((error) => {
-                console.error('Error fetching roles:', error);
-            });
-
-        fetch('http://localhost:8080/api/v1/predefine-shift')
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                const rolesData = await rolesResponse.json();
+                setRoles(rolesData);
+    
+                const shiftsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    },
+                });
+                if (!shiftsResponse.ok) {
+                    throw new Error(`HTTP error! status: ${shiftsResponse.status}`);
                 }
-                return response.json();
-            })
-            .then((data) => {
-                setPredefineShifts(data);
-            })
-            .catch((error) => {
-                console.error('Error fetching predefineShifts:', error);
-            });
-    }, [isOpen]);
+                const shiftsData = await shiftsResponse.json();
+                setPredefineShifts(shiftsData);
+    
+            } catch (error) {
+                console.error('Error fetching roles or predefine shifts:', error);
+            }
+        };
+    
+        fetchRolesAndShifts();
+    }, [isOpen, user.id]);
 
     const handlePredefinedShift = (predefinedShift: PredefinedShifts, setFieldValue: any) => {
         setFieldValue('selectedStartTime', predefinedShift.start.slice(0, 5));

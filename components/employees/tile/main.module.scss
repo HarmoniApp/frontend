@@ -1,19 +1,13 @@
-$tile-bg-colour: #FFCF70;
-$tile-bg-colour-white: #FFFFFF;
-$tile-bg-colour-hover: #FFBE4D;
-$tile-font-colour-dark: #000000;
-$tile-border-colour: #000000;
-$tile-box-shadow-colour: rgba(0, 0, 0, 0.1);
-
+@import '@/styles/variables.scss';
 
 .tileContainerMain {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background-color: $tile-bg-colour;
-  border: 1px solid $tile-border-colour;
-  box-shadow: 0px 4px 6px $tile-box-shadow-colour;
+  background-color: $main-colour;
+  border: 1px solid $font-dark-colour;
+  box-shadow: 0px 4px 6px $black-transparency-01;
   border-radius: 10px;
   padding: 5px;
   width: 100%;
@@ -21,7 +15,7 @@ $tile-box-shadow-colour: rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease, transform 0.2s ease;
 
   &:hover {
-    background-color: $tile-bg-colour-hover;
+    background-color: $main-colour-hover;
     transform: scale(1.05);
   }
 
@@ -51,7 +45,7 @@ $tile-box-shadow-colour: rgba(0, 0, 0, 0.1);
     .fullNameParagraph {
       text-align: left;
       font-weight: bold;
-      color: $tile-font-colour-dark;
+      color: $font-dark-colour;
       font-size: 20px;
       word-wrap: break-word;
     }
@@ -75,7 +69,7 @@ $tile-box-shadow-colour: rgba(0, 0, 0, 0.1);
       cursor: pointer;
       margin-left: 5px;
       font-weight: bold;
-      color: $tile-font-colour-dark;
+      color: $font-dark-colour;
   
       &:hover .tooltipContent {
         display: flex;
@@ -85,11 +79,11 @@ $tile-box-shadow-colour: rgba(0, 0, 0, 0.1);
         display: none;
         position: absolute;
         top: 20px;
-        background-color: $tile-bg-colour-white;
-        border: 2px solid $tile-bg-colour;
+        background-color: $white;
+        border: 2px solid $main-colour;
         border-radius: 5px;
         padding: 10px;
-        box-shadow: 0px 4px 6px $tile-box-shadow-colour;
+        box-shadow: 0px 4px 6px $black-transparency-01;
         z-index: 10;
         flex-direction: row;
         justify-content: center; 
@@ -109,9 +103,9 @@ $tile-box-shadow-colour: rgba(0, 0, 0, 0.1);
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background-color: $tile-bg-colour;
-  border: 1px solid $tile-border-colour;
-  box-shadow: 0px 4px 6px $tile-box-shadow-colour;
+  background-color: $main-colour;
+  border: 1px solid $font-dark-colour;
+  box-shadow: 0px 4px 6px $black-transparency-01;
   border-radius: 10px;
   padding: 10px;
   width: 100%;
@@ -120,7 +114,7 @@ $tile-box-shadow-colour: rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease, transform 0.2s ease;
 
   &:hover {
-    background-color: $tile-bg-colour-hover;
+    background-color: $main-colour-hover;
     transform: scale(1.02);
   }
 
@@ -150,7 +144,7 @@ $tile-box-shadow-colour: rgba(0, 0, 0, 0.1);
     .fullNameParagraph {
       text-align: left;
       font-weight: bold;
-      color: $tile-font-colour-dark;
+      color: $font-dark-colour;
       font-size: 20px;
       word-wrap: break-word;
     }

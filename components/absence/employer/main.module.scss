@@ -1,14 +1,4 @@
-$employer-chechbox-bg-colour: #e8e8e8;
-$employer-bg-colour-light: #FFFFFF;
-$employer-font-colour: #FFFFFF;
-$employer-font-colour-dark: #000000;
-$employer-highlight-colour: #FFCF70;
-$employer-highlight-colour-hover: #FFBE4D;
-$employer-box-shadow-colour: rgba(0, 0, 0, 0.1);
-$employer-approveAbsence-button-colour: #28a745;
-$employer-approveAbsence-button-colour-hover: #218838;
-$employer-cancelAbsence-button-colour: #dc3545;
-$employer-cancelAbsence-button-colour-hover: #c82333;
+@import '@/styles/variables.scss';
 
 
 .absenceEmployerContainerMain {
@@ -43,15 +33,15 @@ $employer-cancelAbsence-button-colour-hover: #c82333;
         height: 5vh;
         border-radius: 5px;
         border: none;
-        border-bottom: 2px solid $employer-highlight-colour;
+        border-bottom: 2px solid $main-colour;
         padding: 10px 5vh 10px 10px;
-        color: $employer-font-colour-dark;
-        box-shadow: inset 0 2px 4px $employer-box-shadow-colour;
+        color: $font-dark-colour;
+        box-shadow: inset 0 2px 4px $black-transparency-01;
         transition: all 0.3s ease;
 
         background-image:
-            linear-gradient(45deg, transparent 50%, $employer-font-colour-dark 50%),
-            linear-gradient(135deg, $employer-font-colour-dark 50%, transparent 50%);
+            linear-gradient(45deg, transparent 50%, $font-dark-colour 50%),
+            linear-gradient(135deg, $font-dark-colour 50%, transparent 50%);
         background-position:
             calc(100% - 15px) calc(1em + 5px),
             calc(100% - 6px) calc(1em + 5px);
@@ -59,18 +49,18 @@ $employer-cancelAbsence-button-colour-hover: #c82333;
             9px 9px,
             9px 9px;
         background-repeat: no-repeat;
-        color: $employer-font-colour-dark;
+        color: $font-dark-colour;
         cursor: pointer;
 
         &:hover {
-            border: 2px solid $employer-highlight-colour;
+            border: 2px solid $main-colour;
             outline: none;
-            background-color: lighten($employer-chechbox-bg-colour, 5%);
+            background-color: lighten($white-4, 5%);
         }
 
         &::placeholder {
             margin: 0 0 0 10px;
-            color: lighten($employer-font-colour-dark, 30%);
+            color: lighten($font-dark-colour, 30%);
         }
     }
 
@@ -101,7 +91,7 @@ $employer-cancelAbsence-button-colour-hover: #c82333;
             padding: 0;
             font-size: 35px;
             cursor: pointer;
-            color: $employer-highlight-colour;
+            color: $main-colour;
         }
     }
 }
@@ -117,17 +107,17 @@ $employer-cancelAbsence-button-colour-hover: #c82333;
     height: 5vh;
     border-radius: 5px;
     border: none;
-    border-bottom: 2px solid $employer-highlight-colour;
+    border-bottom: 2px solid $main-colour;
     padding: 10px 5vh 10px 10px;
-    color: $employer-font-colour-dark;
-    box-shadow: inset 0 2px 4px $employer-box-shadow-colour;
+    color: $font-dark-colour;
+    box-shadow: inset 0 2px 4px $black-transparency-01;
     transition: all 0.3s ease;
     padding-right: 30px;
 
     &:hover {
-        border: 2px solid $employer-highlight-colour;
+        border: 2px solid $main-colour;
         outline: none;
-        background-color: lighten($employer-chechbox-bg-colour, 5%);
+        background-color: lighten($white-4, 5%);
     }
 }
 

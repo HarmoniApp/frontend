@@ -1,17 +1,9 @@
-$calendarHeader-border-colour-dark: #000000;
-$calendarHeader-font-colour-dark: #000000;
-$calendarHeader-border-colour-dark: #000000;
-$calendarHeader-box-shadow-colour: rgba(0, 0, 0, 0.1);
-$calendarHeader-highlight-colour: #FFCF70;
-$calendarHeader-highlight-colour-dark: #FFBE4D;
-$calendarHeader-box-shadow-colour-orange: rgba(255, 165, 0, 0.8);
+@import '@/styles/variables.scss';
 
 /**
   * The reference md(only number) is still in index.tsx(21 line) because it changes the full name of the day to the abbreviation. 
   */
 
-$breakpoint-sm: 576px;
-$breakpoint-md: 768px;
 
 @mixin respond-to-sm {
   @media (max-width: $breakpoint-sm) {
@@ -41,7 +33,7 @@ $breakpoint-md: 768px;
     position: relative;
     flex:1;
     align-items: center;
-    background-color: $calendarHeader-highlight-colour;
+    background-color: $main-colour;
     border-radius: 8px;
     width: 100%;
     padding: 10px 15px;
@@ -69,11 +61,11 @@ $breakpoint-md: 768px;
         opacity: 1;
       }
   
-      &:focus {
-        outline: none;
-        border-color: $calendarHeader-highlight-colour-dark;
-        box-shadow: 0 0 5px $calendarHeader-box-shadow-colour-orange;
-      }
+      // &:focus {
+      //   outline: none;
+      //   border-color: $main-colour-hover;
+      //   box-shadow: 0 0 5px $black-transparency-01-orange;
+      // }
     }
   }
 
@@ -98,11 +90,11 @@ $breakpoint-md: 768px;
       justify-content: center;
       width: 100%;
       height: 8vh;
-      color: $calendarHeader-font-colour-dark;
-      background-color: $calendarHeader-highlight-colour;
+      color: $font-dark-colour;
+      background-color: $main-colour;
       border-radius: 10px;
-      border: 2px solid $calendarHeader-border-colour-dark;
-      box-shadow: 0px 2px 5px $calendarHeader-box-shadow-colour;
+      border: 2px solid $font-dark-colour;
+      box-shadow: 0px 2px 5px $black-transparency-01;
 
       .dayName {
         font-size: 16px;
@@ -120,10 +112,10 @@ $breakpoint-md: 768px;
     }
 
     .today {
-      background-color: $calendarHeader-highlight-colour-dark;
-      border: 2px solid $calendarHeader-border-colour-dark;
-      color: $calendarHeader-font-colour-dark;
-      box-shadow: 0px 4px 8px $calendarHeader-box-shadow-colour;
+      background-color: $main-colour-hover;
+      border: 2px solid $font-dark-colour;
+      color: $font-dark-colour;
+      box-shadow: 0px 4px 8px $black-transparency-01;
       border-radius: 12px;
       font-weight: bold;
       transform: scale(1.1);

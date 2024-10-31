@@ -1,8 +1,5 @@
-$employeeCalendar-bg-colour-powderlight: #EEE;
-$employeeCalendar-bg-colour-light: #FFF;
-$employeeCalendar-highlight-colour: #FFCF70;
-$employeeCalendar-border-colour: #CCC;
-$employeeCalendar-font-colour-dark: #000;
+@import '@/styles/variables.scss';
+
 
 .calendarCells {
   display: grid;
@@ -14,7 +11,7 @@ $employeeCalendar-font-colour-dark: #000;
   .daySpan {
     font-size: 16px;
     font-weight: bold;
-    color: $employeeCalendar-font-colour-dark;
+    color: $font-dark-colour;
   }
 
   .today {
@@ -24,8 +21,8 @@ $employeeCalendar-font-colour-dark: #000;
     padding: 12px;
     width: 14px;
     height: 14px;
-    background: $employeeCalendar-highlight-colour;
-    color: $employeeCalendar-font-colour-dark;
+    background: $main-colour;
+    color: $font-dark-colour;
     border-radius: 70px;
     font-weight: bold;
   }
@@ -33,11 +30,11 @@ $employeeCalendar-font-colour-dark: #000;
   .calendarCell {
     display: flex;
     flex-direction: column;
-    background-color: $employeeCalendar-bg-colour-light;
-    border: 2px solid $employeeCalendar-highlight-colour;
+    background-color: $white;
+    border: 2px solid $main-colour;
     height: 100%; 
     padding: 5px;
-    color: $employeeCalendar-font-colour-dark;
+    color: $font-dark-colour;
     border-radius: 10px;
 
     .shiftOrAbsenceContainer{

@@ -1,12 +1,8 @@
-$popup-bg-colour: #4F4E4E;
-$popup-font-colour: #FFFFFF;
-$popup-font-colour-dark: #000000;
-$popup-highlight-colour: #FFCF70;
-$popup-highlight-colour-hover: #FFBE4D;
+@import '@/styles/variables.scss';
 
 .editEmployeeDataNotificationContainerMain {
     display: flex;
-    background-color: $popup-bg-colour;
+    background-color: $gray;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -39,7 +35,7 @@ $popup-highlight-colour-hover: #FFBE4D;
         font-size: 18px;
         font-weight: bold;
         gap: 2px;
-        color: $popup-font-colour;
+        color: $font-light-colour;
         margin: 0;
 
         @media (max-width: 400px) {
@@ -64,7 +60,7 @@ $popup-highlight-colour-hover: #FFBE4D;
         justify-content: space-between;
         text-align: center;
         margin: 5px 0;
-        color: $popup-font-colour;
+        color: $font-light-colour;
 
         @media (max-width: 400px) {
             flex-direction: column;
@@ -75,7 +71,7 @@ $popup-highlight-colour-hover: #FFBE4D;
         .changedDataKey {
             font-weight: bold;
             text-decoration: underline;
-            text-decoration-color: $popup-highlight-colour;
+            text-decoration-color: $main-colour;
             text-align: center;
             margin: 0 10px 0 0;
 
@@ -86,7 +82,7 @@ $popup-highlight-colour-hover: #FFBE4D;
 
         .changedDataValue {
             text-align: center;
-            color: $popup-highlight-colour;
+            color: $main-colour;
 
             @media (max-width: 400px) {
                 text-align: left;
@@ -106,7 +102,7 @@ $popup-highlight-colour-hover: #FFBE4D;
         display: flex;
         align-items: center;
         text-align: center;
-        color: $popup-font-colour;
+        color: $font-light-colour;
         margin: 0;
 
         @media (max-width: 400px) {
@@ -118,12 +114,12 @@ $popup-highlight-colour-hover: #FFBE4D;
         display: flex;
         align-items: center;
         text-align: center;
-        color: $popup-font-colour;
+        color: $font-light-colour;
         margin: 0;
         gap: 3px;
 
         .highlight {
-            color: $popup-highlight-colour;
+            color: $main-colour;
             font-size: 20px;
             font-weight: bold;
             margin: 0 0 10px 0;
@@ -137,7 +133,7 @@ $popup-highlight-colour-hover: #FFBE4D;
             display: flex;
             align-items: center;
             text-align: center;
-            color: $popup-font-colour;
+            color: $font-light-colour;
             margin: 0 0 10px 0;
 
             @media (max-width: 400px) {
@@ -157,8 +153,8 @@ $popup-highlight-colour-hover: #FFBE4D;
     .closeButton {
         display: flex;
         align-items: center;
-        background-color: $popup-highlight-colour;
-        color: $popup-font-colour-dark;
+        background-color: $main-colour;
+        color: $font-dark-colour;
         padding: 10px 20px;
         border: none;
         border-radius: 10px;
@@ -166,7 +162,7 @@ $popup-highlight-colour-hover: #FFBE4D;
         transition: background-colour 0.3s ease;
 
         :hover {
-            background-color: $popup-highlight-colour-hover;
+            background-color: $main-colour-hover;
         }
 
         .buttonParagraph {

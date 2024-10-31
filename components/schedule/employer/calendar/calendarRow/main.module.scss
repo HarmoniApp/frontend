@@ -1,4 +1,4 @@
-$breakpoint-md: 768px;
+@import '@/styles/variables.scss';
 
 @mixin respond-to-md {
   @media (max-width: $breakpoint-md) {

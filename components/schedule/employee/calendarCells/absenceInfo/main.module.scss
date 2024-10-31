@@ -1,5 +1,4 @@
-$employeeCalendar-highlight-colour: #FFCF70;
-$employeeCalendar-font-colour-dark: #000;
+@import '@/styles/variables.scss';
 
 .absenceInfo {
   display: flex;
@@ -15,7 +14,7 @@ $employeeCalendar-font-colour-dark: #000;
     text-decoration: underline;
     text-underline-offset: 2px;
     text-decoration-thickness: 2px;
-    text-decoration-color: $employeeCalendar-highlight-colour;
-    color: $employeeCalendar-font-colour-dark;
+    text-decoration-color: $main-colour;
+    color: $font-dark-colour;
   }
 }

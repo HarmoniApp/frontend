@@ -1,18 +1,4 @@
-$popup-border-colour: #dee2e6;
-$popup-box-shadow-colour: rgba(0, 0, 0, 0.1);
-$popup-bg: rgba(0, 0, 0, 0.5);
-$popup-bg-colour: #4F4E4E;
-$popup-font-colour-light: #FFFFFF;
-$popup-font-colour-dark: #000000;
-$popup-highlight-colour: #FFCF70;
-$popup-highlight-colour-hover: #FFBE4D;
-$popup-checkbox-bg-colour: #e8e8e8;
-$popup-error-border-colour: #dc3545;
-$popup-error-bg-colour: #ffe6e6;
-$popup-add-button-colour: #008000;
-$popup-add-button-colour-hover: #00a000;
-$popup-delete-button-colour: #dc3545;
-$popup-detete-button-colour-hover: #c82333;
+@import '@/styles/variables.scss';
 
 .editShiftModalOverlay {
   position: fixed;
@@ -20,7 +6,7 @@ $popup-detete-button-colour-hover: #c82333;
   left: 0;
   right: 0;
   bottom: 0;
-  background: $popup-bg;
+  background: $black-transparency-05;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -30,9 +16,9 @@ $popup-detete-button-colour-hover: #c82333;
 .editShiftModalContent {
   display: flex;
   flex-direction: column;
-  border: 2px solid $popup-highlight-colour;
+  border: 2px solid $main-colour;
   border-radius: 8px;
-  background-color: $popup-bg-colour;
+  background-color: $gray;
   text-align: center;
   width: auto;
   max-height: 80vh;
@@ -59,8 +45,8 @@ $popup-detete-button-colour-hover: #c82333;
     font-size: 30px;
     text-align: center;
     font-weight: bold;
-    color: $popup-highlight-colour;
-    border-bottom: 2px solid $popup-highlight-colour;
+    color: $main-colour;
+    border-bottom: 2px solid $main-colour;
   }
 }
 
@@ -81,14 +67,14 @@ $popup-detete-button-colour-hover: #c82333;
       display: flex;
       align-items: center;
       font-weight: bold;
-      color: $popup-font-colour-light;
+      color: $font-light-colour;
     }
 
     .fullNameParagraphContainer,
     .dayParagraphContainer {
       display: flex;
       gap: 5px;
-      color: $popup-highlight-colour;
+      color: $main-colour;
     }
 
     .firstnameParagraph,
@@ -117,12 +103,12 @@ $popup-detete-button-colour-hover: #c82333;
     .hourInfoLabel {
       font-size: large;
       font-weight: bold;
-      color: $popup-highlight-colour;
+      color: $main-colour;
     }
 
     .hourInfoAdviceLabel {
       font-size: x-small;
-      color: $popup-font-colour-light;
+      color: $font-light-colour;
     }
   }
 
@@ -137,7 +123,7 @@ $popup-detete-button-colour-hover: #c82333;
     .startHourLabel,
     .endHourLabel {
       font-weight: bold;
-      color: $popup-font-colour-light;
+      color: $font-light-colour;
     }
 
     .startHour,
@@ -151,7 +137,7 @@ $popup-detete-button-colour-hover: #c82333;
     .hourSelect {
       width: 100%;
       font-size: 12px;
-      color: $popup-font-colour-dark;
+      color: $font-dark-colour;
     }
   }
 }
@@ -161,7 +147,7 @@ $popup-detete-button-colour-hover: #c82333;
 
   .shiftTimeLabel {
     font-weight: bold;
-    color: $popup-font-colour-light;
+    color: $font-light-colour;
   }
 }
 
@@ -172,10 +158,10 @@ $popup-detete-button-colour-hover: #c82333;
 
   .predefinedShiftButton {
     padding: 8px 12px;
-    background-color: $popup-highlight-colour;
+    background-color: $main-colour;
     border: none;
     border-radius: 4px;
-    color: $popup-font-colour-dark;
+    color: $font-dark-colour;
     cursor: pointer;
     font-weight: bold;
 
@@ -184,7 +170,7 @@ $popup-detete-button-colour-hover: #c82333;
     }
 
     &:hover {
-      background-color: $popup-highlight-colour-hover;
+      background-color: $main-colour-hover;
     }
   }
 }
@@ -194,13 +180,13 @@ $popup-detete-button-colour-hover: #c82333;
 
   .roleLabel {
     font-weight: bold;
-    color: $popup-highlight-colour;
+    color: $main-colour;
   }
 
   .roleSelect {
     width: 100%;
     font-size: 12px;
-    color: $popup-font-colour-dark;
+    color: $font-dark-colour;
   }
 }
 
@@ -221,8 +207,8 @@ $popup-detete-button-colour-hover: #c82333;
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
-    background-color: $popup-add-button-colour;
-    color: $popup-font-colour-light;
+    background-color: $green;
+    color: $font-light-colour;
     padding: 10px 15px;
 
     .buttonIcon {
@@ -236,7 +222,7 @@ $popup-detete-button-colour-hover: #c82333;
     }
 
     &:hover {
-      background-color: $popup-add-button-colour-hover;
+      background-color: $green-hover;
     }
   }
 
@@ -250,8 +236,8 @@ $popup-detete-button-colour-hover: #c82333;
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
-    background-color: $popup-highlight-colour;
-    color: $popup-font-colour-dark;
+    background-color: $main-colour;
+    color: $font-dark-colour;
     padding: 10px 15px;
 
     .buttonIcon {
@@ -265,7 +251,7 @@ $popup-detete-button-colour-hover: #c82333;
     }
 
     &:hover {
-      background-color: $popup-highlight-colour-hover;
+      background-color: $main-colour-hover;
     }
   }
 
@@ -279,8 +265,8 @@ $popup-detete-button-colour-hover: #c82333;
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
-    background-color: $popup-delete-button-colour;
-    color: $popup-font-colour-light;
+    background-color: $red;
+    color: $font-light-colour;
     padding: 10px 15px;
 
     .buttonIcon {
@@ -294,7 +280,7 @@ $popup-detete-button-colour-hover: #c82333;
     }
 
     &:hover {
-      background-color: $popup-detete-button-colour-hover;
+      background-color: $red-dark;
     }
   }
 }
@@ -308,14 +294,14 @@ $popup-detete-button-colour-hover: #c82333;
   height: 5vh;
   border-radius: 5px;
   border: none;
-  border-bottom: 2px solid $popup-highlight-colour;
+  border-bottom: 2px solid $main-colour;
   padding: 10px 5vh 10px 10px;
-  color: $popup-font-colour-dark;
-  box-shadow: inset 0 2px 4px $popup-box-shadow-colour;
+  color: $font-dark-colour;
+  box-shadow: inset 0 2px 4px $black-transparency-01;
   transition: all 0.3s ease;
   background-image:
-    linear-gradient(45deg, transparent 50%, $popup-font-colour-dark 50%),
-    linear-gradient(135deg, $popup-font-colour-dark 50%, transparent 50%);
+    linear-gradient(45deg, transparent 50%, $font-dark-colour 50%),
+    linear-gradient(135deg, $font-dark-colour 50%, transparent 50%);
   background-position:
     calc(100% - 15px) calc(1em + 5px),
     calc(100% - 6px) calc(1em + 5px);
@@ -323,18 +309,18 @@ $popup-detete-button-colour-hover: #c82333;
     9px 9px,
     9px 9px;
   background-repeat: no-repeat;
-  color: $popup-font-colour-dark;
+  color: $font-dark-colour;
   cursor: pointer;
 
   &:hover {
-    border: 2px solid $popup-highlight-colour;
+    border: 2px solid $main-colour;
     outline: none;
-    background-color: lighten($popup-checkbox-bg-colour, 5%);
+    background-color: lighten($white-4, 5%);
   }
 
   &::placeholder {
     margin: 0 0 0 10px;
-    color: lighten($popup-font-colour-dark, 30%);
+    color: lighten($font-dark-colour, 30%);
   }
 }
 
@@ -343,7 +329,7 @@ $popup-detete-button-colour-hover: #c82333;
 .roleLabel {
   font-size: 16px;
   font-weight: bold;
-  color: $popup-font-colour-dark;
+  color: $font-dark-colour;
   transition: color 0.3s ease;
   display: flex;
   align-items: center;
@@ -352,7 +338,7 @@ $popup-detete-button-colour-hover: #c82333;
 }
 
 .errorMessage {
-  color: $popup-error-border-colour;
+  color: $red;
   font-size: 16px;
   font-weight: bold;
   margin: 0;
@@ -362,7 +348,7 @@ $popup-detete-button-colour-hover: #c82333;
 
 .deleteContainerMain {
   display: flex;
-  background-color: $popup-bg-colour;
+  background-color: $gray;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -390,12 +376,12 @@ $popup-detete-button-colour-hover: #c82333;
 
     .headerLabel {
       text-align: center;
-      color: $popup-font-colour-light;
+      color: $font-light-colour;
       margin: 0;
     }
 
     .highlight {
-      color: $popup-highlight-colour;
+      color: $main-colour;
       font-size: 20px;
       font-weight: bold;
       text-transform: uppercase;
@@ -403,7 +389,7 @@ $popup-detete-button-colour-hover: #c82333;
   }
 
   .highlightTitle {
-    color: $popup-highlight-colour;
+    color: $main-colour;
     font-size: 20px;
     font-weight: bold;
     text-decoration: underline;
@@ -420,8 +406,8 @@ $popup-detete-button-colour-hover: #c82333;
   .deleteButton {
     display: flex;
     align-items: center;
-    background-color: $popup-delete-button-colour;
-    color: $popup-font-colour-light;
+    background-color: $red;
+    color: $font-light-colour;
     padding: 10px 20px;
     border: none;
     border-radius: 10px;
@@ -429,7 +415,7 @@ $popup-detete-button-colour-hover: #c82333;
     transition: background-colour 0.3s ease;
 
     &:hover {
-      background-color: $popup-detete-button-colour-hover;
+      background-color: $red-dark;
     }
 
     .buttonParagraph {
@@ -447,8 +433,8 @@ $popup-detete-button-colour-hover: #c82333;
   .closeButton {
     display: flex;
     align-items: center;
-    background-color: $popup-highlight-colour;
-    color: $popup-font-colour-dark;
+    background-color: $main-colour;
+    color: $font-dark-colour;
     padding: 10px 20px;
     border: none;
     border-radius: 10px;
@@ -456,7 +442,7 @@ $popup-detete-button-colour-hover: #c82333;
     transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: $popup-highlight-colour-hover;
+      background-color: $main-colour-hover;
     }
 
     .buttonParagraph {

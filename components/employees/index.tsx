@@ -29,9 +29,9 @@ const EmployeesComponent: React.FC = () => {
     let url = '';
 
     if (filters.query && filters.query.trim() !== '') {
-      url = `http://localhost:8080/api/v1/user/simple/search?q=${filters.query}`;
+      url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/search?q=${filters.query}`;
     } else {
-      url = `http://localhost:8080/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+      url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=${pageSize}`;
 
       const params = new URLSearchParams();
 

@@ -22,10 +22,9 @@ const NavbarBottom:React.FC<NavbarBottomProps> = ({isThisAdmin}) => {
   const vacationToGo = () => {
     router.push('/absence');
   };
-  const statisticsToGo = () => {
-    router.push('/statistics');
-  };
-
+  // const statisticsToGo = () => {
+  //   router.push('/statistics');
+  // };
   const plannerAiToGo = () => {
     router.push('/plannerAI');
   };
@@ -38,7 +37,7 @@ const NavbarBottom:React.FC<NavbarBottomProps> = ({isThisAdmin}) => {
         {/* <li onClick={employeesToGo} className={`${styles.navItem} ${pathname.startsWith('/employees') ? styles.active : ''}`}>Pracownicy</li> */}
         <li onClick={chatToGo} className={`${styles.navItem} ${pathname === '/chat' ? styles.active : ''}`}>Czat</li>
         <li onClick={vacationToGo} className={`${styles.navItem} ${pathname === '/absence' ? styles.active : ''}`}>Urlopy</li>
-        <li onClick={statisticsToGo} className={`${styles.navItem} ${pathname === '/statistics' ? styles.active : ''}`}>Statystyki</li>
+        {/* <li onClick={statisticsToGo} className={`${styles.navItem} ${pathname === '/statistics' ? styles.active : ''}`}>Statystyki</li> */}
         <li onClick={plannerAiToGo} className={`${styles.navItem} ${pathname === '/plannerAI' ? styles.active : ''}`}>PlannerAI</li>
       </ul>
     </nav>

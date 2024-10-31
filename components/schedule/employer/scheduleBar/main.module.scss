@@ -1,17 +1,4 @@
-$popup-bg: rgba(0, 0, 0, 0.5);
-$popup-bg-colour: #4F4E4E;
-$popup-highlight-colour: #FFCF70;
-
-$scheduleBar-button-bg-colour: #FFFFFF;
-$scheduleBar-font-colour: #FFFFFF;
-$scheduleBar-font-colour-dark: #000000;
-$scheduleBar-highlight-colour: #FFCF70;
-$scheduleBar-highlight-colour-hover: #FFBE4D;
-$scheduleBar-dropdown-bg-colour: #e8e8e8;
-
-$loading-bg-colour: rgba(0, 0, 0, 0.5);
-
-$breakpoint-md: 768px;
+@import '@/styles/variables.scss';
 
 @mixin respond-to-md {
     @media (max-width: $breakpoint-md) {
@@ -25,7 +12,7 @@ $breakpoint-md: 768px;
     left: 0;
     right: 0;
     bottom: 0;
-    background: $popup-bg;
+    background: $black-transparency-05;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -35,9 +22,9 @@ $breakpoint-md: 768px;
 .publishModalContent {
     display: flex;
     flex-direction: column;
-    border: 2px solid $popup-highlight-colour;
+    border: 2px solid $main-colour;
     border-radius: 8px;
-    background-color: $popup-bg-colour;
+    background-color: $gray;
     text-align: center;
     width: auto;
     max-height: 80vh;
@@ -75,9 +62,9 @@ $breakpoint-md: 768px;
             display: flex;
             align-items: center;
             padding: 10px;
-            background-color: $scheduleBar-button-bg-colour;
-            color: $scheduleBar-font-colour-dark;
-            border: 2px solid $scheduleBar-highlight-colour;
+            background-color: $white;
+            color: $font-dark-colour;
+            border: 2px solid $main-colour;
             border-radius: 5px;
             font-size: 14px;
             gap: 10px;
@@ -87,9 +74,9 @@ $breakpoint-md: 768px;
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 
             &:hover {
-                background-color: $scheduleBar-highlight-colour-hover;
-                color: $scheduleBar-font-colour;
-                border-color: $scheduleBar-highlight-colour-hover;
+                background-color: $main-colour-hover;
+                color: $font-light-colour;
+                border-color: $main-colour-hover;
             }
 
         }
@@ -105,17 +92,17 @@ $breakpoint-md: 768px;
 
         .changeWeekButton {
             padding: 10px;
-            background-color: $scheduleBar-button-bg-colour;
-            color: $scheduleBar-font-colour-dark;
-            border: 2px solid $scheduleBar-highlight-colour;
+            background-color: $white;
+            color: $font-dark-colour;
+            border: 2px solid $main-colour;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 
             &:hover {
-                background-color: $scheduleBar-highlight-colour-hover;
-                color: $scheduleBar-font-colour;
-                border-color: $scheduleBar-highlight-colour-hover;
+                background-color: $main-colour-hover;
+                color: $font-light-colour;
+                border-color: $main-colour-hover;
             }
 
         }
@@ -126,9 +113,9 @@ $breakpoint-md: 768px;
             align-items: center;
             justify-content: center;
             padding: 10px;
-            background-color: $scheduleBar-button-bg-colour;
-            color: $scheduleBar-font-colour-dark;
-            border: 2px solid $scheduleBar-highlight-colour;
+            background-color: $white;
+            color: $font-dark-colour;
+            border: 2px solid $main-colour;
             border-radius: 5px;
             gap: 10px;
 
@@ -136,7 +123,7 @@ $breakpoint-md: 768px;
                 margin: 0;
                 padding: 0;
                 font-weight: bold;
-                color: $scheduleBar-font-colour-dark;
+                color: $font-dark-colour;
             }
         }
     }
@@ -164,7 +151,7 @@ $breakpoint-md: 768px;
             align-items: center;
             justify-content: space-between;
             text-align: center;
-            background-color: $scheduleBar-dropdown-bg-colour;
+            background-color: $white-4;
             padding: 10px;
             border-radius: 5px;
             cursor: pointer;
@@ -173,7 +160,7 @@ $breakpoint-md: 768px;
 
 
             &:hover {
-                background-color: $scheduleBar-highlight-colour-hover;
+                background-color: $main-colour-hover;
             }
         }
     }
@@ -185,7 +172,6 @@ $breakpoint-md: 768px;
     left: 0;
     right: 0;
     bottom: 0;
-    background: $loading-bg-colour;
     display: flex;
     align-items: center;
     justify-content: center;

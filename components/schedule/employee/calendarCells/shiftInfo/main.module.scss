@@ -1,8 +1,5 @@
-$employeeCalendar-highlight-colour: #FFCF70;
-$employeeCalendar-font-colour-dark: #000;
-$employeeCalendar-font-colour-lightDark: #6c757d;
+@import '@/styles/variables.scss';
 
-$breakpoint-md: 768px;
 @mixin respond-to-md {
   @media (max-width: $breakpoint-md) {
     @content;
@@ -24,7 +21,7 @@ $breakpoint-md: 768px;
   }
 
   .shiftTime {
-    color: $employeeCalendar-font-colour-dark;
+    color: $font-dark-colour;
   }
 
   .shiftRole {
@@ -32,7 +29,7 @@ $breakpoint-md: 768px;
     text-decoration: underline;
     text-underline-offset: 2px;
     text-decoration-thickness: 2px;
-    text-decoration-color: $employeeCalendar-highlight-colour;
-    color: $employeeCalendar-font-colour-lightDark;
+    text-decoration-color: $main-colour;
+    color: $gray-powder;
   }
 }

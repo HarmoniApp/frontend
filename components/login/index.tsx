@@ -61,7 +61,7 @@ const Login = () => {
 
   const getCookieToken = async (token: string) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/csrf`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ const Login = () => {
 
   const handleSubmit = async (values: any) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/login`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -115,6 +115,11 @@ const Login = () => {
         const userId = decodedToken.id;
         const isAdmin = decodedToken.authorities === 'ROLE_ADMIN';
 
+
+        sessionStorage.removeItem('tokenJWT');
+        sessionStorage.removeItem('userId');
+        sessionStorage.removeItem('isAdmin');
+
         sessionStorage.setItem('tokenJWT', tokenJWT);
         sessionStorage.setItem('userId', userId.toString());
         sessionStorage.setItem('isAdmin', JSON.stringify(isAdmin));
@@ -138,7 +143,7 @@ const Login = () => {
 
   const handlePasswordChangeSubmit = async (values: any) => {
     try {
-      const response = await fetch(`http://localhost:8080${passwordPath}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${passwordPath}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

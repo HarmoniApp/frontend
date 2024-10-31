@@ -44,7 +44,13 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     const fetchRoles = async () => {
       setLoadingRoles(true);
       try {
-        const response = await fetch('http://localhost:8080/api/v1/role');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          },
+        });
         const data = await response.json();
         setRoles(data);
       } catch (error) {
@@ -57,39 +63,26 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     fetchRoles();
   }, []);
 
-  const fetchFilteredUsers = (filters: { query?: string } = {}, pageNumber: number = 1, pageSize: number = 20) => {
-    setLoadingUsers(true);
+  const fetchFilteredUsers = async (filters: { query?: string } = {}, pageNumber: number = 1, pageSize: number = 20) => {
+    setLoading(prev => ({ ...prev, users: true }));
+    const query = filters.query ? `/search?q=${filters.query}` : '';
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId?pageNumber=${pageNumber}&pageSize=${pageSize}`;
 
-    let url = `http://localhost:8080/api/v1/user/simple/empId?pageNumber=${pageNumber}&pageSize=${pageSize}`;
-
-    if (filters.query && filters.query.trim() !== '') {
-      url = `http://localhost:8080/api/v1/user/simple/empId/search?q=${filters.query}`;
-    }
-
-    fetch(url)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+    try {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
         }
-        return response.json();
-      })
-      .then(responseData => {
-        const usersData = responseData.content || responseData;
-
-        if (Array.isArray(usersData)) {
-          setUsers(usersData);
-        } else {
-          console.error('Unexpected response format, expected an array but got:', usersData);
-          setUsers([]);
-        }
-        setTotalPages(responseData.totalPages * pageSize);
-      })
-      .catch(error => {
-        console.error('Error fetching users:', error);
-      })
-      .finally(() => {
-        setLoadingUsers(false);
       });
+      const data = await response.json();
+      setUsers(data.content || data);
+      setTotalPages(data.totalPages * pageSiz);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    } finally {
+      setLoading(prev => ({ ...prev, users: false }));
+    }
   };
 
   useEffect(() => {
@@ -111,8 +104,13 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
           const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
 
           const schedulePromises = users.map(user =>
-            fetch(`http://localhost:8080/api/v1/calendar/user/${user.id}/week?startDate=${startDate}&endDate=${endDate}`, {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${user.id}/week?startDate=${startDate}&endDate=${endDate}`, {
               signal: newAbortController.signal,
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+              }
             })
               .then(response => {
                 if (!response.ok) {
@@ -167,7 +165,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
 
   const handleAddShift = async (shiftData: { start: string; end: string; userId: number; roleName: string; }) => {
     try {
-      const response = await fetch('http://localhost:8080/api/v1/shift', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -193,10 +191,11 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
 
   const handleEditShift = async (shiftData: { id: number; start: string; end: string; userId: number; roleName: string; }) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/shift/${shiftData.id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftData.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
         },
         body: JSON.stringify({
           start: shiftData.start,
@@ -219,8 +218,12 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
 
   const handleDeleteShift = async (shiftId: number, userId: number) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/shift/${shiftId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        }
       });
 
       if (response.ok) {
@@ -246,8 +249,12 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
 
     shiftsToPublish.forEach(async (shift) => {
       try {
-        const response = await fetch(`http://localhost:8080/api/v1/shift/${shift.id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shift.id}`, {
           method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          }
         });
 
         if (response.ok) {
@@ -277,7 +284,13 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     try {
       const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
       const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
-      const userResponse = await fetch(`http://localhost:8080/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}`);
+      const userResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        }
+      });
 
       if (!userResponse.ok) {
         throw new Error(`Failed to fetch schedule for user ${userId}`);
@@ -299,7 +312,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
 
   const renderedRows = useMemo(() => {
     const getMoreInfoOfEmployee = (user_id: number) => {
-      const url = `http://localhost:3000/employees/user/${user_id}`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/employees/user/${user_id}`;
       window.open(url, '_blank');
     };
 

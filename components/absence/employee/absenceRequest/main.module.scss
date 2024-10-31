@@ -1,23 +1,8 @@
-$absenceRequest-font-colour-dark: #000000;
-$absenceRequest-font-colour-light: #FFFFFF;
-$absenceRequest-checkbox-bg-colour: #e8e8e8;
-$absenceRequest-box-shadow-colour: rgba(0, 0, 0, 0.1);
-$absenceRequest-highlight-colour: #FFCF70;
-$absenceRequest-highlight-colour-hover: #FFBE4D;
-$absenceRequest-error-border-colour: #dc3545;
-$absenceRequest-error-bg-colour: #ffe6e6;
-$absenceRequest-yes-button-colour: #008000;
-$absenceRequest-yes-button-colour-hover: #00a000;
-
-$popup-bg-colour: #4F4E4E;
-$popup-font-colour: #FFFFFF;
-$popup-font-colour-dark: #000000;
-$popup-highlight-colour: #FFCF70;
-$popup-highlight-colour-hover: #FFBE4D;
+@import '@/styles/variables.scss';
 
 .addAbsenceNotificationContainerMain {
     display: flex;
-    background-color: $popup-bg-colour;
+    background-color: $gray;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -38,12 +23,12 @@ $popup-highlight-colour-hover: #FFBE4D;
 
     .headerLabel {
         text-align: center;
-        color: $popup-font-colour;
+        color: $font-light-colour;
         margin: 0;
     }
 
     .highlight {
-        color: $popup-highlight-colour;
+        color: $main-colour;
         font-size: 20px;
         font-weight: bold;
         text-transform: capitalize;
@@ -63,7 +48,7 @@ $popup-highlight-colour-hover: #FFBE4D;
         display: flex;
         align-items: center;
         text-align: center;
-        color: $popup-font-colour;
+        color: $font-light-colour;
         margin: 0;
     }
 
@@ -72,12 +57,12 @@ $popup-highlight-colour-hover: #FFBE4D;
         align-items: center;
         justify-content: center;
         text-align: center;
-        color: $popup-font-colour;
+        color: $font-light-colour;
         margin: 0;
         gap: 3px;
 
         .highlightTimeLabel {
-            color: $popup-highlight-colour;
+            color: $main-colour;
             font-size: 20px;
             font-weight: bold;
         }
@@ -86,7 +71,7 @@ $popup-highlight-colour-hover: #FFBE4D;
             display: flex;
             align-items: center;
             text-align: center;
-            color: $popup-font-colour;
+            color: $font-light-colour;
         }
     }
 }
@@ -100,8 +85,8 @@ $popup-highlight-colour-hover: #FFBE4D;
 
     .employeeInfo {
         text-align: center;
-        background-color: $popup-highlight-colour;
-        color: $popup-font-colour-dark;
+        background-color: $main-colour;
+        color: $font-dark-colour;
         padding: 10px 20px;
         border: none;
         border-radius: 4px;
@@ -109,15 +94,15 @@ $popup-highlight-colour-hover: #FFBE4D;
         transition: background-color 0.3s ease;
 
         &:hover {
-            background-color: $popup-highlight-colour-hover;
+            background-color: $main-colour-hover;
         }
     }
 
     .closeButton {
         display: flex;
         align-items: center;
-        background-color: $popup-highlight-colour;
-        color: $popup-font-colour-dark;
+        background-color: $main-colour;
+        color: $font-dark-colour;
         padding: 10px 20px;
         border: none;
         border-radius: 10px;
@@ -125,7 +110,7 @@ $popup-highlight-colour-hover: #FFBE4D;
         transition: background-color 0.3s ease;
 
         &:hover {
-            background-color: $popup-highlight-colour-hover;
+            background-color: $main-colour-hover;
         }
 
         .buttonParagraph {
@@ -158,7 +143,7 @@ $popup-highlight-colour-hover: #FFBE4D;
             font-weight: bold;
             text-transform: uppercase;
             text-decoration: underline;
-            color: $absenceRequest-highlight-colour;
+            color: $main-colour;
             margin: 0 0 20px 0;
         }
     }
@@ -166,7 +151,7 @@ $popup-highlight-colour-hover: #FFBE4D;
     .dataLabel {
         font-size: 16px;
         font-weight: bold;
-        color: $absenceRequest-font-colour-light;
+        color: $font-light-colour;
         margin: 10px 0;
         gap: 20px;
         transition: color 0.3s ease;
@@ -176,7 +161,7 @@ $popup-highlight-colour-hover: #FFBE4D;
     }
 
     .errorMessage {
-        color: $absenceRequest-error-border-colour;
+        color: $red;
         font-size: 16px;
         font-weight: bold;
         margin: 0;
@@ -192,21 +177,21 @@ $popup-highlight-colour-hover: #FFBE4D;
         height: 5vh;
         border-radius: 5px;
         border: none;
-        border-bottom: 2px solid $absenceRequest-highlight-colour;
+        border-bottom: 2px solid $main-colour;
         padding: 10px 5vh 10px 10px;
-        color: $absenceRequest-font-colour-dark;
-        box-shadow: inset 0 2px 4px $absenceRequest-box-shadow-colour;
+        color: $font-dark-colour;
+        box-shadow: inset 0 2px 4px $black-transparency-01;
         transition: all 0.3s ease;
 
         &:hover {
-            border: 2px solid $absenceRequest-highlight-colour;
+            border: 2px solid $main-colour;
             outline: none;
-            background-color: lighten($absenceRequest-checkbox-bg-colour, 5%);
+            background-color: lighten($white-4, 5%);
         }
 
         &::placeholder {
             margin: 0 0 0 10px;
-            color: lighten($absenceRequest-font-colour-dark, 30%);
+            color: lighten($font-dark-colour, 30%);
         }
 
         @media (max-width: 768px) {
@@ -216,14 +201,14 @@ $popup-highlight-colour-hover: #FFBE4D;
     }
 
     .errorInput {
-        border-color: $absenceRequest-error-border-colour;
-        background-color: $absenceRequest-error-bg-colour;
+        border-color: $red;
+        background-color: $red-powder;
     }
 
     .formSelect {
         background-image:
-            linear-gradient(45deg, transparent 50%, $absenceRequest-font-colour-dark 50%),
-            linear-gradient(135deg, $absenceRequest-font-colour-dark 50%, transparent 50%);
+            linear-gradient(45deg, transparent 50%, $font-dark-colour 50%),
+            linear-gradient(135deg, $font-dark-colour 50%, transparent 50%);
         background-position:
             calc(100% - 15px) calc(1em + 5px),
             calc(100% - 6px) calc(1em + 5px);
@@ -231,7 +216,7 @@ $popup-highlight-colour-hover: #FFBE4D;
             9px 9px,
             9px 9px;
         background-repeat: no-repeat;
-        color: $absenceRequest-font-colour-dark;
+        color: $font-dark-colour;
     }
 
     .pointer {
@@ -250,8 +235,8 @@ $popup-highlight-colour-hover: #FFBE4D;
     .backButton {
         display: flex;
         align-items: center;
-        background-color: $absenceRequest-highlight-colour;
-        color: $absenceRequest-font-colour-dark;
+        background-color: $main-colour;
+        color: $font-dark-colour;
         padding: 10px 20px;
         border: none;
         border-radius: 10px;
@@ -259,7 +244,7 @@ $popup-highlight-colour-hover: #FFBE4D;
         transition: background-color 0.3s ease;
 
         &:hover {
-            background-color: $absenceRequest-highlight-colour-hover;
+            background-color: $main-colour-hover;
         }
 
         .buttonParagraph {
@@ -277,8 +262,8 @@ $popup-highlight-colour-hover: #FFBE4D;
     .addButton {
         display: flex;
         align-items: center;
-        background-color: $absenceRequest-yes-button-colour;
-        color: $absenceRequest-font-colour-light;
+        background-color: $green;
+        color: $font-light-colour;
         padding: 10px 20px;
         border: none;
         border-radius: 10px;
@@ -286,7 +271,7 @@ $popup-highlight-colour-hover: #FFBE4D;
         transition: background-color 0.3s ease;
 
         &:hover {
-            background-color: $absenceRequest-yes-button-colour-hover;
+            background-color: $green-hover;
         }
 
         .buttonParagraph {

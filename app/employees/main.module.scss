@@ -1,8 +1,9 @@
-$employee-main-bg-colour: #f5f5f5;
+@import '@/styles/variables.scss';
 
 .employeesPageContainerMain{
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: $employee-main-bg-colour;
+    background-color: $page-main-background-colour
+    ;
 }
