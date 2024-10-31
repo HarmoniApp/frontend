@@ -60,31 +60,42 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     setSelectedChat(partner);
   };
 
-  const handleSendMessage = async () => {
-    if (newMessage.trim() && selectedChat !== null) {
+  const handleSendMessage = async (content: string) => {
+    if (content.trim() && selectedChat !== null) {
       console.log("senderId:", userId);
       console.log("receiverId:", selectedChat.id);
-      console.log("content:", newMessage);
+      console.log("content:", content);
+      const messageData = {
+        sender_id: userId,
+        receiver_id: selectedChat.id, 
+        content,
+      };
+      console.log("Sending message with:", messageData);
 
+  
       const response = await fetch(`http://localhost:8080/api/v1/message/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          senderId: userId,
-          receiverId: selectedChat.id,
-          content: newMessage,
-        }),
+        body: JSON.stringify(messageData),
       });
-      console.log('Response:', response);
-
-      if (!response.ok) throw new Error('Błąd podczas wysyłania wiadomości');
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Błąd podczas wysyłania wiadomości: ${errorData.message || 'Nieznany błąd'}`);
+      }
+  
       const data = await response.json();
       setMessages((prevMessages) => [...prevMessages, data]);
-      setNewMessage('');
     }
   };
+  
+
+  const validationSchema = Yup.object({
+    message: Yup.string().required('Wiadomość nie może być pusta'),
+  });
+
 
   return (
     <div className={styles.chatContainer}>
@@ -135,16 +146,30 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                 </div>
               ))}
             </div>
-            <div className={styles.messageInputContainer}>
-              <FontAwesomeIcon icon={faImage} className={styles.icon} />
-              <input
-                type="text"
-                placeholder="Wpisz wiadomość"
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-              />
-              <FontAwesomeIcon icon={faPaperPlane} className={styles.icon} onClick={handleSendMessage} />
-            </div>
+            <Formik
+              initialValues={{ message: '' }}
+              validationSchema={validationSchema}
+              onSubmit={(values, { resetForm }) => {
+                handleSendMessage(values.message);
+                resetForm();
+              }}
+            >
+              {({ errors, touched }) => (
+                <Form className={styles.messageInputContainer}>
+                  <FontAwesomeIcon icon={faImage} className={styles.icon} />
+                  <Field
+                    name="message"
+                    type="text"
+                    placeholder="Wpisz wiadomość"
+                    className={`${styles.messageInput} ${errors.message && touched.message ? styles.errorInput : ''}`}
+                  />
+                  <button type="submit" className={styles.sendButton}>
+                    <FontAwesomeIcon icon={faPaperPlane} className={styles.icon} />
+                  </button>
+                  {errors.message && touched.message && <div className={styles.errorMessage}>{errors.message}</div>}
+                </Form>
+              )}
+            </Formik>
           </>
         ) : (
           <p>Wybierz czat, aby wyświetlić wiadomości</p>
