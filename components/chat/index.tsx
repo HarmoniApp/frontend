@@ -22,7 +22,6 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
   const [chatPartners, setChatPartners] = useState<ChatPartner[]>([]);
   const [selectedChat, setSelectedChat] = useState<ChatPartner | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState<string>('');
 
   useEffect(() => {
     const fetchChatPartners = async () => {
@@ -62,16 +61,11 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
 
   const handleSendMessage = async (content: string) => {
     if (content.trim() && selectedChat !== null) {
-      console.log("senderId:", userId);
-      console.log("receiverId:", selectedChat.id);
-      console.log("content:", content);
       const messageData = {
         sender_id: userId,
         receiver_id: selectedChat.id, 
         content,
       };
-      console.log("Sending message with:", messageData);
-
   
       const response = await fetch(`http://localhost:8080/api/v1/message/send`, {
         method: 'POST',
@@ -95,7 +89,6 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
   const validationSchema = Yup.object({
     message: Yup.string().required('Wiadomość nie może być pusta'),
   });
-
 
   return (
     <div className={styles.chatContainer}>
