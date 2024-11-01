@@ -319,24 +319,25 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     return changes;
   };
 
-  const handleSubmit = (values: typeof initialValues) => {
+  const handleSubmit = async (values: typeof initialValues) => {
     const changedData = getChangedData(values);
 
-    fetch(`http://localhost:8080/api/v1/user/${employee.id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(values),
-    })
-      .then(response => response.json())
-      .then(updatedData => {
-        setChangedData(changedData);
-        setIsModalOpen(true);
-      })
-      .catch(error => {
-        console.error('Błąd podczas aktualizacji danych pracownika');
+    try {
+      const response = await fetch(`http://localhost:8080/api/v1/user/${employee.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+        body: JSON.stringify(values),
       });
+      const updatedData = await response.json();
+  
+      setChangedData(updatedData);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error('Błąd podczas aktualizacji danych pracownika:', error);
+    }
   };
 
   const initialValues = {
