@@ -64,7 +64,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   }, []);
 
   const fetchFilteredUsers = async (filters: { query?: string } = {}, pageNumber: number = 1, pageSize: number = 20) => {
-    setLoading(prev => ({ ...prev, users: true }));
+    setLoading(true);
     const query = filters.query ? `/search?q=${filters.query}` : '';
     let url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId?pageNumber=${pageNumber}&pageSize=${pageSize}`;
 
@@ -77,11 +77,11 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
       });
       const data = await response.json();
       setUsers(data.content || data);
-      setTotalPages(data.totalPages * pageSiz);
+      setTotalPages(data.totalPages * pageSize);
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {
-      setLoading(prev => ({ ...prev, users: false }));
+      setLoading(false);
     }
   };
 
