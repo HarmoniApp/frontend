@@ -140,6 +140,13 @@ $border-radius: 10px;
   margin-right: 10px;
 }
 
+.readMessage {
+  opacity: 0.6;
+}
+.unreadMessage {
+  font-weight: bold;
+}
+
 .messageInputContainer {
   display: flex;
   align-items: center;

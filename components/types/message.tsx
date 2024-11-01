@@ -4,4 +4,5 @@ export default interface  Message {
     receiver_id: number;
     content: string;
     sent_at: string;
+    is_read: boolean;
   };

@@ -28,46 +28,56 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
   useEffect(() => {
     const socket = new SockJS('http://localhost:8080/api/v1/ws');
     const stompClient = new Client({
-        webSocketFactory: () => socket,
-        debug: (str) => console.log(str),
-        onConnect: () => {
-            console.log('Connected to STOMP WebSocket');
-            
-            stompClient.subscribe(`/client/messages/${userId}`, (message) => {
-                console.log("Received message:", message.body);
-                const newMessage: Message = JSON.parse(message.body);
-                
-                setMessages((prevMessages) =>
-                    selectedChat && 
-                    (newMessage.sender_id === selectedChat.id || newMessage.receiver_id === selectedChat.id) 
-                        ? [...prevMessages, newMessage]
-                        : prevMessages
-                );
-            });
-        },
-        onStompError: (error) => {
-            console.error('STOMP WebSocket error:', error);
-        }
+      webSocketFactory: () => socket,
+      debug: (str) => console.log(str),
+      onConnect: () => {
+        console.log('Connected to STOMP WebSocket');
+
+        stompClient.subscribe(`/client/messages/${userId}`, (message) => {
+          console.log("Received message:", message.body);
+          const newMessage: Message = JSON.parse(message.body);
+
+          setMessages((prevMessages) =>
+            selectedChat &&
+              (newMessage.sender_id === selectedChat.id || newMessage.receiver_id === selectedChat.id)
+              ? [...prevMessages, newMessage]
+              : prevMessages
+          );
+        });
+
+        stompClient.subscribe(`/client/messages/read-status/${userId}`, (message) => {
+          const updatedMessage: Message = JSON.parse(message.body);
+
+          setMessages((prevMessages) =>
+            prevMessages.map((msg) =>
+              msg.id === updatedMessage.id ? updatedMessage : msg
+            )
+          );
+        });
+      },
+      onStompError: (error) => {
+        console.error('STOMP WebSocket error:', error);
+      }
     });
 
     stompClient.activate();
 
     return () => {
-        stompClient.deactivate();
+      stompClient.deactivate();
     };
-}, [userId, selectedChat]);
+  }, [userId, selectedChat]);
 
   useEffect(() => {
     const fetchChatPartners = async () => {
-        const response = await fetch(`http://localhost:8080/api/v1/message/chat-partners?userId=${userId}`);
-        if (!response.ok) throw new Error('Błąd podczas pobierania partnerów czatu');
-        const data = await response.json();
+      const response = await fetch(`http://localhost:8080/api/v1/message/chat-partners?userId=${userId}`);
+      if (!response.ok) throw new Error('Błąd podczas pobierania partnerów czatu');
+      const data = await response.json();
 
-        const partnersWithDetails = await Promise.all(
-          data.map(async (partnerId: number) => await fetchUserDetails(partnerId))
-        );
+      const partnersWithDetails = await Promise.all(
+        data.map(async (partnerId: number) => await fetchUserDetails(partnerId))
+      );
 
-        setChatPartners(partnersWithDetails);
+      setChatPartners(partnersWithDetails);
     };
 
     fetchChatPartners();
@@ -97,10 +107,10 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     if (content.trim() && selectedChat !== null) {
       const messageData = {
         sender_id: userId,
-        receiver_id: selectedChat.id, 
+        receiver_id: selectedChat.id,
         content,
       };
-  
+
       const response = await fetch(`http://localhost:8080/api/v1/message/send`, {
         method: 'POST',
         headers: {
@@ -108,7 +118,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
         },
         body: JSON.stringify(messageData),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(`Błąd podczas wysyłania wiadomości: ${errorData.message || 'Nieznany błąd'}`);
@@ -118,7 +128,16 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       setMessages((prevMessages) => [...prevMessages, data]);
     }
   };
-  
+
+  const markMessageAsRead = async (id: number) => {
+    const updatedMessages = messages.map(message =>
+      message.id === id ? { ...message, is_read: true } : message
+    );
+    setMessages(updatedMessages);
+
+    await fetch(`http://localhost:8080/api/v1/message/${id}/read`, { method: 'PATCH' });
+  };
+
 
   const validationSchema = Yup.object({
     message: Yup.string().required('Wiadomość nie może być pusta'),
@@ -163,11 +182,14 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`${styles.message} ${message.sender_id === userId ? styles.selfMessage : styles.otherMessage}`}
+                  onClick={() => message.receiver_id === userId && !message.is_read && markMessageAsRead(message.id)}
+                  className={`${styles.message} ${message.sender_id === userId ? styles.selfMessage : styles.otherMessage} ${message.is_read ? styles.readMessage : styles.unreadMessage}`}
                 >
-                  {message.sender_id !== userId && <div className={styles.messageAvatar}>
-                  <img className={styles.chatAvatar} src={`http://localhost:8080/api/v1/userPhoto/${selectedChat.photo}`} alt="User Photo" />
-                    </div>}
+                  {message.sender_id !== userId && (
+                    <div className={styles.messageAvatar}>
+                      <img className={styles.chatAvatar} src={`http://localhost:8080/api/v1/userPhoto/${selectedChat?.photo}`} alt="User Photo" />
+                    </div>
+                  )}
                   <p>{message.content}</p>
                   <span className={styles.timestamp}>{message.sent_at}</span>
                 </div>
