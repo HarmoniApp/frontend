@@ -6,6 +6,7 @@ import styles from './main.module.scss';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Message from '@/components/types/message';
+import Language from '@/components/types/language';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
@@ -24,6 +25,24 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
   const [chatPartners, setChatPartners] = useState<ChatPartner[]>([]);
   const [selectedChat, setSelectedChat] = useState<ChatPartner | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [languages, setLanguages] = useState<Language[]>([]);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('');
+
+  useEffect(() => {
+    fetch('http://localhost:8080/api/v1/language')
+      .then((response) => response.json())
+      .then((data) => setLanguages(data))
+      .catch((error) => console.error('Error fetching languages:', error));
+  }, []);
+
+  const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const language = event.target.value;
+    setSelectedLanguage(language);
+
+    if (selectedChat) {
+      fetchChatHistory(selectedChat, language);
+    }
+  };
 
   useEffect(() => {
     const socket = new SockJS('http://localhost:8080/api/v1/ws');
@@ -108,8 +127,19 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     };
   };
 
-  const fetchChatHistory = async (partner: ChatPartner) => {
-    const response = await fetch(`http://localhost:8080/api/v1/message/history?userId1=${userId}&userId2=${partner.id}`);
+  // const fetchChatHistory = async (partner: ChatPartner) => {
+  //   const response = await fetch(`http://localhost:8080/api/v1/message/history?userId1=${userId}&userId2=${partner.id}`);
+  //   if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
+  //   const data = await response.json();
+  //   setMessages(data);
+  //   setSelectedChat(partner);
+  // };
+
+  const fetchChatHistory = async (partner: ChatPartner, language: string = '') => {
+    const translate = language !== '';
+    const targetLanguageParam = translate ? `&targetLanguage=${language}` : '';
+
+    const response = await fetch(`http://localhost:8080/api/v1/message/history?userId1=${userId}&userId2=${partner.id}&translate=${translate}${targetLanguageParam}`);
     if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
     const data = await response.json();
     setMessages(data);
@@ -164,6 +194,20 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
         <div className={styles.sidebarHeader}>
           <FontAwesomeIcon icon={faCommentDots} className={styles.icon} />
           <h2>CZATY</h2>
+
+          <select 
+            value={selectedLanguage} 
+            onChange={handleLanguageChange} 
+            className={styles.languageSelect}
+          >
+            <option value="">Brak tłumaczenia</option>
+            {languages.map((language) => (
+              <option key={language.code} value={language.code}>
+                {language.name}
+              </option>
+            ))}
+          </select>
+
           <FontAwesomeIcon icon={faPlus} className={styles.icon} />
         </div>
         <div className={styles.searchBar}>
