@@ -34,7 +34,6 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
         console.log('Connected to STOMP WebSocket');
 
         stompClient.subscribe(`/client/messages/${userId}`, (message) => {
-          console.log("Received message:", message.body);
           const newMessage: Message = JSON.parse(message.body);
 
           setMessages((prevMessages) =>
@@ -43,6 +42,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
               ? [...prevMessages, newMessage]
               : prevMessages
           );
+          loadChatPartners();
         });
 
         stompClient.subscribe(`/client/messages/read-status/${userId}`, (message) => {
@@ -67,20 +67,33 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     };
   }, [userId, selectedChat]);
 
+  const loadChatPartners = async (selectFirstPartner = false) => {
+    const response = await fetch(`http://localhost:8080/api/v1/message/chat-partners?userId=${userId}`);
+    if (!response.ok) throw new Error('Błąd podczas pobierania partnerów czatu');
+    const data = await response.json();
+
+    const partnersWithDetails = await Promise.all(
+      data.map(async (partnerId: number) => await fetchUserDetails(partnerId))
+    );
+
+    setChatPartners(partnersWithDetails);
+
+    if (selectFirstPartner && partnersWithDetails.length > 0) {
+      const newestChatPartner = partnersWithDetails[0];
+      setSelectedChat(newestChatPartner);
+      await fetchChatHistory(newestChatPartner);
+    }
+
+    if (selectedChat) {
+      const activeChatPartner = partnersWithDetails.find(partner => partner.id === selectedChat.id);
+      if (activeChatPartner) {
+        setSelectedChat(activeChatPartner);
+      }
+    }
+  };
+
   useEffect(() => {
-    const fetchChatPartners = async () => {
-      const response = await fetch(`http://localhost:8080/api/v1/message/chat-partners?userId=${userId}`);
-      if (!response.ok) throw new Error('Błąd podczas pobierania partnerów czatu');
-      const data = await response.json();
-
-      const partnersWithDetails = await Promise.all(
-        data.map(async (partnerId: number) => await fetchUserDetails(partnerId))
-      );
-
-      setChatPartners(partnersWithDetails);
-    };
-
-    fetchChatPartners();
+    loadChatPartners(true);
   }, [userId]);
 
   const fetchUserDetails = async (id: number): Promise<ChatPartner> => {
@@ -109,6 +122,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
         sender_id: userId,
         receiver_id: selectedChat.id,
         content,
+        is_read: false,
       };
 
       const response = await fetch(`http://localhost:8080/api/v1/message/send`, {
@@ -126,6 +140,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
 
       const data = await response.json();
       setMessages((prevMessages) => [...prevMessages, data]);
+      loadChatPartners();
     }
   };
 
@@ -202,6 +217,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                 handleSendMessage(values.message);
                 resetForm();
               }}
+              validateOnBlur={false} 
             >
               {({ errors, touched }) => (
                 <Form className={styles.messageInputContainer}>
