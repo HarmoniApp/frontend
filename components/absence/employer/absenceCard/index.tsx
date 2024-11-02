@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import Absence from '@/components/types/absence';
 import AbsenceType from '@/components/types/absenceType';
 import AbsenceUser from '@/components/types/absenceUser';
@@ -18,6 +19,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     const [user, setUser] = useState<AbsenceUser | null>(null);
     const [modalIsOpenCancelAbsence, setModalIsOpenCancelAbsence] = useState(false);
     const [modalIsOpenAproveAbsence, setModalIsOpenAproveAbsence] = useState(false);
+    const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
 
     useEffect(() => {
         const fetchAbsenceType = async () => {
@@ -62,13 +64,14 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     const workingDays = () => absence.working_days ?? 0;
 
     const updateAbsenceStatus = async (absenceId: number, statusId: number) => {
+        setModalIsOpenLoadning(true);
         try {
-            const TESTtokenJWT = sessionStorage.getItem('tokenJWT');
+            const tokenJWT = sessionStorage.getItem('tokenJWT');
             const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${TESTtokenJWT}`,
+                    'Authorization': `Bearer ${tokenJWT}`,
                 },
                 credentials: 'include',
             });
@@ -76,7 +79,6 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
             if (resquestXsrfToken.ok) {
                 const data = await resquestXsrfToken.json();
                 const tokenXSRF = data.token;
-
 
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/${absenceId}/status/${statusId}`, {
                     method: 'PATCH',
@@ -93,6 +95,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                     throw new Error('Error updating absence status');
                 }
 
+                setModalIsOpenLoadning(false);
                 // const responseData = await response.json();
                 // console.log('Updated absence status response data:', responseData);
 
@@ -210,8 +213,8 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
             </div>
             {renderButtons()}
             {modalIsOpenCancelAbsence && (
-                <div className={styles.addAbsencetModalOverlay}>
-                    <div className={styles.addAbsenceModalContent}>
+                <div className={styles.cancelAbsenceModalOverlay}>
+                    <div className={styles.cancelAbsenceModalContent}>
                         <CancelConfirmation
                             onCancel={handleDeclineClick}
                             onClose={() => setModalIsOpenCancelAbsence(false)}
@@ -222,14 +225,22 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                 </div>
             )}
             {modalIsOpenAproveAbsence && (
-                <div className={styles.addAbsencetModalOverlay}>
-                    <div className={styles.addAbsenceModalContent}>
+                <div className={styles.aproveAbsenceModalOverlay}>
+                    <div className={styles.aproveAbsenceModalContent}>
                         <AproveConfirmation
                             onAprove={handleAcceptClick}
                             onClose={() => setModalIsOpenAproveAbsence(false)}
                             absenceType={absenceType?.name ?? 'Unknown'}
                             absenceStartAndEnd={`${startDate()} - ${endDate()}`}
                         />
+                    </div>
+                </div>
+            )}
+
+            {modalIsOpenLoadning && (
+                <div className={styles.loadingModalOverlay}>
+                    <div className={styles.loadingModalContent}>
+                        <div className={styles.spinnerContainer}><ProgressSpinner /></div>
                     </div>
                 </div>
             )}

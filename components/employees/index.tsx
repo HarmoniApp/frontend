@@ -79,30 +79,6 @@ const EmployeesComponent: React.FC = () => {
           setLoading(false);
         }
       };
-    // fetch(url)
-    //   .then(response => {
-    //     if (!response.ok) {
-    //       throw new Error('Network response was not ok');
-    //     }
-    //     return response.json();
-    //   })
-    //   .then(responseData => {
-    //     if (responseData && responseData.content) {
-    //       setData(responseData.content);
-    //       setTotalRecords(responseData.pageSize * responseData.totalPages);
-    //     } else if (responseData && responseData.length > 0) {
-    //       setData(responseData);
-    //     } else {
-    //       setData([]);
-    //       setTotalRecords(0);
-    //     }
-    //     setLoading(false);
-    //   })
-    //   .catch(error => {
-    //     console.error('Error fetching data:', error);
-    //     setError(error.message);
-    //     setLoading(false);
-    //   });
 
   useEffect(() => {
     fetchFilteredData({}, 1, rows);
