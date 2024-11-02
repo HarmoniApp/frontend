@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faPlane, faChartBar, faUserMinus, faUserPen, faUserLock } from '@fortawesome/free-solid-svg-icons';
 import DeleteEmployeePopUp from '@/components/employees/employeeData/deleteEmployee';
@@ -79,7 +80,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
     }
   }, [userId]);
 
-  if (!employee) return <div>Loading...</div>;
+  if (!employee) return <div className={styles.spinnerContainer}><ProgressSpinner /></div>;
 
   const department = departments.find(dept => dept.id === employee.work_address.id);
 
