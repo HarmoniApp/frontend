@@ -321,28 +321,6 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     return changes;
   };
 
-  // const handleSubmit = async (values: typeof initialValues) => {
-  //   const changedData = getChangedData(values);
-
-  //   try {
-  //     const response = await fetch(`http://localhost:8080/api/v1/user/${employee.id}`, {
-  //       method: 'PATCH',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-  //       },
-  //       body: JSON.stringify(values),
-  //     });
-  //     const updatedData = await response.json();
-
-  //     setChangedData(updatedData);
-  //     setIsModalOpen(true);
-  //   } catch (error) {
-  //     console.error('Błąd podczas aktualizacji danych pracownika:', error);
-  //   }
-  // };
-
-  // const updateAbsenceStatus = asy nc (absenceId: number, statusId: number) => {
   const handleSubmit = async (values: typeof initialValues) => {
     setModalIsOpenLoadning(true);
     try {
@@ -370,20 +348,17 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
               credentials: 'include',
               body: JSON.stringify(values),
             });
-            // const updatedData = await response.json();
+
             const changedData = getChangedData(values);
             if (!response.ok) {
                 console.error('Error updating absence status, response not OK');
                 throw new Error('Error updating absence status');
             }
 
-            // setChangedData(updatedData);
             setChangedData(changedData);
             setModalIsOpenLoadning(false);
             setIsModalOpen(true);
-            // const responseData = await response.json();
-            // console.log('Updated absence status response data:', responseData);
-
+            
         } else {
             console.error('Failed to fetch XSRF token, response not OK');
         }
