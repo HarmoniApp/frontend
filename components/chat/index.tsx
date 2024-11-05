@@ -17,8 +17,9 @@ type ChatProps = {
 type ChatPartner = {
   id: number;
   firstName: string;
-  lastName: string;
+  surname: string;
   photo: string;
+  lastMessage?: string;
 };
 
 const Chat: React.FC<ChatProps> = ({ userId }) => {
@@ -62,6 +63,16 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     fetchChatHistory(user);
   };
 
+  const fetchLastMessage = async (userId1: number, userId2: number) => {
+    const response = await fetch(`http://localhost:8080/api/v1/message/last?userId1=${userId1}&userId2=${userId2}`);
+    
+    if (!response.ok) {
+      throw new Error("Błąd podczas pobierania ostatniej wiadomości");
+    }
+  
+    const data = await response.text();
+    return data || 'Brak wiadomości';
+  };
 
   useEffect(() => {
     fetch('http://localhost:8080/api/v1/language')
@@ -150,15 +161,21 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     loadChatPartners(true);
   }, [userId]);
 
-  const fetchUserDetails = async (id: number): Promise<ChatPartner> => {
-    const response = await fetch(`http://localhost:8080/api/v1/user/simple/empId/${id}`);
-    if (!response.ok) throw new Error(`Błąd podczas pobierania danych użytkownika o ID ${id}`);
-    const data = await response.json();
+
+  const fetchUserDetails = async (partnerId: number): Promise<ChatPartner> => {
+    const userDetailsResponse = await fetch(`http://localhost:8080/api/v1/user/simple/empId/${partnerId}`);
+    if (!userDetailsResponse.ok) throw new Error(`Błąd podczas pobierania danych użytkownika o ID ${partnerId}`);
+    const userDetails = await userDetailsResponse.json();
+  
+    const lastMessageResponse = await fetch(`http://localhost:8080/api/v1/message/last?userId1=${userId}&userId2=${partnerId}`);
+    const lastMessageData = lastMessageResponse.ok ? await lastMessageResponse.text() : 'Brak wiadomości';
+  
     return {
-      id: id,
-      firstName: data.firstname,
-      lastName: data.surname,
-      photo: data.photo,
+      id: partnerId,
+      firstName: userDetails.firstname,
+      surname: userDetails.surname,
+      photo: userDetails.photo,
+      lastMessage: lastMessageData
     };
   };
 
@@ -221,21 +238,26 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     <div className={styles.chatContainer}>
       <div className={styles.sidebar}>
         <div className={styles.sidebarHeader}>
-          <FontAwesomeIcon icon={faCommentDots} className={styles.icon} />
-          <h2>CZATY</h2>
-          <select
-            value={selectedLanguage}
-            onChange={handleLanguageChange}
-            className={styles.languageSelect}
-          >
-            <option value="">Brak tłumaczenia</option>
-            {languages.map((language) => (
-              <option key={language.code} value={language.code}>
-                {language.name}
-              </option>
-            ))}
-          </select>
-          <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewChat} />
+          <div className={styles.headerTop}>
+            <FontAwesomeIcon icon={faCommentDots} className={styles.icon} />
+            <h2>CZATY</h2>
+            <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewChat} />
+          </div>
+          <div className={styles.headerBottom}>
+          <span>Przetłumacz: </span>
+            <select
+              value={selectedLanguage}
+              onChange={handleLanguageChange}
+              className={styles.languageSelect}
+            >
+              <option value="">Brak tłumaczenia</option>
+              {languages.map((language) => (
+                <option key={language.code} value={language.code}>
+                  {language.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         {/* <div className={styles.searchBar}>
           <FontAwesomeIcon icon={faSearch} className={styles.icon} />
@@ -261,9 +283,9 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                 alt="User Photo"
               />
               <div>
-                <p className={styles.chatName}>{partner.firstName} {partner.lastName}</p>
-                <p className={styles.chatMessage}>Ostatnia wiadomość...</p>
-              </div>
+                <p className={styles.chatName}>{partner.firstName} {partner.surname}</p>
+                <p className={styles.chatMessage}>{partner.lastMessage || 'Brak wiadomości'}</p>
+                </div>
             </li>
           ))}
         </ul>
@@ -290,7 +312,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                     className={styles.chatAvatar}
                     alt="User Avatar"
                   />
-                  <p>{user.firstName} {user.lastName}</p>
+                  <p>{user.firstName} {user.surname}</p>
                 </li>
               ))}
             </ul>
@@ -303,7 +325,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                 src={`http://localhost:8080/api/v1/userPhoto/${selectedChat.photo}`}
                 alt="User Photo"
               />
-              <h2>{selectedChat.firstName} {selectedChat.lastName}</h2>
+              <h2>{selectedChat.firstName} {selectedChat.surname}</h2>
             </div>
             <div className={styles.chatMessages}>
               {messages.map((message) => (
