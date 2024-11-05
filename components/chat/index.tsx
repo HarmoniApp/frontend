@@ -27,6 +27,41 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [languages, setLanguages] = useState<Language[]>([]);
   const [selectedLanguage, setSelectedLanguage] = useState<string>('');
+  const [newChat, setNewChat] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<ChatPartner[]>([]);
+
+  const handleNewChat = () => {
+    setNewChat(true);
+    setSelectedChat(null);
+    setSearchQuery('');
+    setSearchResults([]);
+  };
+
+  const handleSearch = async (query: string) => {
+    setSearchQuery(query);
+    if (query.trim().length > 2) {
+      const response = await fetch(`http://localhost:8080/api/v1/user/simple/empId/search?q=${query}`);
+      const data = await response.json();
+      setSearchResults(data.map((user: any) => ({
+        id: user.id,
+        firstName: user.firstname,
+        lastName: user.surname,
+        photo: user.photo,
+      })));
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  const handleSelectUser = (user: ChatPartner) => {
+    setNewChat(false);
+    setSelectedChat(user);
+    setSearchQuery('');
+    setSearchResults([]);
+    fetchChatHistory(user);
+  };
+
 
   useEffect(() => {
     fetch('http://localhost:8080/api/v1/language')
@@ -127,15 +162,8 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     };
   };
 
-  // const fetchChatHistory = async (partner: ChatPartner) => {
-  //   const response = await fetch(`http://localhost:8080/api/v1/message/history?userId1=${userId}&userId2=${partner.id}`);
-  //   if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
-  //   const data = await response.json();
-  //   setMessages(data);
-  //   setSelectedChat(partner);
-  // };
-
   const fetchChatHistory = async (partner: ChatPartner, language: string = '') => {
+    setNewChat(false);
     const translate = language !== '';
     const targetLanguageParam = translate ? `&targetLanguage=${language}` : '';
 
@@ -146,7 +174,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     setSelectedChat(partner);
   };
 
-  const handleSendMessage = async (content: string) => {
+  const handleSendMessage = async (content: string, language: string = '') => {
     if (content.trim() && selectedChat !== null) {
       const messageData = {
         sender_id: userId,
@@ -171,6 +199,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       const data = await response.json();
       setMessages((prevMessages) => [...prevMessages, data]);
       loadChatPartners();
+      await fetchChatHistory(selectedChat, language);
     }
   };
 
@@ -194,10 +223,9 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
         <div className={styles.sidebarHeader}>
           <FontAwesomeIcon icon={faCommentDots} className={styles.icon} />
           <h2>CZATY</h2>
-
-          <select 
-            value={selectedLanguage} 
-            onChange={handleLanguageChange} 
+          <select
+            value={selectedLanguage}
+            onChange={handleLanguageChange}
             className={styles.languageSelect}
           >
             <option value="">Brak tłumaczenia</option>
@@ -207,21 +235,31 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
               </option>
             ))}
           </select>
-
-          <FontAwesomeIcon icon={faPlus} className={styles.icon} />
+          <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewChat} />
         </div>
-        <div className={styles.searchBar}>
+        {/* <div className={styles.searchBar}>
           <FontAwesomeIcon icon={faSearch} className={styles.icon} />
-          <input type="text" placeholder="Wyszukaj pracownika lub grupę" disabled />
-        </div>
+          <input
+            type="text"
+            placeholder="Wyszukaj pracownika lub grupę"
+            disabled={!newChat}
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            className={styles.searchInput}
+          />
+        </div> */}
         <ul className={styles.chatList}>
           {chatPartners.map((partner) => (
             <li
               key={partner.id}
               className={`${styles.chatItem} ${selectedChat === partner ? styles.activeChat : ''}`}
-              onClick={() => fetchChatHistory(partner)}
+              onClick={() => fetchChatHistory(partner, selectedLanguage)}
             >
-              <img className={styles.chatAvatar} src={`http://localhost:8080/api/v1/userPhoto/${partner.photo}`} alt="User Photo" />
+              <img
+                className={styles.chatAvatar}
+                src={`http://localhost:8080/api/v1/userPhoto/${partner.photo}`}
+                alt="User Photo"
+              />
               <div>
                 <p className={styles.chatName}>{partner.firstName} {partner.lastName}</p>
                 <p className={styles.chatMessage}>Ostatnia wiadomość...</p>
@@ -231,22 +269,59 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
         </ul>
       </div>
       <div className={styles.chatWindow}>
-        {selectedChat ? (
+        {newChat ? (
+          <div className={styles.newChat}>
+            <input
+              type="text"
+              placeholder="Wyszukaj użytkownika..."
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              className={styles.searchInput}
+            />
+            <ul className={styles.searchResults}>
+              {searchResults.map((user) => (
+                <li
+                  key={user.id}
+                  onClick={() => handleSelectUser(user)}
+                  className={styles.searchResultItem}
+                >
+                  <img
+                    src={`http://localhost:8080/api/v1/userPhoto/${user.photo}`}
+                    className={styles.chatAvatar}
+                    alt="User Avatar"
+                  />
+                  <p>{user.firstName} {user.lastName}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : selectedChat ? (
           <>
             <div className={styles.chatHeader}>
-              <img className={styles.chatAvatar} src={`http://localhost:8080/api/v1/userPhoto/${selectedChat.photo}`} alt="User Photo" />
+              <img
+                className={styles.chatAvatar}
+                src={`http://localhost:8080/api/v1/userPhoto/${selectedChat.photo}`}
+                alt="User Photo"
+              />
               <h2>{selectedChat.firstName} {selectedChat.lastName}</h2>
             </div>
             <div className={styles.chatMessages}>
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  onClick={() => message.receiver_id === userId && !message.is_read && markMessageAsRead(message.id)}
-                  className={`${styles.message} ${message.sender_id === userId ? styles.selfMessage : styles.otherMessage} ${message.is_read ? styles.readMessage : styles.unreadMessage}`}
+                  onClick={() =>
+                    message.receiver_id === userId && !message.is_read && markMessageAsRead(message.id)
+                  }
+                  className={`${styles.message} ${message.sender_id === userId ? styles.selfMessage : styles.otherMessage
+                    } ${message.is_read ? styles.readMessage : styles.unreadMessage}`}
                 >
                   {message.sender_id !== userId && (
                     <div className={styles.messageAvatar}>
-                      <img className={styles.chatAvatar} src={`http://localhost:8080/api/v1/userPhoto/${selectedChat?.photo}`} alt="User Photo" />
+                      <img
+                        className={styles.chatAvatar}
+                        src={`http://localhost:8080/api/v1/userPhoto/${selectedChat?.photo}`}
+                        alt="User Avatar"
+                      />
                     </div>
                   )}
                   <p>{message.content}</p>
@@ -258,10 +333,10 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
               initialValues={{ message: '' }}
               validationSchema={validationSchema}
               onSubmit={(values, { resetForm }) => {
-                handleSendMessage(values.message);
+                handleSendMessage(values.message, selectedLanguage);
                 resetForm();
               }}
-              validateOnBlur={false} 
+              validateOnBlur={false}
             >
               {({ errors, touched }) => (
                 <Form className={styles.messageInputContainer}>
@@ -286,6 +361,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       </div>
     </div>
   );
+
 };
 
 export default Chat;
