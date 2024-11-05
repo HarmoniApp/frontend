@@ -65,11 +65,11 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
 
   const fetchLastMessage = async (userId1: number, userId2: number) => {
     const response = await fetch(`http://localhost:8080/api/v1/message/last?userId1=${userId1}&userId2=${userId2}`);
-    
+
     if (!response.ok) {
       throw new Error("Błąd podczas pobierania ostatniej wiadomości");
     }
-  
+
     const data = await response.text();
     return data || 'Brak wiadomości';
   };
@@ -111,11 +111,11 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
         });
 
         stompClient.subscribe(`/client/messages/read-status/${userId}`, (message) => {
-          const updatedMessage: Message = JSON.parse(message.body);
-
+          const updatedMessages: Message[] = JSON.parse(message.body);
+        
           setMessages((prevMessages) =>
             prevMessages.map((msg) =>
-              msg.id === updatedMessage.id ? updatedMessage : msg
+              updatedMessages.find((um) => um.id === msg.id) ? { ...msg, is_read: true } : msg
             )
           );
         });
@@ -166,10 +166,10 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     const userDetailsResponse = await fetch(`http://localhost:8080/api/v1/user/simple/empId/${partnerId}`);
     if (!userDetailsResponse.ok) throw new Error(`Błąd podczas pobierania danych użytkownika o ID ${partnerId}`);
     const userDetails = await userDetailsResponse.json();
-  
+
     const lastMessageResponse = await fetch(`http://localhost:8080/api/v1/message/last?userId1=${userId}&userId2=${partnerId}`);
     const lastMessageData = lastMessageResponse.ok ? await lastMessageResponse.text() : 'Brak wiadomości';
-  
+
     return {
       id: partnerId,
       firstName: userDetails.firstname,
@@ -188,6 +188,17 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
     const data = await response.json();
     setMessages(data);
+
+    await fetch(`http://localhost:8080/api/v1/message/mark-all-read?userId1=${userId}&userId2=${partner.id}`, {
+      method: 'PATCH',
+    });
+
+    setMessages((prevMessages) =>
+      prevMessages.map((msg) =>
+        msg.receiver_id === userId ? { ...msg, is_read: true } : msg
+      )
+    );
+
     setSelectedChat(partner);
   };
 
@@ -220,16 +231,6 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     }
   };
 
-  const markMessageAsRead = async (id: number) => {
-    const updatedMessages = messages.map(message =>
-      message.id === id ? { ...message, is_read: true } : message
-    );
-    setMessages(updatedMessages);
-
-    await fetch(`http://localhost:8080/api/v1/message/${id}/read`, { method: 'PATCH' });
-  };
-
-
   const validationSchema = Yup.object({
     message: Yup.string().required('Wiadomość nie może być pusta'),
   });
@@ -244,7 +245,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
             <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewChat} />
           </div>
           <div className={styles.headerBottom}>
-          <span>Przetłumacz: </span>
+            <span>Przetłumacz: </span>
             <select
               value={selectedLanguage}
               onChange={handleLanguageChange}
@@ -285,7 +286,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
               <div>
                 <p className={styles.chatName}>{partner.firstName} {partner.surname}</p>
                 <p className={styles.chatMessage}>{partner.lastMessage || 'Brak wiadomości'}</p>
-                </div>
+              </div>
             </li>
           ))}
         </ul>
@@ -331,9 +332,6 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  onClick={() =>
-                    message.receiver_id === userId && !message.is_read && markMessageAsRead(message.id)
-                  }
                   className={`${styles.message} ${message.sender_id === userId ? styles.selfMessage : styles.otherMessage
                     } ${message.is_read ? styles.readMessage : styles.unreadMessage}`}
                 >
