@@ -115,6 +115,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                         'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
                         'X-XSRF-TOKEN': tokenXSRF,
                     },
+                    credentials: 'include',
                 });
                 if (!response.ok) {
                     console.error('Failed to cancel absence: ', response.statusText);

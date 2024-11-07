@@ -77,7 +77,8 @@ const PredefinedShifts: React.FC = () => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
             'X-XSRF-TOKEN': tokenXSRF,
-          }
+          },
+          credentials: 'include',
         });
         if (!response.ok) {
           console.error('Failed to delete shift:', response.statusText);
@@ -154,6 +155,7 @@ const PredefinedShifts: React.FC = () => {
                       'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
                       'X-XSRF-TOKEN': tokenXSRF,
                     },
+                    credentials: 'include',
                     body: JSON.stringify(values),
                   });
                   if (!response.ok) {
@@ -306,6 +308,7 @@ const PredefinedShifts: React.FC = () => {
                   'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
                   'X-XSRF-TOKEN': tokenXSRF,
                 },
+                credentials: 'include',
                 body: JSON.stringify(values),
               });
               if (!response.ok) {

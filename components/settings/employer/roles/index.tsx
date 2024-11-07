@@ -68,7 +68,8 @@ const Roles: React.FC = () => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
             'X-XSRF-TOKEN': tokenXSRF,
-          }
+          },
+          credentials: 'include',
         });
         if (!response.ok) {
           console.error('Failed to delete role:', response.statusText);
@@ -109,6 +110,7 @@ const Roles: React.FC = () => {
             'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
             'X-XSRF-TOKEN': tokenXSRF,
           },
+          credentials: 'include',
           body: JSON.stringify({ name: values.newRoleName, color: values.newRoleColor }),
         });
         if (!response.ok) {
@@ -156,6 +158,7 @@ const Roles: React.FC = () => {
               'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
               'X-XSRF-TOKEN': tokenXSRF,
             },
+            credentials: 'include',
             body: JSON.stringify({ name: values.editedRoleName, color: values.editedRoleColor }),
           });
           if (!response.ok) {

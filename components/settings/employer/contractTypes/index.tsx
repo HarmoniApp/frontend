@@ -36,7 +36,8 @@ const ContractTypes: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        }
+        },
+        credentials: 'include',
       });
       const data = await response.json();
       setContracts(data);
@@ -69,7 +70,8 @@ const ContractTypes: React.FC = () => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
             'X-XSRF-TOKEN': tokenXSRF,
-          }
+          },
+          credentials: 'include',
         });
         if (!response.ok) {
           console.error('Failed to delete department: ', response.statusText);
@@ -141,6 +143,7 @@ const ContractTypes: React.FC = () => {
                       'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
                       'X-XSRF-TOKEN': tokenXSRF,
                     },
+                    credentials: 'include',
                     body: JSON.stringify(values),
                   });
                   if (!response.ok) {
@@ -272,6 +275,7 @@ const ContractTypes: React.FC = () => {
                   'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
                   'X-XSRF-TOKEN': tokenXSRF,
                 },
+                credentials: 'include',
                 body: JSON.stringify(values),
               });
 

@@ -188,6 +188,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
             'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
             'X-XSRF-TOKEN': tokenXSRF,
           },
+          credentials: 'include',
           body: JSON.stringify({
             start: shiftData.start,
             end: shiftData.end,
@@ -236,6 +237,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
             'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
             'X-XSRF-TOKEN': tokenXSRF,
           },
+          credentials: 'include',
           body: JSON.stringify({
             start: shiftData.start,
             end: shiftData.end,
@@ -282,7 +284,8 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
             'X-XSRF-TOKEN': tokenXSRF,
-          }
+          },
+          credentials: 'include',
         });
         if (!response.ok) {
           console.error('Failed to delete shift: ', response.statusText);
@@ -333,7 +336,8 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
               'X-XSRF-TOKEN': tokenXSRF,
-            }
+            },
+            credentials: 'include',
           });
           if (!response.ok) {
             console.error(`Failed to publish shift ${shift.id}`);

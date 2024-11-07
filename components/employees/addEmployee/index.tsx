@@ -286,6 +286,7 @@ const AddEmployee: React.FC = () => {
             'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
             'X-XSRF-TOKEN': tokenXSRF,
           },
+          credentials: 'include',
           body: JSON.stringify(values),
         });
 

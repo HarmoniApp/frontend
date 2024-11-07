@@ -50,6 +50,7 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
             'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
             'X-XSRF-TOKEN': tokenXSRF,
           },
+          credentials: 'include',
         })
         if (!response.ok) {
           console.error('Failed to delete employee: ', response.statusText);

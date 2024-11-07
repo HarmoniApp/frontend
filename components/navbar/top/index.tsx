@@ -116,7 +116,8 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
                     'X-XSRF-TOKEN': tokenXSRF,
-                }
+                },
+                credentials: 'include',
             });
               if (!response.ok) {
                 console.error("Failed to mark notification as read: ", response.statusText);

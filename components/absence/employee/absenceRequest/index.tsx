@@ -119,6 +119,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                                         'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
                                         'X-XSRF-TOKEN': tokenXSRF,
                                     },
+                                    credentials: 'include',
                                     body: JSON.stringify({
                                         absence_type_id: values.absence_type_id,
                                         start: values.start,

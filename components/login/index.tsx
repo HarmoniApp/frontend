@@ -60,26 +60,10 @@ const Login = () => {
   const handleSubmit = async (values: any) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        },
-        credentials: 'include',
-      });
-  
-      if (resquestXsrfToken.ok) {
-        const xsrfData = await resquestXsrfToken.json();
-        const tokenXSRF = xsrfData.token;
-  
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
           },
           body: JSON.stringify({
             username: values.email,
@@ -117,10 +101,6 @@ const Login = () => {
         } else {
           setLoginError("Wystąpił błąd podczas logowania.");
         }
-      } else {
-        console.error('Failed to fetch XSRF token, response not OK');
-        setLoginError("Wystąpił błąd podczas logowania.");
-      }
     } catch (error) {
       console.error("An error occurred:", error);
       setLoginError("Wystąpił błąd podczas logowania.");
