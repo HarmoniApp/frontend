@@ -11,6 +11,7 @@ import Language from '@/components/types/language';
 import Supervisor from '@/components/types/supervisor';
 import Department from '@/components/types/department';
 import styles from './main.module.scss';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
@@ -29,6 +30,7 @@ const AddEmployee: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalCountdown, setModalCountdown] = useState(10);
   const [employeeLink, setEmployeeLink] = useState<number | null>(null);
+  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
 
   if (modalCountdown === 0) onBack();
 
@@ -261,34 +263,57 @@ const AddEmployee: React.FC = () => {
   });
 
   const handleSubmit = async (values: typeof initialValues, { resetForm }: { resetForm: () => void }) => {
+    setModalIsOpenLoadning(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user`, {
-        method: 'POST',
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          'Authorization': `Bearer ${tokenJWT}`,
         },
-        body: JSON.stringify(values),
+        credentials: 'include',
       });
 
-      if (!response.ok) throw new Error('Error adding employee');
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
 
-      const data = await response.json();
-      setEmployeeLink(data.id);
-      setIsModalOpen(true);
-      resetForm();
-
-      const countdownInterval = setInterval(() => {
-        setModalCountdown((prev) => {
-          if (prev === 1) {
-            clearInterval(countdownInterval);
-            setIsModalOpen(false);
-          }
-          return prev - 1;
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          body: JSON.stringify(values),
         });
-      }, 1000);
+
+        if (!response.ok) {
+          console.error('Failed to add employee:', response.statusText);
+          throw new Error('Failed to add employee');
+        }
+        setModalIsOpenLoadning(false);
+        const postData = await response.json();
+        setEmployeeLink(postData.id);
+        setIsModalOpen(true);
+        resetForm();
+
+        const countdownInterval = setInterval(() => {
+          setModalCountdown((prev) => {
+            if (prev === 1) {
+              clearInterval(countdownInterval);
+              setIsModalOpen(false);
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      } else {
+        console.error('Failed to fetch XSRF token, response not OK');
+      }
     } catch (error) {
-      console.error('Błąd podczas dodawania pracownika:', error);
+      console.error('Error adding employee:', error);
+      throw error;
     }
   };
 
@@ -612,6 +637,13 @@ const AddEmployee: React.FC = () => {
                       onBack();
                     }}
                   />
+                </div>
+              </div>
+            )}
+            {modalIsOpenLoadning && (
+              <div className={styles.loadingModalOverlay}>
+                <div className={styles.loadingModalContent}>
+                  <div className={styles.spinnerContainer}><ProgressSpinner /></div>
                 </div>
               </div>
             )}

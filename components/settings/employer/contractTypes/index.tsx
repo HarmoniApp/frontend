@@ -6,6 +6,7 @@ import ContractWithDays from '@/components/types/contractWithDays';
 import AddNotification from '../popUps/addNotification';
 import DeleteConfirmation from '../popUps/deleteConfirmation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
@@ -17,6 +18,7 @@ const ContractTypes: React.FC = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [addedContractName, setAddedContractName] = useState<string>('');
   const [deleteContractId, setDeleteContractId] = useState<number | null>(null);
+  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
 
   const openDeleteModal = (contractId: number) => {
     setDeleteContractId(contractId);
@@ -45,21 +47,42 @@ const ContractTypes: React.FC = () => {
   };
 
   const handleDeleteContractType = async (contractId: number) => {
+    setModalIsOpenLoadning(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type/${contractId}`, {
-        method: 'DELETE',
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        }
+          'Authorization': `Bearer ${tokenJWT}`,
+        },
+        credentials: 'include',
       });
-      if (response.ok) {
+
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type/${contractId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          }
+        });
+        if (!response.ok) {
+          console.error('Failed to delete department: ', response.statusText);
+          throw new Error('Failed to delete department');
+        }
+        setModalIsOpenLoadning(false);
         setContracts(contracts.filter((contract) => contract.id !== contractId));
       } else {
-        console.error("Failed to delete department");
+        console.error('Failed to fetch XSRF token, response not OK');
       }
     } catch (error) {
       console.error('Error deleting contract type:', error);
+      throw error;
     }
   };
 
@@ -95,21 +118,46 @@ const ContractTypes: React.FC = () => {
             validationSchema={contractValidationSchema}
             enableReinitialize={true}
             onSubmit={async (values, { resetForm }) => {
+              setModalIsOpenLoadning(true);
               try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type/${contract.id}`, {
-                  method: 'PUT',
+                const tokenJWT = sessionStorage.getItem('tokenJWT');
+                const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+                  method: 'GET',
                   headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'Authorization': `Bearer ${tokenJWT}`,
                   },
-                  body: JSON.stringify(values),
+                  credentials: 'include',
                 });
-                const data: ContractWithDays = await response.json();
-                setContracts(contracts.map(c => (c.id === data.id ? data : c)));
-                setEditingContractId(null);
-                resetForm();
+
+                if (resquestXsrfToken.ok) {
+                  const data = await resquestXsrfToken.json();
+                  const tokenXSRF = data.token;
+
+                  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type/${contract.id}`, {
+                    method: 'PUT',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                      'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    body: JSON.stringify(values),
+                  });
+                  if (!response.ok) {
+                    console.error('Failed to edit contract type:', response.statusText);
+                    throw new Error('Failed to edit contract type');
+                  }
+                  setModalIsOpenLoadning(false);
+                  const putData: ContractWithDays = await response.json();
+                  setContracts(contracts.map(c => (c.id === putData.id ? putData : c)));
+                  setEditingContractId(null);
+                  resetForm();
+                } else {
+                  console.error('Failed to fetch XSRF token, response not OK');
+                }
               } catch (error) {
                 console.error('Error updating contract type:', error);
+                throw error;
               }
             }}
           >
@@ -145,8 +193,8 @@ const ContractTypes: React.FC = () => {
                           <Field
                             component="input"
                             type="number"
-                            name="absence_days" 
-                            value={values.absence_days}  
+                            name="absence_days"
+                            value={values.absence_days}
                             onChange={handleChange}
                             className={classNames(styles.absenceDaysInput, {
                               [styles.errorInput]: errors.absence_days && touched.absence_days,
@@ -201,22 +249,48 @@ const ContractTypes: React.FC = () => {
         initialValues={{ name: '', absence_days: 0 }}
         validationSchema={contractValidationSchema}
         onSubmit={async (values, { resetForm }) => {
+          setModalIsOpenLoadning(true);
           try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type`, {
-              method: 'POST',
+            const tokenJWT = sessionStorage.getItem('tokenJWT');
+            const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+              method: 'GET',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'Authorization': `Bearer ${tokenJWT}`,
               },
-              body: JSON.stringify(values),
+              credentials: 'include',
             });
-            const data: ContractWithDays = await response.json();
-            setAddedContractName(data.name);
-            setIsAddModalOpen(true);
-            setContracts([...contracts, data]);
-            resetForm();
+
+            if (resquestXsrfToken.ok) {
+              const data = await resquestXsrfToken.json();
+              const tokenXSRF = data.token;
+
+              const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                  'X-XSRF-TOKEN': tokenXSRF,
+                },
+                body: JSON.stringify(values),
+              });
+
+              if (!response.ok) {
+                console.error('Failed to add contract type:', response.statusText);
+                throw new Error('Failed to add contract type');
+              }
+              setModalIsOpenLoadning(false);
+              const postData: ContractWithDays = await response.json();
+              setAddedContractName(postData.name);
+              setIsAddModalOpen(true);
+              setContracts([...contracts, postData]);
+              resetForm();
+            } else {
+              console.error('Failed to fetch XSRF token, response not OK');
+            }
           } catch (error) {
             console.error('Error adding contract type:', error);
+            throw error;
           }
         }}
       >
@@ -251,6 +325,14 @@ const ContractTypes: React.FC = () => {
               <div className={styles.modalOverlayOfAdd}>
                 <div className={styles.modalContentOfAdd}>
                   <AddNotification onClose={() => setIsAddModalOpen(false)} info={addedContractName} />
+                </div>
+              </div>
+            )}
+
+            {modalIsOpenLoadning && (
+              <div className={styles.loadingModalOverlay}>
+                <div className={styles.loadingModalContent}>
+                  <div className={styles.spinnerContainer}><ProgressSpinner /></div>
                 </div>
               </div>
             )}

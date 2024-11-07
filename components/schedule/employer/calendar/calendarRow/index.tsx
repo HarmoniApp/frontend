@@ -24,6 +24,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const [users, setUsers] = useState<User[]>([]);
   const [schedules, setSchedules] = useState<Record<number, WeekSchedule>>({});
   const [loading, setLoading] = useState<boolean>(true);
+  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
   const [loadingRoles, setLoadingRoles] = useState<boolean>(true);
   const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
   const [loadingSchedules, setLoadingSchedules] = useState<boolean>(true);
@@ -164,75 +165,137 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   };
 
   const handleAddShift = async (shiftData: { start: string; end: string; userId: number; roleName: string; }) => {
+    setModalIsOpenLoadning(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift`, {
-        method: 'POST',
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
         },
-        body: JSON.stringify({
-          start: shiftData.start,
-          end: shiftData.end,
-          published: false,
-          user_id: shiftData.userId,
-          role_name: shiftData.roleName,
-        }),
+        credentials: 'include',
       });
 
-      if (response.ok) {
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          body: JSON.stringify({
+            start: shiftData.start,
+            end: shiftData.end,
+            published: false,
+            user_id: shiftData.userId,
+            role_name: shiftData.roleName,
+          }),
+        });
+
+        if (!response.ok) {
+          console.error('Failed to add add shift:', response.statusText);
+          throw new Error('Failed to add add shift');
+        }
+        setModalIsOpenLoadning(false);
         fetchUserSchedule(shiftData.userId);
       } else {
-        console.error('Failed to add shift');
+        console.error('Failed to fetch XSRF token, response not OK');
       }
     } catch (error) {
-      console.error('Error adding shift:', error);
+      console.error('Error adding add shift:', error);
+      throw error;
     }
   };
 
   const handleEditShift = async (shiftData: { id: number; start: string; end: string; userId: number; roleName: string; }) => {
+    setModalIsOpenLoadning(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftData.id}`, {
-        method: 'PUT',
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          'Authorization': `Bearer ${tokenJWT}`,
         },
-        body: JSON.stringify({
-          start: shiftData.start,
-          end: shiftData.end,
-          published: false,
-          user_id: shiftData.userId,
-          role_name: shiftData.roleName,
-        }),
+        credentials: 'include',
       });
 
-      if (response.ok) {
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftData.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          body: JSON.stringify({
+            start: shiftData.start,
+            end: shiftData.end,
+            published: false,
+            user_id: shiftData.userId,
+            role_name: shiftData.roleName,
+          }),
+        });
+        if (!response.ok) {
+          console.error('Failed to edit shift');
+          throw new Error('Failed to edit shift');
+        }
+        setModalIsOpenLoadning(false);
         fetchUserSchedule(shiftData.userId);
       } else {
-        console.error('Failed to edit shift');
+        console.error('Failed to fetch XSRF token, response not OK');
       }
     } catch (error) {
       console.error('Error editing shift:', error);
+      throw error;
     }
   };
 
   const handleDeleteShift = async (shiftId: number, userId: number) => {
+    setModalIsOpenLoadning(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
-        method: 'DELETE',
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        }
+          'Authorization': `Bearer ${tokenJWT}`,
+        },
+        credentials: 'include',
       });
 
-      if (response.ok) {
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          }
+        });
+        if (!response.ok) {
+          console.error('Failed to delete shift: ', response.statusText);
+          throw new Error('Failed to delete shift');
+        }
+        setModalIsOpenLoadning(false);
         fetchUserSchedule(userId);
       } else {
-        console.error('Failed to delete shift');
+        console.error('Failed to fetch XSRF token, response not OK');
       }
     } catch (error) {
       console.error('Error deleting shift:', error);
+      throw error;
     }
   };
 
@@ -248,16 +311,35 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     });
 
     shiftsToPublish.forEach(async (shift) => {
+      setModalIsOpenLoadning(true);
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shift.id}`, {
-          method: 'PATCH',
+        const tokenJWT = sessionStorage.getItem('tokenJWT');
+        const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-          }
+            'Authorization': `Bearer ${tokenJWT}`,
+          },
+          credentials: 'include',
         });
 
-        if (response.ok) {
+        if (resquestXsrfToken.ok) {
+          const data = await resquestXsrfToken.json();
+          const tokenXSRF = data.token;
+
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shift.id}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+              'X-XSRF-TOKEN': tokenXSRF,
+            }
+          });
+          if (!response.ok) {
+            console.error(`Failed to publish shift ${shift.id}`);
+            throw new Error(`Failed to publish shift ${shift.id}`);
+          }
+          setModalIsOpenLoadning(false);
           setSchedules(prevSchedules => ({
             ...prevSchedules,
             [shift.user_id]: {
@@ -268,10 +350,11 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
             },
           }));
         } else {
-          console.error(`Failed to publish shift ${shift.id}`);
+          console.error('Failed to fetch XSRF token, response not OK');
         }
       } catch (error) {
         console.error('Error publishing shift:', error);
+        throw error;
       }
     });
   };
@@ -410,6 +493,14 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
           firstName={users.find(user => user.id === selectedShift.user_id)?.firstname || 'test'}
           surname={users.find(user => user.id === selectedShift.user_id)?.surname || 'test'}
         />
+      )}
+
+      {modalIsOpenLoadning && (
+        <div className={styles.loadingModalOverlay}>
+          <div className={styles.loadingModalContent}>
+            <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+          </div>
+        </div>
       )}
     </div>
   );

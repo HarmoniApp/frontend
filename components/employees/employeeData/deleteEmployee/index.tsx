@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserSlash, faArrowTurnUp } from '@fortawesome/free-solid-svg-icons';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import DeleteEmployeeNotificationPopUp from './deleteEmployeeNotification';
 import styles from './main.module.scss';
 
@@ -15,6 +16,7 @@ interface DeleteEmployeeProps {
 const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surname, onClose }) => {
   const [modalStage, setModalStage] = useState<'confirm' | 'delete'>('confirm');
   const [modalCountdown, setModalCountdown] = useState(10);
+  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -24,18 +26,36 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
     }
   }, [modalStage, modalCountdown, router, onClose]);
 
-  const handleDeleteEmployee = () => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-      },
-    })
-      .then(response => {
+  const handleDeleteEmployee = async () => {
+    setModalIsOpenLoadning(true);
+    try {
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
+        },
+        credentials: 'include',
+      });
+
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+        })
         if (!response.ok) {
-          throw new Error(`Failed to delete employee with status: ${response.status}`);
+          console.error('Failed to delete employee: ', response.statusText);
+          throw new Error(`Failed to delete employee`);
         }
+        setModalIsOpenLoadning(false);
         setModalStage('delete');
         const countdownInterval = setInterval(() => {
           setModalCountdown(prev => {
@@ -46,8 +66,13 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
             return prev - 1;
           });
         }, 1000);
-      })
-      .catch(error => console.error('Error deleting employee:', error));
+      } else {
+        console.error('Failed to fetch XSRF token, response not OK');
+      }
+    } catch (error) {
+      console.error('Error deleting employee:', error)
+      throw error;
+    }
   };
 
   return (
@@ -73,6 +98,13 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
           surname={surname}
           modalCountdown={modalCountdown}
         />
+      )}
+      {modalIsOpenLoadning && (
+        <div className={styles.loadingModalOverlay}>
+          <div className={styles.loadingModalContent}>
+            <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+          </div>
+        </div>
       )}
     </div>
   );

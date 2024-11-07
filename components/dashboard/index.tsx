@@ -34,7 +34,7 @@ const Dashboard = () => {
             <div className={styles.secondRow}>
                 <div className={styles.employee} onClick={employeesToGo}>
                     <p className={styles.icon}><FontAwesomeIcon icon={faUser} /></p>
-                    <p className={styles.paragraphName}>Pracownicy</p>
+                    <p className={styles.paragraphName}>Pracownicy</p>  
                 </div>
                 <div className={styles.chat} onClick={chatToGo}>
                     <p className={styles.icon}><FontAwesomeIcon icon={faComments} /></p>
