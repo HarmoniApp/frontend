@@ -154,13 +154,6 @@ $border-radius: 10px;
   margin-right: 10px;
 }
 
-.readMessage {
-  opacity: 0.6;
-}
-.unreadMessage {
-  font-weight: bold;
-}
-
 .messageInputContainer {
   display: flex;
   align-items: center;
@@ -251,4 +244,21 @@ $border-radius: 10px;
   p {
     margin: 0;
   }
+}
+
+.sectionSelector {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sectionBlock {
+  flex: 1;
+  padding: 10px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.activeSection {
+  background-color: #FFCF70;
+  font-weight: bold;
 }

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCommentDots, faPaperPlane, faImage, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faCommentDots, faPaperPlane, faImage, faPlus, faSearch, faUser, faUsers } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -16,10 +16,10 @@ type ChatProps = {
 
 type ChatPartner = {
   id: number;
-  firstName: string;
-  surname: string;
-  photo: string;
+  name: string;
+  photo?: string;
   lastMessage?: string;
+  type?: 'user' | 'group';
 };
 
 const Chat: React.FC<ChatProps> = ({ userId }) => {
@@ -31,9 +31,20 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
   const [newChat, setNewChat] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<ChatPartner[]>([]);
+  const [chatType, setChatType] = useState<'user' | 'group'>('user');
+  const [groupId, setGroupId] = useState<number | null>(null);
 
-  const handleNewChat = () => {
+
+  const handleNewIndividualChat = () => {
     setNewChat(true);
+    setSelectedChat(null);
+    setSearchQuery('');
+    setSearchResults([]);
+  };
+
+  const handleNewGroupChat = () => {
+    setNewChat(true);
+    setChatType('group');
     setSelectedChat(null);
     setSearchQuery('');
     setSearchResults([]);
@@ -46,9 +57,9 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       const data = await response.json();
       setSearchResults(data.map((user: any) => ({
         id: user.id,
-        firstName: user.firstname,
-        lastName: user.surname,
+        name: user.firstname + " " + user.surname,
         photo: user.photo,
+        type: 'user'
       })));
     } else {
       setSearchResults([]);
@@ -63,15 +74,35 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     fetchChatHistory(user);
   };
 
-  const fetchLastMessage = async (userId1: number, userId2: number) => {
-    const response = await fetch(`http://localhost:8080/api/v1/message/last?userId1=${userId1}&userId2=${userId2}`);
+  const handleCreateGroup = async (values: { groupName: string }) => {
+    const groupData = {
+      name: values.groupName,
+      membersIds: [userId],
+    };
 
-    if (!response.ok) {
-      throw new Error("Błąd podczas pobierania ostatniej wiadomości");
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/group', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(groupData),
+      });
+
+      if (response.ok) {
+        const newGroup = await response.json();
+        setGroupId(newGroup.id);
+        setChatType('group');
+        loadChatPartnersGroups();
+        setNewChat(false);
+        setChatPartners((prevPartners) => [...prevPartners, newGroup]);
+        setSelectedChat(newGroup);
+        fetchChatHistory(newGroup);
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Błąd podczas tworzenia grupy');
+      }
+    } catch (error) {
+      console.error('Błąd podczas tworzenia grupy:', error);
     }
-
-    const data = await response.text();
-    return data || 'Brak wiadomości';
   };
 
   useEffect(() => {
@@ -98,21 +129,49 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       onConnect: () => {
         console.log('Connected to STOMP WebSocket');
 
-        stompClient.subscribe(`/client/messages/${userId}`, (message) => {
-          const newMessage: Message = JSON.parse(message.body);
+        // stompClient.subscribe(`/client/messages/${userId}`, (message) => {
+        //   const newMessage: Message = JSON.parse(message.body);
 
-          setMessages((prevMessages) =>
-            selectedChat &&
-              (newMessage.sender_id === selectedChat.id || newMessage.receiver_id === selectedChat.id)
-              ? [...prevMessages, newMessage]
-              : prevMessages
-          );
-          loadChatPartners();
-        });
+        //   setMessages((prevMessages) =>
+        //     selectedChat &&
+        //       (newMessage.sender_id === selectedChat.id || newMessage.receiver_id === selectedChat.id)
+        //       ? [...prevMessages, newMessage]
+        //       : prevMessages
+        //   );
+        //   loadChatPartners();
+        // });
+
+        if (chatType === 'user') {
+          stompClient.subscribe(`/client/messages/${userId}`, (message) => {
+            const newMessage: Message = JSON.parse(message.body);
+
+            setMessages((prevMessages) =>
+              selectedChat &&
+                selectedChat.type === 'user' &&
+                (newMessage.sender_id === selectedChat.id || newMessage.receiver_id === selectedChat.id)
+                ? [...prevMessages, newMessage]
+                : prevMessages
+            );
+            loadChatPartnersIndividual();
+          });
+        } else if (chatType === 'group') {
+          stompClient.subscribe(`/client/group-messages/${userId}`, (message) => {
+            const newMessage: Message = JSON.parse(message.body);
+
+            setMessages((prevMessages) =>
+              selectedChat &&
+                selectedChat.type === 'group' &&
+                newMessage.group_id === selectedChat.id
+                ? [...prevMessages, newMessage]
+                : prevMessages
+            );
+            loadChatPartnersGroups();
+          });
+        }
 
         stompClient.subscribe(`/client/messages/read-status/${userId}`, (message) => {
           const updatedMessages: Message[] = JSON.parse(message.body);
-        
+
           setMessages((prevMessages) =>
             prevMessages.map((msg) =>
               updatedMessages.find((um) => um.id === msg.id) ? { ...msg, is_read: true } : msg
@@ -132,13 +191,13 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     };
   }, [userId, selectedChat]);
 
-  const loadChatPartners = async (selectFirstPartner = false) => {
-    const response = await fetch(`http://localhost:8080/api/v1/message/chat-partners?userId=${userId}`);
-    if (!response.ok) throw new Error('Błąd podczas pobierania partnerów czatu');
-    const data = await response.json();
+  const loadChatPartnersIndividual = async (selectFirstPartner = false) => {
+    const chatPartnersIndividual = await fetch(`http://localhost:8080/api/v1/message/chat-partners?userId=${userId}`);
+    if (!chatPartnersIndividual.ok) throw new Error('Błąd podczas pobierania partnerów czatu');
+    const dataIndividual = await chatPartnersIndividual.json();
 
     const partnersWithDetails = await Promise.all(
-      data.map(async (partnerId: number) => await fetchUserDetails(partnerId))
+      dataIndividual.map(async (partnerId: number) => await fetchUserDetails(partnerId))
     );
 
     setChatPartners(partnersWithDetails);
@@ -149,18 +208,54 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       await fetchChatHistory(newestChatPartner);
     }
 
+    // if (selectedChat) {
+    //   const activeChatPartner = partnersWithDetails.find(partner => partner.id === selectedChat.id);
+    //   if (activeChatPartner) {
+    //     setSelectedChat(activeChatPartner);
+    //   }
+    // }
+  }
+
+  const loadChatPartnersGroups = async (selectFirstPartner = false) => {
+    const chatPartnersGroups = await fetch(`http://localhost:8080/api/v1/group/chat-partners?userId=${userId}`);
+    if (!chatPartnersGroups.ok) throw new Error('Błąd podczas pobierania partnerów czatu');
+    const dataGroups = await chatPartnersGroups.json();
+
+    const groupsWithDetails = await Promise.all(
+      dataGroups.map(async (partnerId: number) => await fetchGroupDetails(partnerId))
+    );
+
+    setChatPartners(groupsWithDetails);
+
+    if (selectFirstPartner && groupsWithDetails.length > 0) {
+      const newestChatPartner = groupsWithDetails[0];
+      setSelectedChat(newestChatPartner);
+      await fetchChatHistory(newestChatPartner);
+    }
+
     if (selectedChat) {
-      const activeChatPartner = partnersWithDetails.find(partner => partner.id === selectedChat.id);
+      const activeChatPartner = groupsWithDetails.find(partner => partner.id === selectedChat.id);
       if (activeChatPartner) {
         setSelectedChat(activeChatPartner);
       }
     }
-  };
+  }
 
   useEffect(() => {
-    loadChatPartners(true);
-  }, [userId]);
+    if (!newChat) {
+    if (chatType === 'user') {
+      loadChatPartnersIndividual(true);
+    } else {
+      loadChatPartnersGroups(true);
+    }
+  }
+  }, [chatType, userId]);
 
+  // useEffect(() => {
+  //   if (selectedChat) {
+  //     fetchChatHistory(selectedChat);
+  //   }
+  // }, [chatType, selectedChat]);
 
   const fetchUserDetails = async (partnerId: number): Promise<ChatPartner> => {
     const userDetailsResponse = await fetch(`http://localhost:8080/api/v1/user/simple/empId/${partnerId}`);
@@ -172,10 +267,26 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
 
     return {
       id: partnerId,
-      firstName: userDetails.firstname,
-      surname: userDetails.surname,
+      name: userDetails.firstname + " " + userDetails.surname,
       photo: userDetails.photo,
-      lastMessage: lastMessageData
+      lastMessage: lastMessageData,
+      type: 'user'
+    };
+  };
+
+  const fetchGroupDetails = async (partnerId: number): Promise<ChatPartner> => {
+    const groupDetailsResponse = await fetch(`http://localhost:8080/api/v1/group/details/${partnerId}`);
+    if (!groupDetailsResponse.ok) throw new Error(`Błąd podczas pobierania danych grupy o ID ${partnerId}`);
+    const groupDetails = await groupDetailsResponse.json();
+
+    const lastMessageResponse = await fetch(`http://localhost:8080/api/v1/message/last?groupId=${partnerId}`);
+    const lastMessageData = lastMessageResponse.ok ? await lastMessageResponse.text() : 'Brak wiadomości';
+
+    return {
+      id: partnerId,
+      name: groupDetails.name,
+      lastMessage: lastMessageData,
+      type: 'group'
     };
   };
 
@@ -184,10 +295,17 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     const translate = language !== '';
     const targetLanguageParam = translate ? `&targetLanguage=${language}` : '';
 
-    const response = await fetch(`http://localhost:8080/api/v1/message/history?userId1=${userId}&userId2=${partner.id}&translate=${translate}${targetLanguageParam}`);
-    if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
-    const data = await response.json();
-    setMessages(data);
+    if (partner.type == 'user') {
+      const response = await fetch(`http://localhost:8080/api/v1/message/history?userId1=${userId}&userId2=${partner.id}&translate=${translate}${targetLanguageParam}`);
+      if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
+      const data = await response.json();
+      setMessages(data);
+    } else {
+      const response = await fetch(`http://localhost:8080/api/v1/message/history?userId1=${userId}&groupId=${partner.id}&translate=${translate}${targetLanguageParam}`);
+      if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
+      const data = await response.json();
+      setMessages(data);
+    }
 
     await fetch(`http://localhost:8080/api/v1/message/mark-all-read?userId1=${userId}&userId2=${partner.id}`, {
       method: 'PATCH',
@@ -204,12 +322,23 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
 
   const handleSendMessage = async (content: string, language: string = '') => {
     if (content.trim() && selectedChat !== null) {
-      const messageData = {
-        sender_id: userId,
-        receiver_id: selectedChat.id,
-        content,
-        is_read: false,
-      };
+      var messageData;
+
+      if (selectedChat.type == 'user') {
+        messageData = {
+          sender_id: userId,
+          receiver_id: selectedChat.id,
+          content,
+          is_read: false,
+        }
+      } else {
+        messageData = {
+          sender_id: userId,
+          group_id: selectedChat.id,
+          content,
+          is_read: false,
+        }
+      }
 
       const response = await fetch(`http://localhost:8080/api/v1/message/send`, {
         method: 'POST',
@@ -226,8 +355,14 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
 
       const data = await response.json();
       setMessages((prevMessages) => [...prevMessages, data]);
-      loadChatPartners();
+      if (selectedChat.type === 'user') {
+        await loadChatPartnersIndividual();
+      } else if (selectedChat.type === 'group') {
+        await loadChatPartnersGroups();
+      }
       await fetchChatHistory(selectedChat, language);
+      setSelectedChat(selectedChat);
+      console.log(selectedChat)
     }
   };
 
@@ -240,11 +375,6 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       <div className={styles.sidebar}>
         <div className={styles.sidebarHeader}>
           <div className={styles.headerTop}>
-            <FontAwesomeIcon icon={faCommentDots} className={styles.icon} />
-            <h2>CZATY</h2>
-            <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewChat} />
-          </div>
-          <div className={styles.headerBottom}>
             <span>Przetłumacz: </span>
             <select
               value={selectedLanguage}
@@ -258,6 +388,30 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                 </option>
               ))}
             </select>
+          </div>
+          <div className={styles.headerBottom}>
+            <div className={styles.sectionSelector}>
+              <div
+                onClick={() => setChatType('user')}
+                className={`${styles.sectionBlock} ${chatType === 'user' ? styles.activeSection : ''}`}
+              >
+                <FontAwesomeIcon icon={faUser} /> Indywidualne
+              </div>
+
+              <div
+                onClick={() => setChatType('group')}
+                className={`${styles.sectionBlock} ${chatType === 'group' ? styles.activeSection : ''}`}
+              >
+                <FontAwesomeIcon icon={faUsers} /> Grupowe
+              </div>
+            </div>
+
+          </div>
+          <div>
+          <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewIndividualChat} />New individual
+          </div>
+          <div>
+          <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewGroupChat} />New group
           </div>
         </div>
         {/* <div className={styles.searchBar}>
@@ -284,7 +438,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                 alt="User Photo"
               />
               <div>
-                <p className={styles.chatName}>{partner.firstName} {partner.surname}</p>
+                <p className={styles.chatName}>{partner.name}</p>
                 <p className={styles.chatMessage}>{partner.lastMessage || 'Brak wiadomości'}</p>
               </div>
             </li>
@@ -293,6 +447,32 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       </div>
       <div className={styles.chatWindow}>
         {newChat ? (
+           chatType === 'group' ? (
+          <div className={styles.newChat}>
+            <Formik
+              initialValues={{ groupName: '' }}
+              validationSchema={Yup.object({
+                groupName: Yup.string().required('Nazwa grupy jest wymagana'),
+              })}
+              onSubmit={handleCreateGroup}
+            >
+              {({ errors, touched }) => (
+                <Form className={styles.newGroupForm}>
+                  <div>
+                    <Field
+                      name="groupName"
+                      type="text"
+                      placeholder="Nazwa grupy"
+                      className={`${styles.groupNameInput} ${errors.groupName && touched.groupName ? styles.errorInput : ''}`}
+                    />
+                    {errors.groupName && touched.groupName && <div className={styles.errorMessage}>{errors.groupName}</div>}
+                  </div>
+                  <button type="submit" className={styles.createGroupButton}>Utwórz grupę</button>
+                </Form>
+              )}
+            </Formik>
+          </div>
+        ) : (
           <div className={styles.newChat}>
             <input
               type="text"
@@ -308,16 +488,20 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                   onClick={() => handleSelectUser(user)}
                   className={styles.searchResultItem}
                 >
-                  <img
-                    src={`http://localhost:8080/api/v1/userPhoto/${user.photo}`}
-                    className={styles.chatAvatar}
-                    alt="User Avatar"
-                  />
-                  <p>{user.firstName} {user.surname}</p>
+                  {user.photo !== 'undefined' ? (
+                    <img
+                      src={`http://localhost:8080/api/v1/userPhoto/${user.photo}`}
+                      className={styles.chatAvatar}
+                      alt="User Avatar"
+                    />
+                  ) : (
+                    <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
+                  )}
+                  <p>{user.name}</p>
                 </li>
               ))}
             </ul>
-          </div>
+          </div>)
         ) : selectedChat ? (
           <>
             <div className={styles.chatHeader}>
@@ -326,7 +510,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                 src={`http://localhost:8080/api/v1/userPhoto/${selectedChat.photo}`}
                 alt="User Photo"
               />
-              <h2>{selectedChat.firstName} {selectedChat.surname}</h2>
+              <h2>{selectedChat.name}</h2>
             </div>
             <div className={styles.chatMessages}>
               {messages.map((message) => (
@@ -357,6 +541,8 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                 resetForm();
               }}
               validateOnBlur={false}
+              validateOnChange={false}
+              validateOnSubmit={true}
             >
               {({ errors, touched }) => (
                 <Form className={styles.messageInputContainer}>
@@ -385,3 +571,4 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
 };
 
 export default Chat;
+
