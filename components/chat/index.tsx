@@ -233,8 +233,16 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
             loadChatPartnersIndividual();
           });
         } else if (chatType === 'group') {
-          stompClient.subscribe(`/client/group-messages/${userId}`, (message) => {
+          stompClient.subscribe(`/client/groupMessages/${userId}`, async (message) => {
             const newMessage: Message = JSON.parse(message.body);
+
+            if (!newMessage.groupSenderPhoto || !newMessage.groupSenderName) {
+              const senderDetails = await fetch(`http://localhost:8080/api/v1/user/simple/empId/${newMessage.sender_id}`);
+              const senderData = await senderDetails.json();
+        
+              newMessage.groupSenderPhoto = senderData.photo;
+              newMessage.groupSenderName = `${senderData.firstname} ${senderData.surname}`;
+            }
 
             setMessages((prevMessages) =>
               selectedChat &&
