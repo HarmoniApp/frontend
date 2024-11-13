@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCommentDots, faPaperPlane, faImage, faPlus, faSearch, faUser, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faCommentDots, faPaperPlane, faImage, faPlus, faSearch, faUser, faUsers, faEdit, faUserMinus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -32,7 +32,8 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<ChatPartner[]>([]);
   const [chatType, setChatType] = useState<'user' | 'group'>('user');
-  const [groupId, setGroupId] = useState<number | null>(null);
+  const [isEditGroupModalOpen, setIsEditGroupModalOpen] = useState(false);
+  const [selectedUsers, setSelectedUsers] = useState<ChatPartner[]>([]);
 
 
   const handleNewIndividualChat = () => {
@@ -55,7 +56,14 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     if (query.trim().length > 2) {
       const response = await fetch(`http://localhost:8080/api/v1/user/simple/empId/search?q=${query}`);
       const data = await response.json();
-      setSearchResults(data.map((user: any) => ({
+
+      const filteredResults = chatType === 'group'
+        ? data.filter(
+          (user: ChatPartner) => !selectedUsers.some((member) => member.id === user.id)
+        )
+        : data;
+
+      setSearchResults(filteredResults.map((user: any) => ({
         id: user.id,
         name: user.firstname + " " + user.surname,
         photo: user.photo,
@@ -89,7 +97,6 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
 
       if (response.ok) {
         const newGroup = await response.json();
-        setGroupId(newGroup.id);
         setChatType('group');
         loadChatPartnersGroups();
         setNewChat(false);
@@ -104,6 +111,77 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       console.error('Błąd podczas tworzenia grupy:', error);
     }
   };
+
+  const handleEditGroup = () => {
+    setIsEditGroupModalOpen(!isEditGroupModalOpen);
+    loadGroupMembers();
+  };
+
+  const loadGroupMembers = async () => {
+    try {
+      if (!selectedChat) {
+        console.error("Error: No group to edit.");
+        return;
+      }
+      const response = await fetch(`http://localhost:8080/api/v1/group/${selectedChat.id}/members`);
+      const members = await response.json();
+      const membersWithNames = members.map((user: any) => ({
+        ...user,
+        name: `${user.firstname} ${user.surname}`
+      }));
+      setSelectedUsers(membersWithNames);
+    } catch (error) {
+      console.error('Błąd podczas pobierania członków grupy:', error);
+    }
+  };
+
+  const handleAddUserToGroup = async (user: ChatPartner): Promise<void> => {
+    try {
+      if (!selectedChat) {
+        console.error("Error: No group to edit.");
+        return;
+      }
+      const response = await fetch(`http://localhost:8080/api/v1/group/${selectedChat.id}/user/${user.id}/add`, {
+        method: 'PATCH',
+      });
+
+      if (response.ok) {
+        setSelectedUsers((prevUsers) => [...prevUsers, user]);
+        setSearchResults((prevResults) =>
+          prevResults.filter((result) => result.id !== user.id)
+        );
+      } else {
+        console.error('Błąd podczas dodawania użytkownika do grupy');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handleRemoveUserFromGroup = async (userId: number): Promise<void> => {
+    if (!window.confirm("Are you sure to remove this user?")) {
+      return;
+    }
+
+    try {
+      if (!selectedChat) {
+        console.error("Error: No group to edit.");
+        return;
+      }
+      const response = await fetch(`http://localhost:8080/api/v1/group/${selectedChat.id}/user/${userId}/remove`, {
+        method: 'PATCH',
+      });
+
+      if (response.ok) {
+        setSelectedUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+      } else {
+        console.error('Błąd podczas usuwania użytkownika z grupy');
+      }
+    } catch (error) {
+      console.error('Błąd:', error);
+    }
+  };
+
 
   useEffect(() => {
     fetch('http://localhost:8080/api/v1/language')
@@ -205,15 +283,8 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     if (selectFirstPartner && partnersWithDetails.length > 0) {
       const newestChatPartner = partnersWithDetails[0];
       setSelectedChat(newestChatPartner);
-      await fetchChatHistory(newestChatPartner);
+      await fetchChatHistory(newestChatPartner, selectedLanguage);
     }
-
-    // if (selectedChat) {
-    //   const activeChatPartner = partnersWithDetails.find(partner => partner.id === selectedChat.id);
-    //   if (activeChatPartner) {
-    //     setSelectedChat(activeChatPartner);
-    //   }
-    // }
   }
 
   const loadChatPartnersGroups = async (selectFirstPartner = false) => {
@@ -230,32 +301,34 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     if (selectFirstPartner && groupsWithDetails.length > 0) {
       const newestChatPartner = groupsWithDetails[0];
       setSelectedChat(newestChatPartner);
-      await fetchChatHistory(newestChatPartner);
-    }
-
-    if (selectedChat) {
-      const activeChatPartner = groupsWithDetails.find(partner => partner.id === selectedChat.id);
-      if (activeChatPartner) {
-        setSelectedChat(activeChatPartner);
-      }
+      await fetchChatHistory(newestChatPartner, selectedLanguage);
     }
   }
 
   useEffect(() => {
-    if (!newChat) {
-    if (chatType === 'user') {
-      loadChatPartnersIndividual(true);
-    } else {
-      loadChatPartnersGroups(true);
-    }
-  }
+    setIsEditGroupModalOpen(false);
+    setNewChat(false);
+    const loadPartners = async () => {
+      if (chatType === 'user') {
+        await loadChatPartnersIndividual(true);
+      } else {
+        await loadChatPartnersGroups(true);
+      }
+    };
+
+    loadPartners();
   }, [chatType, userId]);
 
-  // useEffect(() => {
-  //   if (selectedChat) {
-  //     fetchChatHistory(selectedChat);
-  //   }
-  // }, [chatType, selectedChat]);
+  useEffect(() => {
+    setIsEditGroupModalOpen(false);
+  }, [selectedChat]);
+
+  useEffect(() => {
+    const chatMessagesContainer = document.querySelector(`.${styles.chatMessages}`);
+    if (chatMessagesContainer) {
+      chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+    }
+  }, [messages]);  
 
   const fetchUserDetails = async (partnerId: number): Promise<ChatPartner> => {
     const userDetailsResponse = await fetch(`http://localhost:8080/api/v1/user/simple/empId/${partnerId}`);
@@ -375,13 +448,13 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       <div className={styles.sidebar}>
         <div className={styles.sidebarHeader}>
           <div className={styles.headerTop}>
-            <span>Przetłumacz: </span>
+            <span>Translate: </span>
             <select
               value={selectedLanguage}
               onChange={handleLanguageChange}
               className={styles.languageSelect}
             >
-              <option value="">Brak tłumaczenia</option>
+              <option value="">None</option>
               {languages.map((language) => (
                 <option key={language.code} value={language.code}>
                   {language.name}
@@ -395,24 +468,31 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                 onClick={() => setChatType('user')}
                 className={`${styles.sectionBlock} ${chatType === 'user' ? styles.activeSection : ''}`}
               >
-                <FontAwesomeIcon icon={faUser} /> Indywidualne
+                <FontAwesomeIcon icon={faUser} /> Individual
               </div>
 
               <div
                 onClick={() => setChatType('group')}
                 className={`${styles.sectionBlock} ${chatType === 'group' ? styles.activeSection : ''}`}
               >
-                <FontAwesomeIcon icon={faUsers} /> Grupowe
+                <FontAwesomeIcon icon={faUsers} /> Groups
               </div>
             </div>
 
           </div>
-          <div>
-          <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewIndividualChat} />New individual
-          </div>
-          <div>
-          <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewGroupChat} />New group
-          </div>
+          {chatType === 'user' && (
+            <div>
+              <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewIndividualChat} />
+              New individual
+            </div>
+          )}
+
+          {chatType === 'group' && (
+            <div>
+              <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewGroupChat} />
+              New group
+            </div>
+          )}
         </div>
         {/* <div className={styles.searchBar}>
           <FontAwesomeIcon icon={faSearch} className={styles.icon} />
@@ -432,11 +512,15 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
               className={`${styles.chatItem} ${selectedChat === partner ? styles.activeChat : ''}`}
               onClick={() => fetchChatHistory(partner, selectedLanguage)}
             >
-              <img
-                className={styles.chatAvatar}
-                src={`http://localhost:8080/api/v1/userPhoto/${partner.photo}`}
-                alt="User Photo"
-              />
+              {partner.photo ? (
+                <img
+                  className={styles.chatAvatar}
+                  src={`http://localhost:8080/api/v1/userPhoto/${partner.photo}`}
+                  alt="User Photo"
+                />
+              ) : (
+                <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
+              )}
               <div>
                 <p className={styles.chatName}>{partner.name}</p>
                 <p className={styles.chatMessage}>{partner.lastMessage || 'Brak wiadomości'}</p>
@@ -447,70 +531,79 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       </div>
       <div className={styles.chatWindow}>
         {newChat ? (
-           chatType === 'group' ? (
-          <div className={styles.newChat}>
-            <Formik
-              initialValues={{ groupName: '' }}
-              validationSchema={Yup.object({
-                groupName: Yup.string().required('Nazwa grupy jest wymagana'),
-              })}
-              onSubmit={handleCreateGroup}
-            >
-              {({ errors, touched }) => (
-                <Form className={styles.newGroupForm}>
-                  <div>
-                    <Field
-                      name="groupName"
-                      type="text"
-                      placeholder="Nazwa grupy"
-                      className={`${styles.groupNameInput} ${errors.groupName && touched.groupName ? styles.errorInput : ''}`}
-                    />
-                    {errors.groupName && touched.groupName && <div className={styles.errorMessage}>{errors.groupName}</div>}
-                  </div>
-                  <button type="submit" className={styles.createGroupButton}>Utwórz grupę</button>
-                </Form>
-              )}
-            </Formik>
-          </div>
-        ) : (
-          <div className={styles.newChat}>
-            <input
-              type="text"
-              placeholder="Wyszukaj użytkownika..."
-              value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
-              className={styles.searchInput}
-            />
-            <ul className={styles.searchResults}>
-              {searchResults.map((user) => (
-                <li
-                  key={user.id}
-                  onClick={() => handleSelectUser(user)}
-                  className={styles.searchResultItem}
-                >
-                  {user.photo !== 'undefined' ? (
-                    <img
-                      src={`http://localhost:8080/api/v1/userPhoto/${user.photo}`}
-                      className={styles.chatAvatar}
-                      alt="User Avatar"
-                    />
-                  ) : (
-                    <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
-                  )}
-                  <p>{user.name}</p>
-                </li>
-              ))}
-            </ul>
-          </div>)
+          chatType === 'group' ? (
+            <div className={styles.newChat}>
+              <Formik
+                initialValues={{ groupName: '' }}
+                validationSchema={Yup.object({
+                  groupName: Yup.string().required('Nazwa grupy jest wymagana'),
+                })}
+                onSubmit={handleCreateGroup}
+              >
+                {({ errors, touched }) => (
+                  <Form className={styles.newGroupForm}>
+                    <div>
+                      <Field
+                        name="groupName"
+                        type="text"
+                        placeholder="Nazwa grupy"
+                        className={`${styles.groupNameInput} ${errors.groupName && touched.groupName ? styles.errorInput : ''}`}
+                      />
+                      {errors.groupName && touched.groupName && <div className={styles.errorMessage}>{errors.groupName}</div>}
+                    </div>
+                    <button type="submit" className={styles.createGroupButton}>Utwórz grupę</button>
+                  </Form>
+                )}
+              </Formik>
+            </div>
+          ) : (
+            <div className={styles.newChat}>
+              <input
+                type="text"
+                placeholder="Wyszukaj użytkownika..."
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+                className={styles.searchInput}
+              />
+              <ul className={styles.searchResults}>
+                {searchResults.map((user) => (
+                  <li
+                    key={user.id}
+                    onClick={() => handleSelectUser(user)}
+                    className={styles.searchResultItem}
+                  >
+                    {user.photo ? (
+                      <img
+                        src={`http://localhost:8080/api/v1/userPhoto/${user.photo}`}
+                        className={styles.chatAvatar}
+                        alt="User Avatar"
+                      />
+                    ) : (
+                      <FontAwesomeIcon icon={faUser} className={styles.defaultAvatarIcon} />
+                    )}
+                    <p>{user.name}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>)
         ) : selectedChat ? (
           <>
             <div className={styles.chatHeader}>
-              <img
-                className={styles.chatAvatar}
-                src={`http://localhost:8080/api/v1/userPhoto/${selectedChat.photo}`}
-                alt="User Photo"
-              />
+              {selectedChat.photo ? (
+                <img
+                  className={styles.chatAvatar}
+                  src={`http://localhost:8080/api/v1/userPhoto/${selectedChat.photo}`}
+                  alt="User Photo"
+                />
+              ) : (
+                <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
+              )}
               <h2>{selectedChat.name}</h2>
+              {chatType === 'group' && (
+                <div onClick={handleEditGroup} className={styles.editIcon}>
+                  <FontAwesomeIcon icon={faEdit} />
+                </div>
+              )}
             </div>
             <div className={styles.chatMessages}>
               {messages.map((message) => (
@@ -521,11 +614,15 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                 >
                   {message.sender_id !== userId && (
                     <div className={styles.messageAvatar}>
-                      <img
-                        className={styles.chatAvatar}
-                        src={`http://localhost:8080/api/v1/userPhoto/${selectedChat?.photo}`}
-                        alt="User Avatar"
-                      />
+                      {selectedChat.photo ? (
+                        <img
+                          className={styles.chatAvatar}
+                          src={`http://localhost:8080/api/v1/userPhoto/${selectedChat?.photo}`}
+                          alt="User Avatar"
+                        />
+                      ) : (
+                        <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
+                      )}
                     </div>
                   )}
                   <p>{message.content}</p>
@@ -562,9 +659,66 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
             </Formik>
           </>
         ) : (
-          <p>Wybierz czat, aby wyświetlić wiadomości</p>
+          <p>Select chat</p>
         )}
       </div>
+      {isEditGroupModalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h3>Edit group</h3>
+
+            <input
+              type="text"
+              placeholder="Search user..."
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              className={styles.searchInput}
+            />
+            <ul className={styles.searchResults}>
+              {searchResults.map((user) => (
+                <li
+                  key={user.id}
+                  onClick={() => handleAddUserToGroup(user)}
+                  className={styles.searchResultItem}
+                >
+                  {user.photo ? (
+                    <img
+                      className={styles.chatAvatar}
+                      src={`http://localhost:8080/api/v1/userPhoto/${user.photo}`}
+                      alt="User Photo"
+                    />
+                  ) : (
+                    <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
+                  )}
+                  <p>{user.name}</p>
+                  <FontAwesomeIcon icon={faPlus} className={styles.addIcon} />
+                </li>
+              ))}
+            </ul>
+
+            <div className={styles.selectedUsers}>
+              {selectedUsers.map((user) => (
+                <div key={user.id} className={styles.selectedUser}>
+                  {user.photo ? (
+                    <img
+                      className={styles.chatAvatar}
+                      src={`http://localhost:8080/api/v1/userPhoto/${user.photo}`}
+                      alt="User Photo"
+                    />
+                  ) : (
+                    <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
+                  )}
+                  <p>{user.name}</p>
+                  <FontAwesomeIcon icon={faUserMinus} onClick={() => handleRemoveUserFromGroup(user.id)} className={styles.removeIcon} />
+                </div>
+              ))}
+            </div>
+
+            <FontAwesomeIcon icon={faXmark} onClick={handleEditGroup} className={styles.closeIcon} />
+          </div>
+        </div>
+      )}
+
     </div>
   );
 
