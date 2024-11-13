@@ -328,7 +328,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     if (chatMessagesContainer) {
       chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
     }
-  }, [messages]);  
+  }, [messages]);
 
   const fetchUserDetails = async (partnerId: number): Promise<ChatPartner> => {
     const userDetailsResponse = await fetch(`http://localhost:8080/api/v1/user/simple/empId/${partnerId}`);
@@ -377,7 +377,20 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       const response = await fetch(`http://localhost:8080/api/v1/message/history?userId1=${userId}&groupId=${partner.id}&translate=${translate}${targetLanguageParam}`);
       if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
       const data = await response.json();
-      setMessages(data);
+
+      const groupChatDetails = await Promise.all(
+        data.map(async (message: Message) => {
+          const senderResponse = await fetch(`http://localhost:8080/api/v1/user/simple/empId/${message.sender_id}`);
+          const senderData = await senderResponse.json();
+          return {
+            ...message,
+            groupSenderName: `${senderData.firstname} ${senderData.surname}`,
+            groupSenderPhoto: senderData.photo,
+          };
+        })
+      );
+
+      setMessages(groupChatDetails);
     }
 
     await fetch(`http://localhost:8080/api/v1/message/mark-all-read?userId1=${userId}&userId2=${partner.id}`, {
@@ -614,16 +627,19 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                 >
                   {message.sender_id !== userId && (
                     <div className={styles.messageAvatar}>
-                      {selectedChat.photo ? (
+                      {message.groupSenderPhoto || selectedChat.photo  ? (
                         <img
                           className={styles.chatAvatar}
-                          src={`http://localhost:8080/api/v1/userPhoto/${selectedChat?.photo}`}
+                          src={`http://localhost:8080/api/v1/userPhoto/${message.groupSenderPhoto || selectedChat.photo}`}
                           alt="User Avatar"
                         />
                       ) : (
                         <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
                       )}
                     </div>
+                  )}
+                  {message.sender_id !== userId && selectedChat?.type === 'group' && (
+                    <span>{message.groupSenderName}</span>
                   )}
                   <p>{message.content}</p>
                   <span className={styles.timestamp}>{message.sent_at}</span>
