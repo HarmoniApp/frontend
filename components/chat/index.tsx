@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCommentDots, faPaperPlane, faImage, faPlus, faSearch, faUser, faUsers, faEdit, faUserMinus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCommentDots, faPaperPlane, faImage, faPlus, faSearch, faEye, faUser, faUsers, faEdit, faUserMinus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -232,6 +232,16 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
             );
             loadChatPartnersIndividual();
           });
+
+          stompClient.subscribe(`/client/messages/readStatus/${userId}`, (message) => {
+            const updatedMessages: Message[] = JSON.parse(message.body);
+
+            setMessages((prevMessages) =>
+              prevMessages.map((msg) =>
+                updatedMessages.find((um) => um.id === msg.id) ? { ...msg, is_read: true } : msg
+              )
+            );
+          });
         } else if (chatType === 'group') {
           stompClient.subscribe(`/client/groupMessages/${userId}`, async (message) => {
             const newMessage: Message = JSON.parse(message.body);
@@ -239,7 +249,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
             if (!newMessage.groupSenderPhoto || !newMessage.groupSenderName) {
               const senderDetails = await fetch(`http://localhost:8080/api/v1/user/simple/empId/${newMessage.sender_id}`);
               const senderData = await senderDetails.json();
-        
+
               newMessage.groupSenderPhoto = senderData.photo;
               newMessage.groupSenderName = `${senderData.firstname} ${senderData.surname}`;
             }
@@ -253,17 +263,17 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
             );
             loadChatPartnersGroups();
           });
+
+          stompClient.subscribe(`/client/groupMessages/readStatus/${userId}`, (message) => {
+            const updatedMessages: Message[] = JSON.parse(message.body);
+
+            setMessages((prevMessages) =>
+              prevMessages.map((msg) =>
+                updatedMessages.find((um) => um.id === msg.id) ? { ...msg, is_read: true } : msg
+              )
+            );
+          });
         }
-
-        stompClient.subscribe(`/client/messages/read-status/${userId}`, (message) => {
-          const updatedMessages: Message[] = JSON.parse(message.body);
-
-          setMessages((prevMessages) =>
-            prevMessages.map((msg) =>
-              updatedMessages.find((um) => um.id === msg.id) ? { ...msg, is_read: true } : msg
-            )
-          );
-        });
       },
       onStompError: (error) => {
         console.error('STOMP WebSocket error:', error);
@@ -381,6 +391,10 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
       const data = await response.json();
       setMessages(data);
+
+      await fetch(`http://localhost:8080/api/v1/message/mark-all-read?userId1=${userId}&userId2=${partner.id}`, {
+        method: 'PATCH',
+      });
     } else {
       const response = await fetch(`http://localhost:8080/api/v1/message/history?userId1=${userId}&groupId=${partner.id}&translate=${translate}${targetLanguageParam}`);
       if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
@@ -400,10 +414,6 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
 
       setMessages(groupChatDetails);
     }
-
-    await fetch(`http://localhost:8080/api/v1/message/mark-all-read?userId1=${userId}&userId2=${partner.id}`, {
-      method: 'PATCH',
-    });
 
     setMessages((prevMessages) =>
       prevMessages.map((msg) =>
@@ -635,7 +645,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                 >
                   {message.sender_id !== userId && (
                     <div className={styles.messageAvatar}>
-                      {message.groupSenderPhoto || selectedChat.photo  ? (
+                      {message.groupSenderPhoto || selectedChat.photo ? (
                         <img
                           className={styles.chatAvatar}
                           src={`http://localhost:8080/api/v1/userPhoto/${message.groupSenderPhoto || selectedChat.photo}`}
@@ -651,6 +661,9 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                   )}
                   <p>{message.content}</p>
                   <span className={styles.timestamp}>{message.sent_at}</span>
+                  {message.sender_id === userId && message.is_read && (
+                    <FontAwesomeIcon icon={faEye} className={styles.readIcon} />
+                  )}
                 </div>
               ))}
             </div>
