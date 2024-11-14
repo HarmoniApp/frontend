@@ -23,8 +23,6 @@ interface CalendarRowProps {
 const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, ref) => {
   const [users, setUsers] = useState<User[]>([]);
   const [schedules, setSchedules] = useState<Record<number, WeekSchedule>>({});
-  const [loading, setLoading] = useState<boolean>(true);
-  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
   const [loadingRoles, setLoadingRoles] = useState<boolean>(true);
   const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
   const [loadingSchedules, setLoadingSchedules] = useState<boolean>(true);
@@ -36,6 +34,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [abortController, setAbortController] = useState<AbortController | null>(null);
   const [roles, setRoles] = useState<RoleWithColour[]>([]);
+  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
 
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(20);
@@ -44,13 +43,14 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   useEffect(() => {
     const fetchRoles = async () => {
       setLoadingRoles(true);
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-          },
+            'Authorization': `Bearer ${tokenJWT}`,
+          }
         });
         const data = await response.json();
         setRoles(data);
@@ -65,24 +65,44 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   }, []);
 
   const fetchFilteredUsers = async (filters: { query?: string } = {}, pageNumber: number = 1, pageSize: number = 20) => {
-    setLoading(true);
-    const query = filters.query ? `/search?q=${filters.query}` : '';
+    setLoadingUsers(true);
+
     let url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+
+    if (filters.query && filters.query.trim() !== '') {
+      url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/search?q=${filters.query}`;
+    }
+
+    const tokenJWT = sessionStorage.getItem('tokenJWT');
 
     try {
       const response = await fetch(url, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        }
+          'Authorization': `Bearer ${tokenJWT}`,
+        },
       });
-      const data = await response.json();
-      setUsers(data.content || data);
-      setTotalPages(data.totalPages * pageSize);
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const responseData = await response.json();
+      const usersData = responseData.content || responseData;
+
+      if (Array.isArray(usersData)) {
+        setUsers(usersData);
+      } else {
+        console.error('Unexpected response format, expected an array but got:', usersData);
+        setUsers([]);
+      }
+      setTotalPages(responseData.totalPages * pageSize);
+
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {
-      setLoading(false);
+      setLoadingUsers(false);
     }
   };
 
@@ -103,6 +123,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
         try {
           const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
           const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
+          const tokenJWT = sessionStorage.getItem('tokenJWT');
 
           const schedulePromises = users.map(user =>
             fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${user.id}/week?startDate=${startDate}&endDate=${endDate}`, {
@@ -110,7 +131,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'Authorization': `Bearer ${tokenJWT}`,
               }
             })
               .then(response => {
@@ -371,11 +392,12 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     try {
       const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
       const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
       const userResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          'Authorization': `Bearer ${tokenJWT}`,
         }
       });
 
@@ -399,7 +421,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
 
   const renderedRows = useMemo(() => {
     const getMoreInfoOfEmployee = (user_id: number) => {
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/employees/user/${user_id}`;
+      const url = `http://localhost:3000/employees/user/${user_id}`;
       window.open(url, '_blank');
     };
 
@@ -475,6 +497,13 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
               setPageSize(event.rows);
             }}
           />
+          {modalIsOpenLoadning && (
+            <div className={styles.loadingModalOverlay}>
+              <div className={styles.loadingModalContent}>
+                <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+              </div>
+            </div>
+          )}
         </>
       )}
 
@@ -497,14 +526,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
           firstName={users.find(user => user.id === selectedShift.user_id)?.firstname || 'test'}
           surname={users.find(user => user.id === selectedShift.user_id)?.surname || 'test'}
         />
-      )}
-
-      {modalIsOpenLoadning && (
-        <div className={styles.loadingModalOverlay}>
-          <div className={styles.loadingModalContent}>
-            <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-          </div>
-        </div>
       )}
     </div>
   );
