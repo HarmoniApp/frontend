@@ -19,6 +19,7 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence, roles }) => {
   };
 
   const getBackgroundColor = (roleName: string) => {
+    if (!roles || roles.length === 0) return '#A9A9A9';
     const role = roles.find(role => role.name === roleName);
     return role ? role.color : '#A9A9A9';
   };
