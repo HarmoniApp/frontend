@@ -6,6 +6,7 @@ import RoleWithColour from '@/components/types/roleWithColour';
 import AddNotification from '../popUps/addNotification';
 import DeleteConfirmation from '../popUps/deleteConfirmation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
@@ -17,6 +18,7 @@ const Roles: React.FC = () => {
   const [editingRoleId, setEditingRoleId] = useState<number | null>(null);
   const [addedRoleName, setAddedRoleName] = useState<string>('');
   const [deleteRoleId, setDeleteRoleId] = useState<number | null>(null);
+  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
 
   const openDeleteModal = (roleId: number) => {
     setDeleteRoleId(roleId);
@@ -44,61 +46,136 @@ const Roles: React.FC = () => {
   };
 
   const handleDeleteRole = async (roleId: number) => {
+    setModalIsOpenLoadning(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/${roleId}`, {
-        method: 'DELETE',
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        }
+          'Authorization': `Bearer ${tokenJWT}`,
+        },
+        credentials: 'include',
       });
-      if (response.ok) {
+
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/${roleId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+        });
+        if (!response.ok) {
+          console.error('Failed to delete role:', response.statusText);
+          throw new Error('Failed to delete role');
+        }
+        setModalIsOpenLoadning(false);
         await fetchRoles();
       } else {
-        console.error('Failed to delete role');
+        console.error('Failed to fetch XSRF token, response not OK');
       }
     } catch (error) {
       console.error('Error deleting role:', error);
+      throw error;
     }
   };
 
   const handleAddRole = async (values: { newRoleName: string; newRoleColor: string }, { resetForm }: any) => {
+    setModalIsOpenLoadning(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
-        method: 'POST',
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          'Authorization': `Bearer ${tokenJWT}`,
         },
-        body: JSON.stringify({ name: values.newRoleName, color: values.newRoleColor }),
+        credentials: 'include',
       });
-      const newRole = await response.json();
-      setAddedRoleName(newRole.name);
-      setIsAddModalOpen(true);
-      await fetchRoles();
-      resetForm();
+
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+          body: JSON.stringify({ name: values.newRoleName, color: values.newRoleColor }),
+        });
+        if (!response.ok) {
+          console.error('Failed to add role:', response.statusText);
+          throw new Error('Failed to add role');
+        }
+        setModalIsOpenLoadning(false);
+        const newRole = await response.json();
+        setAddedRoleName(newRole.name);
+        setIsAddModalOpen(true);
+        await fetchRoles();
+        resetForm();
+      } else {
+        console.error('Failed to fetch XSRF token, response not OK');
+      }
     } catch (error) {
       console.error('Error adding role:', error);
+      throw error;
     }
+
   };
 
   const handleSaveEdit = async (values: { editedRoleName: string; editedRoleColor: string }, { resetForm }: any) => {
     if (editingRoleId !== null) {
+      setModalIsOpenLoadning(true);
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/${editingRoleId}`, {
-          method: 'PUT',
+        const tokenJWT = sessionStorage.getItem('tokenJWT');
+        const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'Authorization': `Bearer ${tokenJWT}`,
           },
-          body: JSON.stringify({ name: values.editedRoleName, color: values.editedRoleColor }),
+          credentials: 'include',
         });
-        await response.json();
-        await fetchRoles();
-        setEditingRoleId(null);
-        resetForm();
+
+        if (resquestXsrfToken.ok) {
+          const data = await resquestXsrfToken.json();
+          const tokenXSRF = data.token;
+
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/${editingRoleId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+              'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+            body: JSON.stringify({ name: values.editedRoleName, color: values.editedRoleColor }),
+          });
+          if (!response.ok) {
+            console.error('Failed to edit role:', response.statusText);
+            throw new Error('Failed to edit role');
+          }
+          setModalIsOpenLoadning(false);
+          await response.json();
+          await fetchRoles();
+          setEditingRoleId(null);
+          resetForm();
+        } else {
+          console.error('Failed to fetch XSRF token, response not OK');
+        }
       } catch (error) {
         console.error('Error updating role:', error);
+        throw error;
       }
     }
   };
@@ -265,6 +342,14 @@ const Roles: React.FC = () => {
               <div className={styles.modalOverlayOfAdd}>
                 <div className={styles.modalContentOfAdd}>
                   <AddNotification onClose={() => setIsAddModalOpen(false)} info={addedRoleName} />
+                </div>
+              </div>
+            )}
+
+            {modalIsOpenLoadning && (
+              <div className={styles.loadingModalOverlay}>
+                <div className={styles.loadingModalContent}>
+                  <div className={styles.spinnerContainer}><ProgressSpinner /></div>
                 </div>
               </div>
             )}

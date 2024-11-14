@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { usePathname, useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faSearch, faBell, faUser } from '@fortawesome/free-solid-svg-icons';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import styles from "./main.module.scss";
 import './main.css';
 import Notifications from "./notifications";
@@ -19,6 +20,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [showNotifications, setShowNotifications] = useState(false);
+    const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
 
@@ -92,19 +94,45 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
             notification.id === id ? { ...notification, read: true } : notification
         ));
         setUnreadCount(notifications.filter(notification => !notification.read && notification.id !== id).length);
-
+        setModalIsOpenLoadning(true);
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notification/${id}/read`, {
+            const tokenJWT = sessionStorage.getItem('tokenJWT');
+            const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${tokenJWT}`,
+              },
+              credentials: 'include',
+            });
+      
+            if (resquestXsrfToken.ok) {
+              const data = await resquestXsrfToken.json();
+              const tokenXSRF = data.token;
+
+              const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notification/${id}/read`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                }
+                    'X-XSRF-TOKEN': tokenXSRF,
+                },
+                credentials: 'include',
             });
-            if (!response.ok) throw new Error(`Failed to mark notification as read: ${id}`);
-        } catch (error) {
+              if (!response.ok) {
+                console.error("Failed to mark notification as read: ", response.statusText);
+                throw new Error(`Failed to mark notification as read: ${id}`);
+              }
+              setModalIsOpenLoadning(false);
+      
+            } else {
+              console.error('Failed to fetch XSRF token, response not OK');
+            }
+      
+          } catch (error) {
             console.error(`Error marking notification ${id} as read:`, error);
-        }
+            throw error;
+          }
     };
 
     const clikOnLogo = (loggedUser: boolean) => {
@@ -142,6 +170,14 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
                     <div className={styles.modalContentOfNotification}>
                         <Notifications notifications={notifications} onClose={closeNotifications} markAsRead={markAsRead} />
                     </div>
+
+                    {modalIsOpenLoadning && (
+                    <div className={styles.loadingModalOverlay}>
+                      <div className={styles.loadingModalContent}>
+                        <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+                      </div>
+                    </div>
+                  )}
                 </div>
             )}
         </nav>

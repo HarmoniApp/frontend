@@ -12,6 +12,7 @@ import Supervisor from '@/components/types/supervisor';
 import Department from '@/components/types/department';
 import styles from './main.module.scss';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 
@@ -35,6 +36,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   const [languages, setLanguages] = useState<Language[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [changedData, setChangedData] = useState<ChangedData>({});
+  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
 
   const fetchContracts = async () => {
     try {
@@ -319,25 +321,53 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     return changes;
   };
 
-  const handleSubmit = (values: typeof initialValues) => {
-    const changedData = getChangedData(values);
+  const handleSubmit = async (values: typeof initialValues) => {
+    setModalIsOpenLoadning(true);
+    try {
+        const tokenJWT = sessionStorage.getItem('tokenJWT');
+        const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${tokenJWT}`,
+            },
+            credentials: 'include',
+        });
 
-    fetch(`http://localhost:8080/api/v1/user/${employee.id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(values),
-    })
-      .then(response => response.json())
-      .then(updatedData => {
-        setChangedData(changedData);
-        setIsModalOpen(true);
-      })
-      .catch(error => {
-        console.error('Błąd podczas aktualizacji danych pracownika');
-      });
-  };
+        if (resquestXsrfToken.ok) {
+            const data = await resquestXsrfToken.json();
+            const tokenXSRF = data.token;
+
+            const response = await fetch(`http://localhost:8080/api/v1/user/${employee.id}`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+              },
+              credentials: 'include',
+              body: JSON.stringify(values),
+            });
+
+            const changedData = getChangedData(values);
+            if (!response.ok) {
+                console.error('Error updating absence status, response not OK');
+                throw new Error('Error updating absence status');
+            }
+
+            setChangedData(changedData);
+            setModalIsOpenLoadning(false);
+            setIsModalOpen(true);
+            
+        } else {
+            console.error('Failed to fetch XSRF token, response not OK');
+        }
+
+    } catch (error) {
+        console.error('Błąd podczas aktualizacji danych pracownika:', error);
+        throw error;
+    }
+};
 
   const initialValues = {
     firstname: employee.firstname || '',
@@ -661,6 +691,14 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
                     changedData={changedData}
                     onCloseEditData={onCloseEdit}
                   />
+                </div>
+              </div>
+            )}
+
+            {modalIsOpenLoadning && (
+              <div className={styles.loadingModalOverlay}>
+                <div className={styles.loadingModalContent}>
+                  <div className={styles.spinnerContainer}><ProgressSpinner /></div>
                 </div>
               </div>
             )}

@@ -1,6 +1,7 @@
 @import '@/styles/variables.scss';
 
-.addAbsencetModalOverlay {
+.cancelAbsenceModalOverlay,
+.aproveAbsenceModalOverlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -11,9 +12,10 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
-  }
-  
-  .addAbsenceModalContent {
+}
+
+.cancelAbsenceModalContent,
+.aproveAbsenceModalContent {
     display: flex;
     flex-direction: column;
     border: 2px solid $main-colour;
@@ -25,7 +27,7 @@
     overflow-y: auto;
     gap: 20px;
     padding: 20px;
-  }
+}
 
 .absenceCardContainerMain {
     background-color: $white;
@@ -50,14 +52,14 @@
         color: $font-dark-colour;
         text-transform: uppercase;
     }
-    
+
     .subbmisionDateParagraph {
         font-size: 18px;
         color: $font-dark-colour;
     }
 }
 
-.absenceDataContainer{
+.absenceDataContainer {
     display: flex;
     flex-direction: row;
     gap: 20px;
@@ -66,8 +68,8 @@
     .columnContainer {
         display: flex;
         flex-direction: column;
-        flex:1;
-    
+        flex: 1;
+
         .idLabel,
         .firstnameLabel,
         .surnameLabel,
@@ -82,7 +84,7 @@
             justify-content: space-between;
             gap: 5px;
         }
-    
+
         .idParagraph,
         .firstnameParagraph,
         .surnameParagraph,
@@ -96,7 +98,7 @@
             color: $font-dark-colour;
             margin: 0;
         }
-    
+
         .idDataParagraph,
         .firstnameDataParagraph,
         .surnameDataParagraph,
@@ -154,5 +156,36 @@
 
     .buttonParagraph {
         margin: 0;
+    }
+}
+
+.loadingModalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $black-transparency-05;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    .loadingModalContent {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+
+        .spinnerContainer {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
     }
 }

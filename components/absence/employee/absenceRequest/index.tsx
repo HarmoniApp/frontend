@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck, faArrowTurnUp, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import * as Yup from 'yup';
 import AbsenceType from '@/components/types/absenceType';
 import classNames from 'classnames';
@@ -17,6 +18,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
     const [absenceTypes, setAbsenceTypes] = useState<AbsenceType[]>([]);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [modalCountdown, setModalCountdown] = useState(10);
+    const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
 
     useEffect(() => {
         const fetchAbsenceTypes = async () => {
@@ -94,32 +96,53 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                     }}
                     validationSchema={validationSchema}
                     onSubmit={async (values) => {
+                        setModalIsOpenLoadning(true);
                         try {
-                            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence`, {
-                                method: 'POST',
+                            const tokenJWT = sessionStorage.getItem('tokenJWT');
+                            const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+                                method: 'GET',
                                 headers: {
                                     'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                                    'Authorization': `Bearer ${tokenJWT}`,
                                 },
-                                body: JSON.stringify({
-                                    absence_type_id: values.absence_type_id,
-                                    start: values.start,
-                                    end: values.end,
-                                    user_id: onSend,
-                                }),
+                                credentials: 'include',
                             });
 
-                            if (!response.ok) {
-                                const errorData = await response.json();
-                                throw new Error(`Server error: ${errorData.message || 'Unknown error'}`);
-                            }
+                            if (resquestXsrfToken.ok) {
+                                const data = await resquestXsrfToken.json();
+                                const tokenXSRF = data.token;
 
-                            setIsSubmitted(true);
-                            onRefresh();
+                                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                                        'X-XSRF-TOKEN': tokenXSRF,
+                                    },
+                                    credentials: 'include',
+                                    body: JSON.stringify({
+                                        absence_type_id: values.absence_type_id,
+                                        start: values.start,
+                                        end: values.end,
+                                        user_id: onSend,
+                                    }),
+                                });
+                                if (!response.ok) {
+                                    const errorData = await response.json();
+                                    console.error('Failed to add absence: ', response.statusText);
+                                    throw new Error(`Server error: ${errorData.message || 'Unknown error'}`);
+                                }
+                                setModalIsOpenLoadning(false);
+                                setIsSubmitted(true);
+                                onRefresh();
+                            } else {
+                                console.error('Failed to fetch XSRF token, response not OK');
+                            }
                         } catch (error) {
-                            console.error('Error submitting absence request:', error);
-                            alert(`Błąd podczas wysyłania żądania: ${error.message}`);
+                            console.error('Error adding absence:', error);
+                            throw error;
                         }
+
                     }}
                 >
                     {({ errors, touched }) => (
@@ -178,6 +201,13 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                                     <p className={styles.buttonParagraph}>Złóż wniosek</p>
                                 </button>
                             </div>
+                            {modalIsOpenLoadning && (
+                                <div className={styles.loadingModalOverlay}>
+                                    <div className={styles.loadingModalContent}>
+                                        <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+                                    </div>
+                                </div>
+                            )}
                         </Form>
                     )}
                 </Formik>

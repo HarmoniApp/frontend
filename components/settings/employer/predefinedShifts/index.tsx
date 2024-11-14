@@ -6,6 +6,7 @@ import PredefinedShift from '@/components/types/predefinedShifts';
 import AddNotification from '../popUps/addNotification';
 import DeleteConfirmation from '../popUps/deleteConfirmation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
@@ -17,6 +18,7 @@ const PredefinedShifts: React.FC = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [addedPredefineShiftName, setAddedPredefineShiftName] = useState<string>('');
   const [deleteShiftId, setDeleteShiftId] = useState<number | null>(null);
+  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
 
   const openDeleteModal = (shiftId: number) => {
     setDeleteShiftId(shiftId);
@@ -53,21 +55,43 @@ const PredefinedShifts: React.FC = () => {
   };
 
   const handleDeleteShift = async (shiftId: number) => {
+    setModalIsOpenLoadning(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${shiftId}`, {
-        method: 'DELETE',
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        }
+          'Authorization': `Bearer ${tokenJWT}`,
+        },
+        credentials: 'include',
       });
-      if (response.ok) {
+
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${shiftId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+        });
+        if (!response.ok) {
+          console.error('Failed to delete shift:', response.statusText);
+          throw new Error('Failed to delete shift');
+        }
+        setModalIsOpenLoadning(false);
         setShifts(shifts.filter((shift) => shift.id !== shiftId));
       } else {
-        console.error('Failed to delete shift');
+        console.error('Failed to fetch XSRF token, response not OK');
       }
     } catch (error) {
       console.error('Error deleting shift:', error);
+      throw error;
     }
   };
 
@@ -108,21 +132,47 @@ const PredefinedShifts: React.FC = () => {
             initialValues={{ name: shift.name, start: shift.start.slice(0, 5), end: shift.end.slice(0, 5) }}
             validationSchema={shiftValidationSchema}
             onSubmit={async (values, { resetForm }) => {
+              setModalIsOpenLoadning(true);
               try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${shift.id}`, {
-                  method: 'PUT',
+                const tokenJWT = sessionStorage.getItem('tokenJWT');
+                const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+                  method: 'GET',
                   headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'Authorization': `Bearer ${tokenJWT}`,
                   },
-                  body: JSON.stringify(values),
+                  credentials: 'include',
                 });
-                const data: PredefinedShift = await response.json();
-                setShifts(shifts.map(s => (s.id === data.id ? data : s)));
-                setEditingShiftId(null);
-                resetForm();
+
+                if (resquestXsrfToken.ok) {
+                  const data = await resquestXsrfToken.json();
+                  const tokenXSRF = data.token;
+
+                  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${shift.id}`, {
+                    method: 'PUT',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                      'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(values),
+                  });
+                  if (!response.ok) {
+                    console.error('Failed to edit predefine shifts: ', response.statusText);
+                    throw new Error('Failed to edit predefine shifts');
+                  }
+                  setModalIsOpenLoadning(false);
+                  const putData: PredefinedShift = await response.json();
+                  setShifts(shifts.map(s => (s.id === putData.id ? putData : s)));
+                  setEditingShiftId(null);
+                  resetForm();
+                } else {
+                  console.error('Failed to fetch XSRF token, response not OK');
+                }
               } catch (error) {
                 console.error('Error updating shift:', error);
+                throw error;
               }
             }}
           >
@@ -234,22 +284,49 @@ const PredefinedShifts: React.FC = () => {
       <Formik
         initialValues={{ name: '', start: '00:00', end: '00:00' }}
         validationSchema={shiftValidationSchema}
-        onSubmit={(values, { resetForm }) => {
-          fetch('http://localhost:8080/api/v1/predefine-shift', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(values),
-          })
-            .then(response => response.json())
-            .then((data: PredefinedShift) => {
+        onSubmit={async (values, { resetForm }) => {
+          setModalIsOpenLoadning(true);
+          try {
+            const tokenJWT = sessionStorage.getItem('tokenJWT');
+            const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${tokenJWT}`,
+              },
+              credentials: 'include',
+            });
+
+            if (resquestXsrfToken.ok) {
+              const data = await resquestXsrfToken.json();
+              const tokenXSRF = data.token;
+
+              const response = await fetch('http://localhost:8080/api/v1/predefine-shift', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                  'X-XSRF-TOKEN': tokenXSRF,
+                },
+                credentials: 'include',
+                body: JSON.stringify(values),
+              });
+              if (!response.ok) {
+                console.error('Failed to add shift:', response.statusText);
+                throw new Error('Failed to add shift');
+              }
+              setModalIsOpenLoadning(false);
               setAddedPredefineShiftName(data.name);
               setIsAddModalOpen(true);
               setShifts([...shifts, data]);
               resetForm();
-            })
-            .catch(error => console.error('Error adding shift:', error));
+            } else {
+              console.error('Failed to fetch XSRF token, response not OK');
+            }
+          } catch (error) {
+            console.error('Error adding shift:', error);
+            throw error;
+          }
         }}
       >
         {({ handleSubmit, handleChange, values, errors, touched }) => (
@@ -304,6 +381,14 @@ const PredefinedShifts: React.FC = () => {
               <div className={styles.modalOverlayOfAdd}>
                 <div className={styles.modalContentOfAdd}>
                   <AddNotification onClose={() => setIsAddModalOpen(false)} info={addedPredefineShiftName} />
+                </div>
+              </div>
+            )}
+
+            {modalIsOpenLoadning && (
+              <div className={styles.loadingModalOverlay}>
+                <div className={styles.loadingModalContent}>
+                  <div className={styles.spinnerContainer}><ProgressSpinner /></div>
                 </div>
               </div>
             )}
