@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCommentDots, faPaperPlane, faImage, faPlus, faSearch, faEye, faUser, faUsers, faEdit, faUserMinus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCommentDots, faPaperPlane, faImage, faPlus, faSearch, faEye, faUser, faUsers, faEdit, faUserMinus, faXmark, faTrash } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -173,6 +173,10 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       });
 
       if (response.ok) {
+        if (userId === userId) {
+          await loadChatPartnersGroups(true);
+          return;
+        }
         setSelectedUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
       } else {
         console.error('Błąd podczas usuwania użytkownika z grupy');
@@ -181,6 +185,33 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       console.error('Błąd:', error);
     }
   };
+
+  const handleDeleteGroup = async (): Promise<void> => {
+    if (!selectedChat || selectedChat.type !== 'group') {
+      console.error("Error: No group selected or trying to delete a non-group chat.");
+      return;
+    }
+
+    if (!window.confirm(`Are you sure you want to delete the group "${selectedChat.name}"? This cant be undone!`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/v1/group/${selectedChat.id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        console.log("deleted successfuly")
+        await loadChatPartnersGroups(true);
+      } else {
+        console.error(`Failed to delete group "${selectedChat.name}".`);
+      }
+    } catch (error) {
+      console.error("Error deleting group:", error);
+    }
+  };
+
 
 
   useEffect(() => {
@@ -554,7 +585,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
               )}
               <div>
                 <p className={styles.chatName}>{partner.name}</p>
-                <p className={styles.chatMessage}>{partner.lastMessage || 'Brak wiadomości'}</p>
+                <p className={styles.lastMessage}>{partner.lastMessage || 'Brak wiadomości'}</p>
               </div>
             </li>
           ))}
@@ -750,7 +781,13 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                 </div>
               ))}
             </div>
-
+            <div className={styles.groupActions}>
+              <FontAwesomeIcon
+                icon={faTrash}
+                className={styles.deleteIcon}
+                onClick={handleDeleteGroup}
+              />
+            </div>
             <FontAwesomeIcon icon={faXmark} onClick={handleEditGroup} className={styles.closeIcon} />
           </div>
         </div>

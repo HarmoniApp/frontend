@@ -8,12 +8,16 @@ $border-radius: 10px;
 .chatContainer {
   display: flex;
   height: 70vh;
-  margin: 40px;
-  margin-top: 60px;
+  // margin: 40px;
+  margin: 5%;
+  // margin-top: 60px;
 }
 
 .sidebar {
-  width: 300px;
+  // width: 300px;
+  width: 25%;
+  min-width: 200px;
+  max-width: 300px;
   background-color: $secondary-color;
   display: flex;
   flex-direction: column;
@@ -102,10 +106,12 @@ $border-radius: 10px;
 
 .chatWindow {
   flex-grow: 1;
+  width: 80%;
   display: flex;
   flex-direction: column;
   background-color: $bg-color;
   margin-left: 20px;
+  margin: 0 auto;
 }
 
 .chatHeader {
@@ -116,6 +122,7 @@ $border-radius: 10px;
 }
 
 .chatMessages {
+  max-width: 100%;
   flex-grow: 1;
   padding: 20px;
   overflow-y: auto;
@@ -131,6 +138,10 @@ $border-radius: 10px;
     padding: 10px;
     border-radius: $border-radius;
     margin: 0;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 40%;
   }
 }
 
@@ -144,6 +155,13 @@ $border-radius: 10px;
   p {
     background-color: $highlight-color;
   }
+}
+
+.lastMessage {
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .messageAvatar {
