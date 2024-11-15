@@ -26,11 +26,12 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
 
     const fetchNotifications = async () => {
         try {
+            const tokenJWT = sessionStorage.getItem('tokenJWT');
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notification/user/${userId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'Authorization': `Bearer ${tokenJWT}`,
                 }
             });
             if (!response.ok) throw new Error('Failed to fetch notifications');
