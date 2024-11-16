@@ -4,6 +4,7 @@ $gray: #4F4E4E;
 $text-color: #000000;
 $main-colour: #FFCF70;
 $border-radius: 10px;
+@import '@/styles/variables.scss';
 
 .chatContainer {
   display: flex;
@@ -276,4 +277,35 @@ $border-radius: 10px;
 .activeSection {
   background-color: #FFCF70;
   font-weight: bold;
+}
+
+.loadingModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $black-transparency-05;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+
+  .loadingModalContent {
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+
+      .spinnerContainer {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 9999;
+      }
+  }
 }

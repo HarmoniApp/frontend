@@ -11,7 +11,8 @@ export default function Employees() {
             {/* <div className={styles.centeredText}>Funkcjonalnosc narazie nie jest dosteona. Pracujemy nad tym. Za utrudnienia przepraszamy</div> */}
             <div className={styles.chatContainer}>
                 {/* TODO: change it to real userId */}
-                <Chat userId={47}/> 
+                {/* <Chat userId={47}/>  */}
+                <Chat/> 
             </div>
         </div>
     )

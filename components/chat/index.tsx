@@ -9,10 +9,11 @@ import Message from '@/components/types/message';
 import Language from '@/components/types/language';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
-type ChatProps = {
-  userId: number;
-};
+// type ChatProps = {
+//   userId: number;
+// };
 
 type ChatPartner = {
   id: number;
@@ -22,7 +23,7 @@ type ChatPartner = {
   type?: 'user' | 'group';
 };
 
-const Chat: React.FC<ChatProps> = ({ userId }) => {
+const Chat = () => {
   const [chatPartners, setChatPartners] = useState<ChatPartner[]>([]);
   const [selectedChat, setSelectedChat] = useState<ChatPartner | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -34,6 +35,16 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
   const [chatType, setChatType] = useState<'user' | 'group'>('user');
   const [isEditGroupModalOpen, setIsEditGroupModalOpen] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<ChatPartner[]>([]);
+  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+
+
+  const [userId, setUserId] = useState<number>(10); //TODO: why its not working?
+
+  useEffect(() => {
+    const storedUserId = sessionStorage.getItem('userId');
+    setUserId(Number(storedUserId));
+    console.log(userId);
+  }, []);
 
 
   const handleNewIndividualChat = () => {
@@ -54,7 +65,14 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
     if (query.trim().length > 2) {
-      const response = await fetch(`http://localhost:8080/api/v1/user/simple/empId/search?q=${query}`);
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/search?q=${query}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
+        }
+      });
       const data = await response.json();
 
       const filteredResults = chatType === 'group'
@@ -88,24 +106,48 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       membersIds: [userId],
     };
 
+    setModalIsOpenLoadning(true);
     try {
-      const response = await fetch('http://localhost:8080/api/v1/group', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(groupData),
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
+        },
+        credentials: 'include',
       });
 
-      if (response.ok) {
-        const newGroup = await response.json();
-        setChatType('group');
-        loadChatPartnersGroups();
-        setNewChat(false);
-        setChatPartners((prevPartners) => [...prevPartners, newGroup]);
-        setSelectedChat(newGroup);
-        fetchChatHistory(newGroup);
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+
+        const response = await fetch('${process.env.NEXT_PUBLIC_API_URL}/api/v1/group', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+          body: JSON.stringify(groupData),
+        });
+
+        if (response.ok) {
+          const newGroup = await response.json();
+          setChatType('group');
+          loadChatPartnersGroups();
+          setNewChat(false);
+          setChatPartners((prevPartners) => [...prevPartners, newGroup]);
+          setSelectedChat(newGroup);
+          fetchChatHistory(newGroup);
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Błąd podczas tworzenia grupy');
+        }
+        setModalIsOpenLoadning(false);
       } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Błąd podczas tworzenia grupy');
+        console.error('Failed to fetch XSRF token, response not OK');
       }
     } catch (error) {
       console.error('Błąd podczas tworzenia grupy:', error);
@@ -117,13 +159,60 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     loadGroupMembers();
   };
 
+  // setModalIsOpenLoadning(true);
+  // try {
+  //   const tokenJWT = sessionStorage.getItem('tokenJWT');
+  //   const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': `Bearer ${tokenJWT}`,
+  //     },
+  //     credentials: 'include',
+  //   });
+
+  //   if (resquestXsrfToken.ok) {
+  //     const data = await resquestXsrfToken.json();
+  //     const tokenXSRF = data.token;
+
+  //     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notification/${id}/read`, {
+  //       method: 'PATCH',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+  //         'X-XSRF-TOKEN': tokenXSRF,
+  //       },
+  //       credentials: 'include',
+  //     });
+  //     if (!response.ok) {
+  //       console.error("Failed to mark notification as read: ", response.statusText);
+  //       throw new Error(`Failed to mark notification as read: ${id}`);
+  //     }
+  //     setModalIsOpenLoadning(false);
+
+  //   } else {
+  //     console.error('Failed to fetch XSRF token, response not OK');
+  //   }
+
+  // } catch (error) {
+  //   console.error(`Error marking notification ${id} as read:`, error);
+  //   throw error;
+  // }
+
   const loadGroupMembers = async () => {
     try {
       if (!selectedChat) {
         console.error("Error: No group to edit.");
         return;
       }
-      const response = await fetch(`http://localhost:8080/api/v1/group/${selectedChat.id}/members`);
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}/members`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
+        }
+      });
       const members = await response.json();
       const membersWithNames = members.map((user: any) => ({
         ...user,
@@ -136,22 +225,47 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
   };
 
   const handleAddUserToGroup = async (user: ChatPartner): Promise<void> => {
+    setModalIsOpenLoadning(true);
     try {
       if (!selectedChat) {
         console.error("Error: No group to edit.");
         return;
       }
-      const response = await fetch(`http://localhost:8080/api/v1/group/${selectedChat.id}/user/${user.id}/add`, {
-        method: 'PATCH',
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
+        },
+        credentials: 'include',
       });
 
-      if (response.ok) {
-        setSelectedUsers((prevUsers) => [...prevUsers, user]);
-        setSearchResults((prevResults) =>
-          prevResults.filter((result) => result.id !== user.id)
-        );
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}/user/${user.id}/add`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          setSelectedUsers((prevUsers) => [...prevUsers, user]);
+          setSearchResults((prevResults) =>
+            prevResults.filter((result) => result.id !== user.id)
+          );
+        } else {
+          console.error('Błąd podczas dodawania użytkownika do grupy');
+        }
+        setModalIsOpenLoadning(false);
       } else {
-        console.error('Błąd podczas dodawania użytkownika do grupy');
+        console.error('Failed to fetch XSRF token, response not OK');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -163,23 +277,46 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       return;
     }
 
+    setModalIsOpenLoadning(true);
     try {
       if (!selectedChat) {
         console.error("Error: No group to edit.");
         return;
       }
-      const response = await fetch(`http://localhost:8080/api/v1/group/${selectedChat.id}/user/${userId}/remove`, {
-        method: 'PATCH',
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
+        },
+        credentials: 'include',
       });
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}/user/${userId}/remove`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+        });
 
-      if (response.ok) {
-        if (userId === userId) {
-          await loadChatPartnersGroups(true);
-          return;
+        if (response.ok) {
+          if (userId === userId) {
+            await loadChatPartnersGroups(true);
+            return;
+          }
+          setSelectedUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+        } else {
+          console.error('Błąd podczas usuwania użytkownika z grupy');
         }
-        setSelectedUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+        setModalIsOpenLoadning(false);
       } else {
-        console.error('Błąd podczas usuwania użytkownika z grupy');
+        console.error('Failed to fetch XSRF token, response not OK');
       }
     } catch (error) {
       console.error('Błąd:', error);
@@ -196,29 +333,64 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
       return;
     }
 
+    setModalIsOpenLoadning(true);
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/group/${selectedChat.id}`, {
-        method: 'DELETE',
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
+        },
+        credentials: 'include',
       });
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+        });
 
-      if (response.ok) {
-        console.log("deleted successfuly")
-        await loadChatPartnersGroups(true);
+        if (response.ok) {
+          console.log("deleted successfuly")
+          await loadChatPartnersGroups(true);
+        } else {
+          console.error(`Failed to delete group "${selectedChat.name}".`);
+        }
+        setModalIsOpenLoadning(false);
       } else {
-        console.error(`Failed to delete group "${selectedChat.name}".`);
+        console.error('Failed to fetch XSRF token, response not OK');
       }
     } catch (error) {
       console.error("Error deleting group:", error);
     }
   };
 
-
-
   useEffect(() => {
-    fetch('http://localhost:8080/api/v1/language')
-      .then((response) => response.json())
-      .then((data) => setLanguages(data))
-      .catch((error) => console.error('Error fetching languages:', error));
+    const fetchLanguages = async () => {
+      try {
+        const tokenJWT = sessionStorage.getItem('tokenJWT');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/language`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${tokenJWT}`,
+          }
+        });
+        if (!response.ok) throw new Error('Failed to fetch languages');
+        const data = await response.json();
+        setLanguages(data);
+      } catch (error) {
+        console.error('Error while fetching languages:', error);
+      }
+    };
+    fetchLanguages();
   }, []);
 
   const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -231,7 +403,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
   };
 
   useEffect(() => {
-    const socket = new SockJS('http://localhost:8080/api/v1/ws');
+    const socket = new SockJS(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/ws`);
     const stompClient = new Client({
       webSocketFactory: () => socket,
       debug: (str) => console.log(str),
@@ -278,7 +450,14 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
             const newMessage: Message = JSON.parse(message.body);
 
             if (!newMessage.groupSenderPhoto || !newMessage.groupSenderName) {
-              const senderDetails = await fetch(`http://localhost:8080/api/v1/user/simple/empId/${newMessage.sender_id}`);
+              const tokenJWT = sessionStorage.getItem('tokenJWT');
+              const senderDetails = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/${newMessage.sender_id}`, {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${tokenJWT}`,
+                }
+              });
               const senderData = await senderDetails.json();
 
               newMessage.groupSenderPhoto = senderData.photo;
@@ -319,7 +498,14 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
   }, [userId, selectedChat]);
 
   const loadChatPartnersIndividual = async (selectFirstPartner = false) => {
-    const chatPartnersIndividual = await fetch(`http://localhost:8080/api/v1/message/chat-partners?userId=${userId}`);
+    const tokenJWT = sessionStorage.getItem('tokenJWT');
+    const chatPartnersIndividual = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/chat-partners?userId=${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokenJWT}`,
+      }
+    });
     if (!chatPartnersIndividual.ok) throw new Error('Błąd podczas pobierania partnerów czatu');
     const dataIndividual = await chatPartnersIndividual.json();
 
@@ -337,7 +523,14 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
   }
 
   const loadChatPartnersGroups = async (selectFirstPartner = false) => {
-    const chatPartnersGroups = await fetch(`http://localhost:8080/api/v1/group/chat-partners?userId=${userId}`);
+    const tokenJWT = sessionStorage.getItem('tokenJWT');
+    const chatPartnersGroups = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/chat-partners?userId=${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokenJWT}`,
+      }
+    });
     if (!chatPartnersGroups.ok) throw new Error('Błąd podczas pobierania partnerów czatu');
     const dataGroups = await chatPartnersGroups.json();
 
@@ -380,11 +573,24 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
   }, [messages]);
 
   const fetchUserDetails = async (partnerId: number): Promise<ChatPartner> => {
-    const userDetailsResponse = await fetch(`http://localhost:8080/api/v1/user/simple/empId/${partnerId}`);
+    const tokenJWT = sessionStorage.getItem('tokenJWT');
+    const userDetailsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/${partnerId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokenJWT}`,
+      }
+    });
     if (!userDetailsResponse.ok) throw new Error(`Błąd podczas pobierania danych użytkownika o ID ${partnerId}`);
     const userDetails = await userDetailsResponse.json();
 
-    const lastMessageResponse = await fetch(`http://localhost:8080/api/v1/message/last?userId1=${userId}&userId2=${partnerId}`);
+    const lastMessageResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/last?userId1=${userId}&userId2=${partnerId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokenJWT}`,
+      }
+    });
     const lastMessageData = lastMessageResponse.ok ? await lastMessageResponse.text() : 'Brak wiadomości';
 
     return {
@@ -397,11 +603,24 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
   };
 
   const fetchGroupDetails = async (partnerId: number): Promise<ChatPartner> => {
-    const groupDetailsResponse = await fetch(`http://localhost:8080/api/v1/group/details/${partnerId}`);
+    const tokenJWT = sessionStorage.getItem('tokenJWT');
+    const groupDetailsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/details/${partnerId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokenJWT}`,
+      }
+    });
     if (!groupDetailsResponse.ok) throw new Error(`Błąd podczas pobierania danych grupy o ID ${partnerId}`);
     const groupDetails = await groupDetailsResponse.json();
 
-    const lastMessageResponse = await fetch(`http://localhost:8080/api/v1/message/last?groupId=${partnerId}`);
+    const lastMessageResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/last?groupId=${partnerId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokenJWT}`,
+      }
+    });
     const lastMessageData = lastMessageResponse.ok ? await lastMessageResponse.text() : 'Brak wiadomości';
 
     return {
@@ -418,22 +637,70 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     const targetLanguageParam = translate ? `&targetLanguage=${language}` : '';
 
     if (partner.type == 'user') {
-      const response = await fetch(`http://localhost:8080/api/v1/message/history?userId1=${userId}&userId2=${partner.id}&translate=${translate}${targetLanguageParam}`);
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/history?userId1=${userId}&userId2=${partner.id}&translate=${translate}${targetLanguageParam}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
+        }
+      });
       if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
       const data = await response.json();
-      setMessages(data);
+      setMessages(data.content);
 
-      await fetch(`http://localhost:8080/api/v1/message/mark-all-read?userId1=${userId}&userId2=${partner.id}`, {
-        method: 'PATCH',
-      });
+      setModalIsOpenLoadning(true);
+      try {
+        const tokenJWT = sessionStorage.getItem('tokenJWT');
+        const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${tokenJWT}`,
+          },
+          credentials: 'include',
+        });
+        if (resquestXsrfToken.ok) {
+          const data = await resquestXsrfToken.json();
+          const tokenXSRF = data.token;
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/mark-all-read?userId1=${userId}&userId2=${partner.id}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+              'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+          });
+
+          setModalIsOpenLoadning(false);
+        } else {
+          console.error('Failed to fetch XSRF token, response not OK');
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
     } else {
-      const response = await fetch(`http://localhost:8080/api/v1/message/history?userId1=${userId}&groupId=${partner.id}&translate=${translate}${targetLanguageParam}`);
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/history?userId1=${userId}&groupId=${partner.id}&translate=${translate}${targetLanguageParam}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
+        }
+      });
       if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
       const data = await response.json();
 
       const groupChatDetails = await Promise.all(
-        data.map(async (message: Message) => {
-          const senderResponse = await fetch(`http://localhost:8080/api/v1/user/simple/empId/${message.sender_id}`);
+        data.content.map(async (message: Message) => {
+          const senderResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/${message.sender_id}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${tokenJWT}`,
+            }
+          });
           const senderData = await senderResponse.json();
           return {
             ...message,
@@ -475,29 +742,51 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
         }
       }
 
-      const response = await fetch(`http://localhost:8080/api/v1/message/send`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(messageData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Błąd podczas wysyłania wiadomości: ${errorData.message || 'Nieznany błąd'}`);
+      setModalIsOpenLoadning(true);
+      try {
+        const tokenJWT = sessionStorage.getItem('tokenJWT');
+        const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${tokenJWT}`,
+          },
+          credentials: 'include',
+        });
+        if (resquestXsrfToken.ok) {
+          const dataToken = await resquestXsrfToken.json();
+          const tokenXSRF = dataToken.token;
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/send`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+              'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+            body: JSON.stringify(messageData),
+          });
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Błąd podczas wysyłania wiadomości: ${errorData.message || 'Nieznany błąd'}`);
+          }
+    
+          const data = await response.json();
+          setMessages((prevMessages) => [...prevMessages, data]);
+          if (selectedChat.type === 'user') {
+            await loadChatPartnersIndividual();
+          } else if (selectedChat.type === 'group') {
+            await loadChatPartnersGroups();
+          }
+          await fetchChatHistory(selectedChat, language);
+          setSelectedChat(selectedChat);
+          setModalIsOpenLoadning(false);
+        } else {
+          console.error('Failed to fetch XSRF token, response not OK');
+        }
+      } catch (error) {
+        console.error("Error:", error);
       }
-
-      const data = await response.json();
-      setMessages((prevMessages) => [...prevMessages, data]);
-      if (selectedChat.type === 'user') {
-        await loadChatPartnersIndividual();
-      } else if (selectedChat.type === 'group') {
-        await loadChatPartnersGroups();
-      }
-      await fetchChatHistory(selectedChat, language);
-      setSelectedChat(selectedChat);
-      console.log(selectedChat)
     }
   };
 
@@ -577,7 +866,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
               {partner.photo ? (
                 <img
                   className={styles.chatAvatar}
-                  src={`http://localhost:8080/api/v1/userPhoto/${partner.photo}`}
+                  src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${partner.photo}`}
                   alt="User Photo"
                 />
               ) : (
@@ -636,7 +925,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                   >
                     {user.photo ? (
                       <img
-                        src={`http://localhost:8080/api/v1/userPhoto/${user.photo}`}
+                        src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
                         className={styles.chatAvatar}
                         alt="User Avatar"
                       />
@@ -654,7 +943,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
               {selectedChat.photo ? (
                 <img
                   className={styles.chatAvatar}
-                  src={`http://localhost:8080/api/v1/userPhoto/${selectedChat.photo}`}
+                  src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${selectedChat.photo}`}
                   alt="User Photo"
                 />
               ) : (
@@ -679,7 +968,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                       {message.groupSenderPhoto || selectedChat.photo ? (
                         <img
                           className={styles.chatAvatar}
-                          src={`http://localhost:8080/api/v1/userPhoto/${message.groupSenderPhoto || selectedChat.photo}`}
+                          src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${message.groupSenderPhoto || selectedChat.photo}`}
                           alt="User Avatar"
                         />
                       ) : (
@@ -752,7 +1041,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                   {user.photo ? (
                     <img
                       className={styles.chatAvatar}
-                      src={`http://localhost:8080/api/v1/userPhoto/${user.photo}`}
+                      src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
                       alt="User Photo"
                     />
                   ) : (
@@ -770,7 +1059,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
                   {user.photo ? (
                     <img
                       className={styles.chatAvatar}
-                      src={`http://localhost:8080/api/v1/userPhoto/${user.photo}`}
+                      src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
                       alt="User Photo"
                     />
                   ) : (
@@ -792,7 +1081,13 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
           </div>
         </div>
       )}
-
+      {modalIsOpenLoadning && (
+        <div className={styles.loadingModalOverlay}>
+          <div className={styles.loadingModalContent}>
+            <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 
