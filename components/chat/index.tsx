@@ -11,10 +11,6 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
-// type ChatProps = {
-//   userId: number;
-// };
-
 type ChatPartner = {
   id: number;
   name: string;
@@ -158,46 +154,6 @@ const Chat = () => {
     setIsEditGroupModalOpen(!isEditGroupModalOpen);
     loadGroupMembers();
   };
-
-  // setModalIsOpenLoadning(true);
-  // try {
-  //   const tokenJWT = sessionStorage.getItem('tokenJWT');
-  //   const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Bearer ${tokenJWT}`,
-  //     },
-  //     credentials: 'include',
-  //   });
-
-  //   if (resquestXsrfToken.ok) {
-  //     const data = await resquestXsrfToken.json();
-  //     const tokenXSRF = data.token;
-
-  //     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notification/${id}/read`, {
-  //       method: 'PATCH',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-  //         'X-XSRF-TOKEN': tokenXSRF,
-  //       },
-  //       credentials: 'include',
-  //     });
-  //     if (!response.ok) {
-  //       console.error("Failed to mark notification as read: ", response.statusText);
-  //       throw new Error(`Failed to mark notification as read: ${id}`);
-  //     }
-  //     setModalIsOpenLoadning(false);
-
-  //   } else {
-  //     console.error('Failed to fetch XSRF token, response not OK');
-  //   }
-
-  // } catch (error) {
-  //   console.error(`Error marking notification ${id} as read:`, error);
-  //   throw error;
-  // }
 
   const loadGroupMembers = async () => {
     try {
@@ -409,18 +365,6 @@ const Chat = () => {
       debug: (str) => console.log(str),
       onConnect: () => {
         console.log('Connected to STOMP WebSocket');
-
-        // stompClient.subscribe(`/client/messages/${userId}`, (message) => {
-        //   const newMessage: Message = JSON.parse(message.body);
-
-        //   setMessages((prevMessages) =>
-        //     selectedChat &&
-        //       (newMessage.sender_id === selectedChat.id || newMessage.receiver_id === selectedChat.id)
-        //       ? [...prevMessages, newMessage]
-        //       : prevMessages
-        //   );
-        //   loadChatPartners();
-        // });
 
         if (chatType === 'user') {
           stompClient.subscribe(`/client/messages/${userId}`, (message) => {
