@@ -1,15 +1,4 @@
-$popup-bg: rgba(0, 0, 0, 0.5);
-$popup-bg-colour: #4F4E4E;
-$popup-highlight-colour: #FFCF70;
-
-$editEmployee-font-colour-dark: #000000;
-$editEmployee-checkbox-bg-colour: #e8e8e8;
-$editEmployee-box-shadow-colour: rgba(0, 0, 0, 0.1);
-$editEmployee-highlight-colour: #FFCF70;
-$editEmployee-highlight-colour-hover: #FFBE4D;
-$editEmployee-column-colour: #FFFFFF;
-$editEmployee-error-border-colour: #dc3545;
-$editEmployee-error-bg-colour: #ffe6e6;
+@import '@/styles/variables.scss';
 
 .modalOverlayOfAddEmployee {
     position: fixed;
@@ -17,7 +6,7 @@ $editEmployee-error-bg-colour: #ffe6e6;
     left: 0;
     right: 0;
     bottom: 0;
-    background: $popup-bg;
+    background: $black-transparency-05;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -27,9 +16,9 @@ $editEmployee-error-bg-colour: #ffe6e6;
   .modalContentOfAddEmployee {
     display: flex;
     flex-direction: column;
-    border: 2px solid $popup-highlight-colour;
+    border: 2px solid $main-colour;
     border-radius: 8px;
-    background-color: $popup-bg-colour;
+    background-color: $gray;
     text-align: center;
     width: auto;
     max-height: 80vh;
@@ -87,9 +76,9 @@ $editEmployee-error-bg-colour: #ffe6e6;
     flex-direction: column;
     flex: 1;
     padding: 20px;
-    background-color: $editEmployee-column-colour;
+    background-color: $white;
     border-radius: 10px;
-    box-shadow: 0 4px 8px $editEmployee-box-shadow-colour;
+    box-shadow: 0 4px 8px $black-transparency-01;
 
     .essentialDataLabel,
     .residenceLabel,
@@ -99,7 +88,7 @@ $editEmployee-error-bg-colour: #ffe6e6;
     .departmentLabel {
         font-size: 16px;
         font-weight: bold;
-        color: $editEmployee-font-colour-dark;
+        color: $font-dark-colour;
         margin: 10px 0;
         transition: color 0.3s ease;
         display: flex;
@@ -108,7 +97,7 @@ $editEmployee-error-bg-colour: #ffe6e6;
     }
 
     .errorMessage {
-        color: $editEmployee-error-border-colour;
+        color: $red;
         font-size: 16px;
         font-weight: bold;
         margin: 0;
@@ -124,21 +113,21 @@ $editEmployee-error-bg-colour: #ffe6e6;
         height: 5vh;
         border-radius: 5px;
         border: none;
-        border-bottom: 2px solid $editEmployee-highlight-colour;
+        border-bottom: 2px solid $main-colour;
         padding: 10px 5vh 10px 10px;
-        color: $editEmployee-font-colour-dark;
-        box-shadow: inset 0 2px 4px $editEmployee-box-shadow-colour;
+        color: $font-dark-colour;
+        box-shadow: inset 0 2px 4px $black-transparency-01;
         transition: all 0.3s ease;
 
         &:hover {
-            border: 2px solid $editEmployee-highlight-colour;
+            border: 2px solid $main-colour;
             outline: none;
-            background-color: lighten($editEmployee-checkbox-bg-colour, 5%);
+            background-color: lighten($white-4, 5%);
         }
 
         &::placeholder {
             margin: 0 0 0 10px;
-            color: lighten($editEmployee-font-colour-dark, 30%);
+            color: lighten($font-dark-colour, 30%);
         }
 
         @media (max-width: 768px) {
@@ -148,14 +137,14 @@ $editEmployee-error-bg-colour: #ffe6e6;
     }
 
     .errorInput {
-        border-color: $editEmployee-error-border-colour;
-        background-color: $editEmployee-error-bg-colour;
+        border-color: $red;
+        background-color: $red-powder;
     }
 
     .formSelect {
         background-image: 
-            linear-gradient(45deg, transparent 50%, $editEmployee-font-colour-dark 50%),
-            linear-gradient(135deg, $editEmployee-font-colour-dark 50%, transparent 50%);
+            linear-gradient(45deg, transparent 50%, $font-dark-colour 50%),
+            linear-gradient(135deg, $font-dark-colour 50%, transparent 50%);
         background-position: 
             calc(100% - 15px) calc(1em + 5px),
             calc(100% - 6px) calc(1em + 5px);
@@ -163,7 +152,7 @@ $editEmployee-error-bg-colour: #ffe6e6;
             9px 9px,
             9px 9px;
         background-repeat: no-repeat;
-        color: $editEmployee-font-colour-dark;
+        color: $font-dark-colour;
     }
 
     .pointer {
@@ -200,8 +189,8 @@ $editEmployee-error-bg-colour: #ffe6e6;
         align-items: center;
         max-height: 45vh;
         border-radius: 10px;
-        background-color: $editEmployee-column-colour;
-        box-shadow: 0 4px 8px $editEmployee-box-shadow-colour;
+        background-color: $white;
+        box-shadow: 0 4px 8px $black-transparency-01;
 
         @media (max-width: 768px) {
             margin: 10px;
@@ -210,7 +199,7 @@ $editEmployee-error-bg-colour: #ffe6e6;
         }
 
         .errorMessage {
-            color: $editEmployee-error-border-colour;
+            color: $red;
             font-size: 16px;
             font-weight: bold;
         }
@@ -219,7 +208,7 @@ $editEmployee-error-bg-colour: #ffe6e6;
         .roleParagraph {
             font-size: 16px;
             font-weight: bold;
-            color: $editEmployee-font-colour-dark;
+            color: $font-dark-colour;
             margin: 10px 0;
         }
 
@@ -256,11 +245,11 @@ $editEmployee-error-bg-colour: #ffe6e6;
                 justify-content: space-between;
                 text-align: center;
                 gap: 10px;
-                background-color: $editEmployee-checkbox-bg-colour;
+                background-color: $white-4;
                 border-radius: 5px;
-                box-shadow: 0px 2px 5px $editEmployee-box-shadow-colour;
+                box-shadow: 0px 2px 5px $black-transparency-01;
                 font-size: 16px;
-                color: $editEmployee-font-colour-dark;
+                color: $font-dark-colour;
                 cursor: pointer;
                 width: 100%;
                 padding: 10px;
@@ -274,7 +263,7 @@ $editEmployee-error-bg-colour: #ffe6e6;
                     margin-right: 10px;
                     width: 20px;
                     height: 20px;
-                    accent-color: $editEmployee-highlight-colour;
+                    accent-color: $main-colour;
                     cursor: pointer;
                 }
             }
@@ -310,11 +299,11 @@ $editEmployee-error-bg-colour: #ffe6e6;
                 justify-content: space-between;
                 text-align: center;
                 gap: 10px;
-                background-color: $editEmployee-checkbox-bg-colour;
+                background-color: $white-4;
                 border-radius: 5px;
-                box-shadow: 0px 2px 5px $editEmployee-box-shadow-colour;
+                box-shadow: 0px 2px 5px $black-transparency-01;
                 font-size: 16px;
-                color: $editEmployee-font-colour-dark;
+                color: $font-dark-colour;
                 cursor: pointer;
                 width: 100%;
                 padding: 10px;
@@ -327,7 +316,7 @@ $editEmployee-error-bg-colour: #ffe6e6;
                     margin-right: 10px;
                     width: 20px;
                     height: 20px;
-                    accent-color: $editEmployee-highlight-colour;
+                    accent-color: $main-colour;
                     cursor: pointer;
                 }
 
@@ -370,8 +359,8 @@ $editEmployee-error-bg-colour: #ffe6e6;
         .addButton {
             display: flex;
             align-items: center;
-            background-color: $editEmployee-highlight-colour;
-            color: $editEmployee-font-colour-dark;
+            background-color: $main-colour;
+            color: $font-dark-colour;
             padding: 10px 20px;
             border: none;
             border-radius: 10px;
@@ -379,7 +368,7 @@ $editEmployee-error-bg-colour: #ffe6e6;
             transition: background-color 0.3s ease;
 
             &:hover {
-                background-color: $editEmployee-highlight-colour-hover;
+                background-color: $main-colour-hover;
             }
 
             @media (max-width: 768px) {

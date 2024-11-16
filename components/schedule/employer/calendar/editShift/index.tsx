@@ -24,15 +24,33 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/v1/role/user/${shift.user_id}`)
-      .then(response => response.json())
-      .then(data => setRoles(data))
-      .catch(error => console.error('Error fetching roles:', error));
-
-    fetch('http://localhost:8080/api/v1/predefine-shift')
-      .then(response => response.json())
-      .then(data => setPredefineShifts(data))
-      .catch(error => console.error('Error fetching predefineShifts:', error));
+    const fetchRolesAndShifts = async () => {
+      try {
+        const rolesResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/user/${shift.user_id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          },
+        });
+        const rolesData = await rolesResponse.json();
+        setRoles(rolesData);
+  
+        const shiftsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          },
+        });
+        const shiftsData = await shiftsResponse.json();
+        setPredefineShifts(shiftsData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchRolesAndShifts();
   }, [shift.user_id]);
 
   const validationSchema = Yup.object({

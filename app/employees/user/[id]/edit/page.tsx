@@ -15,27 +15,39 @@ const EditEmployeePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (id) {
-      fetch(`http://localhost:8080/api/v1/user/${id}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to fetch employee data');
-          }
-          return response.json();
-        })
-        .then(data => {
-          setEmployee(data);
-          setLoading(false);
-        })
-        .catch(error => {
-          setError(error.message);
-          setLoading(false);
-        });
-    } else {
-      setError('No userId provided');
-      setLoading(false);
-    }
-  }, [id]);
+    const fetchEmployeeData = async () => {
+        if (!id) {
+            setError('No userId provided');
+            setLoading(false);
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/v1/user/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch employee data');
+            }
+            const data = await response.json();
+            setEmployee(data);
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message);
+            } else {
+                setError('An unknown error occurred');
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchEmployeeData();
+}, [id]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;

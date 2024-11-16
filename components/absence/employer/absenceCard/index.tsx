@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import Absence from '@/components/types/absence';
 import AbsenceType from '@/components/types/absenceType';
 import AbsenceUser from '@/components/types/absenceUser';
@@ -18,69 +19,114 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     const [user, setUser] = useState<AbsenceUser | null>(null);
     const [modalIsOpenCancelAbsence, setModalIsOpenCancelAbsence] = useState(false);
     const [modalIsOpenAproveAbsence, setModalIsOpenAproveAbsence] = useState(false);
+    const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/api/v1/absence-type/${absence.absence_type_id}`)
-            .then(response => response.json())
-            .then(data => setAbsenceType(data))
-            .catch(error => console.error('Error fetching absence type:', error));
+        const fetchAbsenceType = async () => {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence-type/${absence.absence_type_id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    },
+                });
+                const data = await response.json();
+                setAbsenceType(data);
+            } catch (error) {
+                console.error('Error fetching absence type:', error);
+            }
+        };
 
-        fetch(`http://localhost:8080/api/v1/user/simple/${absence.user_id}`)
-            .then(response => response.json())
-            .then(data => setUser(data))
-            .catch(error => console.error('Error fetching user:', error));
+        const fetchUser = async () => {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/${absence.user_id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    },
+                });
+                const data = await response.json();
+                setUser(data);
+            } catch (error) {
+                console.error('Error fetching user:', error);
+            }
+        };
+
+        fetchAbsenceType();
+        fetchUser();
     }, [absence.absence_type_id, absence.user_id]);
 
-    const subbmisionDate = () => {
-        return new Date(absence.submission).toLocaleDateString();
-    }
+    const subbmisionDate = () => new Date(absence.submission).toLocaleDateString();
+    const startDate = () => new Date(absence.start).toLocaleDateString();
+    const endDate = () => new Date(absence.end).toLocaleDateString();
+    const workingDays = () => absence.working_days ?? 0;
 
-    const startDate = () => {
-        return new Date(absence.start).toLocaleDateString();
-    }
+    const updateAbsenceStatus = async (absenceId: number, statusId: number) => {
+        setModalIsOpenLoadning(true);
+        try {
+            const tokenJWT = sessionStorage.getItem('tokenJWT');
+            const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${tokenJWT}`,
+                },
+                credentials: 'include',
+            });
 
-    const endDate = () => {
-        return new Date(absence.end).toLocaleDateString();
-    }
+            if (resquestXsrfToken.ok) {
+                const data = await resquestXsrfToken.json();
+                const tokenXSRF = data.token;
 
-    const workingDays = () => {
-        return absence.working_days ?? 0;
-    }
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/${absenceId}/status/${statusId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                });
 
-    const updateAbsenceStatus = (absenceId: number, statusId: number): Promise<void> => {
-        return fetch(`http://localhost:8080/api/v1/absence/${absenceId}/status/${statusId}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then(response => {
                 if (!response.ok) {
+                    console.error('Error updating absence status, response not OK');
                     throw new Error('Error updating absence status');
                 }
-            })
-            .catch(error => {
-                console.error('Error updating absence status:', error);
-                throw error;
-            });
+
+                setModalIsOpenLoadning(false);
+                // const responseData = await response.json();
+                // console.log('Updated absence status response data:', responseData);
+
+            } else {
+                console.error('Failed to fetch XSRF token, response not OK');
+            }
+
+        } catch (error) {
+            console.error('Error updating absence status:', error);
+            throw error;
+        }
     };
 
-    const handleAcceptClick = () => {
-        updateAbsenceStatus(absence.id, 2)
-            .then(() => {
-                console.log('Absence approved');
-                onStatusUpdate();
-            })
-            .catch(error => console.error('Error approving absence:', error));
+    const handleDeclineClick = async () => {
+        try {
+            await updateAbsenceStatus(absence.id, 4);
+            console.log('Absence rejected');
+            onStatusUpdate();
+        } catch (error) {
+            console.error('Error rejecting absence:', error);
+        }
     };
 
-    const handleDeclineClick = () => {
-        updateAbsenceStatus(absence.id, 4)
-            .then(() => {
-                console.log('Absence rejected');
-                onStatusUpdate();
-            })
-            .catch(error => console.error('Error rejecting absence:', error));
+    const handleAcceptClick = async () => {
+        try {
+            await updateAbsenceStatus(absence.id, 2);
+            console.log('Absence approved');
+            onStatusUpdate();
+        } catch (error) {
+            console.error('Error approving absence:', error);
+        }
     };
 
     const renderButtons = () => {
@@ -88,9 +134,8 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
             case 'approved':
                 return (
                     <div className={styles.buttonContainer}>
-                        <button 
+                        <button
                             className={styles.declineButton}
-                            // onClick={handleDeclineClick}
                             onClick={() => setModalIsOpenCancelAbsence(true)}
                         >
                             <FontAwesomeIcon icon={faXmark} />
@@ -98,26 +143,18 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                         </button>
                     </div>
                 );
-            case 'cancelled':
-                return null;
-
-            case 'rejected':
-                return null;
-
             case 'awaiting':
                 return (
                     <div className={styles.buttonContainer}>
-                        <button 
+                        <button
                             className={styles.acceptButton}
-                            // onClick={handleAcceptClick}
                             onClick={() => setModalIsOpenAproveAbsence(true)}
                         >
                             <FontAwesomeIcon className={styles.buttonIcon} icon={faCheck} />
                             <p className={styles.buttonParagraph}>Akceptuj</p>
                         </button>
-                        <button 
+                        <button
                             className={styles.declineButton}
-                            // onClick={handleDeclineClick}
                             onClick={() => setModalIsOpenCancelAbsence(true)}
                         >
                             <FontAwesomeIcon icon={faXmark} />
@@ -125,7 +162,6 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                         </button>
                     </div>
                 );
-
             default:
                 return null;
         }
@@ -177,30 +213,39 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
             </div>
             {renderButtons()}
             {modalIsOpenCancelAbsence && (
-                <div className={styles.addAbsencetModalOverlay}>
-                    <div className={styles.addAbsenceModalContent}>
+                <div className={styles.cancelAbsenceModalOverlay}>
+                    <div className={styles.cancelAbsenceModalContent}>
                         <CancelConfirmation
                             onCancel={handleDeclineClick}
                             onClose={() => setModalIsOpenCancelAbsence(false)}
                             absenceType={absenceType?.name ?? 'Unknown'}
-                            absenceStartAndEnd={startDate() + ' - ' + endDate()}
+                            absenceStartAndEnd={`${startDate()} - ${endDate()}`}
                         />
                     </div>
                 </div>
             )}
             {modalIsOpenAproveAbsence && (
-                <div className={styles.addAbsencetModalOverlay}>
-                    <div className={styles.addAbsenceModalContent}>
+                <div className={styles.aproveAbsenceModalOverlay}>
+                    <div className={styles.aproveAbsenceModalContent}>
                         <AproveConfirmation
                             onAprove={handleAcceptClick}
                             onClose={() => setModalIsOpenAproveAbsence(false)}
                             absenceType={absenceType?.name ?? 'Unknown'}
-                            absenceStartAndEnd={startDate() + ' - ' + endDate()}
+                            absenceStartAndEnd={`${startDate()} - ${endDate()}`}
                         />
+                    </div>
+                </div>
+            )}
+
+            {modalIsOpenLoadning && (
+                <div className={styles.loadingModalOverlay}>
+                    <div className={styles.loadingModalContent}>
+                        <div className={styles.spinnerContainer}><ProgressSpinner /></div>
                     </div>
                 </div>
             )}
         </div>
     );
-}
+};
+
 export default AbsenceCardEmployer;

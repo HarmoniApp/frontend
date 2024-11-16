@@ -1,8 +1,9 @@
 'use client';
 import React, { useState, useEffect } from "react";
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faSearch, faBell, faUser } from '@fortawesome/free-solid-svg-icons';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import styles from "./main.module.scss";
 import './main.css';
 import Notifications from "./notifications";
@@ -12,35 +13,42 @@ import SockJS from 'sockjs-client';
 interface NavbarTopProps {
     onAccountIconClick: () => void;
     userId: number;
+    isThisAdmin: boolean;
 }
 
-const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId}) => {
+const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThisAdmin }) => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [showNotifications, setShowNotifications] = useState(false);
+    const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
     const pathname = usePathname();
-    const mustBeBackButton = pathname === '/dashboard' || pathname === '/register' || pathname === '/login';
-    const mustBeAccoutButton = pathname === '/register' || pathname === '/login';
+    const router = useRouter();
+
+    const fetchNotifications = async () => {
+        try {
+            const tokenJWT = sessionStorage.getItem('tokenJWT');
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notification/user/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${tokenJWT}`,
+                }
+            });
+            if (!response.ok) throw new Error('Failed to fetch notifications');
+            const data: Notification[] = await response.json();
+            setNotifications(data);
+            setUnreadCount(data.filter(notification => !notification.read).length);
+        } catch (error) {
+            console.error('Error while fetching notifications:', error);
+        }
+    };
 
     useEffect(() => {
-        async function fetchNotifications() {
-            try {
-                const response = await fetch(`http://localhost:8080/api/v1/notification/user/${userId}`);
-                const data: Notification[] = await response.json();
-                setNotifications(data);
-
-                const unread = data.filter(notification => !notification.read).length;
-                setUnreadCount(unread);
-            } catch (error) {
-                console.error('Error while fetching notifications:', error);
-            }
-        }
-
         fetchNotifications();
     }, [userId]);
 
     useEffect(() => {
-        const socket = new SockJS('http://localhost:8080/api/v1/ws');
+        const socket = new SockJS(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/ws`);
         const stompClient = new Client({
             webSocketFactory: () => socket,
             debug: (str) => console.log(str),
@@ -83,43 +91,94 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId}) => {
     };
 
     const markAsRead = async (id: number) => {
-        const updatedNotifications = notifications.map(notification =>
+        setNotifications(notifications.map(notification =>
             notification.id === id ? { ...notification, read: true } : notification
-        );
-        setNotifications(updatedNotifications);
+        ));
+        setUnreadCount(notifications.filter(notification => !notification.read && notification.id !== id).length);
+        setModalIsOpenLoadning(true);
+        try {
+            const tokenJWT = sessionStorage.getItem('tokenJWT');
+            const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${tokenJWT}`,
+              },
+              credentials: 'include',
+            });
+      
+            if (resquestXsrfToken.ok) {
+              const data = await resquestXsrfToken.json();
+              const tokenXSRF = data.token;
 
-        const unread = updatedNotifications.filter(notification => !notification.read).length;
-        setUnreadCount(unread);
+              const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notification/${id}/read`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
+                },
+                credentials: 'include',
+            });
+              if (!response.ok) {
+                console.error("Failed to mark notification as read: ", response.statusText);
+                throw new Error(`Failed to mark notification as read: ${id}`);
+              }
+              setModalIsOpenLoadning(false);
+      
+            } else {
+              console.error('Failed to fetch XSRF token, response not OK');
+            }
+      
+          } catch (error) {
+            console.error(`Error marking notification ${id} as read:`, error);
+            throw error;
+          }
+    };
 
-        await fetch(`http://localhost:8080/api/v1/notification/${id}/read`, { method: 'PATCH' });
+    const clikOnLogo = (loggedUser: boolean) => {
+        if (loggedUser == true) {
+            router.push('/dashboard');
+        }
+        else {
+            router.push('/schedule');
+        }
     };
 
     return (
         <nav className={styles.navbar}>
             <div className={styles.leftSection}>
-                {!mustBeBackButton && <p><FontAwesomeIcon icon={faPlay} className={`${styles.icon} ${styles.rotate}`} /></p>}
-                <span className={styles.logo}>HA</span>
+                {/* {!mustBeBackButton && <p><FontAwesomeIcon icon={faPlay} className={`${styles.icon} ${styles.rotate}`} /></p>} */}
+                <span className={styles.logo} onClick={() => clikOnLogo(isThisAdmin)}>HA</span>
             </div>
             <div className={styles.rightSection}>
-                {/* {!mustBeBackButton && <p><FontAwesomeIcon icon={faSearch} className={`${styles.icon} ${pathname !== '/schedule' && pathname !== '/employees' ? styles.hidden : ''}`} /></p>} */}
-                {!mustBeAccoutButton && (
-                    <div className={styles.notificationIconWrapper}>
-                        <p onClick={handleBellClick} className={styles.notificationIcon}>
-                            <FontAwesomeIcon icon={faBell} className={styles.icon}/>
-                            {unreadCount > 0 && (
-                                <span className={styles.unreadCount}>{unreadCount}</span>
-                            )}
-                        </p>
-                    </div>
-                )}
-                {!mustBeAccoutButton && <p onClick={onAccountIconClick}><FontAwesomeIcon icon={faUser} className={`${styles.icon} ${pathname === '/settings' ? styles.active : ''}`} /></p>}
+                <div className={styles.notificationIconWrapper}>
+                    <p onClick={handleBellClick} className={styles.notificationIcon}>
+                        <FontAwesomeIcon icon={faBell} className={styles.icon} />
+                        {unreadCount > 0 && (
+                            <span className={styles.unreadCount}>{unreadCount}</span>
+                        )}
+                    </p>
+                </div>
+                <p onClick={onAccountIconClick}>
+                    <FontAwesomeIcon icon={faUser} className={`${styles.icon} ${pathname === '/settings' ? styles.active : ''}`} />
+                </p>
             </div>
+
 
             {showNotifications && (
                 <div className={styles.modalOverlayOfNotification}>
                     <div className={styles.modalContentOfNotification}>
                         <Notifications notifications={notifications} onClose={closeNotifications} markAsRead={markAsRead} />
                     </div>
+
+                    {modalIsOpenLoadning && (
+                    <div className={styles.loadingModalOverlay}>
+                      <div className={styles.loadingModalContent}>
+                        <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+                      </div>
+                    </div>
+                  )}
                 </div>
             )}
         </nav>

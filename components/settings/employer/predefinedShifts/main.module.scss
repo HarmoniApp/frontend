@@ -1,21 +1,4 @@
-$popup-bg: rgba(0, 0, 0, 0.5);
-$popup-highlight-colour: #FFCF70;
-$popup-bg-colour: #4F4E4E;
-
-$predefineShift-bg-colour: #4F4E4E;
-$predefineShift-bg-colour-dark: #000000;
-$predefineShift-bg-colour-light: #FFFFFF;
-$predefineShift-font-colour: #FFFFFF;
-$predefineShift-font-colour-dark: #000000;
-$predefineSHift-tile-background-color: #f9f9f9;
-$predefineShift-highlight-colour: #FFCF70;
-$predefineShift-highlight-colour-hover: #FFBE4D;
-$predefineShift-no-button-colour: #dc3545;
-$predefineShift-yes-button-colour: #008000;
-$predefineShift-box-shadow-colour: rgba(0, 0, 0, 0.1);
-$predefineShift-checkbox-bg-colour: #e8e8e8;
-$predefineShift-error-border-colour: #dc3545;
-$predefineShift-error-bg-colour: #ffe6e6;
+@import '@/styles/variables.scss';
 
 .modalOverlayOfAdd, .modalOverlayOfDelete { 
     position: fixed;
@@ -23,7 +6,7 @@ $predefineShift-error-bg-colour: #ffe6e6;
     left: 0;
     right: 0;
     bottom: 0;
-    background: $popup-bg;
+    background: $black-transparency-05;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -33,9 +16,9 @@ $predefineShift-error-bg-colour: #ffe6e6;
 .modalContentOfAdd, .modalContentOfDelete {
     display: flex;
     flex-direction: column;
-    border: 2px solid $popup-highlight-colour;
+    border: 2px solid $main-colour;
     border-radius: 8px;
-    background-color: $popup-bg-colour;
+    background-color: $gray;
     text-align: center;
     width: auto;
     max-height: 80vh;
@@ -50,8 +33,8 @@ $predefineShift-error-bg-colour: #ffe6e6;
 }
 
 .predefinedShiftsContainerMain {
-    background-color: $predefineShift-bg-colour;
-    color: $predefineShift-font-colour;
+    background-color: $gray;
+    color: $font-light-colour;
     padding: 20px 0 0 0;
     border-radius: 10px;
     display: flex;
@@ -74,7 +57,7 @@ $predefineShift-error-bg-colour: #ffe6e6;
         //align-items: center;
         height: 100%;
         padding: 10px;
-        background-color: $predefineSHift-tile-background-color;
+        background-color: $white-3;
         border-radius: 5px;
         gap: 15px;
 
@@ -100,17 +83,17 @@ $predefineShift-error-bg-colour: #ffe6e6;
                     display: flex;
                     align-items: left;
                     margin: 0;
-                    color: $predefineShift-font-colour-dark;
+                    color: $font-dark-colour;
                     font-weight: bold;
                     width: auto;
                 }
 
                 .shiftNameInput {
                     padding: 5px;
-                    border: 2px solid $predefineShift-bg-colour-dark;
+                    border: 2px solid $font-dark-colour;
                     border-radius: 5px;
-                    background-color: $predefineShift-bg-colour-light;
-                    color: $predefineShift-font-colour-dark;
+                    background-color: $white;
+                    color: $font-dark-colour;
                     outline: none;
                     width: 8vw;
                     height: 5vh;
@@ -123,7 +106,7 @@ $predefineShift-error-bg-colour: #ffe6e6;
                 gap: 10px;
 
                 .shiftTimeSelect {
-                    border: 2px solid $predefineShift-bg-colour-dark;
+                    border: 2px solid $font-dark-colour;
                     border-radius: 4px;
                 }
             }
@@ -155,9 +138,9 @@ $predefineShift-error-bg-colour: #ffe6e6;
 .editButton,
 .yesButton,
 .noButton {
-    background-color: $predefineShift-highlight-colour;
-    border: 2px solid $predefineShift-font-colour-dark;
-    color: $predefineShift-font-colour-dark;
+    background-color: $main-colour;
+    border: 2px solid $font-dark-colour;
+    color: $font-dark-colour;
     padding: 5px 10px;
     border-radius: 5px;
     height: 5vh;
@@ -166,20 +149,20 @@ $predefineShift-error-bg-colour: #ffe6e6;
     transition: background-color 0.3s ease, color 0.3s ease;
 
     &:hover {
-        background-color: $predefineShift-font-colour-dark;
-        color: $predefineShift-highlight-colour;
+        background-color: $font-dark-colour;
+        color: $main-colour;
     }
 
 }
 
 .yesButton:hover {
-    background-color: $predefineShift-yes-button-colour;
-    color: $predefineShift-font-colour-dark;
+    background-color: $green;
+    color: $font-dark-colour;
 }
 
 .noButton:hover {
-    background-color: $predefineShift-no-button-colour;
-    color: $predefineShift-font-colour-dark;
+    background-color: $red;
+    color: $font-dark-colour;
 }
 
 .addContainer {
@@ -190,28 +173,28 @@ $predefineShift-error-bg-colour: #ffe6e6;
     margin: 10px 0 0 0;
 
     .addShiftTimeSelect {
-        border: 2px solid $predefineShift-highlight-colour;
+        border: 2px solid $main-colour;
         border-radius: 4px;
     }
 
     .addInput {
         flex-grow: 1;
         padding: 10px;
-        border: 2px solid $predefineShift-highlight-colour;
+        border: 2px solid $main-colour;
         border-radius: 5px;
-        background-color: $predefineShift-bg-colour-light;
-        color: $predefineShift-font-colour-dark;
+        background-color: $white;
+        color: $font-dark-colour;
         outline: none;
 
         &::placeholder {
-            color: $predefineShift-font-colour-dark;
+            color: $font-dark-colour;
         }
     }
 
     .addButton {
-        background-color: $predefineShift-highlight-colour;
+        background-color: $main-colour;
         border: none;
-        color: $predefineShift-font-colour-dark;
+        color: $font-dark-colour;
         padding: 10px;
         width: 5vh;
         border-radius: 5px;
@@ -219,7 +202,7 @@ $predefineShift-error-bg-colour: #ffe6e6;
         transition: background-color 0.3s ease;
 
         &:hover {
-            background-color: $predefineShift-highlight-colour-hover;
+            background-color: $main-colour-hover;
         }
     }
 }
@@ -232,8 +215,8 @@ $predefineShift-error-bg-colour: #ffe6e6;
     height: 5vh;
     padding: 10px 3.5vh 10px 10px;
     background-image:
-        linear-gradient(45deg, transparent 50%, $predefineShift-font-colour-dark 50%),
-        linear-gradient(135deg, $predefineShift-font-colour-dark 50%, transparent 50%);
+        linear-gradient(45deg, transparent 50%, $font-dark-colour 50%),
+        linear-gradient(135deg, $font-dark-colour 50%, transparent 50%);
     background-position:
         calc(100% - 15px) calc(1em + 5px),
         calc(100% - 6px) calc(1em + 5px);
@@ -241,12 +224,12 @@ $predefineShift-error-bg-colour: #ffe6e6;
         9px 9px,
         9px 9px;
     background-repeat: no-repeat;
-    color: $predefineShift-font-colour-dark;
+    color: $font-dark-colour;
     cursor: pointer;
 }
 
 .errorMessage {
-    color: $predefineShift-error-border-colour;
+    color: $red;
     font-size: 16px;
     font-weight: bold;
     margin: 0;
@@ -261,32 +244,63 @@ $predefineShift-error-bg-colour: #ffe6e6;
     width: 100%;
     height: 5vh;
     border-radius: 5px;
-    border: 2px solid $predefineShift-highlight-colour;
+    border: 2px solid $main-colour;
     padding: 10px 5vh 10px 10px;
-    color: $predefineShift-font-colour-dark;
-    box-shadow: inset 0 2px 4px $predefineShift-box-shadow-colour;
+    color: $font-dark-colour;
+    box-shadow: inset 0 2px 4px $black-transparency-01;
     transition: all 0.3s ease;
 
 
     &:hover {
-        border: 2px solid $predefineShift-highlight-colour;
+        border: 2px solid $main-colour;
         outline: none;
-        background-color: lighten($predefineShift-checkbox-bg-colour, 5%);
+        background-color: lighten($white-4, 5%);
     }
 
     &::placeholder {
         margin: 0 0 0 10px;
-        color: lighten($predefineShift-font-colour-dark, 30%);
+        color: lighten($font-dark-colour, 30%);
     }
 }
 
 .errorInput {
-    border-color: $predefineShift-error-border-colour;
-    background-color: $predefineShift-error-bg-colour;
+    border-color: $red;
+    background-color: $red-powder;
 
     &.shiftTimeSelect,
     &.addShiftTimeSelect {
-        border-color: $predefineShift-error-border-colour;
-        background-color: $predefineShift-error-bg-colour;
+        border-color: $red;
+        background-color: $red-powder;
+    }
+}
+
+.loadingModalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $black-transparency-05;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    .loadingModalContent {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+
+        .spinnerContainer {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
     }
 }

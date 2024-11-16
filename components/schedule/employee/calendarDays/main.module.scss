@@ -1,12 +1,8 @@
-$employeeCalendar-highlight-colour: #FFCF70;
-$employeeCalendar-highlight-colour-dark: #FFBE4D;
-$employeeCalendar-font-colour-dark: #000;
+@import '@/styles/variables.scss';
 
 /**
   * The reference md(only number) is still in index.tsx(11 line) because it changes the full name of the day to the abbreviation. 
   */
-
-$breakpoint-md: 768px;
 
 @mixin respond-to-md {
   @media (max-width: $breakpoint-md) {
@@ -26,9 +22,9 @@ $breakpoint-md: 768px;
 
   .day {
     padding: 10px;
-    background-color: $employeeCalendar-highlight-colour;
-    border-bottom: 2px solid $employeeCalendar-highlight-colour-dark;
-    color: $employeeCalendar-font-colour-dark;
+    background-color: $main-colour;
+    border-bottom: 2px solid $main-colour-hover;
+    color: $font-dark-colour;
     border-radius: 10px;
 
     @include respond-to-md {

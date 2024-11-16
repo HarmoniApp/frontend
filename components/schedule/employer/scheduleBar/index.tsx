@@ -21,7 +21,14 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
     setLoading(true);
     const startOfWeek = currentWeek[0].toISOString().split('T')[0];
     const endOfWeek = currentWeek[6].toISOString().split('T')[0];
-    const responsePDF = await fetch(`http://localhost:8080/api/v1/pdf/generate-pdf-shift?startOfWeek=${startOfWeek}`);
+    const responsePDF = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/pdf/generate-pdf-shift?startOfWeek=${startOfWeek}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      }
+    );
 
     if (!responsePDF.ok) {
       console.error('Error downloading PDF');
@@ -46,7 +53,14 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
     setLoading(true);
     const startOfWeek = currentWeek[0].toISOString().split('T')[0];
     const endOfWeek = currentWeek[6].toISOString().split('T')[0];
-    const responseXLSX = await fetch(`http://localhost:8080/api/v1/excel/shifts/export-excel?start=${startOfWeek}&end=${endOfWeek}`);
+    const responseXLSX = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/excel/shifts/export-excel?start=${startOfWeek}&end=${endOfWeek}`,{
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      }
+    );
 
     if (!responseXLSX.ok) {
       console.error('Error downloading XLSX');

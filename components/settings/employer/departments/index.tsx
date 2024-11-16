@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPen, faCheck, faXmark, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { ProgressSpinner } from 'primereact/progressspinner';
 import AddNotification from '../popUps/addNotification';
 import DeleteConfirmation from '../popUps/deleteConfirmation';
 import * as Yup from "yup";
@@ -19,6 +20,7 @@ const Departments: React.FC = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [addedDepartmentName, setAddedDepartmentName] = useState<string>('');
     const [deleteDepartmentId, setDeleteDepartmentId] = useState<number | null>(null);
+    const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
 
     const openDeleteModal = (departmentId: number) => {
         setDeleteDepartmentId(departmentId);
@@ -29,66 +31,162 @@ const Departments: React.FC = () => {
         fetchDepartments();
     }, []);
 
-    const fetchDepartments = () => {
-        fetch("http://localhost:8080/api/v1/address")
-            .then((response) => response.json())
-            .then((data) => {
-                const filteredDepartments = data.filter((dept: DepartmentAddress) => dept.department_name !== null);
-                setDepartments(filteredDepartments);
-            })
-            .catch((error) => console.error("Error fetching departments:", error));
+    const fetchDepartments = async () => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address`, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                }
+            });
+            const data = await response.json();
+            const filteredDepartments = data.filter(
+                (dept: DepartmentAddress) => dept?.department_name !== undefined && dept.department_name !== null
+            );
+            setDepartments(filteredDepartments);
+        }
+        catch (error) {
+            console.error("Error fetching departments:", error);
+        }
     };
 
-    const handleAddDepartment = (values: DepartmentAddress, { resetForm }: any) => {
-        fetch("http://localhost:8080/api/v1/address", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(values),
-        })
-            .then((response) => response.json())
-            .then((addedDepartment) => {
+    const handleAddDepartment = async (values: DepartmentAddress, { resetForm }: any) => {
+        setModalIsOpenLoadning(true);
+        try {
+            const tokenJWT = sessionStorage.getItem('tokenJWT');
+            const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${tokenJWT}`,
+                },
+                credentials: 'include',
+            });
+
+            if (resquestXsrfToken.ok) {
+                const data = await resquestXsrfToken.json();
+                const tokenXSRF = data.token;
+
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address`, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(values),
+                });
+                if (!response.ok) {
+                    console.error("Failed to addd department: ", response.statusText);
+                    throw new Error('Error adding department');
+                }
+                setModalIsOpenLoadning(false);
+                const addedDepartment = await response.json();
                 setAddedDepartmentName(addedDepartment.department_name);
                 setIsAddModalOpen(true);
                 setDepartments([...departments, addedDepartment]);
                 resetForm();
-            })
-            .catch((error) => console.error("Error adding department:", error));
+
+            } else {
+                console.error('Failed to fetch XSRF token, response not OK');
+            }
+        }
+        catch (error) {
+            console.error("Error adding department:", error);
+        }
     };
 
-    const handleSaveEdit = (values: DepartmentAddress) => {
+    const handleSaveEdit = async (values: DepartmentAddress) => {
         if (editingDepartmentId !== null) {
-            fetch(`http://localhost:8080/api/v1/address/${editingDepartmentId}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(values),
-            })
-                .then((response) => response.json())
-                .then((updatedDepartment) => {
+            setModalIsOpenLoadning(true);
+            try {
+                const tokenJWT = sessionStorage.getItem('tokenJWT');
+                const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${tokenJWT}`,
+                    },
+                    credentials: 'include',
+                });
+
+                if (resquestXsrfToken.ok) {
+                    const data = await resquestXsrfToken.json();
+                    const tokenXSRF = data.token;
+
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${editingDepartmentId}`, {
+                        method: 'PUT',
+                        headers: {
+                            "Content-Type": "application/json",
+                            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                            'X-XSRF-TOKEN': tokenXSRF,
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify(values),
+                    });
+                    if (!response.ok) {
+                        console.error("Failed to update department: ", response.statusText);
+                        throw new Error('Error updating department');
+                    }
+                    setModalIsOpenLoadning(false);
+                    const updatedDepartment = await response.json();
                     setDepartments((prevDepartments) =>
                         prevDepartments.map((dept) => (dept.id === updatedDepartment.id ? updatedDepartment : dept))
                     );
                     setEditingDepartmentId(null);
-                })
-                .catch((error) => console.error("Error updating department:", error));
+
+                } else {
+                    console.error('Failed to fetch XSRF token, response not OK');
+                }
+            }
+            catch (error) {
+                console.error("Error updating department:", error);
+            }
         }
     };
 
-    const handleDeleteDepartment = (departmentId: number) => {
-        fetch(`http://localhost:8080/api/v1/address/${departmentId}`, {
-            method: "DELETE",
-        })
-            .then((response) => {
-                if (response.ok) {
-                    setDepartments(departments.filter((dept) => dept.id !== departmentId));
-                } else {
-                    console.error("Failed to delete department");
+    const handleDeleteDepartment = async (departmentId: number) => {
+        setModalIsOpenLoadning(true);
+        try {
+            const tokenJWT = sessionStorage.getItem('tokenJWT');
+            const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${tokenJWT}`,
+                },
+                credentials: 'include',
+            });
+
+            if (resquestXsrfToken.ok) {
+                const data = await resquestXsrfToken.json();
+                const tokenXSRF = data.token;
+
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${departmentId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                });
+                if (!response.ok) {
+                    console.error("Failed to delete department: ", response.statusText);
+                    throw new Error('Error delete department');
                 }
-            })
-            .catch((error) => console.error("Error deleting department:", error));
+                setModalIsOpenLoadning(false);
+                setDepartments(departments.filter((dept) => dept.id !== departmentId));
+
+            } else {
+                console.error('Failed to fetch XSRF token, response not OK');
+            }
+        }
+        catch (error) {
+            console.error("Error deleting department:", error);
+        }
     };
 
     const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
@@ -447,7 +545,7 @@ const Departments: React.FC = () => {
                         </div>
                         <div className={styles.buttonContainer}>
                             <button type="submit" className={styles.addButton}>
-                                <FontAwesomeIcon icon={faPlus} className={styles.icon}/>
+                                <FontAwesomeIcon icon={faPlus} className={styles.icon} />
                                 <label className={styles.addButtonLabel}>Dodaj nowy oddział</label>
                             </button>
                         </div>
@@ -457,6 +555,13 @@ const Departments: React.FC = () => {
                                     <AddNotification
                                         onClose={() => setIsAddModalOpen(false)}
                                         info={addedDepartmentName} />
+                                </div>
+                            </div>
+                        )}
+                        {modalIsOpenLoadning && (
+                            <div className={styles.loadingModalOverlay}>
+                                <div className={styles.loadingModalContent}>
+                                    <div className={styles.spinnerContainer}><ProgressSpinner /></div>
                                 </div>
                             </div>
                         )}

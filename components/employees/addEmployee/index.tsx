@@ -11,6 +11,7 @@ import Language from '@/components/types/language';
 import Supervisor from '@/components/types/supervisor';
 import Department from '@/components/types/department';
 import styles from './main.module.scss';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
@@ -29,36 +30,96 @@ const AddEmployee: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalCountdown, setModalCountdown] = useState(10);
   const [employeeLink, setEmployeeLink] = useState<number | null>(null);
+  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
 
   if (modalCountdown === 0) onBack();
 
+  const fetchRoles = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setRoles(data);
+    } catch (error) {
+      console.error('Error fetching roles:', error);
+    }
+  };
+
+  const fetchContracts = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setContracts(data);
+    } catch (error) {
+      console.error('Error fetching contract types:', error);
+    }
+  };
+
+  const fetchLanguages = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/language`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setLanguages(data);
+    } catch (error) {
+      console.error('Error fetching languages:', error);
+    }
+  };
+
+  const fetchSupervisors = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/supervisor`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setSupervisors(data.content);
+    } catch (error) {
+      console.error('Error fetching supervisors:', error);
+    }
+  };
+
+  const fetchDepartments = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/departments`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setDepartments(data);
+    } catch (error) {
+      console.error('Error fetching departments:', error);
+    }
+  };
+
   useEffect(() => {
-    fetch('http://localhost:8080/api/v1/role')
-      .then((response) => response.json())
-      .then((data) => setRoles(data))
-      .catch((error) => console.error('Error fetching roles:', error));
-
-    fetch('http://localhost:8080/api/v1/contract-type')
-      .then((response) => response.json())
-      .then((data) => setContracts(data))
-      .catch((error) => console.error('Error fetching contract-type:', error));
-
-    fetch('http://localhost:8080/api/v1/language')
-      .then((response) => response.json())
-      .then((data) => setLanguages(data))
-      .catch((error) => console.error('Error fetching languages:', error));
-
-    fetch('http://localhost:8080/api/v1/user/supervisor')
-      .then((response) => response.json())
-      .then((data) => {
-        setSupervisors(data.content);
-      })
-      .catch((error) => console.error('Error fetching supervisors:', error));
-
-    fetch('http://localhost:8080/api/v1/address/departments')
-      .then((response) => response.json())
-      .then((data) => setDepartments(data))
-      .catch((error) => console.error('Error fetching departments:', error));
+    fetchRoles();
+    fetchContracts();
+    fetchLanguages();
+    fetchSupervisors();
+    fetchDepartments();
   }, []);
 
   const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
@@ -201,20 +262,44 @@ const AddEmployee: React.FC = () => {
     languages: Yup.array().min(1, 'Przynajmniej jeden język jest wymagany'),
   });
 
-  const handleSubmit = (values: typeof initialValues,  { resetForm }: { resetForm: () => void }) => {
-    fetch('http://localhost:8080/api/v1/user', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(values),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const userId = data.id;
+  const handleSubmit = async (values: typeof initialValues, { resetForm }: { resetForm: () => void }) => {
+    setModalIsOpenLoadning(true);
+    try {
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
+        },
+        credentials: 'include',
+      });
+
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+          body: JSON.stringify(values),
+        });
+
+        if (!response.ok) {
+          console.error('Failed to add employee:', response.statusText);
+          throw new Error('Failed to add employee');
+        }
+        setModalIsOpenLoadning(false);
+        const postData = await response.json();
+        setEmployeeLink(postData.id);
         setIsModalOpen(true);
-        setEmployeeLink(userId);
         resetForm();
+
         const countdownInterval = setInterval(() => {
           setModalCountdown((prev) => {
             if (prev === 1) {
@@ -224,10 +309,13 @@ const AddEmployee: React.FC = () => {
             return prev - 1;
           });
         }, 1000);
-      })
-      .catch((error) => {
-        console.error('Błąd podczas dodawania pracownika');
-      })
+      } else {
+        console.error('Failed to fetch XSRF token, response not OK');
+      }
+    } catch (error) {
+      console.error('Error adding employee:', error);
+      throw error;
+    }
   };
 
   const initialValues = {
@@ -550,6 +638,13 @@ const AddEmployee: React.FC = () => {
                       onBack();
                     }}
                   />
+                </div>
+              </div>
+            )}
+            {modalIsOpenLoadning && (
+              <div className={styles.loadingModalOverlay}>
+                <div className={styles.loadingModalContent}>
+                  <div className={styles.spinnerContainer}><ProgressSpinner /></div>
                 </div>
               </div>
             )}

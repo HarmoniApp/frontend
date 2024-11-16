@@ -14,16 +14,29 @@ const SchedulesArchive: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/v1/archived-shifts')
-      .then(response => response.json())
-      .then(data => {
-        setShifts(data);
-        setLoading(false);
-      })
-      .catch(error => {
+    const fetchShifts = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/archived-shifts`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setShifts(data);
+        } else {
+          console.error("Failed to fetch shifts:", response.statusText);
+        }
+      } catch (error) {
         setError('Error fetching archived shifts');
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchShifts();
   }, []);
 
   if (loading) {

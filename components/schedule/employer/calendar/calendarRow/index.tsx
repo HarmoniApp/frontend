@@ -23,7 +23,6 @@ interface CalendarRowProps {
 const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, ref) => {
   const [users, setUsers] = useState<User[]>([]);
   const [schedules, setSchedules] = useState<Record<number, WeekSchedule>>({});
-  const [loading, setLoading] = useState<boolean>(true);
   const [loadingRoles, setLoadingRoles] = useState<boolean>(true);
   const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
   const [loadingSchedules, setLoadingSchedules] = useState<boolean>(true);
@@ -35,6 +34,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [abortController, setAbortController] = useState<AbortController | null>(null);
   const [roles, setRoles] = useState<RoleWithColour[]>([]);
+  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
 
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(20);
@@ -43,8 +43,15 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   useEffect(() => {
     const fetchRoles = async () => {
       setLoadingRoles(true);
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
       try {
-        const response = await fetch('http://localhost:8080/api/v1/role');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${tokenJWT}`,
+          }
+        });
         const data = await response.json();
         setRoles(data);
       } catch (error) {
@@ -57,39 +64,46 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     fetchRoles();
   }, []);
 
-  const fetchFilteredUsers = (filters: { query?: string } = {}, pageNumber: number = 1, pageSize: number = 20) => {
+  const fetchFilteredUsers = async (filters: { query?: string } = {}, pageNumber: number = 1, pageSize: number = 20) => {
     setLoadingUsers(true);
 
-    let url = `http://localhost:8080/api/v1/user/simple/empId?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId?pageNumber=${pageNumber}&pageSize=${pageSize}`;
 
     if (filters.query && filters.query.trim() !== '') {
-      url = `http://localhost:8080/api/v1/user/simple/empId/search?q=${filters.query}`;
+      url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/search?q=${filters.query}`;
     }
 
-    fetch(url)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(responseData => {
-        const usersData = responseData.content || responseData;
+    const tokenJWT = sessionStorage.getItem('tokenJWT');
 
-        if (Array.isArray(usersData)) {
-          setUsers(usersData);
-        } else {
-          console.error('Unexpected response format, expected an array but got:', usersData);
-          setUsers([]);
-        }
-        setTotalPages(responseData.totalPages * pageSize);
-      })
-      .catch(error => {
-        console.error('Error fetching users:', error);
-      })
-      .finally(() => {
-        setLoadingUsers(false);
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
+        },
       });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const responseData = await response.json();
+      const usersData = responseData.content || responseData;
+
+      if (Array.isArray(usersData)) {
+        setUsers(usersData);
+      } else {
+        console.error('Unexpected response format, expected an array but got:', usersData);
+        setUsers([]);
+      }
+      setTotalPages(responseData.totalPages * pageSize);
+
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    } finally {
+      setLoadingUsers(false);
+    }
   };
 
   useEffect(() => {
@@ -109,10 +123,16 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
         try {
           const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
           const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
+          const tokenJWT = sessionStorage.getItem('tokenJWT');
 
           const schedulePromises = users.map(user =>
-            fetch(`http://localhost:8080/api/v1/calendar/user/${user.id}/week?startDate=${startDate}&endDate=${endDate}`, {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${user.id}/week?startDate=${startDate}&endDate=${endDate}`, {
               signal: newAbortController.signal,
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${tokenJWT}`,
+              }
             })
               .then(response => {
                 if (!response.ok) {
@@ -166,70 +186,140 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   };
 
   const handleAddShift = async (shiftData: { start: string; end: string; userId: number; roleName: string; }) => {
+    setModalIsOpenLoadning(true);
     try {
-      const response = await fetch('http://localhost:8080/api/v1/shift', {
-        method: 'POST',
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
         },
-        body: JSON.stringify({
-          start: shiftData.start,
-          end: shiftData.end,
-          published: false,
-          user_id: shiftData.userId,
-          role_name: shiftData.roleName,
-        }),
+        credentials: 'include',
       });
 
-      if (response.ok) {
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            start: shiftData.start,
+            end: shiftData.end,
+            published: false,
+            user_id: shiftData.userId,
+            role_name: shiftData.roleName,
+          }),
+        });
+
+        if (!response.ok) {
+          console.error('Failed to add add shift:', response.statusText);
+          throw new Error('Failed to add add shift');
+        }
+        setModalIsOpenLoadning(false);
         fetchUserSchedule(shiftData.userId);
       } else {
-        console.error('Failed to add shift');
+        console.error('Failed to fetch XSRF token, response not OK');
       }
     } catch (error) {
-      console.error('Error adding shift:', error);
+      console.error('Error adding add shift:', error);
+      throw error;
     }
   };
 
   const handleEditShift = async (shiftData: { id: number; start: string; end: string; userId: number; roleName: string; }) => {
+    setModalIsOpenLoadning(true);
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/shift/${shiftData.id}`, {
-        method: 'PUT',
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
         },
-        body: JSON.stringify({
-          start: shiftData.start,
-          end: shiftData.end,
-          published: false,
-          user_id: shiftData.userId,
-          role_name: shiftData.roleName,
-        }),
+        credentials: 'include',
       });
 
-      if (response.ok) {
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftData.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            start: shiftData.start,
+            end: shiftData.end,
+            published: false,
+            user_id: shiftData.userId,
+            role_name: shiftData.roleName,
+          }),
+        });
+        if (!response.ok) {
+          console.error('Failed to edit shift');
+          throw new Error('Failed to edit shift');
+        }
+        setModalIsOpenLoadning(false);
         fetchUserSchedule(shiftData.userId);
       } else {
-        console.error('Failed to edit shift');
+        console.error('Failed to fetch XSRF token, response not OK');
       }
     } catch (error) {
       console.error('Error editing shift:', error);
+      throw error;
     }
   };
 
   const handleDeleteShift = async (shiftId: number, userId: number) => {
+    setModalIsOpenLoadning(true);
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/shift/${shiftId}`, {
-        method: 'DELETE',
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
+        },
+        credentials: 'include',
       });
 
-      if (response.ok) {
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+        });
+        if (!response.ok) {
+          console.error('Failed to delete shift: ', response.statusText);
+          throw new Error('Failed to delete shift');
+        }
+        setModalIsOpenLoadning(false);
         fetchUserSchedule(userId);
       } else {
-        console.error('Failed to delete shift');
+        console.error('Failed to fetch XSRF token, response not OK');
       }
     } catch (error) {
       console.error('Error deleting shift:', error);
+      throw error;
     }
   };
 
@@ -245,12 +335,36 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     });
 
     shiftsToPublish.forEach(async (shift) => {
+      setModalIsOpenLoadning(true);
       try {
-        const response = await fetch(`http://localhost:8080/api/v1/shift/${shift.id}`, {
-          method: 'PATCH',
+        const tokenJWT = sessionStorage.getItem('tokenJWT');
+        const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${tokenJWT}`,
+          },
+          credentials: 'include',
         });
 
-        if (response.ok) {
+        if (resquestXsrfToken.ok) {
+          const data = await resquestXsrfToken.json();
+          const tokenXSRF = data.token;
+
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shift.id}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+              'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+          });
+          if (!response.ok) {
+            console.error(`Failed to publish shift ${shift.id}`);
+            throw new Error(`Failed to publish shift ${shift.id}`);
+          }
+          setModalIsOpenLoadning(false);
           setSchedules(prevSchedules => ({
             ...prevSchedules,
             [shift.user_id]: {
@@ -261,10 +375,11 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
             },
           }));
         } else {
-          console.error(`Failed to publish shift ${shift.id}`);
+          console.error('Failed to fetch XSRF token, response not OK');
         }
       } catch (error) {
         console.error('Error publishing shift:', error);
+        throw error;
       }
     });
   };
@@ -277,7 +392,14 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     try {
       const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
       const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
-      const userResponse = await fetch(`http://localhost:8080/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}`);
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const userResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
+        }
+      });
 
       if (!userResponse.ok) {
         throw new Error(`Failed to fetch schedule for user ${userId}`);
@@ -375,6 +497,13 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
               setPageSize(event.rows);
             }}
           />
+          {modalIsOpenLoadning && (
+            <div className={styles.loadingModalOverlay}>
+              <div className={styles.loadingModalContent}>
+                <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+              </div>
+            </div>
+          )}
         </>
       )}
 

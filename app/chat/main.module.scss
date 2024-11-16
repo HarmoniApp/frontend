@@ -1,5 +1,5 @@
 $overlay-color: rgba(140, 131, 131, 0.5);
-$primary-color: #FFCF70;
+$main-colour: #FFCF70;
 
 .chatContainer {
   position: relative;
@@ -22,7 +22,7 @@ $primary-color: #FFCF70;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 3;
-  color: $primary-color;
+  color: $main-colour;
   font-size: 24px;
   font-weight: bold;
   text-align: center;

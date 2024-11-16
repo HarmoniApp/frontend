@@ -1,11 +1,4 @@
-$employeeFilter-chechbox-bg-colour: #e8e8e8;
-$employeeFilter-bg-colour-light: #FFFFFF;
-$employeeFilter-font-colour: #FFFFFF;
-$employeeFilter-font-colour-dark: #000000;
-$employeeFilter-highlight-colour: #FFCF70;
-$employeeFilter-highlight-colour-hover: #FFBE4D;
-$employeeFilter-box-shadow-colour: rgba(0, 0, 0, 0.1);
-$employeeFilter-box-shadow-colour-orange: rgba(255, 165, 0, 0.8);
+@import '@/styles/variables.scss';
 
 .employeesFilerContainerMain {
   display: flex;
@@ -13,10 +6,10 @@ $employeeFilter-box-shadow-colour-orange: rgba(255, 165, 0, 0.8);
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: $employeeFilter-bg-colour-light;
-  border: 1px solid $employeeFilter-highlight-colour;
+  background-color: $white;
+  border: 1px solid $main-colour;
   border-radius: 10px;
-  box-shadow: 0px 2px 5px $employeeFilter-box-shadow-colour;
+  box-shadow: 0px 2px 5px $black-transparency-01;
 }
 
 .sortContainer,
@@ -31,7 +24,7 @@ $employeeFilter-box-shadow-colour-orange: rgba(255, 165, 0, 0.8);
   position: relative;
   align-items: center;
   margin: 0 0 20px 0;
-  background-color: $employeeFilter-highlight-colour;
+  background-color: $main-colour;
   border-radius: 8px;
   width: 100%;
   padding: 10px 15px;
@@ -58,11 +51,11 @@ $employeeFilter-box-shadow-colour-orange: rgba(255, 165, 0, 0.8);
     opacity: 1;
   }
 
-  &:focus {
-    outline: none;
-    border-color: $employeeFilter-highlight-colour-hover;
-    box-shadow: 0 0 5px $employeeFilter-box-shadow-colour-orange;
-  }
+  // &:focus {
+  //   outline: none;
+  //   border-color: $main-colour-hover;
+  //   box-shadow: 0 0 5px $black-transparency-01-orange;
+  // }
 }
 .positionTitleContainer,
 .sortTitleContainer,
@@ -73,13 +66,13 @@ $employeeFilter-box-shadow-colour-orange: rgba(255, 165, 0, 0.8);
   justify-content: space-between;
   cursor: pointer;
   padding: 10px;
-  background-color: $employeeFilter-highlight-colour;
+  background-color: $main-colour;
   border-radius: 8px;
   width: 100%;
   height: 60px;
 
   &:hover {
-    background-color: $employeeFilter-highlight-colour-hover;
+    background-color: $main-colour-hover;
   }
 
   .sortIcon,
@@ -101,7 +94,7 @@ $employeeFilter-box-shadow-colour-orange: rgba(255, 165, 0, 0.8);
     margin: 0 20px;
     font-size: 16px;
     font-weight: bold;
-    color: $employeeFilter-font-colour-dark;
+    color: $font-dark-colour;
     text-align: center;
   }
 
@@ -130,7 +123,7 @@ $employeeFilter-box-shadow-colour-orange: rgba(255, 165, 0, 0.8);
   align-items: center;
   justify-content: space-between;
   text-align: center;
-  background-color: $employeeFilter-chechbox-bg-colour;
+  background-color: $white-4;
   padding: 10px;
   border-radius: 5px;
   margin: 10px 0;
@@ -145,7 +138,7 @@ $employeeFilter-box-shadow-colour-orange: rgba(255, 165, 0, 0.8);
   margin-right: 10px;
   width: 20px;
   height: 20px;
-  accent-color: $employeeFilter-highlight-colour;
+  accent-color: $main-colour;
   cursor: pointer;
 }
 
@@ -153,7 +146,7 @@ $employeeFilter-box-shadow-colour-orange: rgba(255, 165, 0, 0.8);
 .descCheckboxLabel,
 .positionCheckboxLabel {
   font-size: 14px;
-  color: $employeeFilter-font-colour-dark;
+  color: $font-dark-colour;
 }
 
 .languageFlag {
@@ -174,9 +167,9 @@ $employeeFilter-box-shadow-colour-orange: rgba(255, 165, 0, 0.8);
     align-items: center;
     justify-content: space-between;
     padding: 10px 15px;
-    background-color: $employeeFilter-highlight-colour;
-    color: $employeeFilter-font-colour-dark;
-    border: 1px solid $employeeFilter-highlight-colour;
+    background-color: $main-colour;
+    color: $font-dark-colour;
+    border: 1px solid $main-colour;
     border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
@@ -186,7 +179,7 @@ $employeeFilter-box-shadow-colour-orange: rgba(255, 165, 0, 0.8);
     height: 60px;
 
     :hover {
-      background-color: $employeeFilter-highlight-colour-hover;
+      background-color: $main-colour-hover;
     }
   }
 }

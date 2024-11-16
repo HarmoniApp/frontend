@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRectangleList, faGrip, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
@@ -8,11 +8,9 @@ import AbsenceUser from '@/components/types/absenceUser';
 import AbsenceStatus from '@/components/types/absenceStatus';
 import User from '@/components/types/user';
 import styles from './main.module.scss';
-
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
-        
 
 const AbsenceEmployer: React.FC = () => {
   const [absences, setAbsences] = useState<Absence[]>([]);
@@ -24,21 +22,26 @@ const AbsenceEmployer: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchAbsences = () => {
+  const fetchAbsences = async () => {
     setLoading(true);
     setError(null);
 
-    fetch('http://localhost:8080/api/v1/absence')
-      .then(response => response.json())
-      .then(data => {
-        setAbsences(data.content);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching absences:', error);
-        setError('Error fetching absences');
-        setLoading(false);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
       });
+      const data = await response.json();
+      setAbsences(data.content);
+    } catch (error) {
+      console.error('Error fetching absences:', error);
+      setError('Error fetching absences');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchUsers = async () => {
@@ -46,22 +49,29 @@ const AbsenceEmployer: React.FC = () => {
     let pageNumber = 0;
     let totalPages = 1;
     const allUsers = [];
-  
+
     try {
       while (pageNumber < totalPages) {
-        const response = await fetch(`http://localhost:8080/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=10`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=10`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          },
+        });
         const data = await response.json();
-        
-        allUsers.push(...data.content);  
-        totalPages = data.totalPages; 
-        pageNumber += 1;                 
+
+        allUsers.push(...data.content);
+        totalPages = data.totalPages;
+        pageNumber += 1;
       }
-  
+
       setUsers(allUsers);
     } catch (error) {
-      console.error('Error fetching users:', error); 
+      console.error('Error fetching users:', error);
+      setError('Error fetching users');
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -69,51 +79,68 @@ const AbsenceEmployer: React.FC = () => {
     fetchAbsences();
     fetchUsers();
 
-    fetch('http://localhost:8080/api/v1/status')
-      .then(response => response.json())
-      .then(data => setAbsencesStatus(data))
-      .catch(error => console.error('Error fetching absence statuses:', error));
+    const fetchAbsencesStatus = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/status`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          },
+        });
+        const data = await response.json();
+        setAbsencesStatus(data);
+      } catch (error) {
+        console.error('Error fetching absence statuses:', error);
+      }
+    };
+
+    fetchAbsencesStatus();
   }, []);
 
-  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleStatusChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const statusId = event.target.value === 'clear' ? undefined : parseInt(event.target.value);
 
     setLoading(true);
     setError(null);
+    setSelectedStatus(statusId);
 
-    if (statusId === undefined) {
-      setSelectedStatus(undefined);
-      fetchAbsences();
-    } else {
-      setSelectedStatus(statusId);
-      fetch(`http://localhost:8080/api/v1/absence/status/${statusId}`)
-        .then(response => response.json())
-        .then(data => {
-          setAbsences(data.content);
-          setLoading(false);
-        })
-        .catch(error => {
-          console.error('Error fetching absences by status:', error);
-          setError('Error fetching absences by status');
-          setLoading(false);
-        });
+    try {
+      const url = statusId !== undefined
+        ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/status/${statusId}`
+        : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setAbsences(data.content);
+    } catch (error) {
+      console.error('Error fetching absences by status:', error);
+      setError('Error fetching absences by status');
+    } finally {
+      setLoading(false);
     }
   };
 
   const getUserById = (userId: number): AbsenceUser | undefined => {
     return users.find(user => user.id === userId);
   };
-  
+
   const filteredAbsences = absences.filter(absence => {
     const user = getUserById(absence.user_id);
-  
+
     if (searchQuery === '') {
       return true;
     }
-  
+
     const userFirstNameMatches = user?.firstname?.toLowerCase().includes(searchQuery.toLowerCase());
     const userSurnameMatches = user?.surname?.toLowerCase().includes(searchQuery.toLowerCase());
-  
+
     return userFirstNameMatches || userSurnameMatches;
   });
 
@@ -171,7 +198,9 @@ const AbsenceEmployer: React.FC = () => {
 
         {loading && <div className={styles.spinnerContainer}><ProgressSpinner /></div>}
         {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessage} />}
-        {!loading && !error && filteredAbsences.length === 0 && <Card title="No Data" className={styles.noDataCard}><p>There is no data available at the moment.</p></Card>}
+        {!loading && !error && filteredAbsences.length === 0 && (
+          <Card title="No Data" className={styles.noDataCard}><p>There is no data available at the moment.</p></Card>
+        )}
         {!loading && !error && filteredAbsences.length > 0 && (
           <div className={
             viewMode === 'tiles'

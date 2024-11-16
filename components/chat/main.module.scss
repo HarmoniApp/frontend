@@ -1,8 +1,8 @@
-$bg-color: #F0F0F0;
-$primary-color: #FFCF70;
-$secondary-color: #4F4E4E;
+$gray: #F0F0F0;
+$main-colour: #FFCF70;
+$gray: #4F4E4E;
 $text-color: #000000;
-$highlight-color: #FFCF70;
+$main-colour: #FFCF70;
 $border-radius: 10px;
 
 .chatContainer {
@@ -14,11 +14,8 @@ $border-radius: 10px;
 }
 
 .sidebar {
-  // width: 300px;
-  width: 25%;
-  min-width: 200px;
-  max-width: 300px;
-  background-color: $secondary-color;
+  width: 300px;
+  background-color: $gray;
   display: flex;
   flex-direction: column;
 }
@@ -51,7 +48,7 @@ $border-radius: 10px;
   display: flex;
   align-items: center;
   padding: 10px 20px;
-  background-color: $bg-color;
+  background-color: $gray;
 
   input {
     margin-left: 10px;
@@ -79,11 +76,11 @@ $border-radius: 10px;
   background-color: #fff;
 
   &:hover {
-    background-color: lighten($bg-color, 10%);
+    background-color: lighten($gray, 10%);
   }
 
   &.activeChat {
-    background-color: $highlight-color;
+    background-color: $main-colour;
   }
 }
 
@@ -109,7 +106,7 @@ $border-radius: 10px;
   width: 80%;
   display: flex;
   flex-direction: column;
-  background-color: $bg-color;
+  background-color: $gray;
   margin-left: 20px;
   margin: 0 auto;
 }
@@ -153,7 +150,7 @@ $border-radius: 10px;
   justify-content: flex-end;
 
   p {
-    background-color: $highlight-color;
+    background-color: $main-colour;
   }
 }
 
@@ -209,7 +206,7 @@ $border-radius: 10px;
 }
 
 .icon {
-  color: $primary-color;
+  color: $main-colour;
   width: 30px;
   height: 30px;
 }

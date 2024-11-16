@@ -1,51 +1,39 @@
-$popup-bg: rgba(0, 0, 0, 0.5);
-$popup-bg-colour: #4F4E4E;
-$popup-highlight-colour: #FFCF70;
+@import '@/styles/variables.scss';
 
-$employerAbsenceCard-chechbox-bg-colour: #e8e8e8;
-$employerAbsenceCard-bg-colour-light: #FFFFFF;
-$employerAbsenceCard-font-colour: #FFFFFF;
-$employerAbsenceCard-font-colour-dark: #000000;
-$employerAbsenceCard-highlight-colour: #FFCF70;
-$employerAbsenceCard-highlight-colour-hover: #FFBE4D;
-$employerAbsenceCard-box-shadow-colour: rgba(0, 0, 0, 0.1);
-$employerAbsenceCard-approveAbsence-button-colour: #28a745;
-$employerAbsenceCard-approveAbsence-button-colour-hover: #218838;
-$employerAbsenceCard-cancelAbsence-button-colour: #dc3545;
-$employerAbsenceCard-cancelAbsence-button-colour-hover: #c82333;
-
-.addAbsencetModalOverlay {
+.cancelAbsenceModalOverlay,
+.aproveAbsenceModalOverlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: $popup-bg;
+    background: $black-transparency-05;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-  }
-  
-  .addAbsenceModalContent {
+}
+
+.cancelAbsenceModalContent,
+.aproveAbsenceModalContent {
     display: flex;
     flex-direction: column;
-    border: 2px solid $popup-highlight-colour;
+    border: 2px solid $main-colour;
     border-radius: 8px;
-    background-color: $popup-bg-colour;
+    background-color: $gray;
     text-align: center;
     width: auto;
     max-height: 80vh;
     overflow-y: auto;
     gap: 20px;
     padding: 20px;
-  }
+}
 
 .absenceCardContainerMain {
-    background-color: $employerAbsenceCard-bg-colour-light;
-    border: 2px solid $employerAbsenceCard-highlight-colour;
+    background-color: $white;
+    border: 2px solid $main-colour;
     border-radius: 10px;
-    box-shadow: 0 4px 8px $employerAbsenceCard-box-shadow-colour;
+    box-shadow: 0 4px 8px $black-transparency-01;
     padding: 0 20px;
     display: flex;
     flex-direction: column;
@@ -56,22 +44,22 @@ $employerAbsenceCard-cancelAbsence-button-colour-hover: #c82333;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid $employerAbsenceCard-highlight-colour;
+    border-bottom: 2px solid $main-colour;
 
     .absenceTypeNameParagraph {
         font-size: 20px;
         font-weight: bold;
-        color: $employerAbsenceCard-font-colour-dark;
+        color: $font-dark-colour;
         text-transform: uppercase;
     }
-    
+
     .subbmisionDateParagraph {
         font-size: 18px;
-        color: $employerAbsenceCard-font-colour-dark;
+        color: $font-dark-colour;
     }
 }
 
-.absenceDataContainer{
+.absenceDataContainer {
     display: flex;
     flex-direction: row;
     gap: 20px;
@@ -80,8 +68,8 @@ $employerAbsenceCard-cancelAbsence-button-colour-hover: #c82333;
     .columnContainer {
         display: flex;
         flex-direction: column;
-        flex:1;
-    
+        flex: 1;
+
         .idLabel,
         .firstnameLabel,
         .surnameLabel,
@@ -96,7 +84,7 @@ $employerAbsenceCard-cancelAbsence-button-colour-hover: #c82333;
             justify-content: space-between;
             gap: 5px;
         }
-    
+
         .idParagraph,
         .firstnameParagraph,
         .surnameParagraph,
@@ -107,10 +95,10 @@ $employerAbsenceCard-cancelAbsence-button-colour-hover: #c82333;
         .statusNameParagraph {
             font-size: 16px;
             font-weight: bold;
-            color: $employerAbsenceCard-font-colour-dark;
+            color: $font-dark-colour;
             margin: 0;
         }
-    
+
         .idDataParagraph,
         .firstnameDataParagraph,
         .surnameDataParagraph,
@@ -120,7 +108,7 @@ $employerAbsenceCard-cancelAbsence-button-colour-hover: #c82333;
         .quantityDaysDataParagraph,
         .statusNameDataParagraph {
             font-size: 16px;
-            color: $employerAbsenceCard-font-colour-dark;
+            color: $font-dark-colour;
             text-transform: capitalize;
             margin: 0;
         }
@@ -137,7 +125,7 @@ $employerAbsenceCard-cancelAbsence-button-colour-hover: #c82333;
     .declineButton {
         padding: 10px 20px;
         font-size: 16px;
-        color: $employerAbsenceCard-font-colour;
+        color: $font-light-colour;
         border: none;
         border-radius: 5px;
         cursor: pointer;
@@ -147,18 +135,18 @@ $employerAbsenceCard-cancelAbsence-button-colour-hover: #c82333;
     }
 
     .acceptButton {
-        background-color: $employerAbsenceCard-approveAbsence-button-colour;
+        background-color: $green;
 
         &:hover {
-            background-color: $employerAbsenceCard-approveAbsence-button-colour-hover;
+            background-color: $green-hover;
         }
     }
 
     .declineButton {
-        background-color: $employerAbsenceCard-cancelAbsence-button-colour;
+        background-color: $red;
 
         &:hover {
-            background-color: $employerAbsenceCard-cancelAbsence-button-colour-hover;
+            background-color: $red-dark;
         }
     }
 
@@ -168,5 +156,36 @@ $employerAbsenceCard-cancelAbsence-button-colour-hover: #c82333;
 
     .buttonParagraph {
         margin: 0;
+    }
+}
+
+.loadingModalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $black-transparency-05;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    .loadingModalContent {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+
+        .spinnerContainer {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
     }
 }

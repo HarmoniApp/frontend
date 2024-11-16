@@ -1,19 +1,4 @@
-$popup-bg: rgba(0, 0, 0, 0.5);
-$popup-bg-colour: #4F4E4E;
-$popup-bg-colour-dark: #000000;
-$popup-bg-colour-light: #FFFFFF;
-$popup-font-colour: #FFFFFF;
-$popup-font-colour-dark: #000000;
-$popup-tile-background-color: #f9f9f9;
-$popup-highlight-colour: #FFCF70;
-$popup-highlight-colour-hover: #FFBE4D;
-$popup-no-button-colour: #dc3545;
-$popup-yes-button-colour: #008000;
-$popup-yes-button-colour: #008000;
-$popup-box-shadow-colour: rgba(0, 0, 0, 0.1);
-$popup-checkbox-bg-colour: #e8e8e8;
-$popup-error-border-colour: #dc3545;
-$popup-error-bg-colour: #ffe6e6;
+@import '@/styles/variables.scss';
 
 .modalOverlayOfAdd, .modalOverlayOfDelete { 
     position: fixed;
@@ -21,7 +6,7 @@ $popup-error-bg-colour: #ffe6e6;
     left: 0;
     right: 0;
     bottom: 0;
-    background: $popup-bg;
+    background: $black-transparency-05;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,9 +16,9 @@ $popup-error-bg-colour: #ffe6e6;
 .modalContentOfAdd, .modalContentOfDelete {
     display: flex;
     flex-direction: column;
-    border: 2px solid $popup-highlight-colour;
+    border: 2px solid $main-colour;
     border-radius: 8px;
-    background-color: $popup-bg-colour;
+    background-color: $gray;
     text-align: center;
     width: auto;
     max-height: 80vh;
@@ -48,8 +33,8 @@ $popup-error-bg-colour: #ffe6e6;
 }
 
 .departmentContainerMain {
-    background-color: $popup-bg-colour;
-    color: $popup-font-colour;
+    background-color: $gray;
+    color: $font-light-colour;
     padding: 20px 0 0 0;
     border-radius: 10px;
     display: flex;
@@ -72,7 +57,7 @@ $popup-error-bg-colour: #ffe6e6;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            background-color: $popup-tile-background-color;
+            background-color: $white-3;
             height: 100%;
             border-radius: 5px;
             margin: 0;
@@ -90,7 +75,7 @@ $popup-error-bg-colour: #ffe6e6;
                     align-items: center;
                     justify-content: space-between;
                     font-weight: bold;
-                    color: $popup-font-colour-dark;
+                    color: $font-dark-colour;
                 }
 
                 .departmentNameContainer {
@@ -99,7 +84,7 @@ $popup-error-bg-colour: #ffe6e6;
 
                     .departmentNameLabel {
                         font-weight: bold;
-                        color: $popup-font-colour-dark;
+                        color: $font-dark-colour;
                         font-size: 22px;
                         text-transform: uppercase;
                         text-decoration: underline;
@@ -131,7 +116,7 @@ $popup-error-bg-colour: #ffe6e6;
                         }
 
                         .departmentCityLabel {
-                            color: $popup-font-colour-dark;
+                            color: $font-dark-colour;
                         }
 
                         .buildingNumbersContainer {
@@ -144,7 +129,7 @@ $popup-error-bg-colour: #ffe6e6;
                         }
 
                         .departmentZipCodeParagraph {
-                            color: $popup-font-colour-dark;
+                            color: $font-dark-colour;
                         }
                     }
                 }
@@ -169,28 +154,28 @@ $popup-error-bg-colour: #ffe6e6;
                 .editButton,
                 .yesButton,
                 .noButton {
-                    background-color: $popup-highlight-colour;
-                    border: 2px solid $popup-font-colour-dark;
-                    color: $popup-font-colour-dark;
+                    background-color: $main-colour;
+                    border: 2px solid $font-dark-colour;
+                    color: $font-dark-colour;
                     padding: 5px 10px;
                     border-radius: 5px;
                     cursor: pointer;
                     transition: background-color 0.3s ease, color 0.3s ease;
 
                     &:hover {
-                        background-color: $popup-font-colour-dark;
-                        color: $popup-highlight-colour;
+                        background-color: $font-dark-colour;
+                        color: $white;
                     }
                 }
 
                 .yesButton:hover {
-                    background-color: $popup-yes-button-colour;
-                    color: $popup-font-colour-dark;
+                    background-color: $green;
+                    color: $font-dark-colour;
                 }
 
                 .noButton:hover {
-                    background-color: $popup-no-button-colour;
-                    color: $popup-font-colour-dark;
+                    background-color: $red;
+                    color: $font-dark-colour;
                 }
             }
         }
@@ -214,7 +199,7 @@ $popup-error-bg-colour: #ffe6e6;
         align-items: center;
         justify-content: space-between;
         font-weight: bold;
-        color: $popup-font-colour;
+        color: $font-light-colour;
         margin-bottom: 5px;
     }
 }
@@ -229,9 +214,9 @@ $popup-error-bg-colour: #ffe6e6;
         align-items: center;
         justify-content: center;
         gap:20px;
-        background-color: $popup-highlight-colour;
+        background-color: $main-colour;
         border: none;
-        color: $popup-font-colour-dark;
+        color: $font-dark-colour;
         padding: 10px;
         width: 100%;
         border-radius: 5px;
@@ -239,7 +224,7 @@ $popup-error-bg-colour: #ffe6e6;
         transition: background-color 0.3s ease;
 
         &:hover {
-            background-color: $popup-highlight-colour-hover;
+            background-color: $main-colour-hover;
         }
 
         .addButtonLabel{
@@ -276,7 +261,7 @@ $popup-error-bg-colour: #ffe6e6;
 }
 
 .errorMessage {
-    color: $popup-error-border-colour;
+    color: $red;
     font-size: 16px;
     font-weight: bold;
     margin: 0;
@@ -291,21 +276,21 @@ $popup-error-bg-colour: #ffe6e6;
     width: 100%;
     height: 5vh;
     border-radius: 5px;
-    border: 2px solid $popup-highlight-colour;
+    border: 2px solid $main-colour;
     padding: 10px 5vh 10px 10px;
-    color: $popup-font-colour-dark;
-    box-shadow: inset 0 2px 4px $popup-box-shadow-colour;
+    color: $font-dark-colour;
+    box-shadow: inset 0 2px 4px $black-transparency-01;
     transition: all 0.3s ease;
 
     &:hover {
-        border: 2px solid $popup-highlight-colour;
+        border: 2px solid $main-colour;
         outline: none;
-        background-color: lighten($popup-checkbox-bg-colour, 5%);
+        background-color: lighten($white-4, 5%);
     }
 
     &::placeholder {
         margin: 0 0 0 10px;
-        color: lighten($popup-font-colour-dark, 30%);
+        color: lighten($font-dark-colour, 30%);
     }
 
     @media (max-width: 768px) {
@@ -315,6 +300,37 @@ $popup-error-bg-colour: #ffe6e6;
 }
 
 .errorInput {
-    border-color: $popup-error-border-colour;
-    background-color: $popup-error-bg-colour;
+    border-color: $red;
+    background-color: $red-powder;
+}
+
+.loadingModalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $black-transparency-05;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    .loadingModalContent {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+
+        .spinnerContainer {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+    }
 }

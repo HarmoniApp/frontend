@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faPlane, faChartBar, faUserMinus, faUserPen, faUserLock } from '@fortawesome/free-solid-svg-icons';
 import DeleteEmployeePopUp from '@/components/employees/employeeData/deleteEmployee';
@@ -10,7 +11,7 @@ import SupervisorDataSimple from '@/components/types/supervisorDataSimple';
 import Flag from 'react-flagkit';
 import styles from './main.module.scss';
 
-export default function EmployeeDataComponent({ userId }: { userId: number }) {
+const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   const [employee, setEmployee] = useState<EmployeeData | null>(null);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [supervisorData, setSupervisorData] = useState<SupervisorDataSimple | null>(null);
@@ -23,28 +24,63 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
 
   useEffect(() => {
     if (userId) {
+      const fetchDepartments = async () => {
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/departments`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            },
+          });
+          const data = await response.json();
+          setDepartments(data);
+        } catch (error) {
+          console.error('Error fetching departments:', error);
+        }
+      };
 
-      fetch('http://localhost:8080/api/v1/address/departments')
-        .then(response => response.json())
-        .then(data => setDepartments(data))
-        .catch(error => console.error('Error fetching departments:', error));
-
-      fetch(`http://localhost:8080/api/v1/user/${userId}`)
-        .then(response => response.json())
-        .then(data => {
+      const fetchEmployee = async () => {
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            },
+          });
+          const data = await response.json();
           setEmployee(data);
           if (data.supervisor_id) {
-            fetch(`http://localhost:8080/api/v1/user/simple/${data.supervisor_id}`)
-              .then(response => response.json())
-              .then(supervisorData => setSupervisorData(supervisorData))
-              .catch(error => console.error('Error fetching supervisor data:', error));
+            fetchSupervisor(data.supervisor_id);
           }
-        })
-        .catch(error => console.error('Error fetching employee data:', error));
+        } catch (error) {
+          console.error('Error fetching employee data:', error);
+        }
+      };
+
+      const fetchSupervisor = async (supervisorId: number) => {
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/${supervisorId}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            },
+          });
+          const supervisorData = await response.json();
+          setSupervisorData(supervisorData);
+        } catch (error) {
+          console.error('Error fetching supervisor data:', error);
+        }
+      };
+
+      fetchDepartments();
+      fetchEmployee();
     }
   }, [userId]);
 
-  if (!employee) return <div>Loading...</div>;
+  if (!employee) return <div className={styles.spinnerContainer}><ProgressSpinner /></div>;
 
   const department = departments.find(dept => dept.id === employee.work_address.id);
 
@@ -180,3 +216,4 @@ export default function EmployeeDataComponent({ userId }: { userId: number }) {
     </div>
   );
 }
+export default EmployeeDataComponent;

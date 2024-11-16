@@ -17,10 +17,11 @@ const SettingsEmployee: React.FC<SettingsEmployeeProps> = ({ userId }) => {
 
     const fetchUserAbsences = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/api/v1/absence/user/${userId}/archived?archived=true`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/user/${userId}/archived?archived=true`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
                 },
             });
 
@@ -46,10 +47,11 @@ const SettingsEmployee: React.FC<SettingsEmployeeProps> = ({ userId }) => {
 
     const fetchAbsenceTypeName = async (id: number): Promise<string> => {
         try {
-            const response = await fetch(`http://localhost:8080/api/v1/absence-type/${id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence-type/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
                 },
             });
 

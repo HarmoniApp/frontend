@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import styles from './main.module.scss';
 import PersonTile from '@/components/types/personTile';
 import Flag from 'react-flagkit';
@@ -10,6 +11,7 @@ interface LanguageTileProps {
 
 const Tile: React.FC<LanguageTileProps> = ({ person, view }) => {
   const router = useRouter()
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
 
   const handleClick = () => {
     router.push(`/employees/user/${person.id}`);
@@ -26,10 +28,44 @@ const Tile: React.FC<LanguageTileProps> = ({ person, view }) => {
     ? person.languages.slice(1)
     : [];
 
+  useEffect(() => {
+    const fetchImage = async () => {
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${person.photo}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${tokenJWT}`,
+            }
+          }
+        );
+
+        if (response.ok) {
+          console.log("Zdjęcie pobrane pomyślnie", response);
+          const blob = await response.blob();
+          const imageObjectUrl = URL.createObjectURL(blob);
+          setImageSrc(imageObjectUrl);
+        } else {
+          console.error("Błąd pobierania zdjęcia:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Błąd podczas żądania:", error);
+      }
+    };
+
+    fetchImage();
+  }, [person.photo]);
+
+  if (!imageSrc) {
+    return <div className={styles.spinnerContainer}><ProgressSpinner /></div>;
+  }
+
   return (
     <div onClick={handleClick} className={tileClassName}>
       <div className={styles.employeeImageContainer}>
-        <img className={styles.employeeImage} src={`http://localhost:8080/api/v1/userPhoto/${person.photo}`} alt="User Photo" />
+        <img className={styles.employeeImage} src={imageSrc} alt="User Photo" />
       </div>
       <div className={styles.fullNameContainer}>
         <label className={styles.fullNameParagraph}>{person.firstname}</label>

@@ -1,14 +1,4 @@
-$primary-color: #FFCF70;
-$secondary-color: #4F4E4E;
-$font-color: #000000;
-$bg-color: #F0F0F0;
-$border-color: rgba(0, 0, 0, 0.2);
-$link-color: #0000EE;
-$error-color: #FF0000;
-
-$popup-bg: rgba(0, 0, 0, 0.5);
-$popup-bg-colour: #4F4E4E;
-$popup-highlight-colour: #FFCF70;
+@import '@/styles/variables.scss';
 
 .passwordChangeModalOverlay {
     position: fixed;
@@ -16,7 +6,7 @@ $popup-highlight-colour: #FFCF70;
     left: 0;
     right: 0;
     bottom: 0;
-    background: $popup-bg;
+    background: $black-transparency-05;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -26,15 +16,16 @@ $popup-highlight-colour: #FFCF70;
   .passwordChangeModalContent {
     display: flex;
     flex-direction: column;
-    border: 2px solid $popup-highlight-colour;
+    border: 2px solid $main-colour;
     border-radius: 8px;
-    background-color: $popup-bg-colour;
+    background-color: $gray;
     text-align: center;
     width: auto;
     max-height: 80vh;
     overflow-y: auto;
     gap: 20px;
     padding: 20px;
+    color: $white;
   }
 
 .container {
@@ -42,16 +33,17 @@ $popup-highlight-colour: #FFCF70;
     max-width: 400px;
     margin: 50px auto;
     padding: 20px;
-    background-color: $bg-color;
-    border: 1px solid $border-color;
+    background-color: $gray;
+    border: 1px solid $main-colour;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px $black-transparency-01;
     text-align: center;
 }
 
 .title {
     font-size: 2em;
     margin-bottom: 20px;
+    color: $main-colour;
 }
 
 .form {
@@ -65,12 +57,13 @@ $popup-highlight-colour: #FFCF70;
     font-size: 1em;
     margin-bottom: 5px;
     text-align: left;
+    color: $font-light-colour;
 }
 
 .input {
     padding: 10px;
     margin-bottom: 15px;
-    border: 1px solid $primary-color;
+    border: 1px solid $main-colour;
     border-radius: 5px;
     font-size: 1em;
     width: 100%;
@@ -78,7 +71,7 @@ $popup-highlight-colour: #FFCF70;
 }
 
 .errorInput {
-    border-color: $error-color;
+    border-color: $red-dark;
 }
 
 .passwordContainer {
@@ -91,14 +84,14 @@ $popup-highlight-colour: #FFCF70;
     right: 10px;
     transform: translateY(-50%);
     cursor: pointer;
-    color: $secondary-color;
+    color: $gray;
 }
 
 .button {
     padding: 10px;
     margin-top: 10px;
-    background-color: $primary-color;
-    color: $font-color;
+    background-color: $main-colour;
+    color: $font-dark-colour;
     border: none;
     border-radius: 5px;
     font-size: 1em;
@@ -107,29 +100,46 @@ $popup-highlight-colour: #FFCF70;
     width: 100%;
 
     &:hover {
-        background-color: darken($primary-color, 10%);
+        background-color: darken($main-colour, 10%);
     }
 }
 
-.links {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
-
-.link {
-    color: $link-color;
-    text-decoration: none;
-
-    &:hover {
-        text-decoration: underline;
-    }
-}
 
 .error {
-    color: $error-color;
+    color: $red-dark;
     font-size: 0.9em;
     margin-top: -10px;
     margin-bottom: 10px;
     text-align: left;
+}
+
+.loadingModalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $black-transparency-05;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    .loadingModalContent {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+
+        .spinnerContainer {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+    }
 }

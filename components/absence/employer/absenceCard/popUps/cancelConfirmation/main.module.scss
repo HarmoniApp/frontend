@@ -1,14 +1,8 @@
-$popup-bg-colour: #4F4E4E;
-$popup-font-colour-light: #FFFFFF;
-$popup-font-colour-dark: #000000;
-$popup-highlight-colour: #FFCF70;
-$popup-highlight-colour-hover: #FFBE4D;
-$popup-delete-button-colour: #dc3545;
-$popup-detete-button-colour-hover: #c82333;
+@import '@/styles/variables.scss';
 
 .CancelContainerMain {
     display: flex;
-    background-color: $popup-bg-colour;
+    background-color: $gray;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -29,12 +23,12 @@ $popup-detete-button-colour-hover: #c82333;
 
     .headerLabel {
         text-align: center;
-        color: $popup-font-colour-light;
+        color: $font-light-colour;
         margin: 0;
     }
 
     .highlight {
-        color: $popup-highlight-colour;
+        color: $main-colour;
         font-size: 20px;
         font-weight: bold;
         text-transform: capitalize;
@@ -50,8 +44,8 @@ $popup-detete-button-colour-hover: #c82333;
     .cancelButton {
         display: flex;
         align-items: center;
-        background-color: $popup-delete-button-colour;
-        color: $popup-font-colour-light;
+        background-color: $red;
+        color: $font-light-colour;
         padding: 10px 20px;
         border: none;
         border-radius: 10px;
@@ -59,7 +53,7 @@ $popup-detete-button-colour-hover: #c82333;
         transition: background-colour 0.3s ease;
 
         &:hover {
-            background-color: $popup-detete-button-colour-hover;
+            background-color: $red-dark;
         }
 
         .buttonParagraph {
@@ -77,8 +71,8 @@ $popup-detete-button-colour-hover: #c82333;
     .closeButton {
         display: flex;
         align-items: center;
-        background-color: $popup-highlight-colour;
-        color: $popup-font-colour-dark;
+        background-color: $main-colour;
+        color: $font-dark-colour;
         padding: 10px 20px;
         border: none;
         border-radius: 10px;
@@ -86,7 +80,7 @@ $popup-detete-button-colour-hover: #c82333;
         transition: background-color 0.3s ease;
 
         &:hover {
-            background-color: $popup-highlight-colour-hover;
+            background-color: $main-colour-hover;
         }
 
         .buttonParagraph {

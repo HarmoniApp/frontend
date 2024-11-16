@@ -1,9 +1,5 @@
-$employeeItem-bg-colour: #FFCF70;
-$employeeItem-font-colour-dark: #000000;
-$employeeItem-border-colour: #000000;
-$employeeItem-box-shadow-colour: rgba(0, 0, 0, 0.1);
+@import '@/styles/variables.scss';
 
-$breakpoint-md: 768px;
 @mixin respond-to-md {
     @media (max-width: $breakpoint-md) {
         @content;
@@ -15,9 +11,9 @@ $breakpoint-md: 768px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: $employeeItem-bg-colour;
-    border: 1px solid $employeeItem-border-colour;
-    box-shadow: 0px 4px 6px $employeeItem-box-shadow-colour;
+    background-color: $main-colour;
+    border: 1px solid $font-dark-colour;
+    box-shadow: 0px 4px 6px $black-transparency-01;
     border-radius: 10px;
     padding: 0px 20px;
     width: 100%;
@@ -41,14 +37,14 @@ $breakpoint-md: 768px;
         .employeeItemLabel {
             font-weight: bold;
             text-transform: capitalize;
-            color: $employeeItem-font-colour-dark;
+            color: $font-dark-colour;
             cursor: pointer;
         }
     }
 
     .employeeItemLabel {
         text-transform: capitalize;
-        color: $employeeItem-font-colour-dark;
+        color: $font-dark-colour;
         cursor: pointer;
     }
 }

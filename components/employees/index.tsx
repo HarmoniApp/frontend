@@ -23,15 +23,15 @@ const EmployeesComponent: React.FC = () => {
   const [rows, setRows] = useState(21);
   const [totalRecords, setTotalRecords] = useState(0);
 
-  const fetchFilteredData = (filters: { roles?: number[]; languages?: number[]; order?: string; query?: string } = {}, pageNumber: number = 1, pageSize: number = 21) => {
+  const fetchFilteredData = async (filters: { roles?: number[]; languages?: number[]; order?: string; query?: string } = {}, pageNumber: number = 1, pageSize: number = 21) => {
     setLoading(true);
 
     let url = '';
 
     if (filters.query && filters.query.trim() !== '') {
-      url = `http://localhost:8080/api/v1/user/simple/search?q=${filters.query}`;
+      url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/search?q=${filters.query}`;
     } else {
-      url = `http://localhost:8080/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+      url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=${pageSize}`;
 
       const params = new URLSearchParams();
 
@@ -48,15 +48,16 @@ const EmployeesComponent: React.FC = () => {
       }
     }
 
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          }
 
-    fetch(url)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(responseData => {
+        });
+        const responseData = await response.json();
         if (responseData && responseData.content) {
           setData(responseData.content);
           setTotalRecords(responseData.pageSize * responseData.totalPages);
@@ -67,13 +68,17 @@ const EmployeesComponent: React.FC = () => {
           setTotalRecords(0);
         }
         setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-        setError(error.message);
-        setLoading(false);
-      });
-  };
+        }
+        catch (error) {
+          console.error('Error fetching data:', error);
+          if (error instanceof Error) {
+            setError(error.message);
+          } else {
+            setError('An unknown error occurred');
+          }
+          setLoading(false);
+        }
+      };
 
   useEffect(() => {
     fetchFilteredData({}, 1, rows);
