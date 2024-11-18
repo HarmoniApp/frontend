@@ -7,17 +7,10 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Message from '@/components/types/message';
 import Language from '@/components/types/language';
+import ChatPartner from '@/components/types/chatPartner';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { ProgressSpinner } from 'primereact/progressspinner';
-
-type ChatPartner = {
-  id: number;
-  name: string;
-  photo?: string;
-  lastMessage?: string;
-  type?: 'user' | 'group';
-};
 
 const Chat = () => {
   const [chatPartners, setChatPartners] = useState<ChatPartner[]>([]);
