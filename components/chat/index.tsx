@@ -32,16 +32,14 @@ const Chat = () => {
   const [isEditGroupModalOpen, setIsEditGroupModalOpen] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<ChatPartner[]>([]);
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
-
-
-  const [userId, setUserId] = useState<number>(10); //TODO: why its not working?
+  const [userId, setUserId] = useState<number>(0);
 
   useEffect(() => {
     const storedUserId = sessionStorage.getItem('userId');
-    setUserId(Number(storedUserId));
-    console.log(userId);
+    if (storedUserId !== null) {
+      setUserId(Number(storedUserId));
+    }
   }, []);
-
 
   const handleNewIndividualChat = () => {
     setNewChat(true);
@@ -359,9 +357,13 @@ const Chat = () => {
   };
 
   useEffect(() => {
+    const tokenJWT = sessionStorage.getItem('tokenJWT');
     const socket = new SockJS(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/ws`);
     const stompClient = new Client({
       webSocketFactory: () => socket,
+      connectHeaders: {
+        Authorization: `Bearer ${tokenJWT}`,
+      },
       debug: (str) => console.log(str),
       onConnect: () => {
         console.log('Connected to STOMP WebSocket');
@@ -740,7 +742,9 @@ const Chat = () => {
 
   return (
     <div className={styles.chatContainer}>
-      <div className={styles.sidebar}>
+      {userId !== 0 ? (
+        <>
+        <div className={styles.sidebar}>
         <div className={styles.sidebarHeader}>
           <div className={styles.headerTop}>
             <span>Translate: </span>
@@ -963,11 +967,12 @@ const Chat = () => {
           <p>Select chat</p>
         )}
       </div>
+        </>
+      ):(<div className={styles.spinnerContainer}><ProgressSpinner /></div>)}
       {isEditGroupModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
             <h3>Edit group</h3>
-
             <input
               type="text"
               placeholder="Search user..."
@@ -1038,4 +1043,3 @@ const Chat = () => {
 };
 
 export default Chat;
-
