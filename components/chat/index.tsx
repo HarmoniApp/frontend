@@ -586,7 +586,7 @@ const Chat = () => {
       });
       if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
       const data = await response.json();
-      setMessages(data.content);
+      setMessages(data);
 
       setModalIsOpenLoadning(true);
       try {
