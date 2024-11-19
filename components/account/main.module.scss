@@ -43,6 +43,7 @@
 .content {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     align-items: center;
     padding: 20px;
     flex-grow: 1;
@@ -54,6 +55,11 @@
     align-items: center;
     margin-bottom: 20px;
     cursor: pointer;
+}
+
+.future{
+    color: $gray-powder;
+    cursor: default;
 }
 
 .item .icon {

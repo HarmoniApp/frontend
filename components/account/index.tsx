@@ -49,14 +49,14 @@ const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
                         <FontAwesomeIcon icon={faEdit} className={styles.icon} />
                         <span>Edytuj Dane Konta</span>
                     </div> */}
-                    <div className={styles.item}>
+                    <div className={`${styles.item} ${styles.future}`}>
                         <FontAwesomeIcon icon={faQuestionCircle} className={styles.icon} />
                         <span>Pomoc i Wsparcie</span>
                     </div>
-                    <div className={styles.item}>
+                    {/* <div className={styles.item}>
                         <FontAwesomeIcon icon={faClipboard} className={styles.icon} />
                         <span>Przekaż Opinię</span>
-                    </div>
+                    </div> */}
 
                     <div className={`${styles.item} ${pathname === '/settings' ? styles.active : ''}`} onClick={settingsToGo}>
                     <FontAwesomeIcon icon={isAdmin ? faCog : faImage} className={styles.icon} />

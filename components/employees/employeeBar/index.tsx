@@ -107,9 +107,9 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
         <button className={styles.addEmployeeButton} onClick={onAddEmployee} >
           <FontAwesomeIcon icon={faUserPlus} /> dodaj pracownika
         </button>
-        <button className={styles.importEmployeeButton} >
+        {/* <button className={styles.importEmployeeButton} >
           <FontAwesomeIcon icon={faCloudArrowUp} /> importuj
-        </button>
+        </button> */}
 
         <div className={styles.exportDropdownContainer}>
           <button className={styles.importEmployeeButton} onClick={toggleDropdown} >
