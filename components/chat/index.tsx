@@ -632,7 +632,7 @@ const Chat = () => {
       const data = await response.json();
 
       const groupChatDetails = await Promise.all(
-        data.content.map(async (message: Message) => {
+        data.map(async (message: Message) => {
           const senderResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/${message.sender_id}`, {
             method: 'GET',
             headers: {
