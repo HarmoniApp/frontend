@@ -783,6 +783,338 @@ const Chat = () => {
     message: Yup.string().required('Wiadomość nie może być pusta'),
   });
 
+  //   return (
+  //     <div className={styles.chatContainer}>
+  //       {userId !== 0 ? (
+  //         <>
+  //           <div className={styles.sidebar}>
+  //             <div className={styles.sidebarHeader}>
+  //               <div className={styles.headerTop}>
+  //                 <span>Translate: </span>
+  //                 <select
+  //                   value={selectedLanguage}
+  //                   onChange={handleLanguageChange}
+  //                   className={styles.languageSelect}
+  //                 >
+  //                   <option value="">None</option>
+  //                   {languages.map((language) => (
+  //                     <option key={language.code} value={language.code}>
+  //                       {language.name}
+  //                     </option>
+  //                   ))}
+  //                 </select>
+  //               </div>
+  //               <div className={styles.headerBottom}>
+  //                 <div className={styles.sectionSelector}>
+  //                   <div
+  //                     onClick={() => setChatType('user')}
+  //                     className={`${styles.sectionBlock} ${chatType === 'user' ? styles.activeSection : ''}`}
+  //                   >
+  //                     <FontAwesomeIcon icon={faUser} /> Individual
+  //                   </div>
+  //                   <div className={styles.sidebar}>
+  //                     <div className={styles.sidebarHeader}>
+  //                       <div className={styles.headerTop}>
+  //                         <span>Translate: </span>
+  //                         <select
+  //                           value={selectedLanguage}
+  //                           onChange={handleLanguageChange}
+  //                           className={styles.languageSelect}
+  //                         >
+  //                           <option value="">None</option>
+  //                           {languages.map((language) => (
+  //                             <option key={language.code} value={language.code}>
+  //                               {language.name}
+  //                             </option>
+  //                           ))}
+  //                         </select>
+  //                       </div>
+  //                       <div className={styles.headerBottom}>
+  //                         <div className={styles.sectionSelector}>
+  //                           <div
+  //                             onClick={() => setChatType('user')}
+  //                             className={`${styles.sectionBlock} ${chatType === 'user' ? styles.activeSection : ''}`}
+  //                           >
+  //                             <FontAwesomeIcon icon={faUser} /> Individual
+  //                           </div>
+
+  //                           <div
+  //                             onClick={() => setChatType('group')}
+  //                             className={`${styles.sectionBlock} ${chatType === 'group' ? styles.activeSection : ''}`}
+  //                           >
+  //                             <FontAwesomeIcon icon={faUsers} /> Groups
+  //                           </div>
+  //                         </div>
+  //                         <div
+  //                           onClick={() => setChatType('group')}
+  //                           className={`${styles.sectionBlock} ${chatType === 'group' ? styles.activeSection : ''}`}
+  //                         >
+  //                           <FontAwesomeIcon icon={faUsers} /> Groups
+  //                         </div>
+  //                       </div>
+
+  //                     </div>
+  //                     {chatType === 'user' && (
+  //                       <div>
+  //                         <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewIndividualChat} />
+  //                         New individual
+  //                       </div>
+  //                     )}
+  //                   </div>
+  //                   {chatType === 'user' && (
+  //                     <div>
+  //                       <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewIndividualChat} />
+  //                       New individual
+  //                     </div>
+  //                   )}
+
+  //                   {chatType === 'group' && (
+  //                     <div>
+  //                       <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewGroupChat} />
+  //                       New group
+  //                     </div>
+  //                   )}
+  //                 </div>
+  //                 <ul className={styles.chatList}>
+  //                   {chatPartners.map((partner) => (
+  //                     <li
+  //                       key={partner.id}
+  //                       className={`${styles.chatItem} ${selectedChat === partner ? styles.activeChat : ''}`}
+  //                       onClick={() => fetchChatHistory(partner, selectedLanguage)}
+  //                     >
+  //                       {partner.photo ? (
+  //                         <AuthorizedImage
+  //                           src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${partner.photo}`}
+  //                           alt="User Photo"
+  //                           className={styles.chatAvatar}
+  //                         />
+  //                       ) : (
+  //                         <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
+  //                       )}
+  //                       <div>
+  //                         <p className={styles.chatName}>{partner.name}</p>
+  //                         <p className={styles.lastMessage}>{partner.lastMessage || 'Brak wiadomości'}</p>
+  //                       </div>
+  //                     </li>
+  //                   ))}
+  //                 </ul>
+  //               </div>
+  //               <div className={styles.chatWindow}>
+  //                 {newChat ? (
+  //                   chatType === 'group' ? (
+  //                     <div className={styles.newChat}>
+  //                       <Formik
+  //                         initialValues={{ groupName: '' }}
+  //                         validationSchema={Yup.object({
+  //                           groupName: Yup.string().required('Nazwa grupy jest wymagana'),
+  //                         })}
+  //                         onSubmit={handleCreateGroup}
+  //                       >
+  //                         {({ errors, touched }) => (
+  //                           <Form className={styles.newGroupForm}>
+  //                             <div>
+  //                               <Field
+  //                                 name="groupName"
+  //                                 type="text"
+  //                                 placeholder="Nazwa grupy"
+  //                                 className={`${styles.groupNameInput} ${errors.groupName && touched.groupName ? styles.errorInput : ''}`}
+  //                               />
+  //                               {errors.groupName && touched.groupName && <div className={styles.errorMessage}>{errors.groupName}</div>}
+  //                             </div>
+  //                             <button type="submit" className={styles.createGroupButton}>Utwórz grupę</button>
+  //                           </Form>
+  //                         )}
+  //                       </Formik>
+  //                     </div>
+  //                   ) : (
+  //                     <div className={styles.newChat}>
+  //                       <input
+  //                         type="text"
+  //                         placeholder="Wyszukaj użytkownika..."
+  //                         value={searchQuery}
+  //                         onChange={(e) => handleSearch(e.target.value)}
+  //                         className={styles.searchInput}
+  //                       />
+  //                       <ul className={styles.searchResults}>
+  //                         {searchResults.map((user) => (
+  //                           <li
+  //                             key={user.id}
+  //                             onClick={() => handleSelectUser(user)}
+  //                             className={styles.searchResultItem}
+  //                           >
+  //                             {user.photo ? (
+  // <AuthorizedImage
+  //   src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
+  //   alt="User Photo"
+  //   className={styles.chatAvatar}
+  // />
+  //                             ) : (
+  //                               <FontAwesomeIcon icon={faUser} className={styles.defaultAvatarIcon} />
+  //                             )}
+  //                             <p>{user.name}</p>
+  //                           </li>
+  //                         ))}
+  //                       </ul>
+  //                     </div>)
+  //                 ) : selectedChat ? (
+  //                   <>
+  //                     <div className={styles.chatHeader}>
+  //                       {selectedChat.photo ? (
+  //                         <AuthorizedImage
+  //                           src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${selectedChat.photo}`}
+  //                           alt="User Photo"
+  //                           className={styles.chatAvatar}
+  //                         />
+  //                       ) : (
+  //                         <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
+  //                       )}
+  //                       <h2>{selectedChat.name}</h2>
+  //                       {chatType === 'group' && (
+  //                         <div onClick={handleEditGroup} className={styles.editIcon}>
+  //                           <FontAwesomeIcon icon={faEdit} />
+  //                         </div>
+  //                       )}
+  //                     </div>
+  //                     <div className={styles.chatMessages}>
+  //                       {messages.map((message) => (
+  //                         <div
+  //                           key={message.id}
+  //                           className={`${styles.message} ${message.sender_id === userId ? styles.selfMessage : styles.otherMessage
+  //                             } ${message.is_read ? styles.readMessage : styles.unreadMessage}`}
+  //                         >
+  //                           {message.sender_id !== userId && (
+  //                             <div className={styles.messageAvatar}>
+  //                               {message.groupSenderPhoto || selectedChat.photo ? (
+  //                                 <AuthorizedImage
+  //                                   src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${message.groupSenderPhoto || selectedChat.photo}`}
+  //                                   alt="User Photo"
+  //                                   className={styles.chatAvatar}
+  //                                 />
+  //                               ) : (
+  //                                 <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
+  //                               )}
+  //                             </div>
+  //                           )}
+  //                           {message.sender_id !== userId && selectedChat?.type === 'group' && (
+  //                             <span>{message.groupSenderName}</span>
+  //                           )}
+  //                           <p>{message.content}</p>
+  //                           <span className={styles.timestamp}>{message.sent_at}</span>
+  //                           {message.sender_id === userId && message.is_read && (
+  //                             <FontAwesomeIcon icon={faEye} className={styles.readIcon} />
+  //                           )}
+  //                         </div>
+  //                       ))}
+  //                     </div>
+  //                     <Formik
+  //                       initialValues={{ message: '' }}
+  //                       validationSchema={validationSchema}
+  //                       onSubmit={(values, { resetForm }) => {
+  //                         handleSendMessage(values.message, selectedLanguage);
+  //                         resetForm();
+  //                       }}
+  //                       validateOnBlur={false}
+  //                       validateOnChange={false}
+  //                       validateOnSubmit={true}
+  //                     >
+  //                       {({ errors, touched }) => (
+  //                         <Form className={styles.messageInputContainer}>
+  //                           <FontAwesomeIcon icon={faImage} className={styles.icon} />
+  //                           <Field
+  //                             name="message"
+  //                             type="text"
+  //                             placeholder="Wpisz wiadomość"
+  //                             className={`${styles.messageInput} ${errors.message && touched.message ? styles.errorInput : ''}`}
+  //                           />
+  //                           <button type="submit" className={styles.sendButton}>
+  //                             <FontAwesomeIcon icon={faPaperPlane} className={styles.icon} />
+  //                           </button>
+  //                           {errors.message && touched.message && <div className={styles.errorMessage}>{errors.message}</div>}
+  //                         </Form>
+  //                       )}
+  //                     </Formik>
+  //                   </>
+  //                 ) : (
+  //                   <p>Select chat</p>
+  //                 )}
+  //               </div>
+  //             </div>
+  //           </div>
+  //         </>
+  //       ) : (<div className={styles.spinnerContainer}><ProgressSpinner /></div>)}
+  //       {isEditGroupModalOpen && (
+  //         <div className={styles.modalOverlay}>
+  //           <div className={styles.modalContent}>
+  //             <h3>Edit group</h3>
+  //             <input
+  //               type="text"
+  //               placeholder="Search user..."
+  //               value={searchQuery}
+  //               onChange={(e) => handleSearch(e.target.value)}
+  //               className={styles.searchInput}
+  //             />
+  //             <ul className={styles.searchResults}>
+  //               {searchResults.map((user) => (
+  //                 <li
+  //                   key={user.id}
+  //                   onClick={() => handleAddUserToGroup(user)}
+  //                   className={styles.searchResultItem}
+  //                 >
+  //                   {user.photo ? (
+  //                     <AuthorizedImage
+  //                       src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
+  //                       alt="User Photo"
+  //                       className={styles.chatAvatar}
+  //                     />
+  //                   ) : (
+  //                     <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
+  //                   )}
+  //                   <p>{user.name}</p>
+  //                   <FontAwesomeIcon icon={faPlus} className={styles.addIcon} />
+  //                 </li>
+  //               ))}
+  //             </ul>
+
+  //             <div className={styles.selectedUsers}>
+  //               {selectedUsers.map((user) => (
+  //                 <div key={user.id} className={styles.selectedUser}>
+  //                   {user.photo ? (
+  //                     <AuthorizedImage
+  //                       src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
+  //                       alt="User Photo"
+  //                       className={styles.chatAvatar}
+  //                     />
+  //                   ) : (
+  //                     <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
+  //                   )}
+  //                   <p>{user.name}</p>
+  //                   <FontAwesomeIcon icon={faUserMinus} onClick={() => handleRemoveUserFromGroup(user.id)} className={styles.removeIcon} />
+  //                 </div>
+  //               ))}
+  //             </div>
+  //             <div className={styles.groupActions}>
+  //               <FontAwesomeIcon
+  //                 icon={faTrash}
+  //                 className={styles.deleteIcon}
+  //                 onClick={handleDeleteGroup}
+  //               />
+  //             </div>
+  //             <FontAwesomeIcon icon={faXmark} onClick={handleEditGroup} className={styles.closeIcon} />
+  //           </div>
+  //         </div>
+  //       )}
+  //       {loading && (
+  //         <div className={styles.loadingModalOverlay}>
+  //           <div className={styles.loadingModalContent}>
+  //             <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+  //           </div>
+  //         </div>
+  //       )}
+  //     </div>
+  //   );
+  // };
+  // export default Chat;
+
   return (
     <div className={styles.chatContainer}>
       {userId !== 0 ? (
@@ -812,31 +1144,6 @@ const Chat = () => {
                   >
                     <FontAwesomeIcon icon={faUser} /> Individual
                   </div>
-          <div className={styles.sidebar}>
-            <div className={styles.sidebarHeader}>
-              <div className={styles.headerTop}>
-                <span>Translate: </span>
-                <select
-                  value={selectedLanguage}
-                  onChange={handleLanguageChange}
-                  className={styles.languageSelect}
-                >
-                  <option value="">None</option>
-                  {languages.map((language) => (
-                    <option key={language.code} value={language.code}>
-                      {language.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className={styles.headerBottom}>
-                <div className={styles.sectionSelector}>
-                  <div
-                    onClick={() => setChatType('user')}
-                    className={`${styles.sectionBlock} ${chatType === 'user' ? styles.activeSection : ''}`}
-                  >
-                    <FontAwesomeIcon icon={faUser} /> Individual
-                  </div>
 
                   <div
                     onClick={() => setChatType('group')}
@@ -845,21 +1152,7 @@ const Chat = () => {
                     <FontAwesomeIcon icon={faUsers} /> Groups
                   </div>
                 </div>
-                  <div
-                    onClick={() => setChatType('group')}
-                    className={`${styles.sectionBlock} ${chatType === 'group' ? styles.activeSection : ''}`}
-                  >
-                    <FontAwesomeIcon icon={faUsers} /> Groups
-                  </div>
-                </div>
 
-              </div>
-              {chatType === 'user' && (
-                <div>
-                  <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewIndividualChat} />
-                  New individual
-                </div>
-              )}
               </div>
               {chatType === 'user' && (
                 <div>
@@ -876,24 +1169,16 @@ const Chat = () => {
               )}
             </div>
             {/* <div className={styles.searchBar}>
-              {chatType === 'group' && (
-                <div>
-                  <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewGroupChat} />
-                  New group
-                </div>
-              )}
-            </div>
-            {/* <div className={styles.searchBar}>
-          <FontAwesomeIcon icon={faSearch} className={styles.icon} />
-          <input
-            type="text"
-            placeholder="Wyszukaj pracownika lub grupę"
-            disabled={!newChat}
-            value={searchQuery}
-            onChange={(e) => handleSearch(e.target.value)}
-            className={styles.searchInput}
-          />
-        </div> */}
+              <FontAwesomeIcon icon={faSearch} className={styles.icon} />
+              <input
+                type="text"
+                placeholder="Wyszukaj pracownika lub grupę"
+                disabled={!newChat}
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+                className={styles.searchInput}
+              />
+            </div> */}
             <ul className={styles.chatList}>
               {chatPartners.map((partner) => (
                 <li
@@ -902,11 +1187,7 @@ const Chat = () => {
                   onClick={() => fetchChatHistory(partner, selectedLanguage)}
                 >
                   {partner.photo ? (
-                    // <img
-                    //   className={styles.chatAvatar}
-                    //   src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${partner.photo}`}
-                    //   alt="User Photo"
-                    // />
+
                     <AuthorizedImage
                       src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${partner.photo}`}
                       alt="User Photo"
@@ -967,11 +1248,6 @@ const Chat = () => {
                         className={styles.searchResultItem}
                       >
                         {user.photo ? (
-                          // <img
-                          //   src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
-                          //   className={styles.chatAvatar}
-                          //   alt="User Avatar"
-                          // />
                           <AuthorizedImage
                             src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
                             alt="User Photo"
@@ -989,11 +1265,6 @@ const Chat = () => {
               <>
                 <div className={styles.chatHeader}>
                   {selectedChat.photo ? (
-                    // <img
-                    //   className={styles.chatAvatar}
-                    //   src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${selectedChat.photo}`}
-                    //   alt="User Photo"
-                    // />
                     <AuthorizedImage
                       src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${selectedChat.photo}`}
                       alt="User Photo"
@@ -1019,11 +1290,6 @@ const Chat = () => {
                       {message.sender_id !== userId && (
                         <div className={styles.messageAvatar}>
                           {message.groupSenderPhoto || selectedChat.photo ? (
-                            // <img
-                            //   className={styles.chatAvatar}
-                            //   src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${message.groupSenderPhoto || selectedChat.photo}`}
-                            //   alt="User Avatar"
-                            // />
                             <AuthorizedImage
                               src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${message.groupSenderPhoto || selectedChat.photo}`}
                               alt="User Photo"
@@ -1058,7 +1324,7 @@ const Chat = () => {
                 >
                   {({ errors, touched }) => (
                     <Form className={styles.messageInputContainer}>
-                      <FontAwesomeIcon icon={faImage} className={styles.icon} />
+                      {/* <FontAwesomeIcon icon={faImage} className={styles.icon} /> */}
                       <Field
                         name="message"
                         type="text"
@@ -1078,7 +1344,6 @@ const Chat = () => {
             )}
           </div>
         </>
-      ) : (<div className={styles.spinnerContainer}><ProgressSpinner /></div>)}
       ) : (<div className={styles.spinnerContainer}><ProgressSpinner /></div>)}
       {isEditGroupModalOpen && (
         <div className={styles.modalOverlay}>
@@ -1104,11 +1369,6 @@ const Chat = () => {
                       alt="User Photo"
                       className={styles.chatAvatar}
                     />
-                    // <img
-                    //   className={styles.chatAvatar}
-                    //   src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
-                    //   alt="User Photo"
-                    // />
                   ) : (
                     <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
                   )}
@@ -1122,11 +1382,6 @@ const Chat = () => {
               {selectedUsers.map((user) => (
                 <div key={user.id} className={styles.selectedUser}>
                   {user.photo ? (
-                    // <img
-                    //   className={styles.chatAvatar}
-                    //   src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
-                    //   alt="User Photo"
-                    // />
                     <AuthorizedImage
                       src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
                       alt="User Photo"
@@ -1160,7 +1415,5 @@ const Chat = () => {
       )}
     </div>
   );
-
 };
-
 export default Chat;
