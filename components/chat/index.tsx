@@ -25,8 +25,8 @@ const Chat = () => {
   const [chatType, setChatType] = useState<'user' | 'group'>('user');
   const [isEditGroupModalOpen, setIsEditGroupModalOpen] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<ChatPartner[]>([]);
-  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
   const [userId, setUserId] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const storedUserId = sessionStorage.getItem('userId');
@@ -36,21 +36,26 @@ const Chat = () => {
   }, []);
 
   const handleNewIndividualChat = () => {
+    setLoading(true);
     setNewChat(true);
     setSelectedChat(null);
     setSearchQuery('');
     setSearchResults([]);
+    setLoading(false);
   };
 
   const handleNewGroupChat = () => {
+    setLoading(true);
     setNewChat(true);
     setChatType('group');
     setSelectedChat(null);
     setSearchQuery('');
     setSearchResults([]);
+    setLoading(false);
   };
 
   const handleSearch = async (query: string) => {
+    setLoading(true);
     setSearchQuery(query);
     if (query.trim().length > 2) {
       const tokenJWT = sessionStorage.getItem('tokenJWT');
@@ -78,23 +83,27 @@ const Chat = () => {
     } else {
       setSearchResults([]);
     }
+    setLoading(false);
   };
 
   const handleSelectUser = (user: ChatPartner) => {
+    setLoading(true);
     setNewChat(false);
     setSelectedChat(user);
     setSearchQuery('');
     setSearchResults([]);
     fetchChatHistory(user);
+    setLoading(false);
   };
 
   const handleCreateGroup = async (values: { groupName: string }) => {
+    setLoading(true);
+
     const groupData = {
       name: values.groupName,
       membersIds: [userId],
     };
 
-    setModalIsOpenLoadning(true);
     try {
       const tokenJWT = sessionStorage.getItem('tokenJWT');
       const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
@@ -110,7 +119,7 @@ const Chat = () => {
         const data = await resquestXsrfToken.json();
         const tokenXSRF = data.token;
 
-        const response = await fetch('${process.env.NEXT_PUBLIC_API_URL}/api/v1/group', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -133,21 +142,26 @@ const Chat = () => {
           const errorData = await response.json();
           throw new Error(errorData.message || 'Błąd podczas tworzenia grupy');
         }
-        setModalIsOpenLoadning(false);
       } else {
         console.error('Failed to fetch XSRF token, response not OK');
       }
     } catch (error) {
       console.error('Błąd podczas tworzenia grupy:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleEditGroup = () => {
+    setLoading(true);
     setIsEditGroupModalOpen(!isEditGroupModalOpen);
     loadGroupMembers();
+    setLoading(false);
   };
 
   const loadGroupMembers = async () => {
+    setLoading(true);
+
     try {
       if (!selectedChat) {
         console.error("Error: No group to edit.");
@@ -169,11 +183,14 @@ const Chat = () => {
       setSelectedUsers(membersWithNames);
     } catch (error) {
       console.error('Błąd podczas pobierania członków grupy:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleAddUserToGroup = async (user: ChatPartner): Promise<void> => {
-    setModalIsOpenLoadning(true);
+    setLoading(true);
+
     try {
       if (!selectedChat) {
         console.error("Error: No group to edit.");
@@ -211,12 +228,13 @@ const Chat = () => {
         } else {
           console.error('Błąd podczas dodawania użytkownika do grupy');
         }
-        setModalIsOpenLoadning(false);
       } else {
         console.error('Failed to fetch XSRF token, response not OK');
       }
     } catch (error) {
       console.error('Error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -225,7 +243,8 @@ const Chat = () => {
       return;
     }
 
-    setModalIsOpenLoadning(true);
+    setLoading(true);
+
     try {
       if (!selectedChat) {
         console.error("Error: No group to edit.");
@@ -262,12 +281,13 @@ const Chat = () => {
         } else {
           console.error('Błąd podczas usuwania użytkownika z grupy');
         }
-        setModalIsOpenLoadning(false);
       } else {
         console.error('Failed to fetch XSRF token, response not OK');
       }
     } catch (error) {
       console.error('Błąd:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -281,7 +301,8 @@ const Chat = () => {
       return;
     }
 
-    setModalIsOpenLoadning(true);
+    setLoading(true);
+
     try {
       const tokenJWT = sessionStorage.getItem('tokenJWT');
       const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
@@ -311,16 +332,19 @@ const Chat = () => {
         } else {
           console.error(`Failed to delete group "${selectedChat.name}".`);
         }
-        setModalIsOpenLoadning(false);
       } else {
         console.error('Failed to fetch XSRF token, response not OK');
       }
     } catch (error) {
       console.error("Error deleting group:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
+    setLoading(true);
+
     const fetchLanguages = async () => {
       try {
         const tokenJWT = sessionStorage.getItem('tokenJWT');
@@ -339,18 +363,22 @@ const Chat = () => {
       }
     };
     fetchLanguages();
+    setLoading(false);
   }, []);
 
   const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setLoading(true);
     const language = event.target.value;
     setSelectedLanguage(language);
 
     if (selectedChat) {
       fetchChatHistory(selectedChat, language);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
+    // setLoading(true);
     const tokenJWT = sessionStorage.getItem('tokenJWT');
     const socket = new SockJS(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/ws`);
     const stompClient = new Client({
@@ -431,6 +459,7 @@ const Chat = () => {
     });
 
     stompClient.activate();
+    // setLoading(false);
 
     return () => {
       stompClient.deactivate();
@@ -438,6 +467,8 @@ const Chat = () => {
   }, [userId, selectedChat]);
 
   const loadChatPartnersIndividual = async (selectFirstPartner = false) => {
+    setLoading(true);
+
     const tokenJWT = sessionStorage.getItem('tokenJWT');
     const chatPartnersIndividual = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/chat-partners?userId=${userId}`, {
       method: 'GET',
@@ -460,9 +491,12 @@ const Chat = () => {
       setSelectedChat(newestChatPartner);
       await fetchChatHistory(newestChatPartner, selectedLanguage);
     }
+    setLoading(false);
   }
 
   const loadChatPartnersGroups = async (selectFirstPartner = false) => {
+    setLoading(true);
+
     const tokenJWT = sessionStorage.getItem('tokenJWT');
     const chatPartnersGroups = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/chat-partners?userId=${userId}`, {
       method: 'GET',
@@ -485,9 +519,12 @@ const Chat = () => {
       setSelectedChat(newestChatPartner);
       await fetchChatHistory(newestChatPartner, selectedLanguage);
     }
+    setLoading(false);
   }
 
   useEffect(() => {
+    setLoading(true);
+
     setIsEditGroupModalOpen(false);
     setNewChat(false);
     const loadPartners = async () => {
@@ -499,6 +536,7 @@ const Chat = () => {
     };
 
     loadPartners();
+    setLoading(false);
   }, [chatType, userId]);
 
   useEffect(() => {
@@ -513,6 +551,8 @@ const Chat = () => {
   }, [messages]);
 
   const fetchUserDetails = async (partnerId: number): Promise<ChatPartner> => {
+    setLoading(true);
+
     const tokenJWT = sessionStorage.getItem('tokenJWT');
     const userDetailsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/${partnerId}`, {
       method: 'GET',
@@ -533,6 +573,8 @@ const Chat = () => {
     });
     const lastMessageData = lastMessageResponse.ok ? await lastMessageResponse.text() : 'Brak wiadomości';
 
+    // setLoading(false);
+
     return {
       id: partnerId,
       name: userDetails.firstname + " " + userDetails.surname,
@@ -543,6 +585,8 @@ const Chat = () => {
   };
 
   const fetchGroupDetails = async (partnerId: number): Promise<ChatPartner> => {
+    setLoading(true);
+
     const tokenJWT = sessionStorage.getItem('tokenJWT');
     const groupDetailsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/details/${partnerId}`, {
       method: 'GET',
@@ -563,6 +607,8 @@ const Chat = () => {
     });
     const lastMessageData = lastMessageResponse.ok ? await lastMessageResponse.text() : 'Brak wiadomości';
 
+    // setLoading(false);
+
     return {
       id: partnerId,
       name: groupDetails.name,
@@ -572,6 +618,7 @@ const Chat = () => {
   };
 
   const fetchChatHistory = async (partner: ChatPartner, language: string = '') => {
+    setLoading(true);
     setNewChat(false);
     const translate = language !== '';
     const targetLanguageParam = translate ? `&targetLanguage=${language}` : '';
@@ -589,7 +636,6 @@ const Chat = () => {
       const data = await response.json();
       setMessages(data);
 
-      setModalIsOpenLoadning(true);
       try {
         const tokenJWT = sessionStorage.getItem('tokenJWT');
         const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
@@ -613,7 +659,6 @@ const Chat = () => {
             credentials: 'include',
           });
 
-          setModalIsOpenLoadning(false);
         } else {
           console.error('Failed to fetch XSRF token, response not OK');
         }
@@ -660,9 +705,12 @@ const Chat = () => {
     );
 
     setSelectedChat(partner);
+    setLoading(false);
   };
 
   const handleSendMessage = async (content: string, language: string = '') => {
+    setLoading(true);
+
     if (content.trim() && selectedChat !== null) {
       var messageData;
 
@@ -682,7 +730,6 @@ const Chat = () => {
         }
       }
 
-      setModalIsOpenLoadning(true);
       try {
         const tokenJWT = sessionStorage.getItem('tokenJWT');
         const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
@@ -711,6 +758,7 @@ const Chat = () => {
             throw new Error(`Błąd podczas wysyłania wiadomości: ${errorData.message || 'Nieznany błąd'}`);
           }
 
+
           const data = await response.json();
           setMessages((prevMessages) => [...prevMessages, data]);
           if (selectedChat.type === 'user') {
@@ -718,14 +766,15 @@ const Chat = () => {
           } else if (selectedChat.type === 'group') {
             await loadChatPartnersGroups();
           }
-          await fetchChatHistory(selectedChat, language);
+          //await fetchChatHistory(selectedChat, language);
           setSelectedChat(selectedChat);
-          setModalIsOpenLoadning(false);
         } else {
           console.error('Failed to fetch XSRF token, response not OK');
         }
       } catch (error) {
         console.error("Error:", error);
+      } finally {
+        // setLoading(false);
       }
     }
   };
@@ -763,7 +812,39 @@ const Chat = () => {
                   >
                     <FontAwesomeIcon icon={faUser} /> Individual
                   </div>
+          <div className={styles.sidebar}>
+            <div className={styles.sidebarHeader}>
+              <div className={styles.headerTop}>
+                <span>Translate: </span>
+                <select
+                  value={selectedLanguage}
+                  onChange={handleLanguageChange}
+                  className={styles.languageSelect}
+                >
+                  <option value="">None</option>
+                  {languages.map((language) => (
+                    <option key={language.code} value={language.code}>
+                      {language.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className={styles.headerBottom}>
+                <div className={styles.sectionSelector}>
+                  <div
+                    onClick={() => setChatType('user')}
+                    className={`${styles.sectionBlock} ${chatType === 'user' ? styles.activeSection : ''}`}
+                  >
+                    <FontAwesomeIcon icon={faUser} /> Individual
+                  </div>
 
+                  <div
+                    onClick={() => setChatType('group')}
+                    className={`${styles.sectionBlock} ${chatType === 'group' ? styles.activeSection : ''}`}
+                  >
+                    <FontAwesomeIcon icon={faUsers} /> Groups
+                  </div>
+                </div>
                   <div
                     onClick={() => setChatType('group')}
                     className={`${styles.sectionBlock} ${chatType === 'group' ? styles.activeSection : ''}`}
@@ -779,7 +860,22 @@ const Chat = () => {
                   New individual
                 </div>
               )}
+              </div>
+              {chatType === 'user' && (
+                <div>
+                  <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewIndividualChat} />
+                  New individual
+                </div>
+              )}
 
+              {chatType === 'group' && (
+                <div>
+                  <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewGroupChat} />
+                  New group
+                </div>
+              )}
+            </div>
+            {/* <div className={styles.searchBar}>
               {chatType === 'group' && (
                 <div>
                   <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewGroupChat} />
@@ -983,6 +1079,7 @@ const Chat = () => {
           </div>
         </>
       ) : (<div className={styles.spinnerContainer}><ProgressSpinner /></div>)}
+      ) : (<div className={styles.spinnerContainer}><ProgressSpinner /></div>)}
       {isEditGroupModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
@@ -1054,7 +1151,7 @@ const Chat = () => {
           </div>
         </div>
       )}
-      {modalIsOpenLoadning && (
+      {loading && (
         <div className={styles.loadingModalOverlay}>
           <div className={styles.loadingModalContent}>
             <div className={styles.spinnerContainer}><ProgressSpinner /></div>
