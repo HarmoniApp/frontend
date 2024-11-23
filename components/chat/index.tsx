@@ -9,6 +9,7 @@ import Message from '@/components/types/message';
 import Language from '@/components/types/language';
 import ChatPartner from '@/components/types/chatPartner';
 import AuthorizedImage from '@/components/chat/authorizedImage';
+import SearchUser from '@/components/chat/searchUser';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -20,8 +21,6 @@ const Chat = () => {
   const [languages, setLanguages] = useState<Language[]>([]);
   const [selectedLanguage, setSelectedLanguage] = useState<string>('');
   const [newChat, setNewChat] = useState<boolean>(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<ChatPartner[]>([]);
   const [chatType, setChatType] = useState<'user' | 'group'>('user');
   const [isEditGroupModalOpen, setIsEditGroupModalOpen] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<ChatPartner[]>([]);
@@ -39,8 +38,6 @@ const Chat = () => {
     setLoading(true);
     setNewChat(true);
     setSelectedChat(null);
-    setSearchQuery('');
-    setSearchResults([]);
     setLoading(false);
   };
 
@@ -49,40 +46,6 @@ const Chat = () => {
     setNewChat(true);
     setChatType('group');
     setSelectedChat(null);
-    setSearchQuery('');
-    setSearchResults([]);
-    setLoading(false);
-  };
-
-  const handleSearch = async (query: string) => {
-    setLoading(true);
-    setSearchQuery(query);
-    if (query.trim().length > 2) {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/search?q=${query}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        }
-      });
-      const data = await response.json();
-
-      const filteredResults = chatType === 'group'
-        ? data.filter(
-          (user: ChatPartner) => !selectedUsers.some((member) => member.id === user.id)
-        )
-        : data;
-
-      setSearchResults(filteredResults.map((user: any) => ({
-        id: user.id,
-        name: user.firstname + " " + user.surname,
-        photo: user.photo,
-        type: 'user'
-      })));
-    } else {
-      setSearchResults([]);
-    }
     setLoading(false);
   };
 
@@ -90,8 +53,6 @@ const Chat = () => {
     setLoading(true);
     setNewChat(false);
     setSelectedChat(user);
-    setSearchQuery('');
-    setSearchResults([]);
     fetchChatHistory(user);
     setLoading(false);
   };
@@ -222,9 +183,6 @@ const Chat = () => {
 
         if (response.ok) {
           setSelectedUsers((prevUsers) => [...prevUsers, user]);
-          setSearchResults((prevResults) =>
-            prevResults.filter((result) => result.id !== user.id)
-          );
         } else {
           console.error('Błąd podczas dodawania użytkownika do grupy');
         }
@@ -901,33 +859,7 @@ const Chat = () => {
                 </div>
               ) : (
                 <div className={styles.newChat}>
-                  <input
-                    type="text"
-                    placeholder="Wyszukaj użytkownika..."
-                    value={searchQuery}
-                    onChange={(e) => handleSearch(e.target.value)}
-                    className={styles.searchInput}
-                  />
-                  <ul className={styles.searchResults}>
-                    {searchResults.map((user) => (
-                      <li
-                        key={user.id}
-                        onClick={() => handleSelectUser(user)}
-                        className={styles.searchResultItem}
-                      >
-                        {user.photo ? (
-                          <AuthorizedImage
-                            src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
-                            alt="User Photo"
-                            className={styles.chatAvatar}
-                          />
-                        ) : (
-                          <FontAwesomeIcon icon={faUser} className={styles.defaultAvatarIcon} />
-                        )}
-                        <p>{user.name}</p>
-                      </li>
-                    ))}
-                  </ul>
+                  <SearchUser handleSelectUser={handleSelectUser}/>
                 </div>)
             ) : selectedChat ? (
               <>
@@ -1017,35 +949,7 @@ const Chat = () => {
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
             <h3>Edit group</h3>
-            <input
-              type="text"
-              placeholder="Search user..."
-              value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
-              className={styles.searchInput}
-            />
-            <ul className={styles.searchResults}>
-              {searchResults.map((user) => (
-                <li
-                  key={user.id}
-                  onClick={() => handleAddUserToGroup(user)}
-                  className={styles.searchResultItem}
-                >
-                  {user.photo ? (
-                    <AuthorizedImage
-                      src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
-                      alt="User Photo"
-                      className={styles.chatAvatar}
-                    />
-                  ) : (
-                    <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
-                  )}
-                  <p>{user.name}</p>
-                  <FontAwesomeIcon icon={faPlus} className={styles.addIcon} />
-                </li>
-              ))}
-            </ul>
-
+            <SearchUser handleSelectUser={handleAddUserToGroup} />
             <div className={styles.selectedUsers}>
               {selectedUsers.map((user) => (
                 <div key={user.id} className={styles.selectedUser}>
