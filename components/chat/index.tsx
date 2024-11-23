@@ -150,6 +150,11 @@ const Chat = () => {
   };
 
   const handleAddUserToGroup = async (user: ChatPartner): Promise<void> => {
+    if (selectedUsers.some((existingUser) => existingUser.id === user.id)) {
+      alert("User is already in the group.");
+      return;
+    }
+
     setLoading(true);
 
     try {
