@@ -6,7 +6,6 @@ import { faSearch, faUser } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 
 interface SearchUserProps {
-    // onSearchResults: (results: ChatPartner[]) => void;
     handleSelectUser: (user: ChatPartner) => void;
 }
 

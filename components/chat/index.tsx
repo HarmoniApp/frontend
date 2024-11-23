@@ -9,6 +9,7 @@ import Message from '@/components/types/message';
 import Language from '@/components/types/language';
 import ChatPartner from '@/components/types/chatPartner';
 import AuthorizedImage from '@/components/chat/authorizedImage';
+import EditGroup from '@/components/chat/editGroup';
 import SearchUser from '@/components/chat/searchUser';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
@@ -951,37 +952,38 @@ const Chat = () => {
         </>
       ) : (<div className={styles.spinnerContainer}><ProgressSpinner /></div>)}
       {isEditGroupModalOpen && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <h3>Edit group</h3>
-            <SearchUser handleSelectUser={handleAddUserToGroup} />
-            <div className={styles.selectedUsers}>
-              {selectedUsers.map((user) => (
-                <div key={user.id} className={styles.selectedUser}>
-                  {user.photo ? (
-                    <AuthorizedImage
-                      src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
-                      alt="User Photo"
-                      className={styles.chatAvatar}
-                    />
-                  ) : (
-                    <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
-                  )}
-                  <p>{user.name}</p>
-                  <FontAwesomeIcon icon={faUserMinus} onClick={() => handleRemoveUserFromGroup(user.id)} className={styles.removeIcon} />
-                </div>
-              ))}
-            </div>
-            <div className={styles.groupActions}>
-              <FontAwesomeIcon
-                icon={faTrash}
-                className={styles.deleteIcon}
-                onClick={handleDeleteGroup}
-              />
-            </div>
-            <FontAwesomeIcon icon={faXmark} onClick={handleEditGroup} className={styles.closeIcon} />
-          </div>
-        </div>
+        // <div className={styles.modalOverlay}>
+        //   <div className={styles.modalContent}>
+        //     <h3>Edit group</h3>
+        //     <SearchUser handleSelectUser={handleAddUserToGroup} />
+        //     <div className={styles.selectedUsers}>
+        //       {selectedUsers.map((user) => (
+        //         <div key={user.id} className={styles.selectedUser}>
+        //           {user.photo ? (
+        //             <AuthorizedImage
+        //               src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
+        //               alt="User Photo"
+        //               className={styles.chatAvatar}
+        //             />
+        //           ) : (
+        //             <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
+        //           )}
+        //           <p>{user.name}</p>
+        //           <FontAwesomeIcon icon={faUserMinus} onClick={() => handleRemoveUserFromGroup(user.id)} className={styles.removeIcon} />
+        //         </div>
+        //       ))}
+        //     </div>
+        //     <div className={styles.groupActions}>
+        //       <FontAwesomeIcon
+        //         icon={faTrash}
+        //         className={styles.deleteIcon}
+        //         onClick={handleDeleteGroup}
+        //       />
+        //     </div>
+        //     <FontAwesomeIcon icon={faXmark} onClick={handleEditGroup} className={styles.closeIcon} />
+        //   </div>
+        // </div>
+        <EditGroup editGroupModal={setIsEditGroupModalOpen} selectedUsers={selectedUsers} setSelectedUsers={setSelectedUsers} selectedChat={selectedChat}/>
       )}
       {loading && (
         <div className={styles.loadingModalOverlay}>
