@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ChatPartner from '@/components/types/chatPartner';
 import AuthorizedImage from '@/components/chat/authorizedImage';
 import SearchUser from '@/components/chat/searchUser';
@@ -15,6 +15,10 @@ interface EditGroupProps {
 
 const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, setSelectedUsers, selectedChat }) => {
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        handleEditGroup();
+    }, []);
 
     const loadGroupMembers = async () => {
         setLoading(true);
@@ -37,7 +41,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                 ...user,
                 name: `${user.firstname} ${user.surname}`
             }));
-            // selectedUsers(membersWithNames);
+            setSelectedUsers(membersWithNames);
         } catch (error) {
             console.error('Błąd podczas pobierania członków grupy:', error);
         } finally {
@@ -47,7 +51,6 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
 
     const handleEditGroup = () => {
         setLoading(true);
-        editGroupModal(!editGroupModal);
         loadGroupMembers();
         setLoading(false);
     };
@@ -87,10 +90,6 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                 });
 
                 if (response.ok) {
-                    //   if (userId === userId) {
-                    //     await loadChatPartnersGroups(true);
-                    //     return;
-                    //   }
                     setSelectedUsers(selectedUsers.filter((user: ChatPartner) => user.id !== userId));
                 } else {
                     console.error('Błąd podczas usuwania użytkownika z grupy');
@@ -142,7 +141,6 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
 
                 if (response.ok) {
                     console.log("deleted successfuly")
-                    //   await loadChatPartnersGroups(true);
                 } else {
                     console.error(`Failed to delete group "${selectedChat.name}".`);
                 }
@@ -194,7 +192,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                 });
 
                 if (response.ok) {
-                    // selectedUsers((prevUsers) => [...prevUsers, user]);
+                    setSelectedUsers([...selectedUsers, user]);
                 } else {
                     console.error('Błąd podczas dodawania użytkownika do grupy');
                 }
@@ -238,7 +236,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                             onClick={handleDeleteGroup}
                         />
                     </div>
-                    <FontAwesomeIcon icon={faXmark} onClick={handleEditGroup} className={styles.closeIcon} />
+                    <FontAwesomeIcon icon={faXmark} onClick={() => editGroupModal(false)} className={styles.closeIcon} />
                 </div>
             </div>
 
