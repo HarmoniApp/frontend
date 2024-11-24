@@ -3,7 +3,7 @@ import ChatPartner from '@/components/types/chatPartner';
 import AuthorizedImage from '@/components/chat/authorizedImage';
 import SearchUser from '@/components/chat/searchUser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCommentDots, faPaperPlane, faImage, faPlus, faSearch, faEye, faUser, faUsers, faEdit, faUserMinus, faXmark, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faUserMinus, faXmark, faTrash } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 
 interface EditGroupProps {
@@ -11,17 +11,17 @@ interface EditGroupProps {
     selectedUsers: ChatPartner[];
     setSelectedUsers: (selectedUsers: ChatPartner[]) => void;
     selectedChat: ChatPartner | null;
+    loading: (loading: boolean) => void;
 }
 
-const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, setSelectedUsers, selectedChat }) => {
-    const [loading, setLoading] = useState(false);
+const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, setSelectedUsers, selectedChat, loading }) => {
 
     useEffect(() => {
         handleEditGroup();
     }, []);
 
     const loadGroupMembers = async () => {
-        setLoading(true);
+        loading(true);
 
         try {
             if (!selectedChat) {
@@ -45,14 +45,14 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         } catch (error) {
             console.error('Błąd podczas pobierania członków grupy:', error);
         } finally {
-            setLoading(false);
+            loading(false);
         }
     };
 
     const handleEditGroup = () => {
-        setLoading(true);
+        loading(true);
         loadGroupMembers();
-        setLoading(false);
+        loading(false);
     };
 
     const handleRemoveUserFromGroup = async (userId: number): Promise<void> => {
@@ -60,7 +60,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
             return;
         }
 
-        setLoading(true);
+        loading(true);
 
         try {
             if (!selectedChat) {
@@ -100,7 +100,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         } catch (error) {
             console.error('Błąd:', error);
         } finally {
-            setLoading(false);
+            loading(false);
         }
     };
 
@@ -110,11 +110,11 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
             return;
         }
 
-        if (!window.confirm(`Are you sure you want to delete the group "${selectedChat.name}"? This cant be undone!`)) {
+        if (!window.confirm(`Are you sure you want to delete the group "${selectedChat.name}"? This can't be undone!`)) {
             return;
         }
 
-        setLoading(true);
+        loading(true);
 
         try {
             const tokenJWT = sessionStorage.getItem('tokenJWT');
@@ -140,7 +140,8 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                 });
 
                 if (response.ok) {
-                    console.log("deleted successfuly")
+                    console.log("Deleted successfully");
+                    window.location.reload();
                 } else {
                     console.error(`Failed to delete group "${selectedChat.name}".`);
                 }
@@ -150,7 +151,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         } catch (error) {
             console.error("Error deleting group:", error);
         } finally {
-            setLoading(false);
+            loading(false);
         }
     };
 
@@ -160,7 +161,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
             return;
         }
 
-        setLoading(true);
+        loading(true);
 
         try {
             if (!selectedChat) {
@@ -202,7 +203,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         } catch (error) {
             console.error('Error:', error);
         } finally {
-            setLoading(false);
+            loading(false);
         }
     };
 
@@ -239,7 +240,6 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                     <FontAwesomeIcon icon={faXmark} onClick={() => editGroupModal(false)} className={styles.closeIcon} />
                 </div>
             </div>
-
         </>
     );
 };

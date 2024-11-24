@@ -11,6 +11,7 @@ import ChatPartner from '@/components/types/chatPartner';
 import AuthorizedImage from '@/components/chat/authorizedImage';
 import EditGroup from '@/components/chat/editGroup';
 import SearchUser from '@/components/chat/searchUser';
+import SendMessageForm from '@/components/chat/sendMessageForm';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -480,81 +481,6 @@ const Chat = () => {
     setLoading(false);
   };
 
-  const handleSendMessage = async (content: string, language: string = '') => {
-    setLoading(true);
-
-    if (content.trim() && selectedChat !== null) {
-      var messageData;
-
-      if (selectedChat.type == 'user') {
-        messageData = {
-          sender_id: userId,
-          receiver_id: selectedChat.id,
-          content,
-          is_read: false,
-        }
-      } else {
-        messageData = {
-          sender_id: userId,
-          group_id: selectedChat.id,
-          content,
-          is_read: false,
-        }
-      }
-
-      try {
-        const tokenJWT = sessionStorage.getItem('tokenJWT');
-        const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${tokenJWT}`,
-          },
-          credentials: 'include',
-        });
-        if (resquestXsrfToken.ok) {
-          const dataToken = await resquestXsrfToken.json();
-          const tokenXSRF = dataToken.token;
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/send`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-              'X-XSRF-TOKEN': tokenXSRF,
-            },
-            credentials: 'include',
-            body: JSON.stringify(messageData),
-          });
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Błąd podczas wysyłania wiadomości: ${errorData.message || 'Nieznany błąd'}`);
-          }
-
-
-          const data = await response.json();
-          setMessages((prevMessages) => [...prevMessages, data]);
-          if (selectedChat.type === 'user') {
-            await loadChatPartnersIndividual();
-          } else if (selectedChat.type === 'group') {
-            await loadChatPartnersGroups();
-          }
-          //await fetchChatHistory(selectedChat, language);
-          setSelectedChat(selectedChat);
-        } else {
-          console.error('Failed to fetch XSRF token, response not OK');
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
-        // setLoading(false);
-      }
-    }
-  };
-
-  const validationSchema = Yup.object({
-    message: Yup.string().required('Wiadomość nie może być pusta'),
-  });
-
   return (
     <div className={styles.chatContainer}>
       {userId !== 0 ? (
@@ -608,17 +534,6 @@ const Chat = () => {
                 </div>
               )}
             </div>
-            {/* <div className={styles.searchBar}>
-              <FontAwesomeIcon icon={faSearch} className={styles.icon} />
-              <input
-                type="text"
-                placeholder="Wyszukaj pracownika lub grupę"
-                disabled={!newChat}
-                value={searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
-                className={styles.searchInput}
-              />
-            </div> */}
             <ul className={styles.chatList}>
               {chatPartners.map((partner) => (
                 <li
@@ -627,7 +542,6 @@ const Chat = () => {
                   onClick={() => fetchChatHistory(partner, selectedLanguage)}
                 >
                   {partner.photo ? (
-
                     <AuthorizedImage
                       src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${partner.photo}`}
                       alt="User Photo"
@@ -725,33 +639,17 @@ const Chat = () => {
                     </div>
                   ))}
                 </div>
-                <Formik
-                  initialValues={{ message: '' }}
-                  validationSchema={validationSchema}
-                  onSubmit={(values, { resetForm }) => {
-                    handleSendMessage(values.message, selectedLanguage);
-                    resetForm();
-                  }}
-                  validateOnBlur={false}
-                  validateOnChange={false}
-                  validateOnSubmit={true}
-                >
-                  {({ errors, touched }) => (
-                    <Form className={styles.messageInputContainer}>
-                      {/* <FontAwesomeIcon icon={faImage} className={styles.icon} /> */}
-                      <Field
-                        name="message"
-                        type="text"
-                        placeholder="Wpisz wiadomość"
-                        className={`${styles.messageInput} ${errors.message && touched.message ? styles.errorInput : ''}`}
-                      />
-                      <button type="submit" className={styles.sendButton}>
-                        <FontAwesomeIcon icon={faPaperPlane} className={styles.icon} />
-                      </button>
-                      {errors.message && touched.message && <div className={styles.errorMessage}>{errors.message}</div>}
-                    </Form>
-                  )}
-                </Formik>
+                <SendMessageForm 
+                selectedChat={selectedChat} 
+                setSelectedChat={setSelectedChat} 
+                messages={messages} 
+                setMessages={setMessages}
+                userId={userId}
+                loadChatPartnersIndividual={loadChatPartnersIndividual}
+                loadChatPartnersGroups={loadChatPartnersGroups}
+                selectedLanguage={selectedLanguage}
+                loading={setLoading}
+                />
               </>
             ) : (
               <p>Select chat</p>
@@ -760,7 +658,12 @@ const Chat = () => {
         </>
       ) : (<div className={styles.spinnerContainer}><ProgressSpinner /></div>)}
       {isEditGroupModalOpen && (
-        <EditGroup editGroupModal={setIsEditGroupModalOpen} selectedUsers={selectedUsers} setSelectedUsers={setSelectedUsers} selectedChat={selectedChat}/>
+        <EditGroup 
+        editGroupModal={setIsEditGroupModalOpen} 
+        selectedUsers={selectedUsers} 
+        setSelectedUsers={setSelectedUsers} 
+        selectedChat={selectedChat} 
+        loading={setLoading}/>
       )}
       {loading && (
         <div className={styles.loadingModalOverlay}>

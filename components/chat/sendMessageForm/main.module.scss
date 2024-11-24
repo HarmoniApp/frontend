@@ -1,0 +1,30 @@
+@import '@/styles/variables.scss';
+
+.messageInputContainer {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-top: 1px solid #ddd;
+
+    .messageInput {
+        flex-grow: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 10px;
+        outline: none;
+        margin: 0 10px;
+    }
+
+    .sendButton {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+
+        .icon {
+            color: $main-colour;
+            width: 30px;
+            height: 30px;
+        }
+    }
+}
