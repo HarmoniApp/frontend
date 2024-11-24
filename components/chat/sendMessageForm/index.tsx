@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import ChatPartner from '@/components/types/chatPartner';
 import Message from '@/components/types/message';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

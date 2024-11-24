@@ -3,8 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCommentDots, faPaperPlane, faImage, faPlus, faSearch, faEye, faUser, faUsers, faEdit, faUserMinus, faXmark, faTrash } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
-import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
 import Message from '@/components/types/message';
 import Language from '@/components/types/language';
 import ChatPartner from '@/components/types/chatPartner';
@@ -12,6 +10,7 @@ import AuthorizedImage from '@/components/chat/authorizedImage';
 import EditGroup from '@/components/chat/editGroup';
 import SearchUser from '@/components/chat/searchUser';
 import SendMessageForm from '@/components/chat/sendMessageForm';
+import CreateGroupChatForm from '@/components/chat/createGroupChatForm';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -57,63 +56,7 @@ const Chat = () => {
     setSelectedChat(user);
     fetchChatHistory(user);
     setLoading(false);
-  };
-
-  const handleCreateGroup = async (values: { groupName: string }) => {
-    setLoading(true);
-
-    const groupData = {
-      name: values.groupName,
-      membersIds: [userId],
-    };
-
-    try {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        },
-        credentials: 'include',
-      });
-
-      if (resquestXsrfToken.ok) {
-        const data = await resquestXsrfToken.json();
-        const tokenXSRF = data.token;
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-          body: JSON.stringify(groupData),
-        });
-
-        if (response.ok) {
-          const newGroup = await response.json();
-          setChatType('group');
-          loadChatPartnersGroups();
-          setNewChat(false);
-          setChatPartners((prevPartners) => [...prevPartners, newGroup]);
-          setSelectedChat(newGroup);
-          fetchChatHistory(newGroup);
-        } else {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Błąd podczas tworzenia grupy');
-        }
-      } else {
-        console.error('Failed to fetch XSRF token, response not OK');
-      }
-    } catch (error) {
-      console.error('Błąd podczas tworzenia grupy:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  };;
 
   useEffect(() => {
     setLoading(true);
@@ -562,28 +505,17 @@ const Chat = () => {
             {newChat ? (
               chatType === 'group' ? (
                 <div className={styles.newChat}>
-                  <Formik
-                    initialValues={{ groupName: '' }}
-                    validationSchema={Yup.object({
-                      groupName: Yup.string().required('Nazwa grupy jest wymagana'),
-                    })}
-                    onSubmit={handleCreateGroup}
-                  >
-                    {({ errors, touched }) => (
-                      <Form className={styles.newGroupForm}>
-                        <div>
-                          <Field
-                            name="groupName"
-                            type="text"
-                            placeholder="Nazwa grupy"
-                            className={`${styles.groupNameInput} ${errors.groupName && touched.groupName ? styles.errorInput : ''}`}
-                          />
-                          {errors.groupName && touched.groupName && <div className={styles.errorMessage}>{errors.groupName}</div>}
-                        </div>
-                        <button type="submit" className={styles.createGroupButton}>Utwórz grupę</button>
-                      </Form>
-                    )}
-                  </Formik>
+                  <CreateGroupChatForm 
+                  userId={userId} 
+                  setChatType={setChatType} 
+                  setNewChat={setNewChat} 
+                  chatPartners={chatPartners}
+                  setChatPartners={setChatPartners}
+                  setSelectedChat={setSelectedChat}
+                  fetchChatHistory={fetchChatHistory}
+                  loadChatPartnersGroups={loadChatPartnersGroups}
+                  loading={setLoading}
+                  />
                 </div>
               ) : (
                 <div className={styles.newChat}>
