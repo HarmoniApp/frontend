@@ -212,15 +212,13 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
             <div className={styles.modalOverlay}>
                 <div className={styles.modalContent}>
                     <h3>Edit group</h3>
-                    <SearchUser handleSelectUser={handleAddUserToGroup} />
+                    <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true}/>
                     <div className={styles.selectedUsers}>
                         {selectedUsers.map((user) => (
                             <div key={user.id} className={styles.selectedUser}>
                                 {user.photo ? (
                                     <AuthorizedImage
                                         src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
-                                        alt="User Photo"
-                                        className={styles.chatAvatar}
                                     />
                                 ) : (
                                     <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />

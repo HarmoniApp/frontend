@@ -3,19 +3,23 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faComments, faPlane, faChartBar, faUserMinus, faUserPen, faUserLock } from '@fortawesome/free-solid-svg-icons';
+import { faComments, faUserMinus, faUserPen, faUserLock } from '@fortawesome/free-solid-svg-icons';
 import DeleteEmployeePopUp from '@/components/employees/employeeData/deleteEmployee';
 import EmployeeData from '@/components/types/employeeData';
 import Department from '@/components/types/department';
 import SupervisorDataSimple from '@/components/types/supervisorDataSimple';
 import Flag from 'react-flagkit';
 import styles from './main.module.scss';
+import NewPassword from './newPassword';
 
 const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   const [employee, setEmployee] = useState<EmployeeData | null>(null);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [supervisorData, setSupervisorData] = useState<SupervisorDataSimple | null>(null);
   const [modalIsOpenDeleteEmployee, setModalDeleteEmployee] = useState(false);
+  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [modalNewPassword, setModalNewPassword] = useState(false);
 
   const router = useRouter();
 
@@ -88,6 +92,51 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
     router.push(`/employees/user/${userId}/edit`);
   };
 
+  const handlePasswordResetSubmit = async () => {
+    setModalIsOpenLoadning(true);
+    try {
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
+        },
+        credentials: 'include',
+      });
+
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${employee.id}/generatePassword`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          console.error('Error reseting password, response not OK');
+          throw new Error('Error reseting password');
+        }
+        const result = await response.text();
+        setNewPassword(result);
+        setModalIsOpenLoadning(false);
+        setModalNewPassword(true);
+      } else {
+        console.error('Failed to fetch XSRF token, response not OK');
+      }
+
+    } catch (error) {
+      console.error('Błąd podczas resetowania hasła: ', error);
+      throw error;
+    }
+  };
+
   return (
     <div className={styles.employeeDataContainerMain}>
       <div className={styles.rowButtonContainer}>
@@ -96,23 +145,15 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
             <FontAwesomeIcon className={styles.buttonIcon} icon={faComments} />
             <p className={styles.buttonParagraph}>Chat</p>
           </button>
-          <button className={styles.absencesButton}>
-            <FontAwesomeIcon className={styles.buttonIcon} icon={faPlane} />
-            <p className={styles.buttonParagraph}>Urolopy</p>
-          </button>
-          <button className={styles.statisticsButton}>
-            <FontAwesomeIcon className={styles.buttonIcon} icon={faChartBar} />
-            <p className={styles.buttonParagraph}>Statystki</p>
+          <button className={styles.resetPasswordButton} onClick={handlePasswordResetSubmit}>
+            <FontAwesomeIcon className={styles.buttonIcon} icon={faUserLock} />
+            <p className={styles.buttonParagraph}>Zresetuj hasło</p>
           </button>
         </div>
         <div className={styles.buttonContainer}>
           <button className={styles.editButton} onClick={handleEditEmployee}>
             <FontAwesomeIcon className={styles.buttonIcon} icon={faUserPen} />
             <p className={styles.buttonParagraph}>Edytuj</p>
-          </button>
-          <button className={styles.resetPasswordButton}>
-            <FontAwesomeIcon className={styles.buttonIcon} icon={faUserLock} />
-            <p className={styles.buttonParagraph}>Zresetuj hasło</p>
           </button>
           <button className={styles.deleteButton} onClick={openModalDeleteEmployee}>
             <FontAwesomeIcon className={styles.buttonIcon} icon={faUserMinus} />
@@ -210,6 +251,26 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
               surname={employee.surname}
               onClose={closeModalDeleteEmployee}
             />
+          </div>
+        </div>
+      )}
+
+      {modalNewPassword && (
+        <div className={styles.modalOverlayNewPassword}>
+          <div className={styles.modalContentOfNewPassword}>
+            <NewPassword 
+              newPassword={newPassword} 
+              onClose={() => setModalNewPassword(false)} 
+              firstName={employee.firstname} 
+              surname={employee.surname}/>
+          </div>
+        </div>
+      )}
+
+      {modalIsOpenLoadning && (
+        <div className={styles.loadingModalOverlay}>
+          <div className={styles.loadingModalContent}>
+            <div className={styles.spinnerContainer}><ProgressSpinner /></div>
           </div>
         </div>
       )}

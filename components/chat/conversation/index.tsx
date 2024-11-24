@@ -29,8 +29,6 @@ const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType,
                 {selectedChat.photo ? (
                     <AuthorizedImage
                         src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${selectedChat.photo}`}
-                        alt="User Photo"
-                        className={styles.chatAvatar}
                     />
                 ) : (
                     <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
@@ -54,8 +52,6 @@ const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType,
                                 {message.groupSenderPhoto || selectedChat.photo ? (
                                     <AuthorizedImage
                                         src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${message.groupSenderPhoto || selectedChat.photo}`}
-                                        alt="User Photo"
-                                        className={styles.chatAvatar}
                                     />
                                 ) : (
                                     <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />

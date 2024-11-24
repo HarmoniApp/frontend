@@ -481,8 +481,6 @@ const Chat = () => {
                   {partner.photo ? (
                     <AuthorizedImage
                       src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${partner.photo}`}
-                      alt="User Photo"
-                      className={styles.chatAvatar}
                     />
                   ) : (
                     <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
@@ -513,7 +511,7 @@ const Chat = () => {
                 </div>
               ) : (
                 <div className={styles.newChat}>
-                  <SearchUser handleSelectUser={handleSelectUser}/>
+                  <SearchUser handleSelectUser={handleSelectUser}  groupChat={false}/>
                 </div>)
             ) : selectedChat ? (
               <>
