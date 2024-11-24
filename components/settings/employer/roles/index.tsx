@@ -49,7 +49,7 @@ const Roles: React.FC = () => {
     setModalIsOpenLoadning(true);
     try {
       const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ const Roles: React.FC = () => {
     setModalIsOpenLoadning(true);
     try {
       const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -138,7 +138,7 @@ const Roles: React.FC = () => {
       setModalIsOpenLoadning(true);
       try {
         const tokenJWT = sessionStorage.getItem('tokenJWT');
-        const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+        const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

@@ -1,5 +1,37 @@
 @import '@/styles/variables.scss';
 
+.modalOverlayChangePhoto {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $black-transparency-05;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContentOfChangePhoto {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid $main-colour;
+    border-radius: 8px;
+    background-color: $gray;
+    text-align: center;
+    width: auto;
+    max-height: 80vh;
+    overflow-y: auto;
+    gap: 20px;
+    padding: 20px;
+
+    @media (max-width: 768px) {
+        width: 90%;
+        max-height: 70vh;
+    }
+}
+
 .sidebarContainer {
     position: fixed;
     top: 0;
@@ -40,10 +72,20 @@
     margin-right: 10px;
 }
 
-.content {
+.adminContent {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    flex-grow: 1;
+    margin-top:20px;
+}
+
+.userContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
     padding: 20px;
     flex-grow: 1;
