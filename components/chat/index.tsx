@@ -821,8 +821,6 @@ const Chat = () => {
 
                     <AuthorizedImage
                       src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${partner.photo}`}
-                      alt="User Photo"
-                      className={styles.chatAvatar}
                     />
                   ) : (
                     <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
@@ -864,7 +862,7 @@ const Chat = () => {
                 </div>
               ) : (
                 <div className={styles.newChat}>
-                  <SearchUser handleSelectUser={handleSelectUser}/>
+                  <SearchUser handleSelectUser={handleSelectUser}  groupChat={false}/>
                 </div>)
             ) : selectedChat ? (
               <>
@@ -872,8 +870,6 @@ const Chat = () => {
                   {selectedChat.photo ? (
                     <AuthorizedImage
                       src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${selectedChat.photo}`}
-                      alt="User Photo"
-                      className={styles.chatAvatar}
                     />
                   ) : (
                     <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
@@ -897,8 +893,6 @@ const Chat = () => {
                           {message.groupSenderPhoto || selectedChat.photo ? (
                             <AuthorizedImage
                               src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${message.groupSenderPhoto || selectedChat.photo}`}
-                              alt="User Photo"
-                              className={styles.chatAvatar}
                             />
                           ) : (
                             <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
@@ -954,15 +948,13 @@ const Chat = () => {
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
             <h3>Edit group</h3>
-            <SearchUser handleSelectUser={handleAddUserToGroup} />
+            <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true}/>
             <div className={styles.selectedUsers}>
               {selectedUsers.map((user) => (
                 <div key={user.id} className={styles.selectedUser}>
                   {user.photo ? (
                     <AuthorizedImage
                       src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
-                      alt="User Photo"
-                      className={styles.chatAvatar}
                     />
                   ) : (
                     <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />

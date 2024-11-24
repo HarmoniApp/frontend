@@ -4,11 +4,9 @@ import styles from './main.module.scss';
 
 interface AuthorizedImageProps {
     src: string;
-    alt?: string;
-    className?: string;
 }
 
-const AuthorizedImage: React.FC<AuthorizedImageProps> = ({ src, alt, className }) => {
+const AuthorizedImage: React.FC<AuthorizedImageProps> = ({ src }) => {
     const [imageUrl, setImageUrl] = useState<string | null>(null);
 
     useEffect(() => {
@@ -48,7 +46,7 @@ const AuthorizedImage: React.FC<AuthorizedImageProps> = ({ src, alt, className }
         };
     }, [src]);
 
-    return imageUrl ? <img src={imageUrl} alt={alt} className={className} /> : <div className={styles.spinnerContainer}><ProgressSpinner /></div>;
+    return imageUrl ? <img src={imageUrl} alt="User Photo" className={styles.userAvatar} /> : <div className={styles.spinnerContainer}><ProgressSpinner /></div>;
 };
 
 export default AuthorizedImage;
