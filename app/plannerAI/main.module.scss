@@ -1,0 +1,8 @@
+@import '@/styles/variables.scss';
+
+.planerAiPageContainerMain{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: $page-main-background-colour;
+}
