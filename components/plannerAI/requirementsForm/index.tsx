@@ -89,8 +89,7 @@ const RequirementsForm: React.FC = () => {
     };
 
     const handleSubmit = async () => {
-        console.log('Forms state before mapping:', JSON.stringify(forms, null, 2));
-    
+
         const payload = forms.map((form) => ({
             date: form.date,
             shifts: form.shifts.map((shift) => ({
@@ -101,35 +100,52 @@ const RequirementsForm: React.FC = () => {
                 })),
             })),
         }));
-    
+
         console.log('Payload to send:', JSON.stringify(payload, null, 2));
-    
+
         if (payload.some((form) => !form.date || form.shifts.length === 0)) {
             console.error('Payload contains invalid data. Please check your inputs.');
             return;
         }
-    
+
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/aiSchedule/generate`, {
-                method: 'POST',
+            const tokenJWT = sessionStorage.getItem('tokenJWT');
+            const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'Authorization': `Bearer ${tokenJWT}`,
                 },
-                body: JSON.stringify(payload),
+                credentials: 'include',
             });
-    
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Error from server:', errorData.message);
+
+            if (resquestXsrfToken.ok) {
+                const data = await resquestXsrfToken.json();
+                const tokenXSRF = data.token;
+
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/aiSchedule/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(payload),
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Error from server:', errorData.message);
+                }
             } else {
-                console.log('Data submitted successfully!');
+                console.error('Failed to fetch XSRF token, response not OK');
             }
+
         } catch (error) {
             console.error('Failed to send data:', error);
         }
     };
-    
+
     return (
         <div>
             {forms.map((form) => (
@@ -149,13 +165,23 @@ const RequirementsForm: React.FC = () => {
                             console.error('Form not found in forms array!');
                         }
                     }}
-                    
                 >
                     {({ values, setFieldValue }) => (
                         <Form className={styles.planerAiForm}>
                             <div>
                                 <label>Data</label>
-                                <Field name="date" type="date" />
+                                <Field
+                                    name="date"
+                                    type="date"
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                        setFieldValue("date", e.target.value);
+                                        const updatedForms = forms.map((f) =>
+                                            f.id === form.id ? { ...f, date: e.target.value } : f
+                                        );
+                                        setForms(updatedForms);
+                                        console.log("Updated forms state:", JSON.stringify(updatedForms, null, 2));
+                                    }}
+                                />
                                 <ErrorMessage name="date" component="div" className={styles.errorMessage} />
                             </div>
                             <div>
@@ -167,12 +193,17 @@ const RequirementsForm: React.FC = () => {
                                             <input
                                                 type="checkbox"
                                                 checked={isSelected}
-                                                onChange={(e) => {
+                                                onChange={() => {
                                                     const updatedShifts = isSelected
                                                         ? values.shifts.filter((s) => s.shiftId !== shift.id)
                                                         : [...values.shifts, { shiftId: shift.id, roles: [] }];
                                                     setFieldValue('shifts', updatedShifts);
-                                                    console.log('Updated shifts:', JSON.stringify(updatedShifts, null, 2));
+
+                                                    const updatedForms = forms.map((f) =>
+                                                        f.id === form.id ? { ...f, shifts: updatedShifts } : f
+                                                    );
+                                                    setForms(updatedForms);
+                                                    console.log("Updated forms state:", JSON.stringify(updatedForms, null, 2));
                                                 }}
                                             />
                                             <span>{shift.name} ({shift.start} - {shift.end})</span>
@@ -198,12 +229,17 @@ const RequirementsForm: React.FC = () => {
                                                             const updatedRoles = isRoleSelected
                                                                 ? shift.roles.filter((r) => r.roleId !== role.id)
                                                                 : [...shift.roles, { roleId: role.id, quantity: 1 }];
+
                                                             const updatedShifts = values.shifts.map((s) =>
-                                                                s.shiftId === shift.shiftId
-                                                                    ? { ...s, roles: updatedRoles }
-                                                                    : s
+                                                                s.shiftId === shift.shiftId ? { ...s, roles: updatedRoles } : s
                                                             );
+
                                                             setFieldValue('shifts', updatedShifts);
+
+                                                            const updatedForms = forms.map((f) =>
+                                                                f.id === form.id ? { ...f, shifts: updatedShifts } : f
+                                                            );
+                                                            setForms(updatedForms);
                                                         }}
                                                     />
                                                     <span
@@ -221,16 +257,22 @@ const RequirementsForm: React.FC = () => {
                                                             min="1"
                                                             value={roleInShift?.quantity || 1}
                                                             onChange={(e) => {
-                                                                const newQuantity = parseInt(e.target.value, 10) || 1;
+                                                                const newQuantity = Math.max(parseInt(e.target.value, 10) || 1, 1);
+
                                                                 const updatedRoles = shift.roles.map((r) =>
                                                                     r.roleId === role.id ? { ...r, quantity: newQuantity } : r
                                                                 );
+
                                                                 const updatedShifts = values.shifts.map((s) =>
-                                                                    s.shiftId === shift.shiftId
-                                                                        ? { ...s, roles: updatedRoles }
-                                                                        : s
+                                                                    s.shiftId === shift.shiftId ? { ...s, roles: updatedRoles } : s
                                                                 );
+
                                                                 setFieldValue('shifts', updatedShifts);
+
+                                                                const updatedForms = forms.map((f) =>
+                                                                    f.id === form.id ? { ...f, shifts: updatedShifts } : f
+                                                                );
+                                                                setForms(updatedForms);
                                                             }}
                                                             style={{
                                                                 width: '60px',
