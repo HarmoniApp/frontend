@@ -48,7 +48,12 @@ const PredefinedShifts: React.FC = () => {
         }
       });
       const data = await response.json();
-      setShifts(data);
+      const validatedData = data.map((shift: PredefinedShift) => ({
+        ...shift,
+        start: formatTimeToHHMM(shift.start || '00:00'),
+        end: formatTimeToHHMM(shift.end || '00:00'),
+      }));
+      setShifts(validatedData);
     } catch (error) {
       console.error('Error fetching predefined shifts:', error);
     }
@@ -123,16 +128,32 @@ const PredefinedShifts: React.FC = () => {
       }),
   });
 
+  const formatTimeToHHMM = (time: string): string => {
+    if (!time) return '00:00';
+    const [hours, minutes] = time.split(':');
+    return `${hours}:${minutes}`;
+  };
+
   return (
     <div className={styles.predefinedShiftsContainerMain}>
       <div className={styles.showShiftMapContainer}>
         {shifts.map((shift) => (
           <Formik
             key={shift.id + shift.name + shift.start + shift.end}
-            initialValues={{ name: shift.name, start: shift.start.slice(0, 5), end: shift.end.slice(0, 5) }}
+            initialValues={{ 
+              id: shift.id, 
+              name: shift.name, 
+              start: formatTimeToHHMM(shift.start || '00:00'),
+              end: formatTimeToHHMM(shift.end || '00:00'), 
+            }}
             validationSchema={shiftValidationSchema}
-            onSubmit={async (values, { resetForm }) => {
+            onSubmit={async (values, { resetForm }, ) => {
               setModalIsOpenLoadning(true);
+              const formattedValues = {
+                ...values,
+                start: formatTimeToHHMM(values.start),
+                end: formatTimeToHHMM(values.end),
+              };
               try {
                 const tokenJWT = sessionStorage.getItem('tokenJWT');
                 const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
@@ -156,7 +177,7 @@ const PredefinedShifts: React.FC = () => {
                       'X-XSRF-TOKEN': tokenXSRF,
                     },
                     credentials: 'include',
-                    body: JSON.stringify(values),
+                    body: JSON.stringify(formattedValues),
                   });
                   if (!response.ok) {
                     console.error('Failed to edit predefine shifts: ', response.statusText);
@@ -199,7 +220,8 @@ const PredefinedShifts: React.FC = () => {
                       ) : (
                         <>
                           <p className={styles.shiftNameParagraph}>{shift.name}</p>
-                          <p className={styles.shiftTimeParagraph}>{shift.start.slice(0, 5)} - {shift.end.slice(0, 5)}</p>
+                          <p className={styles.shiftTimeParagraph}>{shift.start ? shift.start.slice(0,5) : 'Brak godziny'} - {shift.end ? shift.end.slice(0, 5) : 'Brak godziny'}</p>
+
                         </>
                       )}
                     </div>
@@ -209,7 +231,7 @@ const PredefinedShifts: React.FC = () => {
                           <Field
                             as="select"
                             name="start"
-                            value={values.start}
+                            value={formatTimeToHHMM(values.start)}
                             onChange={handleChange}
                             className={classNames(styles.shiftTimeSelect, {
                               [styles.errorInput]: errors.start && touched.start,
@@ -224,7 +246,7 @@ const PredefinedShifts: React.FC = () => {
                           <Field
                             as="select"
                             name="end"
-                            value={values.end}
+                            value={formatTimeToHHMM(values.end)}
                             onChange={handleChange}
                             className={classNames(styles.shiftTimeSelect, {
                               [styles.errorInput]: errors.end && touched.end,
@@ -286,6 +308,11 @@ const PredefinedShifts: React.FC = () => {
         validationSchema={shiftValidationSchema}
         onSubmit={async (values, { resetForm }) => {
           setModalIsOpenLoadning(true);
+          const formattedValues = {
+            ...values,
+            start: formatTimeToHHMM(values.start),
+            end: formatTimeToHHMM(values.end),
+          };
           try {
             const tokenJWT = sessionStorage.getItem('tokenJWT');
             const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
@@ -301,7 +328,7 @@ const PredefinedShifts: React.FC = () => {
               const data = await resquestXsrfToken.json();
               const tokenXSRF = data.token;
 
-              const response = await fetch('${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift', {
+              const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -309,16 +336,17 @@ const PredefinedShifts: React.FC = () => {
                   'X-XSRF-TOKEN': tokenXSRF,
                 },
                 credentials: 'include',
-                body: JSON.stringify(values),
+                body: JSON.stringify(formattedValues),
               });
               if (!response.ok) {
                 console.error('Failed to add shift:', response.statusText);
                 throw new Error('Failed to add shift');
               }
+              const dataPost: PredefinedShift = await response.json();
               setModalIsOpenLoadning(false);
-              setAddedPredefineShiftName(data.name);
+              setShifts((prevShifts) => [...prevShifts, dataPost]);
+              setAddedPredefineShiftName(dataPost.name);
               setIsAddModalOpen(true);
-              setShifts([...shifts, data]);
               resetForm();
             } else {
               console.error('Failed to fetch XSRF token, response not OK');
@@ -344,7 +372,7 @@ const PredefinedShifts: React.FC = () => {
             <Field
               as="select"
               name="start"
-              value={values.start}
+              value={formatTimeToHHMM(values.start)}
               onChange={handleChange}
               className={classNames(styles.addShiftTimeSelect, {
                 [styles.errorInput]: errors.start && touched.start,
@@ -360,7 +388,7 @@ const PredefinedShifts: React.FC = () => {
             <Field
               as="select"
               name="end"
-              value={values.end}
+              value={formatTimeToHHMM(values.end)}
               onChange={handleChange}
               className={classNames(styles.addShiftTimeSelect, {
                 [styles.errorInput]: errors.end && touched.end,
