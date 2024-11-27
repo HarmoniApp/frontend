@@ -214,7 +214,7 @@ const Roles: React.FC = () => {
       <div className={styles.showRoleMapConteiner}>
         {roles.map(role => (
           <Formik
-            key={role.id}
+            key={role.id + role.name + role.color}
             initialValues={{ editedRoleName: role.name, editedRoleColor: role.color || '#ffb6c1' }}
             validationSchema={editRoleValidationSchema}
             onSubmit={handleSaveEdit}
