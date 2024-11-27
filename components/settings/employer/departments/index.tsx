@@ -254,7 +254,7 @@ const Departments: React.FC = () => {
             <div className={styles.showDepartmentsMapContainer}>
                 {departments.map((department) => (
                     <Formik
-                        key={department.id}
+                        key={department.id + department.department_name + department.city + department.street + department.zip_code + department.building_number + department.apartment} 
                         initialValues={{
                             id: department.id,
                             department_name: department.department_name,
