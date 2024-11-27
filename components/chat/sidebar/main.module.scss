@@ -1,0 +1,74 @@
+@import '@/styles/variables.scss';
+
+.sidebarHeader {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    font-size: 1.5em;
+    flex-direction: column;
+}
+
+.headerTop {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.headerBottom {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.sectionSelector {
+    display: flex;
+    justify-content: space-between;
+}
+
+.sectionBlock {
+    flex: 1;
+    padding: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.icon {
+    color: $main-colour;
+    width: 30px;
+    height: 30px;
+}
+
+.chatList {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.chatItem {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    transition: background-color 0.3s;
+    background-color: #fff;
+
+    &:hover {
+        background-color: lighten($gray, 10%);
+    }
+
+    &.activeChat {
+        background-color: $main-colour;
+    }
+}
+
+.chatName {
+    font-weight: bold;
+}
+
+.lastMessage {
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
