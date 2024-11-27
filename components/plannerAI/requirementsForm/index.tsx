@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import PredefinedShift from '@/components/types/predefinedShifts';
 import RoleWithColour from '@/components/types/roleWithColour';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import * as Yup from 'yup';
 import styles from './main.module.scss';
 
@@ -24,6 +25,7 @@ const RequirementsForm: React.FC = () => {
     const [shifts, setShifts] = useState<PredefinedShift[]>([]);
     const [roles, setRoles] = useState<RoleWithColour[]>([]);
     const [formCounter, setFormCounter] = useState(1);
+    const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
 
     useEffect(() => {
         fetchPredefinedShifts();
@@ -72,10 +74,6 @@ const RequirementsForm: React.FC = () => {
         }
     };
 
-    const validationSchema = Yup.object({
-        date: Yup.date().required('Pole wymagane').min(new Date(), 'Data nie może być w przeszłości'),
-    });
-
     const handleAddForm = () => {
         setForms((prevForms) => [
             ...prevForms,
@@ -89,6 +87,15 @@ const RequirementsForm: React.FC = () => {
     };
 
     const handleSubmit = async () => {
+        setModalIsOpenLoadning(true);
+
+        const invalidForms = forms.filter((form) => !form.date || form.shifts.length === 0 || form.shifts.some((shift) => shift.roles.length === 0));
+        if (invalidForms.length > 0) {
+            console.error('Invalid forms detected:', invalidForms);
+            alert('Upewnij się, że wszystkie formularze mają poprawną datę, zmiany i role.');
+            setModalIsOpenLoadning(false);
+            return;
+        }
 
         const payload = forms.map((form) => ({
             date: form.date,
@@ -136,15 +143,21 @@ const RequirementsForm: React.FC = () => {
                 if (!response.ok) {
                     const errorData = await response.json();
                     console.error('Error from server:', errorData.message);
+                    alert(`Błąd: ${errorData.message}`);
                 }
+                setModalIsOpenLoadning(false);
+                alert('Wygenerowano pomyślnie.');
             } else {
                 console.error('Failed to fetch XSRF token, response not OK');
             }
-
         } catch (error) {
             console.error('Failed to send data:', error);
         }
     };
+
+    const validationSchema = Yup.object({
+        date: Yup.date().required('Pole wymagane').min(new Date(), 'Data nie może być w przeszłości'),
+    });
 
     return (
         <div>
@@ -153,7 +166,7 @@ const RequirementsForm: React.FC = () => {
                     key={form.id}
                     initialValues={form}
                     validationSchema={validationSchema}
-                    onSubmit={(values) => {
+                    onSubmit={async (values) => {
                         console.log('Form values before update:', JSON.stringify(values, null, 2));
                         const updatedForms = [...forms];
                         const formIndex = updatedForms.findIndex((f) => f.id === form.id);
@@ -165,8 +178,11 @@ const RequirementsForm: React.FC = () => {
                             console.error('Form not found in forms array!');
                         }
                     }}
+                    validateOnBlur={false}
+                    validateOnChange={false}
+                    validateOnSubmit={true}
                 >
-                    {({ values, setFieldValue }) => (
+                    {({ values, errors, touched, setFieldValue }) => (
                         <Form className={styles.planerAiForm}>
                             <div>
                                 <label>Data</label>
@@ -182,7 +198,9 @@ const RequirementsForm: React.FC = () => {
                                         console.log("Updated forms state:", JSON.stringify(updatedForms, null, 2));
                                     }}
                                 />
-                                <ErrorMessage name="date" component="div" className={styles.errorMessage} />
+                                {errors.date && touched.date && (
+                                    <div className={styles.errorMessage}>{errors.date}</div>
+                                )}
                             </div>
                             <div>
                                 <label>Zmiany</label>
@@ -289,6 +307,13 @@ const RequirementsForm: React.FC = () => {
                             <button type="button" onClick={() => handleRemoveForm(form.id)}>
                                 Usuń dzień
                             </button>
+                            {modalIsOpenLoadning && (
+                                <div className={styles.loadingModalOverlay}>
+                                    <div className={styles.loadingModalContent}>
+                                        <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+                                    </div>
+                                </div>
+                            )}
                         </Form>
                     )}
                 </Formik>
