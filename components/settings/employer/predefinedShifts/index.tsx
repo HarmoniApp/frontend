@@ -128,7 +128,7 @@ const PredefinedShifts: React.FC = () => {
       <div className={styles.showShiftMapContainer}>
         {shifts.map((shift) => (
           <Formik
-            key={shift.id}
+            key={shift.id + shift.name + shift.start + shift.end}
             initialValues={{ name: shift.name, start: shift.start.slice(0, 5), end: shift.end.slice(0, 5) }}
             validationSchema={shiftValidationSchema}
             onSubmit={async (values, { resetForm }) => {
