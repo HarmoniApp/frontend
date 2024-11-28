@@ -21,6 +21,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
     const [selectedAbsenceEnd, setSelectedAbsenceEnd] = useState<string>('');
     const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
     const [error, setError] = useState<boolean>(false);
+    // const [availableAbsenceDays, setAvailableAbsenceDays] = useState<number | string>('Loading...');
 
     useEffect(() => {
         fetchUserAbsences();
@@ -132,10 +133,42 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
         }
     };
 
+    // const fetchAvailableAbsenceDays = async () => {
+    //     try {
+    //         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}/availableAbsenceDays`, {
+    //             method: 'GET',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+    //             },
+    //         });
+
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP error! Status: ${response.status}`);
+    //         }
+
+    //         const data = await response.json();
+    //         return data;
+    //     } catch (error) {
+    //         console.error(`Error fetching absence available days for ID ${userId}:`, error);
+    //         return 'Unknown';
+    //     }
+    // };
+
+    // useEffect(() => {
+    //     const loadAvailableAbsenceDays = async () => {
+    //         const days = await fetchAvailableAbsenceDays();
+    //         setAvailableAbsenceDays(days);
+    //     };
+    
+    //     loadAvailableAbsenceDays();
+    // }, []);
+    
     return (
         <div className={styles.absenceEmployeesContainerMain}>
             <div className={styles.absenceHeaderContainer}>
                 <label className={styles.title}>Twoje urlopy</label>
+                {/* <label className={styles.subtitle}>Ilość dostepnych dni urlopowych: {availableAbsenceDays}</label> */}
                 <button className={styles.newAbsenceButton} onClick={() => setModalIsOpenAbsenceRequest(true)}>Złóż wniosek o urlop</button>
             </div>
 

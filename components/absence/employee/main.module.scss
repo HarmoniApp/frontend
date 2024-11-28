@@ -53,8 +53,15 @@
     font-weight: bold;
     color: $main-colour;
     text-transform: uppercase;
-    text-decoration: underline;
 
+  }
+
+  .subtitle{
+    font-size: 16px;
+    font-weight: bold;
+    color: $font-light-colour;
+    text-transform: uppercase;
+    border-bottom: 2px solid $main-colour;
   }
 }
 
