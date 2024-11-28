@@ -18,7 +18,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
     const [absenceTypes, setAbsenceTypes] = useState<AbsenceType[]>([]);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [modalCountdown, setModalCountdown] = useState(10);
-    const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+    const [modalIsOpenLoading, setModalIsOpenLoading] = useState(false);
 
     useEffect(() => {
         const fetchAbsenceTypes = async () => {
@@ -66,6 +66,29 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
             .min(Yup.ref('start'), 'Data zakończenia nie może być przed datą rozpoczęcia'),
     });
 
+    const calculateDaysDifference = (start: string, end: string): number => {
+        if (!start || !end) return 0;
+    
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+    
+        if (endDate < startDate) return 0;
+    
+        let currentDate = new Date(startDate);
+        let workdaysCount = 0;
+    
+        while (currentDate <= endDate) {
+            const dayOfWeek = currentDate.getDay();
+            if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                workdaysCount++;
+            }
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+    
+        return workdaysCount;
+    };
+    
+
     return (
         <div>
             {isSubmitted ? (
@@ -96,7 +119,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                     }}
                     validationSchema={validationSchema}
                     onSubmit={async (values) => {
-                        setModalIsOpenLoadning(true);
+                        setModalIsOpenLoading(true);
                         try {
                             const tokenJWT = sessionStorage.getItem('tokenJWT');
                             const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
@@ -132,7 +155,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                                     console.error('Failed to add absence: ', response.statusText);
                                     throw new Error(`Server error: ${errorData.message || 'Unknown error'}`);
                                 }
-                                setModalIsOpenLoadning(false);
+                                setModalIsOpenLoading(false);
                                 setIsSubmitted(true);
                                 onRefresh();
                             } else {
@@ -142,77 +165,85 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                             console.error('Error adding absence:', error);
                             throw error;
                         }
-
                     }}
                 >
-                    {({ errors, touched }) => (
-                        <Form className={styles.absenceForm}>
-                            <div className={styles.formTitle}>
-                                <label className={styles.title}>Złóż wniosek o urlop</label>
-                            </div>
-
-                            <label className={styles.dataLabel}>
-                                Wybierz powód urlopu
-                                <ErrorMessage name="absence_type_id" component="div" className={styles.errorMessage} />
-                            </label>
-                            <Field
-                                as="select"
-                                className={classNames(styles.formInput, styles.formSelect, styles.pointer, {
-                                    [styles.errorInput]: errors.absence_type_id && touched.absence_type_id,
-                                })}
-                                name="absence_type_id"
-                            >
-                                <option className={styles.defaultOption} value="" disabled>Wybierz rodzaj urlopu</option>
-                                {absenceTypes.map((type) => (
-                                    <option key={type.id} value={type.id}>{type.name}</option>
-                                ))}
-                            </Field>
-
-                            <label className={styles.dataLabel}>
-                                Data rozpoczęcia
-                                <ErrorMessage name="start" component="div" className={styles.errorMessage} />
-                            </label>
-                            <Field
-                                type="date"
-                                name="start"
-                                className={classNames(styles.formInput, styles.pointer, {
-                                    [styles.errorInput]: errors.start && touched.start,
-                                })}
-                            />
-
-                            <label className={styles.dataLabel}>
-                                Data zakończenia
-                                <ErrorMessage name="end" component="div" className={styles.errorMessage} />
-                            </label>
-                            <Field
-                                type="date"
-                                name="end"
-                                className={classNames(styles.formInput, styles.pointer, {
-                                    [styles.errorInput]: errors.end && touched.end,
-                                })}
-                            />
-                            <div className={styles.buttonContainer}>
-                                <button className={styles.backButton} type="button" onClick={onClose}>
-                                    <FontAwesomeIcon className={styles.buttonIcon} icon={faArrowTurnUp} style={{ transform: 'rotate(-90deg)' }} />
-                                    <p className={styles.buttonParagraph}>Cofnij</p>
-                                </button>
-                                <button className={styles.addButton} type="submit">
-                                    <FontAwesomeIcon className={styles.buttonIcon} icon={faCircleCheck} />
-                                    <p className={styles.buttonParagraph}>Złóż wniosek</p>
-                                </button>
-                            </div>
-                            {modalIsOpenLoadning && (
-                                <div className={styles.loadingModalOverlay}>
-                                    <div className={styles.loadingModalContent}>
-                                        <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                                    </div>
+                    {({ values, errors, touched }) => {
+                        const daysDifference = calculateDaysDifference(values.start, values.end);
+                        return (
+                            <Form className={styles.absenceForm}>
+                                <div className={styles.formTitle}>
+                                    <label className={styles.title}>Złóż wniosek o urlop</label>
                                 </div>
-                            )}
-                        </Form>
-                    )}
+
+                                <label className={styles.dataLabel}>
+                                    Wybierz powód urlopu
+                                    <ErrorMessage name="absence_type_id" component="div" className={styles.errorMessage} />
+                                </label>
+                                <Field
+                                    as="select"
+                                    className={classNames(styles.formInput, styles.formSelect, styles.pointer, {
+                                        [styles.errorInput]: errors.absence_type_id && touched.absence_type_id,
+                                    })}
+                                    name="absence_type_id"
+                                >
+                                    <option className={styles.defaultOption} value="" disabled>Wybierz rodzaj urlopu</option>
+                                    {absenceTypes.map((type) => (
+                                        <option key={type.id} value={type.id}>{type.name}</option>
+                                    ))}
+                                </Field>
+
+                                <label className={styles.dataLabel}>
+                                    Data rozpoczęcia
+                                    <ErrorMessage name="start" component="div" className={styles.errorMessage} />
+                                </label>
+                                <Field
+                                    type="date"
+                                    name="start"
+                                    className={classNames(styles.formInput, styles.pointer, {
+                                        [styles.errorInput]: errors.start && touched.start,
+                                    })}
+                                />
+
+                                <label className={styles.dataLabel}>
+                                    Data zakończenia
+                                    <ErrorMessage name="end" component="div" className={styles.errorMessage} />
+                                </label>
+                                <Field
+                                    type="date"
+                                    name="end"
+                                    className={classNames(styles.formInput, styles.pointer, {
+                                        [styles.errorInput]: errors.end && touched.end,
+                                    })}
+                                />
+
+                                <label className={styles.quantityOfDaysLabel}>
+                                    Ilość dni: {daysDifference}
+                                </label>
+
+                                <div className={styles.buttonContainer}>
+                                    <button className={styles.backButton} type="button" onClick={onClose}>
+                                        <FontAwesomeIcon className={styles.buttonIcon} icon={faArrowTurnUp} style={{ transform: 'rotate(-90deg)' }} />
+                                        <p className={styles.buttonParagraph}>Cofnij</p>
+                                    </button>
+                                    <button className={styles.addButton} type="submit">
+                                        <FontAwesomeIcon className={styles.buttonIcon} icon={faCircleCheck} />
+                                        <p className={styles.buttonParagraph}>Złóż wniosek</p>
+                                    </button>
+                                </div>
+
+                                {modalIsOpenLoading && (
+                                    <div className={styles.loadingModalOverlay}>
+                                        <div className={styles.loadingModalContent}>
+                                            <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+                                        </div>
+                                    </div>
+                                )}
+                            </Form>
+                        );
+                    }}
                 </Formik>
             )}
         </div>
     );
-}
+};
 export default AbsenceEmployeesRequest;

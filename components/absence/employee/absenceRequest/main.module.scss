@@ -160,6 +160,15 @@
         justify-content: space-between;
     }
 
+    .quantityOfDaysLabel{
+        display: flex;
+        justify-content: flex-start;
+        font-size: 16px;
+        font-weight: bold;
+        color: $white;
+        margin: 20px 0 0 0;
+    }
+
     .errorMessage {
         color: $red;
         font-size: 16px;

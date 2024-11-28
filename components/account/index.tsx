@@ -35,7 +35,7 @@ const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
     const logout = () => {
         localStorage.clear();
         sessionStorage.clear();
-        router.push('/login');
+        router.push('/');
     }
 
     return (
