@@ -74,6 +74,55 @@ const RequirementsForm: React.FC = () => {
         }
     };
 
+    const handleRevoke = async () => {
+        setModalIsOpenLoadning(true);
+
+        if (!window.confirm('Czy na pewno chcesz usunąć wszystkie ostatnio wygenerowane przez PlanerAi zmiany?')) {
+            setModalIsOpenLoadning(false);
+            return;
+        }
+
+        try {
+            const tokenJWT = sessionStorage.getItem('tokenJWT');
+            const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${tokenJWT}`,
+                },
+                credentials: 'include',
+            });
+
+            if (resquestXsrfToken.ok) {
+                const data = await resquestXsrfToken.json();
+                const tokenXSRF = data.token;
+
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/aiSchedule/revoke`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Error from server:', errorData.message);
+                    alert(`Błąd: ${errorData.message}`);
+                }
+                setModalIsOpenLoadning(false);
+                if (response.ok) {
+                    alert('Usunięto pomyślnie.');
+                }
+            } else {
+                console.error('Failed to fetch XSRF token, response not OK');
+            }
+        } catch (error) {
+            console.error('Failed to send data:', error);
+        }
+    }
+
     const handleAddForm = () => {
         setForms((prevForms) => [
             ...prevForms,
@@ -146,7 +195,9 @@ const RequirementsForm: React.FC = () => {
                     alert(`Błąd: ${errorData.message}`);
                 }
                 setModalIsOpenLoadning(false);
-                alert('Wygenerowano pomyślnie.');
+                if (response.ok) {
+                    alert('Wygenerowano pomyślnie.');
+                }
             } else {
                 console.error('Failed to fetch XSRF token, response not OK');
             }
@@ -203,7 +254,7 @@ const RequirementsForm: React.FC = () => {
                                 )}
                             </div>
                             <div>
-                                <label>Zmiany</label>
+                                <label>Predefiniowane Zmiany</label>
                                 {shifts.map((shift) => {
                                     const isSelected = values.shifts.some((s) => s.shiftId === shift.id);
                                     return (
@@ -230,10 +281,9 @@ const RequirementsForm: React.FC = () => {
                                 })}
                             </div>
                             <div>
-                                <label>Role</label>
                                 {values.shifts.map((shift) => (
                                     <div key={shift.shiftId} className={styles.roleContainer}>
-                                        <strong>Shift ID: {shift.shiftId}</strong>
+                                        <strong>Predefioniowana zmiana: {shifts.find(s => s.id === shift.shiftId)?.name || 'Nieznana zmiana'} </strong>
                                         {roles.map((role) => {
                                             const roleInShift = shift.roles.find((r) => r.roleId === role.id);
                                             const isRoleSelected = !!roleInShift;
@@ -323,6 +373,9 @@ const RequirementsForm: React.FC = () => {
             </button>
             <button type="button" onClick={handleSubmit}>
                 Generuj
+            </button>
+            <button type="button" onClick={handleRevoke}>
+                Usuń wszytskie ostatnio wygenerowane przez PlanerAi zmiany
             </button>
         </div>
     );
