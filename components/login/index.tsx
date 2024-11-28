@@ -80,10 +80,12 @@ const Login = () => {
   
           const decodedToken = jwtDecode<MyJwtPayload>(tokenJWT);
           const userId = decodedToken.id;
+          const username = decodedToken.username;
           const isAdmin = decodedToken.authorities === 'ROLE_ADMIN';
   
           sessionStorage.setItem('tokenJWT', tokenJWT);
           sessionStorage.setItem('userId', userId.toString());
+          sessionStorage.setItem('username', username);
           sessionStorage.setItem('isAdmin', JSON.stringify(isAdmin));
   
           const oneTimeUsedPass = data.path || '';
@@ -167,7 +169,7 @@ const Login = () => {
       >
         {({ errors, touched }) => (
           <Form className={styles.form}>
-            {loginError && <div className={styles.errorMessage}>{loginError}</div>}
+            {loginError && <div className={styles.error}>{loginError}</div>}
             <label className={styles.label} htmlFor="email">Adres Email</label>
             <Field
               className={`${styles.input} ${errors.email && touched.email ? styles.errorInput : ''}`}

@@ -19,6 +19,7 @@ const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
     const pathname = usePathname();
     const router = useRouter();
     const customContent = isAdmin ? styles.adminContent : styles.userContent;
+    const username = sessionStorage.getItem('username');
 
     useEffect(() => {
         const storedIsAdmin = sessionStorage.getItem('isAdmin');
@@ -42,8 +43,8 @@ const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
         <>
             <div className={`${styles.sidebarContainer} ${isOpen ? styles.open : ''}`}>
                 <div className={styles.header}>
-                    <FontAwesomeIcon icon={faUser} className={styles.headerIcon} />
-                    <span>Moje konto</span>
+                    {/* <FontAwesomeIcon icon={faUser} className={styles.headerIcon} /> */}
+                    <span>{username}</span>
                 </div>
                 <div className={customContent}>
                     <div className={`${styles.item} ${styles.future}`}>
