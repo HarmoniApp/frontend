@@ -2,11 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faImage, faQuestionCircle, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faImage, faQuestionCircle, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import PhotoChange from './photoChange';
 import styles from './main.module.scss';
-
-
 interface SidebarProps {
     isOpen: boolean;
     toggleSidebar: () => void;
@@ -15,17 +13,22 @@ interface SidebarProps {
 const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
     const [isAdmin, setIsAdmin] = useState(false);
     const [changePhotoModal, setChangePhotoModal] = useState(false);
+    const [username, setUsername] = useState<string | null>(null);
 
     const pathname = usePathname();
     const router = useRouter();
     const customContent = isAdmin ? styles.adminContent : styles.userContent;
-    const username = sessionStorage.getItem('username');
 
     useEffect(() => {
         const storedIsAdmin = sessionStorage.getItem('isAdmin');
+        const storedUsername = sessionStorage.getItem('username');
 
         if (storedIsAdmin !== null) {
             setIsAdmin(JSON.parse(storedIsAdmin));
+        }
+
+        if (storedUsername) {
+            setUsername(storedUsername);
         }
     }, []);
 
@@ -43,7 +46,6 @@ const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
         <>
             <div className={`${styles.sidebarContainer} ${isOpen ? styles.open : ''}`}>
                 <div className={styles.header}>
-                    {/* <FontAwesomeIcon icon={faUser} className={styles.headerIcon} /> */}
                     <span>{username}</span>
                 </div>
                 <div className={customContent}>

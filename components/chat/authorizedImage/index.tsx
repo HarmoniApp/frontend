@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import styles from './main.module.scss';
+import '@/styles/main.css';
 
 interface AuthorizedImageProps {
     src: string;
@@ -46,7 +47,7 @@ const AuthorizedImage: React.FC<AuthorizedImageProps> = ({ src }) => {
         };
     }, [src]);
 
-    return imageUrl ? <img src={imageUrl} alt="User Photo" className={styles.userAvatar} /> : <div className={styles.spinnerContainer}><ProgressSpinner /></div>;
+    return imageUrl ? <img src={imageUrl} alt="User Photo" className={styles.userAvatar} /> : <ProgressSpinner className="spinnerChatImage"/>;
 };
 
 export default AuthorizedImage;

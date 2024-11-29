@@ -60,14 +60,14 @@
     color: $main-colour;
 }
 
-.icon {
-    height: 20px;
-    width: 20px;
-    cursor: pointer;
+.notificationIconWrapper {
+    position: relative;
 }
 
-.active {
-    color: $main-colour;
+.icon {
+    font-size: 28px;
+    cursor: pointer;
+    margin: 0 10px 0 0;
 }
 
 .hidden {
@@ -93,14 +93,10 @@
     transform: rotate(180deg);
 }
 
-.notificationIconWrapper {
-    position: relative;
-}
-
 .unreadCount {
     position: absolute;
     top: -10px;
-    right: -10px;
+    right: 5px;
     background-color: $main-colour;
     color: $font-dark-colour;
     border-radius: 50%;
@@ -137,5 +133,17 @@
             transform: translate(-50%, -50%);
             z-index: 9999;
         }
+    }
+}
+
+.userPhotoParagraph {
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+
+    .userPhoto{
+        height: 100%;
+        width: 100%;
+        border-radius: 50%;
     }
 }
