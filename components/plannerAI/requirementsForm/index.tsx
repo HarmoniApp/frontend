@@ -21,7 +21,15 @@ interface RequirementsForm {
     }[];
 }
 
-const RequirementsForm: React.FC = () => {
+interface GeneratingProgressDto {
+    generation: number;
+    fitness: number;
+}
+interface RequirementsFormProps {
+    userId: number;
+}
+
+const RequirementsForm: React.FC<RequirementsFormProps> = ({ userId }) => {
     const [forms, setForms] = useState<RequirementsForm[]>([
         { id: Date.now(), date: '', shifts: [] },
     ]);
@@ -361,7 +369,16 @@ const RequirementsForm: React.FC = () => {
                             {modalIsOpenLoadning && (
                                 <div className={styles.loadingModalOverlay}>
                                     <div className={styles.loadingModalContent}>
-                                        <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+                                        <h3>Generowanie grafiku...</h3>
+                                        {/* <div className={styles.spinnerContainer}><ProgressSpinner /></div> */}
+                                        {progress ? (
+                                            <div>
+                                                <p>Generacja: {progress.generation}</p>
+                                                <p>Fitness: {progress.fitness.toFixed(2)}</p>
+                                            </div>
+                                        ) : (
+                                            <ProgressSpinner />
+                                        )}
                                     </div>
                                 </div>
                             )}
