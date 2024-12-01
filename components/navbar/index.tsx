@@ -27,7 +27,6 @@ export default function Navbar() {
         setIsSidebarOpen(!isSidebarOpen);
     };
     return (
-        
         <div>
             {userId !== 0 ? <NavbarTop onAccountIconClick={toggleSidebar} userId={userId} isThisAdmin={isAdmin}/> : <div className={styles.spinnerContainer}><ProgressSpinner /></div>}
             <Account isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />

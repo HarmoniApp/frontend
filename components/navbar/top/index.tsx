@@ -4,6 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { Message } from 'primereact/message';
 import styles from "./main.module.scss";
 import Notifications from "./notifications";
 import Notification from '@/components/types/notification';
@@ -22,6 +23,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
     const [showNotifications, setShowNotifications] = useState(false);
     const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
     const [userPhoto, setUserPhoto] = useState<Blob | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const pathname = usePathname();
     const router = useRouter();
@@ -42,6 +44,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
             setUnreadCount(data.filter(notification => !notification.read).length);
         } catch (error) {
             console.error('Error while fetching notifications:', error);
+            setError('Błąd podczas pobierania powiadomień');
         }
     };
 
@@ -134,7 +137,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
 
         } catch (error) {
             console.error(`Error marking notification ${id} as read:`, error);
-            throw error;
+            setError('Błąd podczas czytania powiadomień');
         }
     };
 
@@ -169,6 +172,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
             setUserPhoto(blob);
         } catch (error) {
             console.error('Error while fetching user photo:', error);
+            setError('Błąd podczas pobierania zdjęcia');
         }
     };
 
@@ -198,11 +202,12 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
                             className={styles.userPhoto}
                         />
                     ) : (
-                          <ProgressSpinner className="progressSpinnerImage"/> 
+                        <ProgressSpinner className="progressSpinnerImage" />
                     )}
                 </div>
             </div>
 
+            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
 
             {showNotifications && (
                 <div className={styles.modalOverlayOfNotification}>

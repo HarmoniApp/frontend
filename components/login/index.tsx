@@ -5,6 +5,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { Message } from 'primereact/message';
 import * as Yup from 'yup';
 import styles from './main.module.scss';
 import { jwtDecode } from "jwt-decode";
@@ -13,6 +14,7 @@ import MyJwtPayload from '@/components/types/myJwtPayload';
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
   const [passwordPath, setPasswordPath] = useState<string>('');
@@ -106,10 +108,10 @@ const Login = () => {
     } catch (error) {
       console.error("An error occurred:", error);
       setLoginError("Wystąpił błąd podczas logowania.");
+      setError('Błąd podczas logowania');
     }
   };
   
-
   const handlePasswordChangeSubmit = async (values: any) => {
     setModalIsOpenLoadning(true);
     try {
@@ -130,7 +132,6 @@ const Login = () => {
         const requestBody = {
           newPassword: values.newPassword,
         };
-        console.log('Request body:', requestBody);
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${passwordPath}`, {
           method: 'PATCH',
@@ -152,10 +153,9 @@ const Login = () => {
       } else {
         console.error('Failed to fetch XSRF token, response not OK');
       }
-
     } catch (error) {
       console.error("An error occurred while changing password:", error);
-      throw error;
+      setError('Błąd');
     }
   };
 
@@ -200,7 +200,7 @@ const Login = () => {
           </Form>
         )}
       </Formik>
-
+      {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
       {isChangePasswordModalOpen && (
         <div className={styles.passwordChangeModalOverlay}>
           <div className={styles.passwordChangeModalContent}>
