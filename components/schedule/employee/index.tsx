@@ -4,6 +4,7 @@ import CalendarHeader from './calendarHeader';
 import CalendarDays from './calendarDays';
 import CalendarCells from './calendarCells';
 import WeekSchedule from '@/components/types/weekSchedule';
+import { Message } from 'primereact/message';
 import styles from './main.module.scss';
 interface ScheduleEmployeeProps {
     userId: number;
@@ -12,16 +13,17 @@ interface ScheduleEmployeeProps {
 const ScheduleEmployee: React.FC<ScheduleEmployeeProps> = ({ userId }) => {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [weekSchedule, setWeekSchedule] = useState<WeekSchedule | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const getMonthStartAndEnd = () => {
         const year = currentMonth.getFullYear();
-        const month = currentMonth.getMonth() + 1; 
+        const month = currentMonth.getMonth() + 1;
         const startDate = `${year}-${month.toString().padStart(2, '0')}-01T00:00`;
         const lastDayOfMonth = new Date(year, month, 0).getDate();
         const endDate = `${year}-${month.toString().padStart(2, '0')}-${lastDayOfMonth}T23:59`;
-      
+
         return { startDate, endDate };
-      };
+    };
 
     const fetchShiftsAndAbsences = async () => {
         try {
@@ -37,16 +39,17 @@ const ScheduleEmployee: React.FC<ScheduleEmployeeProps> = ({ userId }) => {
             setWeekSchedule(data);
         } catch (error) {
             console.error('Error fetching week schedule:', error);
+            setError('Błąd podczas pobierania kalendarza');
         }
     };
 
     useEffect(() => {
         fetchShiftsAndAbsences();
-    }, [currentMonth]); 
+    }, [currentMonth]);
 
     const handlePrevMonth = () => {
         setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
-        fetchShiftsAndAbsences(); 
+        fetchShiftsAndAbsences();
     };
 
     const handleNextMonth = () => {
@@ -61,10 +64,11 @@ const ScheduleEmployee: React.FC<ScheduleEmployeeProps> = ({ userId }) => {
             {weekSchedule && (
                 <CalendarCells
                     currentMonth={currentMonth}
-                    shifts={weekSchedule.shifts || []} 
-                    absences={weekSchedule.absences || []} 
+                    shifts={weekSchedule.shifts || []}
+                    absences={weekSchedule.absences || []}
                 />
             )}
+            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
         </div>
     );
 };
