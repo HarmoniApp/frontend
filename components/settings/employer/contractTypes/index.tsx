@@ -11,7 +11,11 @@ import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 
-const ContractTypes: React.FC = () => {
+interface ContractTypesProps {
+  setError: (errorMessage: string | null) => void;
+}
+
+const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
   const [contracts, setContracts] = useState<ContractWithDays[]>([]);
   const [editingContractId, setEditingContractId] = useState<number | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -44,6 +48,7 @@ const ContractTypes: React.FC = () => {
     }
     catch (error) {
       console.error('Error fetching contract types:', error);
+      setError('Błąd podczas pobierania umów');
     }
   };
 
@@ -84,7 +89,9 @@ const ContractTypes: React.FC = () => {
       }
     } catch (error) {
       console.error('Error deleting contract type:', error);
-      throw error;
+      setError('Błąd podczas usuwania umów');
+    } finally {
+      setModalIsOpenLoadning(false);
     }
   };
 
@@ -294,7 +301,9 @@ const ContractTypes: React.FC = () => {
             }
           } catch (error) {
             console.error('Error adding contract type:', error);
-            throw error;
+            setError('Błąd podczas dodawania typu umowy');
+          } finally {
+            setModalIsOpenLoadning(false);
           }
         }}
       >

@@ -11,7 +11,11 @@ import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 
-const Roles: React.FC = () => {
+interface RolesProps {
+  setError: (errorMessage: string | null) => void;
+}
+
+const Roles: React.FC<RolesProps> = ({ setError }) => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [roles, setRoles] = useState<RoleWithColour[]>([]);
@@ -42,6 +46,7 @@ const Roles: React.FC = () => {
       setRoles(data);
     } catch (error) {
       console.error('Error fetching roles:', error);
+      setError('Błąd podczas pobierania ról');
     }
   };
 
@@ -82,7 +87,9 @@ const Roles: React.FC = () => {
       }
     } catch (error) {
       console.error('Error deleting role:', error);
-      throw error;
+      setError('Błąd podczas usuwania roli');
+    } finally {
+      setModalIsOpenLoadning(false);
     }
   };
 
@@ -128,7 +135,9 @@ const Roles: React.FC = () => {
       }
     } catch (error) {
       console.error('Error adding role:', error);
-      throw error;
+      setError('Błąd podczas dodawania roli');
+    } finally {
+      setModalIsOpenLoadning(false);
     }
 
   };
@@ -175,7 +184,9 @@ const Roles: React.FC = () => {
         }
       } catch (error) {
         console.error('Error updating role:', error);
-        throw error;
+        setError('Błąd podczas dodawania roli');
+      } finally {
+        setModalIsOpenLoadning(false);
       }
     }
   };

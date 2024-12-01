@@ -11,7 +11,11 @@ import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 
-const PredefinedShifts: React.FC = () => {
+interface PredefinedShiftsProps {
+  setError: (errorMessage: string | null) => void;
+}
+
+const PredefinedShifts: React.FC<PredefinedShiftsProps> = ( {setError} ) => {
   const [shifts, setShifts] = useState<PredefinedShift[]>([]);
   const [editingShiftId, setEditingShiftId] = useState<number | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -56,6 +60,7 @@ const PredefinedShifts: React.FC = () => {
       setShifts(validatedData);
     } catch (error) {
       console.error('Error fetching predefined shifts:', error);
+      setError('Błąd podczas pobierania predefiniowalnych zmian');
     }
   };
 
@@ -96,7 +101,9 @@ const PredefinedShifts: React.FC = () => {
       }
     } catch (error) {
       console.error('Error deleting shift:', error);
-      throw error;
+      setError('Błąd podczas usuwania predefiniowalnych zmian');
+    } finally {
+      setModalIsOpenLoadning(false);
     }
   };
 
@@ -193,7 +200,7 @@ const PredefinedShifts: React.FC = () => {
                 }
               } catch (error) {
                 console.error('Error updating shift:', error);
-                throw error;
+                setError('Błąd podczas edycji predefiniowalnej zmiany');
               }
             }}
           >
@@ -353,7 +360,9 @@ const PredefinedShifts: React.FC = () => {
             }
           } catch (error) {
             console.error('Error adding shift:', error);
-            throw error;
+            setError('Błąd podczas dodawania predefiniowalnej zmiany');
+          } finally {
+            setModalIsOpenLoadning(false);
           }
         }}
       >

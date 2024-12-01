@@ -12,7 +12,11 @@ import classNames from "classnames";
 import DepartmentAddress from "@/components/types/departmentAddress";
 import styles from "./main.module.scss";
 
-const Departments: React.FC = () => {
+interface DepartmentsProps {
+    setError: (errorMessage: string | null) => void;
+  }
+
+const Departments: React.FC<DepartmentsProps> = ( {setError} ) => {
     const [departments, setDepartments] = useState<DepartmentAddress[]>([]);
     const [editingDepartmentId, setEditingDepartmentId] = useState<number | null>(null);
     const [noChangesError, setNoChangesError] = useState<string | null>(null);
@@ -48,6 +52,7 @@ const Departments: React.FC = () => {
         }
         catch (error) {
             console.error("Error fetching departments:", error);
+            setError('Błąd podczas pobierania oddziałów');
         }
     };
 
@@ -95,6 +100,9 @@ const Departments: React.FC = () => {
         }
         catch (error) {
             console.error("Error adding department:", error);
+            setError('Błąd podczas dodawania oddziałów');
+        } finally {
+            setModalIsOpenLoadning(false);
         }
     };
 
@@ -143,6 +151,9 @@ const Departments: React.FC = () => {
             }
             catch (error) {
                 console.error("Error updating department:", error);
+                setError('Błąd podczas dodawania oddziałów');
+            } finally {
+                setModalIsOpenLoadning(false);
             }
         }
     };
@@ -186,6 +197,9 @@ const Departments: React.FC = () => {
         }
         catch (error) {
             console.error("Error deleting department:", error);
+            setError('Błąd podczas usuwania oddziałów');
+        } finally {
+            setModalIsOpenLoadning(false);
         }
     };
 
