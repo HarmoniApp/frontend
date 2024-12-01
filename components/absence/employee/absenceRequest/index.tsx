@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import AbsenceType from '@/components/types/absenceType';
 import classNames from 'classnames';
 import styles from './main.module.scss';
+import { Message } from 'primereact/message';
 
 interface AbsenceEmployeesRequestProps {
     onClose: () => void;
@@ -19,9 +20,12 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [modalCountdown, setModalCountdown] = useState(10);
     const [modalIsOpenLoading, setModalIsOpenLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchAbsenceTypes = async () => {
+            setError(null);
+
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence-type`, {
                     headers: {
@@ -32,6 +36,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                 const data = await response.json();
                 setAbsenceTypes(data);
             } catch (error) {
+                setError('Error fetching absence types');
                 console.error('Error fetching absence types:', error);
             }
         };
@@ -68,15 +73,15 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
 
     const calculateDaysDifference = (start: string, end: string): number => {
         if (!start || !end) return 0;
-    
+
         const startDate = new Date(start);
         const endDate = new Date(end);
-    
+
         if (endDate < startDate) return 0;
-    
+
         let currentDate = new Date(startDate);
         let workdaysCount = 0;
-    
+
         while (currentDate <= endDate) {
             const dayOfWeek = currentDate.getDay();
             if (dayOfWeek !== 0 && dayOfWeek !== 6) {
@@ -84,10 +89,9 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
             }
             currentDate.setDate(currentDate.getDate() + 1);
         }
-    
+
         return workdaysCount;
     };
-    
 
     return (
         <div>
@@ -163,7 +167,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                             }
                         } catch (error) {
                             console.error('Error adding absence:', error);
-                            throw error;
+                            setError('Error adding absence');
                         }
                     }}
                 >
@@ -243,6 +247,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                     }}
                 </Formik>
             )}
+            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
         </div>
     );
 };

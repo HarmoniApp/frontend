@@ -9,9 +9,10 @@ interface SearchUserProps {
   // onSearchResults: (results: ChatPartner[]) => void;
   handleSelectUser: (user: ChatPartner) => void;
   groupChat: boolean;
+  setError: (errorMessage: string | null) => void;
 }
 
-const SearchUser: React.FC<SearchUserProps> = ({ handleSelectUser, groupChat }) => {
+const SearchUser: React.FC<SearchUserProps> = ({ handleSelectUser, groupChat, setError }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<ChatPartner[]>([]);
@@ -22,22 +23,27 @@ const SearchUser: React.FC<SearchUserProps> = ({ handleSelectUser, groupChat }) 
     setLoading(true);
     setSearchQuery(query);
     if (query.trim().length > 2) {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/search?q=${query}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        }
-      });
-      const data = await response.json();
-      const results = data.map((user: any) => ({
-        id: user.id,
-        name: user.firstname + " " + user.surname,
-        photo: user.photo,
-        type: 'user'
-      }));
-      setSearchResults(results);
+      try {
+        const tokenJWT = sessionStorage.getItem('tokenJWT');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/search?q=${query}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${tokenJWT}`,
+          }
+        });
+        const data = await response.json();
+        const results = data.map((user: any) => ({
+          id: user.id,
+          name: user.firstname + " " + user.surname,
+          photo: user.photo,
+          type: 'user'
+        }));
+        setSearchResults(results);
+      } catch (error) {
+        console.error('Error handle search:', error);
+        setError('Error handle search');
+      }
     } else {
       setSearchResults([]);
     }
@@ -67,6 +73,7 @@ const SearchUser: React.FC<SearchUserProps> = ({ handleSelectUser, groupChat }) 
               {user.photo ? (
                 <AuthorizedImage
                   src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
+                  setError={setError}
                 />
               ) : (
                 <FontAwesomeIcon icon={faUser} className={styles.defaultAvatarIcon} />

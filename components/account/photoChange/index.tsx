@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import styles from './main.module.scss';
+import { Message } from 'primereact/message';
 
 interface PhotoChangeProps {
     onClose: () => void;
@@ -15,6 +16,7 @@ const PhotoChange: React.FC<PhotoChangeProps> = ({ onClose }) => {
     const [loading, setLoading] = useState(false);
     const [fileName, setFileName] = useState<string | null>(null);
     const userId = sessionStorage.getItem('userId');
+    const [error, setError] = useState<string | null>(null);
     const initialValues = {
         file: null,
     };
@@ -78,6 +80,7 @@ const PhotoChange: React.FC<PhotoChangeProps> = ({ onClose }) => {
             }
         } catch (error) {
             console.error('Error uploading photo: ', error);
+            setError('Error uploading photo');
         } finally {
             setLoading(false);
             onClose();
@@ -122,7 +125,7 @@ const PhotoChange: React.FC<PhotoChangeProps> = ({ onClose }) => {
                     </Form>
                 )}
             </Formik>
-
+            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
             {loading && (
                 <div className={styles.loadingModalOverlay}>
                     <div className={styles.loadingModalContent}>

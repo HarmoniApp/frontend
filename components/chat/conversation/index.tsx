@@ -12,9 +12,10 @@ interface ConversationProps {
     chatType: 'user' | 'group';
     selectedChat: ChatPartner;
     setIsEditGroupModalOpen: (open: boolean) => void;
+    setError: (errorMessage: string | null) => void;
 }
 
-const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType, selectedChat, setIsEditGroupModalOpen }) => {
+const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType, selectedChat, setIsEditGroupModalOpen, setError }) => {
 
     useEffect(() => {
         const chatMessagesContainer = document.querySelector(`.${styles.chatMessages}`);
@@ -29,6 +30,7 @@ const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType,
                 {selectedChat.photo ? (
                     <AuthorizedImage
                         src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${selectedChat.photo}`}
+                        setError={setError}
                     />
                 ) : (
                     <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
@@ -52,6 +54,7 @@ const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType,
                                 {message.groupSenderPhoto || selectedChat.photo ? (
                                     <AuthorizedImage
                                         src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${message.groupSenderPhoto || selectedChat.photo}`}
+                                        setError={setError}
                                     />
                                 ) : (
                                     <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />

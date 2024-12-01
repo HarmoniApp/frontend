@@ -197,7 +197,7 @@ const AbsenceEmployer: React.FC = () => {
         </div>
 
         {loading && <div className={styles.spinnerContainer}><ProgressSpinner /></div>}
-        {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessage} />}
+        {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
         {!loading && !error && filteredAbsences.length === 0 && (
           <Card title="No Data" className={styles.noDataCard}><p>There is no data available at the moment.</p></Card>
         )}

@@ -14,9 +14,10 @@ interface CreateGroupChatFormProps {
   fetchChatHistory: (partner: ChatPartner) => void;
   loadChatPartnersGroups: (selectFirstPartner: boolean) => void;
   loading: (loading: boolean) => void;
+  setError: (errorMessage: string | null) => void;
 }
 
-const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartnersGroups, loading }) => {
+const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartnersGroups, loading, setError }) => {
 
   const handleCreateGroup = async (values: { groupName: string }) => {
     loading(true);
@@ -69,6 +70,7 @@ const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setCh
       }
     } catch (error) {
       console.error('Błąd podczas tworzenia grupy:', error);
+      setError('Błąd podczas tworzenia grupy');
     } finally {
       loading(false);
     }

@@ -5,6 +5,7 @@ import Absence from '@/components/types/absence';
 import AbsenceRequest from '@/components/absence/employee/absenceRequest';
 import CancelConfirmation from './cancelConfirmation';
 import styles from './main.module.scss';
+import { Message } from 'primereact/message';
 
 interface AbsenceEmployeesProps {
     userId: number;
@@ -19,8 +20,8 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
     const [selectedAbsenceType, setSelectedAbsenceType] = useState<string>('');
     const [selectedAbsenceStart, setSelectedAbsenceStart] = useState<string>('');
     const [selectedAbsenceEnd, setSelectedAbsenceEnd] = useState<string>('');
-    const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
-    const [error, setError] = useState<boolean>(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const [availableAbsenceDays, setAvailableAbsenceDays] = useState<number | string>('Ładowanie...');
 
     useEffect(() => {
@@ -36,17 +37,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                     'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
                 },
             });
-
-            console.log('Otrzymano odpowiedź:', response);
-
-            if (!response.ok) {
-                setError(true);
-                console.error('Błąd odpowiedzi HTTP:', response.status);
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
             const data = await response.json();
-            console.log('Dane pobrane:', data);
 
             const absences = data.content;
             setAbsences(absences);
@@ -65,6 +56,9 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
             setAbsenceTypeNames(typeNames);
         } catch (error) {
             console.error('Error fetching user absences:', error);
+            setError('Error fetching user absences');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -78,22 +72,21 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                 },
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
             const data = await response.json();
             return data.name;
         } catch (error) {
             console.error(`Error fetching absence type name for ID ${id}:`, error);
+            setError('Error fetching absence type name');
             return 'Unknown';
+        } finally {
+            setLoading(false)
         }
     };
 
     const handleCancelAbsence = async () => {
         if (selectedAbsenceId === null) return;
 
-        setModalIsOpenLoadning(true);
+        setLoading(true);
         try {
             const tokenJWT = sessionStorage.getItem('tokenJWT');
             const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
@@ -122,14 +115,16 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                     console.error('Failed to cancel absence: ', response.statusText);
                     throw new Error(`Failed to cancel absence with ID ${selectedAbsenceId}`);
                 }
-                setModalIsOpenLoadning(false);
+                setLoading(false);
                 fetchUserAbsences();
             } else {
                 console.error('Failed to fetch XSRF token, response not OK');
             }
         } catch (error) {
             console.error(`Error canceling absence with ID ${selectedAbsenceId}:`, error);
-            throw error;
+            setError('Error canceling absence');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -143,14 +138,11 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                 },
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
             const data = await response.json();
             return data;
         } catch (error) {
             console.error(`Error fetching absence available days for ID ${userId}:`, error);
+            setError('Error fetching absence available days');
             return 'Unknown';
         }
     };
@@ -160,10 +152,10 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
             const days = await fetchAvailableAbsenceDays();
             setAvailableAbsenceDays(days);
         };
-    
+
         loadAvailableAbsenceDays();
     }, []);
-    
+
     return (
         <div className={styles.absenceEmployeesContainerMain}>
             <div className={styles.absenceHeaderContainer}>
@@ -171,61 +163,55 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                 <label className={styles.subtitle}>Ilość dostepnych dni urlopowych: {availableAbsenceDays}</label>
                 <button className={styles.newAbsenceButton} onClick={() => setModalIsOpenAbsenceRequest(true)}>Złóż wniosek o urlop</button>
             </div>
-
-            {error ? (
-                <div className={styles.error}>Wystąpił błąd podczas ładowania danych</div>
-            ) : (
-                <div className={styles.tableContainer}>
-                    <table className={styles.absenceTable}>
-                        <thead className={styles.absenceThead}>
-                            <tr className={styles.absenceTheadRowElement}>
-                                <th className={styles.absenceTheadHeadElement}>Rodzaj</th>
-                                <th className={styles.absenceTheadHeadElement}>Od</th>
-                                <th className={styles.absenceTheadHeadElement}>Do</th>
-                                <th className={styles.absenceTheadHeadElement}>Czas trwania</th>
-                                <th className={styles.absenceTheadHeadElement}>Status</th>
-                                <th className={styles.absenceTheadHeadElement}></th>
+            <div className={styles.tableContainer}>
+                <table className={styles.absenceTable}>
+                    <thead className={styles.absenceThead}>
+                        <tr className={styles.absenceTheadRowElement}>
+                            <th className={styles.absenceTheadHeadElement}>Rodzaj</th>
+                            <th className={styles.absenceTheadHeadElement}>Od</th>
+                            <th className={styles.absenceTheadHeadElement}>Do</th>
+                            <th className={styles.absenceTheadHeadElement}>Czas trwania</th>
+                            <th className={styles.absenceTheadHeadElement}>Status</th>
+                            <th className={styles.absenceTheadHeadElement}></th>
+                        </tr>
+                    </thead>
+                    <tbody className={styles.absenceDataBody}>
+                        {absences.map((absence) => (
+                            <tr key={absence.id} className={styles.absenceDataBodyRowElement}>
+                                <td className={styles.absenceDataBodyHeadElement}>
+                                    {absenceTypeNames[absence.absence_type_id] || 'Ładowanie...'}
+                                </td>
+                                <td className={styles.absenceDataBodyHeadElement}>
+                                    {new Date(absence.start).toLocaleDateString()}
+                                </td>
+                                <td className={styles.absenceDataBodyHeadElement}>
+                                    {new Date(absence.end).toLocaleDateString()}
+                                </td>
+                                <td className={`${styles.absenceDataBodyHeadElement} ${styles.afterElement}`}>
+                                    {absence.working_days}
+                                </td>
+                                <td className={styles.absenceDataBodyHeadElement}>
+                                    {absence.status.name}
+                                </td>
+                                <td className={`${styles.absenceDataBodyHeadElement} ${styles.absenceDataBodyHeadElementButton}`}>
+                                    <button
+                                        className={styles.cancelButton}
+                                        onClick={() => {
+                                            setSelectedAbsenceId(absence.id);
+                                            setSelectedAbsenceType(absenceTypeNames[absence.absence_type_id]);
+                                            setSelectedAbsenceStart(new Date(absence.start).toLocaleDateString());
+                                            setSelectedAbsenceEnd(new Date(absence.end).toLocaleDateString());
+                                            setModalIsOpenCancelAbsence(true);
+                                        }}
+                                    >
+                                        Anuluj
+                                    </button>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody className={styles.absenceDataBody}>
-                            {absences.map((absence) => (
-                                <tr key={absence.id} className={styles.absenceDataBodyRowElement}>
-                                    <td className={styles.absenceDataBodyHeadElement}>
-                                        {absenceTypeNames[absence.absence_type_id] || 'Ładowanie...'}
-                                    </td>
-                                    <td className={styles.absenceDataBodyHeadElement}>
-                                        {new Date(absence.start).toLocaleDateString()}
-                                    </td>
-                                    <td className={styles.absenceDataBodyHeadElement}>
-                                        {new Date(absence.end).toLocaleDateString()}
-                                    </td>
-                                    <td className={`${styles.absenceDataBodyHeadElement} ${styles.afterElement}`}>
-                                        {absence.working_days}
-                                    </td>
-                                    <td className={styles.absenceDataBodyHeadElement}>
-                                        {absence.status.name}
-                                    </td>
-                                    <td className={`${styles.absenceDataBodyHeadElement} ${styles.absenceDataBodyHeadElementButton}`}>
-                                        <button
-                                            className={styles.cancelButton}
-                                            onClick={() => {
-                                                setSelectedAbsenceId(absence.id);
-                                                setSelectedAbsenceType(absenceTypeNames[absence.absence_type_id]);
-                                                setSelectedAbsenceStart(new Date(absence.start).toLocaleDateString());
-                                                setSelectedAbsenceEnd(new Date(absence.end).toLocaleDateString());
-                                                setModalIsOpenCancelAbsence(true);
-                                            }}
-                                        >
-                                            Anuluj
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
-
+                        ))}
+                    </tbody>
+                </table>
+            </div>
             {modalIsOpenAbsenceRequest && (
                 <div className={styles.addAbsencetModalOverlay}>
                     <div className={styles.addAbsenceModalContent}>
@@ -233,7 +219,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                     </div>
                 </div>
             )}
-
+            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
             {modalIsOpenCancelAbsence && (
                 <div className={styles.addAbsencetModalOverlay}>
                     <div className={styles.addAbsenceModalContent}>
@@ -246,8 +232,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                     </div>
                 </div>
             )}
-
-            {modalIsOpenLoadning && (
+            {loading && (
                 <div className={styles.loadingModalOverlay}>
                     <div className={styles.loadingModalContent}>
                         <div className={styles.spinnerContainer}><ProgressSpinner /></div>

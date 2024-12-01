@@ -17,9 +17,10 @@ interface SendMessageFormProps {
     loadChatPartnersGroups: (selectFirstPartner: boolean) => void;
     selectedLanguage: string;
     loading: (loading: boolean) => void;
+    setError: (errorMessage: string | null) => void;
 }
 
-const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSelectedChat, messages, setMessages, userId, loadChatPartnersIndividual, loadChatPartnersGroups, selectedLanguage, loading }) => {
+const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSelectedChat, messages, setMessages, userId, loadChatPartnersIndividual, loadChatPartnersGroups, selectedLanguage, loading, setError }) => {
 
     const handleSendMessage = async (content: string, language: string = '') => {
         loading(true);
@@ -85,6 +86,7 @@ const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSele
                 }
             } catch (error) {
                 console.error("Error:", error);
+                setError('Błąd podczas wysyłania wiadomości');
             } finally {
                 loading(false);
             }

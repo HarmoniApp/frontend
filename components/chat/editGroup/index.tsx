@@ -12,9 +12,10 @@ interface EditGroupProps {
     setSelectedUsers: (selectedUsers: ChatPartner[]) => void;
     selectedChat: ChatPartner | null;
     loading: (loading: boolean) => void;
+    setError: (errorMessage: string | null) => void;
 }
 
-const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, setSelectedUsers, selectedChat, loading }) => {
+const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, setSelectedUsers, selectedChat, loading, setError }) => {
 
     useEffect(() => {
         handleEditGroup();
@@ -44,6 +45,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
             setSelectedUsers(membersWithNames);
         } catch (error) {
             console.error('Błąd podczas pobierania członków grupy:', error);
+            setError('Błąd podczas pobierania członków grupy');
         } finally {
             loading(false);
         }
@@ -98,7 +100,8 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                 console.error('Failed to fetch XSRF token, response not OK');
             }
         } catch (error) {
-            console.error('Błąd:', error);
+            console.error('Błąd podczas usuwania członka grupy:', error);
+            setError('Błąd podczas usuwania członka grupy');
         } finally {
             loading(false);
         }
@@ -107,6 +110,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
     const handleDeleteGroup = async (): Promise<void> => {
         if (!selectedChat || selectedChat.type !== 'group') {
             console.error("Error: No group selected or trying to delete a non-group chat.");
+            setError("No group selected or trying to delete a non-group chat.");
             return;
         }
 
@@ -118,7 +122,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
 
         try {
             const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
+            const requestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -126,30 +130,32 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                 },
                 credentials: 'include',
             });
-            if (resquestXsrfToken.ok) {
-                const data = await resquestXsrfToken.json();
-                const tokenXSRF = data.token;
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                        'X-XSRF-TOKEN': tokenXSRF,
-                    },
-                    credentials: 'include',
-                });
 
-                if (response.ok) {
-                    console.log("Deleted successfully");
-                    window.location.reload();
-                } else {
-                    console.error(`Failed to delete group "${selectedChat.name}".`);
-                }
-            } else {
-                console.error('Failed to fetch XSRF token, response not OK');
+            if (!requestXsrfToken.ok) {
+                throw new Error('Failed to fetch XSRF token');
             }
+
+            const data = await requestXsrfToken.json();
+            const tokenXSRF = data.token;
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
+                },
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to delete group "${selectedChat.name}"`);
+            }
+
+            console.log("Deleted successfully");
+            window.location.reload();
         } catch (error) {
             console.error("Error deleting group:", error);
+            setError('Error deleting group');
         } finally {
             loading(false);
         }
@@ -201,7 +207,8 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                 console.error('Failed to fetch XSRF token, response not OK');
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error while adding user to group:', error);
+            setError('Error while adding user to group');
         } finally {
             loading(false);
         }
@@ -212,13 +219,14 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
             <div className={styles.modalOverlay}>
                 <div className={styles.modalContent}>
                     <h3>Edit group</h3>
-                    <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true}/>
+                    <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true} setError={setError}/>
                     <div className={styles.selectedUsers}>
                         {selectedUsers.map((user) => (
                             <div key={user.id} className={styles.selectedUser}>
                                 {user.photo ? (
                                     <AuthorizedImage
                                         src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
+                                        setError={setError}
                                     />
                                 ) : (
                                     <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />

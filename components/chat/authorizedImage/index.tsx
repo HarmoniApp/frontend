@@ -5,9 +5,10 @@ import '@/styles/main.css';
 
 interface AuthorizedImageProps {
     src: string;
+    setError: (errorMessage: string | null) => void;
 }
 
-const AuthorizedImage: React.FC<AuthorizedImageProps> = ({ src }) => {
+const AuthorizedImage: React.FC<AuthorizedImageProps> = ({ src, setError }) => {
     const [imageUrl, setImageUrl] = useState<string | null>(null);
 
     useEffect(() => {
@@ -35,6 +36,7 @@ const AuthorizedImage: React.FC<AuthorizedImageProps> = ({ src }) => {
                 setImageUrl(objectUrl);
             } catch (error) {
                 console.error('Błąd podczas pobierania obrazu:', error);
+                setError('Błąd podczas pobierania obrazu');
             }
         };
 

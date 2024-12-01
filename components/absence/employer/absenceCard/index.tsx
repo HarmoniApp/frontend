@@ -8,6 +8,7 @@ import AbsenceUser from '@/components/types/absenceUser';
 import CancelConfirmation from './popUps/cancelConfirmation';
 import AproveConfirmation from './popUps/aproveConfirmation';
 import styles from './main.module.scss';
+import { Message } from 'primereact/message';
 
 interface AbsenceCardProps {
     absence: Absence;
@@ -20,6 +21,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     const [modalIsOpenCancelAbsence, setModalIsOpenCancelAbsence] = useState(false);
     const [modalIsOpenAproveAbsence, setModalIsOpenAproveAbsence] = useState(false);
     const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchAbsenceType = async () => {
@@ -35,6 +37,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                 setAbsenceType(data);
             } catch (error) {
                 console.error('Error fetching absence type:', error);
+                setError('Error fetching absencee type');
             }
         };
 
@@ -51,6 +54,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                 setUser(data);
             } catch (error) {
                 console.error('Error fetching user:', error);
+                setError('Error fetching users');
             }
         };
 
@@ -80,7 +84,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                 const data = await resquestXsrfToken.json();
                 const tokenXSRF = data.token;
 
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/${absenceId}/status/${statusId}`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v2/absence/${absenceId}/status/${statusId}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
@@ -105,7 +109,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
 
         } catch (error) {
             console.error('Error updating absence status:', error);
-            throw error;
+            setError('Error updating absence status');
         }
     };
 
@@ -236,6 +240,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                     </div>
                 </div>
             )}
+            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
 
             {modalIsOpenLoadning && (
                 <div className={styles.loadingModalOverlay}>

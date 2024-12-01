@@ -18,9 +18,10 @@ interface SidebarProps {
     chatPartners: ChatPartner[];
     loading: (loading: boolean) => void;
     fetchChatHistory: (selectedChat: ChatPartner, language: string) => void;
+    setError: (errorMessage: string | null) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory }) => {
+const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, setError }) => {
     const handleNewIndividualChat = () => {
         loading(true);
         setNewChat(true);
@@ -107,6 +108,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                         {partner.photo ? (
                             <AuthorizedImage
                                 src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${partner.photo}`}
+                                setError={setError}
                             />
                         ) : (
                             <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
