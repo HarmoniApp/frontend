@@ -10,75 +10,90 @@ interface ScheduleBarProps {
   onNextWeek: () => void;
   onPreviousWeek: () => void;
   onPublishAll: () => void;
+  setError: (errorMessage: string | null) => void;
 }
 
-const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPreviousWeek, onPublishAll }) => {
+const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPreviousWeek, onPublishAll, setError }) => {
   const [modalIsOpenPublish, setModalIsOpenPublish] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const downloadPdf = async () => {
     setLoading(true);
-    const startOfWeek = currentWeek[0].toISOString().split('T')[0];
-    const endOfWeek = currentWeek[6].toISOString().split('T')[0];
-    const responsePDF = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/pdf/generate-pdf-shift?startOfWeek=${startOfWeek}`, {
+
+    try {
+      const startOfWeek = currentWeek[0].toISOString().split('T')[0];
+      const endOfWeek = currentWeek[6].toISOString().split('T')[0];
+      const responsePDF = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/pdf/generate-pdf-shift?startOfWeek=${startOfWeek}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
         },
       }
-    );
+      );
 
-    if (!responsePDF.ok) {
-      console.error('Error downloading PDF');
-      return;
+      if (!responsePDF.ok) {
+        console.error('Error downloading PDF');
+        return;
+      }
+
+      const blob = await responsePDF.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+
+      const filename = `shifts_${startOfWeek} - ${endOfWeek}.pdf`;
+
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Błąd');
+    } finally {
+      setLoading(false);
     }
-
-    const blob = await responsePDF.blob();
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-
-    const filename = `shifts_${startOfWeek} - ${endOfWeek}.pdf`;
-
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setLoading(false);
   };
 
   const downloadXLSX = async () => {
     setLoading(true);
-    const startOfWeek = currentWeek[0].toISOString().split('T')[0];
-    const endOfWeek = currentWeek[6].toISOString().split('T')[0];
-    const responseXLSX = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/excel/shifts/export-excel?start=${startOfWeek}&end=${endOfWeek}`,{
+
+    try {
+      const startOfWeek = currentWeek[0].toISOString().split('T')[0];
+      const endOfWeek = currentWeek[6].toISOString().split('T')[0];
+      const responseXLSX = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/excel/shifts/export-excel?start=${startOfWeek}&end=${endOfWeek}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
         },
       }
-    );
+      );
 
-    if (!responseXLSX.ok) {
-      console.error('Error downloading XLSX');
-      return;
+      if (!responseXLSX.ok) {
+        console.error('Error downloading XLSX');
+        return;
+      }
+
+      const blob = await responseXLSX.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+
+      const filename = `shifts_${startOfWeek} - ${endOfWeek}.xlsx`;
+
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Błąd');
+    } finally {
+      setLoading(false);
     }
-
-    const blob = await responseXLSX.blob();
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-
-    const filename = `shifts_${startOfWeek} - ${endOfWeek}.xlsx`;
-
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setLoading(false);
   };
 
   const formatDate = (date: Date) => {

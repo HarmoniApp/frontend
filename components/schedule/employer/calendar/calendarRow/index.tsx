@@ -6,6 +6,7 @@ import EditShift from '../editShift';
 import WeekSchedule from '@/components/types/weekSchedule';
 import User from '@/components/types/user';
 import Shift from '@/components/types/shift';
+import { Message } from 'primereact/message';
 import RoleWithColour from '@/components/types/roleWithColour';
 import styles from './main.module.scss';
 
@@ -35,6 +36,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const [abortController, setAbortController] = useState<AbortController | null>(null);
   const [roles, setRoles] = useState<RoleWithColour[]>([]);
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(20);
@@ -56,6 +58,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
         setRoles(data);
       } catch (error) {
         console.error('Error fetching roles:', error);
+        setError('Błąd podczas pobierania roli');
       } finally {
         setLoadingRoles(false);
       }
@@ -100,7 +103,8 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
       setTotalPages(responseData.totalPages * pageSize);
 
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error('Error while filter:', error);
+      setError('Błąd podczas filtrowania');
     } finally {
       setLoadingUsers(false);
     }
@@ -147,6 +151,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
                 if (error.name === 'AbortError') {
                 } else {
                   console.error(`Error fetching schedule for user ${user.id}:`, error);
+                  setError('Błąd podczas pobierania kalendarza');
                 }
                 return { userId: user.id, data: { shifts: [], absences: [] } };
               })
@@ -165,6 +170,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
           setSchedules(schedulesMap);
         } catch (error) {
           console.error('Error fetching schedules:', error);
+          setError('Błąd podczas pobierania kalendarza');
         } finally {
           setLoadingSchedules(false);
         }
@@ -230,7 +236,9 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
       }
     } catch (error) {
       console.error('Error adding add shift:', error);
-      throw error;
+      setError('Błąd podczas dodawania zmiany');
+    } finally {
+      setModalIsOpenLoadning(false);
     }
   };
 
@@ -278,7 +286,9 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
       }
     } catch (error) {
       console.error('Error editing shift:', error);
-      throw error;
+      setError('Błąd podczas edycji zmiany');
+    } finally {
+      setModalIsOpenLoadning(false);
     }
   };
 
@@ -319,7 +329,9 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
       }
     } catch (error) {
       console.error('Error deleting shift:', error);
-      throw error;
+      setError('Błąd podczas usuwania zmiany');
+    } finally {
+      setModalIsOpenLoadning(false);
     }
   };
 
@@ -379,7 +391,9 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
         }
       } catch (error) {
         console.error('Error publishing shift:', error);
-        throw error;
+        setError('Błąd podczas publikacji');
+      } finally {
+        setModalIsOpenLoadning(false);
       }
     });
   };
@@ -416,6 +430,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
       }));
     } catch (error) {
       console.error(`Error fetching schedule for user ${userId}:`, error);
+      setError('Błąd podczas pobierania grafiku dla użytkownika');
     }
   };
 
@@ -516,6 +531,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
           day={selectedDay}
         />
       )}
+      {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
       {isEditModalOpen && selectedShift && (
         <EditShift
           isOpen={isEditModalOpen}
