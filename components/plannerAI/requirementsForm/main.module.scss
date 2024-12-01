@@ -1,286 +1,169 @@
 @import '@/styles/variables.scss';
 
+.planerAiContainer {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 90%;
+    margin: 20px auto;
+    gap: 20px;
+}
+
+.buttonContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    flex: 1;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: $white;
+    box-shadow: 0 4px 8px $black-transparency-01;
+
+}
+
+.addNewDayButton,
+.generateButton,
+.deleteGenerateShiftsButton,
+.deleteDayButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $main-colour;
+    color: $font-dark-colour;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    gap: 10px;
+
+    &:hover {
+        background-color: $main-colour-hover;
+    }
+
+    .buttonIcon {
+        height: 26px;
+        width: 26px;
+        margin: 0;
+    }
+
+    .buttonParagraph {
+        text-align: center;
+        font-size: 20px;
+        margin: 0;
+    }
+}
+
+.planerAiForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: $white;
+    box-shadow: 0 4px 8px $black-transparency-01;
+}
+
+.dateContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dateLabel {
+    font-size: 16px;
+    font-weight: bold;
+    color: $font-dark-colour;
+}
+
+.dateInput {
+    border: 2px solid $white-4;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 16px;
+    background-color: $white;
+    box-shadow: 0 2px 4px $black-transparency-01;
+    outline: none;
+    transition: border-color 0.3s ease;
+
+    &:focus {
+        border-color: $main-colour;
+    }
+}
+
+.predefineShiftsContainer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.predefineShiftLabel,
+.roleLabel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    gap: 10px;
+    background-color: $white-4;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px $black-transparency-01;
+    font-size: 16px;
+    color: $font-dark-colour;
+    cursor: pointer;
+    width: auto;
+    padding: 10px;
+    height: 50px;
+}
+
+.predefinedShiftCheckbox,
+.rolesCheckbox {
+    margin-right: 10px;
+    accent-color: $main-colour;
+    cursor: pointer;
+}
+
+.predefinedShiftCheckboxLabel,
+.rolesCheckboxLabel {
+    font-size: 14px;
+    color: $font-dark-colour;
+}
+
 .roleContainer {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
 }
 
-
-
-//PredefineSifts styles
-.modalOverlayOfAdd, .modalOverlayOfDelete { 
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modalContentOfAdd, .modalContentOfDelete {
-    display: flex;
-    flex-direction: column;
-    border: 2px solid $main-colour;
-    border-radius: 8px;
-    background-color: $gray;
-    text-align: center;
-    width: auto;
-    max-height: 80vh;
-    overflow-y: auto;
-    gap: 20px;
-    padding: 20px;
-
-    @media (max-width: 768px) {
-        width: 90%;
-        max-height: 70vh;
-    }
-}
-
-.predefinedShiftsContainerMain {
-    background-color: $gray;
-    color: $font-light-colour;
-    padding: 20px 0 0 0;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
+.rolesInfoContainer {
+    margin: 20px 0;
     width: 100%;
-    height: 100%;
-    gap: 15px;
-}
 
-.showShiftMapContainer {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: minmax(auto, 1fr);
-    grid-auto-rows: 1fr;
-    gap: 10px;
-
-    .showShiftContainerMain {
-        display: flex;
-        flex-direction: column;
-        //align-items: center;
-        height: 100%;
-        padding: 10px;
-        background-color: $white-3;
-        border-radius: 5px;
-        gap: 15px;
-
-        .showShiftContainer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 100%;
-            gap: 15px;
-
-            .shiftInfoContainer {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-                text-align: center;
-                padding: 0;
-                width: 100%;
-                gap: 10px;
-
-                .shiftNameParagraph,
-                .shiftTimeParagraph {
-                    display: flex;
-                    align-items: left;
-                    margin: 0;
-                    color: $font-dark-colour;
-                    font-weight: bold;
-                    width: auto;
-                }
-
-                .shiftNameInput {
-                    padding: 5px;
-                    border: 2px solid $font-dark-colour;
-                    border-radius: 5px;
-                    background-color: $white;
-                    color: $font-dark-colour;
-                    outline: none;
-                    width: 8vw;
-                    height: 5vh;
-                }
-            }
-
-            .editAndRemoveButtonContainer {
-                display: flex;
-                flex-direction: row;
-                gap: 10px;
-
-                .shiftTimeSelect {
-                    border: 2px solid $font-dark-colour;
-                    border-radius: 4px;
-                }
-            }
-        }
-    }
-}
-
-@media (max-width: 1200px) {
-    .showShiftMapContainer {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
-}
-
-@media (max-width: 800px) {
-    .showShiftMapContainer {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 600px) {
-    .showShiftMapContainer {
-        grid-template-columns: 1fr;
-
-    }
-}
-
-.removeButton,
-.editButton,
-.yesButton,
-.noButton {
-    background-color: $main-colour;
-    border: 2px solid $font-dark-colour;
-    color: $font-dark-colour;
-    padding: 5px 10px;
-    border-radius: 5px;
-    height: 5vh;
-    width: 5vh;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-
-    &:hover {
-        background-color: $font-dark-colour;
+    hr {
+        height: 2px;
         color: $main-colour;
     }
 
-}
+    .editingShiftIdParagraph {
+        display: flex;
+        justify-content: flex-start;
+        font-weight: bold;
+        gap: 10px;
 
-.yesButton:hover {
-    background-color: $green;
-    color: $font-dark-colour;
-}
-
-.noButton:hover {
-    background-color: $red;
-    color: $font-dark-colour;
-}
-
-.addContainer {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    margin: 10px 0 0 0;
-
-    .addShiftTimeSelect {
-        border: 2px solid $main-colour;
-        border-radius: 4px;
-    }
-
-    .addInput {
-        flex-grow: 1;
-        padding: 10px;
-        border: 2px solid $main-colour;
-        border-radius: 5px;
-        background-color: $white;
-        color: $font-dark-colour;
-        outline: none;
-
-        &::placeholder {
-            color: $font-dark-colour;
-        }
-    }
-
-    .addButton {
-        background-color: $main-colour;
-        border: none;
-        color: $font-dark-colour;
-        padding: 10px;
-        width: 5vh;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-
-        &:hover {
-            background-color: $main-colour-hover;
+        .setRolesForPredefineShiftHighlight {
+            border-bottom: 2px solid $main-colour;
         }
     }
 }
 
-.shiftTimeSelect,
-.addShiftTimeSelect {
-    -webkit-appearance: none; // Safari
-    -moz-appearance: none; // Firefox
-    appearance: none; //Standard
-    height: 5vh;
-    padding: 10px 3.5vh 10px 10px;
-    background-image:
-        linear-gradient(45deg, transparent 50%, $font-dark-colour 50%),
-        linear-gradient(135deg, $font-dark-colour 50%, transparent 50%);
-    background-position:
-        calc(100% - 15px) calc(1em + 5px),
-        calc(100% - 6px) calc(1em + 5px);
-    background-size:
-        9px 9px,
-        9px 9px;
-    background-repeat: no-repeat;
-    color: $font-dark-colour;
-    cursor: pointer;
-}
-
-.errorMessage {
-    color: $red;
-    font-size: 16px;
-    font-weight: bold;
-    margin: 0;
-    text-align: center;
-    flex-shrink: 0;
-}
-
-.formInput {
-    -webkit-appearance: none; //Safari
-    -moz-appearance: none; //Firefox
-    appearance: none; //Standard
-    width: 100%;
-    height: 5vh;
-    border-radius: 5px;
+.rolesQuantityInput {
+    width: 5vw;
+    padding: 5px;
     border: 2px solid $main-colour;
-    padding: 10px 5vh 10px 10px;
+    border-radius: 5px;
+    background-color: $white;
     color: $font-dark-colour;
-    box-shadow: inset 0 2px 4px $black-transparency-01;
-    transition: all 0.3s ease;
-
-
-    &:hover {
-        border: 2px solid $main-colour;
-        outline: none;
-        background-color: lighten($white-4, 5%);
-    }
-
-    &::placeholder {
-        margin: 0 0 0 10px;
-        color: lighten($font-dark-colour, 30%);
-    }
-}
-
-.errorInput {
-    border-color: $red;
-    background-color: $red-powder;
-
-    &.shiftTimeSelect,
-    &.addShiftTimeSelect {
-        border-color: $red;
-        background-color: $red-powder;
-    }
+    outline: none;
 }
 
 .loadingModalOverlay {

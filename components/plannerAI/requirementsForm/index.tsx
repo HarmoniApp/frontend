@@ -3,6 +3,8 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import PredefinedShift from '@/components/types/predefinedShifts';
 import RoleWithColour from '@/components/types/roleWithColour';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan, faEraser, faPlus, faChartSimple } from '@fortawesome/free-solid-svg-icons';
 import * as Yup from 'yup';
 import styles from './main.module.scss';
 
@@ -211,7 +213,7 @@ const RequirementsForm: React.FC = () => {
     });
 
     return (
-        <div>
+        <div className={styles.planerAiContainer}>
             {forms.map((form) => (
                 <Formik
                     key={form.id}
@@ -235,11 +237,12 @@ const RequirementsForm: React.FC = () => {
                 >
                     {({ values, errors, touched, setFieldValue }) => (
                         <Form className={styles.planerAiForm}>
-                            <div>
-                                <label>Data</label>
+                            <div className={styles.dateContainer}>
+                                <label className={styles.dateLabel}>Podaj datę na którą chcesz wygenerować grafik:</label>
                                 <Field
                                     name="date"
                                     type="date"
+                                    className={styles.dateInput}
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                         setFieldValue("date", e.target.value);
                                         const updatedForms = forms.map((f) =>
@@ -253,15 +256,15 @@ const RequirementsForm: React.FC = () => {
                                     <div className={styles.errorMessage}>{errors.date}</div>
                                 )}
                             </div>
-                            <div>
-                                <label>Predefiniowane Zmiany</label>
+                            <div className={styles.predefineShiftsContainer}>
                                 {shifts.map((shift) => {
                                     const isSelected = values.shifts.some((s) => s.shiftId === shift.id);
                                     return (
-                                        <div key={shift.id}>
+                                        <label key={shift.id} className={styles.predefineShiftLabel}>
                                             <input
                                                 type="checkbox"
                                                 checked={isSelected}
+                                                className={styles.predefinedShiftCheckbox}
                                                 onChange={() => {
                                                     const updatedShifts = isSelected
                                                         ? values.shifts.filter((s) => s.shiftId !== shift.id)
@@ -275,61 +278,33 @@ const RequirementsForm: React.FC = () => {
                                                     console.log("Updated forms state:", JSON.stringify(updatedForms, null, 2));
                                                 }}
                                             />
-                                            <span>{shift.name} ({shift.start} - {shift.end})</span>
-                                        </div>
+                                            <span className={styles.predefinedShiftCheckboxLabel}>{shift.name} ({shift.start.slice(0, 5)} - {shift.end.slice(0, 5)})</span>
+                                        </label>
                                     );
                                 })}
                             </div>
-                            <div>
+                            <div className={styles.rolesContainerMain}>
                                 {values.shifts.map((shift) => (
-                                    <div key={shift.shiftId} className={styles.roleContainer}>
-                                        <strong>Predefioniowana zmiana: {shifts.find(s => s.id === shift.shiftId)?.name || 'Nieznana zmiana'} </strong>
-                                        {roles.map((role) => {
-                                            const roleInShift = shift.roles.find((r) => r.roleId === role.id);
-                                            const isRoleSelected = !!roleInShift;
+                                    <>
+                                        <div className={styles.rolesInfoContainer}>
+                                            <hr />
+                                            <p className={styles.editingShiftIdParagraph}>Ustawiasz rolę dla predefiniowanej zmiany o nazwie: <label className={styles.setRolesForPredefineShiftHighlight}>{shifts.find(s => s.id === shift.shiftId)?.name || 'Nieznana zmiana'}</label></p>
+                                        </div>
+                                        <div key={shift.shiftId} className={styles.roleContainer}>
+                                            {roles.map((role) => {
+                                                const roleInShift = shift.roles.find((r) => r.roleId === role.id);
+                                                const isRoleSelected = !!roleInShift;
 
-                                            return (
-                                                <div key={role.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={isRoleSelected}
-                                                        onChange={(e) => {
-                                                            const updatedRoles = isRoleSelected
-                                                                ? shift.roles.filter((r) => r.roleId !== role.id)
-                                                                : [...shift.roles, { roleId: role.id, quantity: 1 }];
-
-                                                            const updatedShifts = values.shifts.map((s) =>
-                                                                s.shiftId === shift.shiftId ? { ...s, roles: updatedRoles } : s
-                                                            );
-
-                                                            setFieldValue('shifts', updatedShifts);
-
-                                                            const updatedForms = forms.map((f) =>
-                                                                f.id === form.id ? { ...f, shifts: updatedShifts } : f
-                                                            );
-                                                            setForms(updatedForms);
-                                                        }}
-                                                    />
-                                                    <span
-                                                        style={{
-                                                            color: `${role.color}`,
-                                                            padding: '4px',
-                                                            marginLeft: '8px',
-                                                        }}
-                                                    >
-                                                        {role.name}
-                                                    </span>
-                                                    {isRoleSelected && (
+                                                return (
+                                                    <label key={role.id} style={{ backgroundColor: role.color }} className={styles.roleLabel}>
                                                         <input
-                                                            type="number"
-                                                            min="1"
-                                                            value={roleInShift?.quantity || 1}
+                                                            type="checkbox"
+                                                            checked={isRoleSelected}
+                                                            className={styles.rolesCheckbox}
                                                             onChange={(e) => {
-                                                                const newQuantity = Math.max(parseInt(e.target.value, 10) || 1, 1);
-
-                                                                const updatedRoles = shift.roles.map((r) =>
-                                                                    r.roleId === role.id ? { ...r, quantity: newQuantity } : r
-                                                                );
+                                                                const updatedRoles = isRoleSelected
+                                                                    ? shift.roles.filter((r) => r.roleId !== role.id)
+                                                                    : [...shift.roles, { roleId: role.id, quantity: 1 }];
 
                                                                 const updatedShifts = values.shifts.map((s) =>
                                                                     s.shiftId === shift.shiftId ? { ...s, roles: updatedRoles } : s
@@ -342,20 +317,44 @@ const RequirementsForm: React.FC = () => {
                                                                 );
                                                                 setForms(updatedForms);
                                                             }}
-                                                            style={{
-                                                                width: '60px',
-                                                                marginLeft: '12px',
-                                                            }}
                                                         />
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
+                                                        <span className={styles.rolesCheckboxLabel}>{role.name}</span>
+                                                        {isRoleSelected && (
+                                                            <input
+                                                                type="number"
+                                                                min="1"
+                                                                value={roleInShift?.quantity || 1}
+                                                                className={styles.rolesQuantityInput}
+                                                                onChange={(e) => {
+                                                                    const newQuantity = Math.max(parseInt(e.target.value, 10) || 1, 1);
+
+                                                                    const updatedRoles = shift.roles.map((r) =>
+                                                                        r.roleId === role.id ? { ...r, quantity: newQuantity } : r
+                                                                    );
+
+                                                                    const updatedShifts = values.shifts.map((s) =>
+                                                                        s.shiftId === shift.shiftId ? { ...s, roles: updatedRoles } : s
+                                                                    );
+
+                                                                    setFieldValue('shifts', updatedShifts);
+
+                                                                    const updatedForms = forms.map((f) =>
+                                                                        f.id === form.id ? { ...f, shifts: updatedShifts } : f
+                                                                    );
+                                                                    setForms(updatedForms);
+                                                                }}
+                                                            />
+                                                        )}
+                                                    </label>
+                                                );
+                                            })}
+                                        </div>
+                                    </>
                                 ))}
                             </div>
-                            <button type="button" onClick={() => handleRemoveForm(form.id)}>
-                                Usuń dzień
+                            <button type="button" onClick={() => handleRemoveForm(form.id)} className={styles.deleteDayButton}>
+                                <FontAwesomeIcon className={styles.buttonIcon} icon={faTrashCan} />
+                                <p className={styles.buttonParagraph}>Usuń dzień</p>
                             </button>
                             {modalIsOpenLoadning && (
                                 <div className={styles.loadingModalOverlay}>
@@ -368,15 +367,20 @@ const RequirementsForm: React.FC = () => {
                     )}
                 </Formik>
             ))}
-            <button type="button" onClick={handleAddForm}>
-                Dodaj kolejny dzień
-            </button>
-            <button type="button" onClick={handleSubmit}>
-                Generuj
-            </button>
-            <button type="button" onClick={handleRevoke}>
-                Usuń wszytskie ostatnio wygenerowane przez PlanerAi zmiany
-            </button>
+            <div className={styles.buttonContainer}>
+                <button type="button" onClick={handleSubmit} className={styles.generateButton}>
+                    <FontAwesomeIcon className={styles.buttonIcon} icon={faChartSimple} />
+                    <p className={styles.buttonParagraph}>Generuj</p>
+                </button>
+                <button type="button" onClick={handleAddForm} className={styles.addNewDayButton}>
+                    <FontAwesomeIcon className={styles.buttonIcon} icon={faPlus} />
+                    <p className={styles.buttonParagraph}>Dodaj kolejny dzień</p>
+                </button>
+                <button type="button" onClick={handleRevoke} className={styles.deleteGenerateShiftsButton}>
+                    <FontAwesomeIcon className={styles.buttonIcon} icon={faEraser} />
+                    <p className={styles.buttonParagraph}>Usuń wszystkie zmiany ostatnio wprowadzone przez PlanerAi</p>
+                </button>
+            </div>
         </div>
     );
 };
