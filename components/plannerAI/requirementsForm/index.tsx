@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import PredefinedShift from '@/components/types/predefinedShifts';
 import RoleWithColour from '@/components/types/roleWithColour';
+import Instruction from '@/components/plannerAI/instruction';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan, faEraser, faPlus, faChartSimple } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan, faEraser, faPlus, faChartSimple, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import * as Yup from 'yup';
 import styles from './main.module.scss';
 
@@ -28,6 +29,7 @@ const RequirementsForm: React.FC = () => {
     const [roles, setRoles] = useState<RoleWithColour[]>([]);
     const [formCounter, setFormCounter] = useState(1);
     const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+    const [isInstructionOpen, setIsInstructionOpen] = useState(false);
 
     useEffect(() => {
         fetchPredefinedShifts();
@@ -380,6 +382,13 @@ const RequirementsForm: React.FC = () => {
                     <FontAwesomeIcon className={styles.buttonIcon} icon={faEraser} />
                     <p className={styles.buttonParagraph}>Usuń wszystkie zmiany ostatnio wprowadzone przez PlanerAi</p>
                 </button>
+                <button type="button" onClick={() => setIsInstructionOpen(true)} className={styles.infoButton}>
+                    <FontAwesomeIcon className={styles.buttonIcon} icon={faCircleInfo} />
+                </button>
+                <Instruction
+                    isOpen={isInstructionOpen}
+                    onClose={() => setIsInstructionOpen(false)}
+                />
             </div>
         </div>
     );
