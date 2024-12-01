@@ -7,9 +7,10 @@ import styles from './main.module.scss';
 import Flag from 'react-flagkit';
 interface FilterEmployeeProps {
   onApplyFilters: (filters: { roles?: number[]; languages?: number[]; order?: string }) => void;
+  setError: (errorMessage: string | null) => void;
 }
 
-const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
+const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters, setError }) => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [languages, setLanguages] = useState<Language[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
@@ -29,6 +30,7 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
       setRoles(data);
     } catch (error) {
       console.error('Error fetching roles:', error);
+      setError('Błąd podczas pobierania roli');
     }
   };
 
@@ -45,6 +47,7 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
       setLanguages(data);
     } catch (error) {
       console.error('Error fetching languages:', error);
+      setError('Błąd podczas pobierania języków');
     }
   };
 

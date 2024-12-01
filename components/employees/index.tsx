@@ -10,6 +10,7 @@ import './main.css';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
+import { Message as PrimeMessage } from 'primereact/message';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import 'primereact/resources/themes/saga-blue/theme.css';
 
@@ -18,7 +19,6 @@ const EmployeesComponent: React.FC = () => {
   const [data, setData] = useState<PersonTile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(21);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -48,37 +48,32 @@ const EmployeesComponent: React.FC = () => {
       }
     }
 
-      try {
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-          }
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        }
 
-        });
-        const responseData = await response.json();
-        if (responseData && responseData.content) {
-          setData(responseData.content);
-          setTotalRecords(responseData.pageSize * responseData.totalPages);
-        } else if (responseData && responseData.length > 0) {
-          setData(responseData);
-        } else {
-          setData([]);
-          setTotalRecords(0);
-        }
-        setLoading(false);
-        }
-        catch (error) {
-          console.error('Error fetching data:', error);
-          if (error instanceof Error) {
-            setError(error.message);
-          } else {
-            setError('An unknown error occurred');
-          }
-          setLoading(false);
-        }
-      };
+      });
+      const responseData = await response.json();
+      if (responseData && responseData.content) {
+        setData(responseData.content);
+        setTotalRecords(responseData.pageSize * responseData.totalPages);
+      } else if (responseData && responseData.length > 0) {
+        setData(responseData);
+      } else {
+        setData([]);
+        setTotalRecords(0);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setError('Błąd podczas filtrowania danych');
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchFilteredData({}, 1, rows);
@@ -98,15 +93,16 @@ const EmployeesComponent: React.FC = () => {
       </div>
       <div className={styles.employeesFilterAndListContainer}>
         <div className={styles.emplyeesFilterContainer}>
-          <EmployeeFilter onApplyFilters={(filters) => fetchFilteredData(filters, 1, rows)} />
+          <EmployeeFilter onApplyFilters={(filters) => fetchFilteredData(filters, 1, rows)} setError={setError} />
         </div>
         <div className={`${styles.employeesListcontainer} ${activeView === 'tiles' ? styles.tilesView : styles.listView}`}>
           {loading && <div className={styles.spinnerContainer}><ProgressSpinner /></div>}
           {!loading && error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessage} />}
           {!loading && !error && data.length === 0 && <Card title="No Data" className={styles.noDataCard}><p>There is no data available at the moment.</p></Card>}
           {!loading && !error && data.length > 0 && data.map((person, index) => (
-            <Tile key={index} person={person} view={activeView} />
+            <Tile key={index} person={person} view={activeView} setError={setError} />
           ))}
+          {error && <PrimeMessage severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
         </div>
       </div>
 

@@ -11,6 +11,7 @@ import SupervisorDataSimple from '@/components/types/supervisorDataSimple';
 import Flag from 'react-flagkit';
 import styles from './main.module.scss';
 import NewPassword from './newPassword';
+import { Message } from 'primereact/message';
 
 const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   const [employee, setEmployee] = useState<EmployeeData | null>(null);
@@ -20,6 +21,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [modalNewPassword, setModalNewPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -41,6 +43,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
           setDepartments(data);
         } catch (error) {
           console.error('Error fetching departments:', error);
+          setError('Błąd podczas pobierania oddziałów');
         }
       };
 
@@ -60,6 +63,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
           }
         } catch (error) {
           console.error('Error fetching employee data:', error);
+          setError('Błąd podczas pobierania pracownika');
         }
       };
 
@@ -76,6 +80,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
           setSupervisorData(supervisorData);
         } catch (error) {
           console.error('Error fetching supervisor data:', error);
+          setError('Błąd podczas pobierania przełoonego');
         }
       };
 
@@ -133,7 +138,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
 
     } catch (error) {
       console.error('Błąd podczas resetowania hasła: ', error);
-      throw error;
+      setError('Błąd podczas resetowania hasła');
     }
   };
 
@@ -258,14 +263,15 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
       {modalNewPassword && (
         <div className={styles.modalOverlayNewPassword}>
           <div className={styles.modalContentOfNewPassword}>
-            <NewPassword 
-              newPassword={newPassword} 
-              onClose={() => setModalNewPassword(false)} 
-              firstName={employee.firstname} 
-              surname={employee.surname}/>
+            <NewPassword
+              newPassword={newPassword}
+              onClose={() => setModalNewPassword(false)}
+              firstName={employee.firstname}
+              surname={employee.surname} />
           </div>
         </div>
       )}
+      {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
 
       {modalIsOpenLoadning && (
         <div className={styles.loadingModalOverlay}>

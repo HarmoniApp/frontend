@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserSlash, faArrowTurnUp } from '@fortawesome/free-solid-svg-icons';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { Message } from 'primereact/message';
 import DeleteEmployeeNotificationPopUp from './deleteEmployeeNotification';
 import styles from './main.module.scss';
 
@@ -17,6 +18,7 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
   const [modalStage, setModalStage] = useState<'confirm' | 'delete'>('confirm');
   const [modalCountdown, setModalCountdown] = useState(10);
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -72,7 +74,8 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
       }
     } catch (error) {
       console.error('Error deleting employee:', error)
-      throw error;
+      setError('Błąd podczas usuwania użytkownika');
+      setModalIsOpenLoadning(false);
     }
   };
 
@@ -100,6 +103,7 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
           modalCountdown={modalCountdown}
         />
       )}
+      {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
       {modalIsOpenLoadning && (
         <div className={styles.loadingModalOverlay}>
           <div className={styles.loadingModalContent}>

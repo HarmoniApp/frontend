@@ -10,6 +10,7 @@ import Contract from '@/components/types/contract';
 import Language from '@/components/types/language';
 import Supervisor from '@/components/types/supervisor';
 import Department from '@/components/types/department';
+import { Message } from 'primereact/message';
 import styles from './main.module.scss';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -37,6 +38,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [changedData, setChangedData] = useState<ChangedData>({});
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchContracts = async () => {
     try {
@@ -51,6 +53,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
       setContracts(data);
     } catch (error) {
       console.error('Error fetching contracts:', error);
+      setError('Błąd podczas pobierania umów');
     }
   };
 
@@ -73,6 +76,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
       setDepartmentMap(deptMap);
     } catch (error) {
       console.error('Error fetching departments:', error);
+      setError('Błąd podczas pobierania oddziałów');
     }
   };
 
@@ -95,6 +99,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
       setSupervisorMap(supervisorMap);
     } catch (error) {
       console.error('Error fetching supervisors:', error);
+      setError('Błąd podczas pobierania przełoonych');
     }
   };
 
@@ -111,6 +116,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
       setRoles(data);
     } catch (error) {
       console.error('Error fetching roles:', error);
+      setError('Błąd podczas pobierania ról');
     }
   };
 
@@ -127,6 +133,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
       setLanguages(data);
     } catch (error) {
       console.error('Error fetching languages:', error);
+      setError('Błąd podczas pobierania języków');
     }
   };
 
@@ -324,50 +331,50 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   const handleSubmit = async (values: typeof initialValues) => {
     setModalIsOpenLoadning(true);
     try {
-        const tokenJWT = sessionStorage.getItem('tokenJWT');
-        const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${tokenJWT}`,
-            },
-            credentials: 'include',
+      const tokenJWT = sessionStorage.getItem('tokenJWT');
+      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokenJWT}`,
+        },
+        credentials: 'include',
+      });
+
+      if (resquestXsrfToken.ok) {
+        const data = await resquestXsrfToken.json();
+        const tokenXSRF = data.token;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${employee.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+          body: JSON.stringify(values),
         });
 
-        if (resquestXsrfToken.ok) {
-            const data = await resquestXsrfToken.json();
-            const tokenXSRF = data.token;
-
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${employee.id}`, {
-              method: 'PATCH',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                'X-XSRF-TOKEN': tokenXSRF,
-              },
-              credentials: 'include',
-              body: JSON.stringify(values),
-            });
-
-            const changedData = getChangedData(values);
-            if (!response.ok) {
-                console.error('Error updating absence status, response not OK');
-                throw new Error('Error updating absence status');
-            }
-
-            setChangedData(changedData);
-            setModalIsOpenLoadning(false);
-            setIsModalOpen(true);
-            
-        } else {
-            console.error('Failed to fetch XSRF token, response not OK');
+        const changedData = getChangedData(values);
+        if (!response.ok) {
+          console.error('Error updating absence status, response not OK');
+          throw new Error('Error updating absence status');
         }
 
+        setChangedData(changedData);
+        setModalIsOpenLoadning(false);
+        setIsModalOpen(true);
+
+      } else {
+        console.error('Failed to fetch XSRF token, response not OK');
+      }
+
     } catch (error) {
-        console.error('Błąd podczas aktualizacji danych pracownika:', error);
-        throw error;
+      console.error('Błąd podczas aktualizacji danych pracownika:', error);
+      setError('Błąd podczas edycji pracownika');
     }
-};
+  };
 
   const initialValues = {
     firstname: employee.firstname || '',
@@ -694,6 +701,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
                 </div>
               </div>
             )}
+            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
 
             {modalIsOpenLoadning && (
               <div className={styles.loadingModalOverlay}>
