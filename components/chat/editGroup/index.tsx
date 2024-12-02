@@ -5,6 +5,7 @@ import SearchUser from '@/components/chat/searchUser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers, faUserMinus, faXmark, faTrash } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
+import { fetchCsrfToken } from '@/services/csrfService';
 
 interface EditGroupProps {
     editGroupModal: (open: boolean) => void;
@@ -69,35 +70,22 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                 console.error("Error: No group to edit.");
                 return;
             }
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-                method: 'GET',
+            const tokenXSRF = await fetchCsrfToken(setError);
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}/user/${userId}/remove`, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenJWT}`,
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
                 },
                 credentials: 'include',
             });
-            if (resquestXsrfToken.ok) {
-                const data = await resquestXsrfToken.json();
-                const tokenXSRF = data.token;
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}/user/${userId}/remove`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                        'X-XSRF-TOKEN': tokenXSRF,
-                    },
-                    credentials: 'include',
-                });
 
-                if (response.ok) {
-                    setSelectedUsers(selectedUsers.filter((user: ChatPartner) => user.id !== userId));
-                } else {
-                    console.error('Błąd podczas usuwania użytkownika z grupy');
-                }
+            if (response.ok) {
+                setSelectedUsers(selectedUsers.filter((user: ChatPartner) => user.id !== userId));
             } else {
-                console.error('Failed to fetch XSRF token, response not OK');
+                console.error('Błąd podczas usuwania użytkownika z grupy');
             }
         } catch (error) {
             console.error('Błąd podczas usuwania członka grupy:', error);
@@ -121,22 +109,8 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         loading(true);
 
         try {
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const requestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenJWT}`,
-                },
-                credentials: 'include',
-            });
+            const tokenXSRF = await fetchCsrfToken(setError);
 
-            if (!requestXsrfToken.ok) {
-                throw new Error('Failed to fetch XSRF token');
-            }
-
-            const data = await requestXsrfToken.json();
-            const tokenXSRF = data.token;
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}`, {
                 method: 'DELETE',
                 headers: {
@@ -174,37 +148,22 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                 console.error("Error: No group to edit.");
                 return;
             }
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-                method: 'GET',
+            const tokenXSRF = await fetchCsrfToken(setError);
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}/user/${user.id}/add`, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenJWT}`,
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
                 },
                 credentials: 'include',
             });
 
-            if (resquestXsrfToken.ok) {
-                const data = await resquestXsrfToken.json();
-                const tokenXSRF = data.token;
-
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}/user/${user.id}/add`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                        'X-XSRF-TOKEN': tokenXSRF,
-                    },
-                    credentials: 'include',
-                });
-
-                if (response.ok) {
-                    setSelectedUsers([...selectedUsers, user]);
-                } else {
-                    console.error('Błąd podczas dodawania użytkownika do grupy');
-                }
+            if (response.ok) {
+                setSelectedUsers([...selectedUsers, user]);
             } else {
-                console.error('Failed to fetch XSRF token, response not OK');
+                console.error('Błąd podczas dodawania użytkownika do grupy');
             }
         } catch (error) {
             console.error('Error while adding user to group:', error);
@@ -219,7 +178,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
             <div className={styles.modalOverlay}>
                 <div className={styles.modalContent}>
                     <h3>Edit group</h3>
-                    <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true} setError={setError}/>
+                    <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true} setError={setError} />
                     <div className={styles.selectedUsers}>
                         {selectedUsers.map((user) => (
                             <div key={user.id} className={styles.selectedUser}>

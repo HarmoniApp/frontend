@@ -10,6 +10,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
+import { fetchCsrfToken } from '@/services/csrfService';
 
 interface ContractTypesProps {
   setError: (errorMessage: string | null) => void;
@@ -55,38 +56,23 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
   const handleDeleteContractType = async (contractId: number) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-        method: 'GET',
+      const tokenXSRF = await fetchCsrfToken(setError);
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type/${contractId}`, {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          'X-XSRF-TOKEN': tokenXSRF,
         },
         credentials: 'include',
       });
-
-      if (resquestXsrfToken.ok) {
-        const data = await resquestXsrfToken.json();
-        const tokenXSRF = data.token;
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type/${contractId}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-        });
-        if (!response.ok) {
-          console.error('Failed to delete department: ', response.statusText);
-          throw new Error('Failed to delete department');
-        }
-        setModalIsOpenLoadning(false);
-        setContracts(contracts.filter((contract) => contract.id !== contractId));
-      } else {
-        console.error('Failed to fetch XSRF token, response not OK');
+      if (!response.ok) {
+        console.error('Failed to delete department: ', response.statusText);
+        throw new Error('Failed to delete department');
       }
+      setModalIsOpenLoadning(false);
+      setContracts(contracts.filter((contract) => contract.id !== contractId));
     } catch (error) {
       console.error('Error deleting contract type:', error);
       setError('Błąd podczas usuwania umów');
@@ -129,19 +115,7 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
             onSubmit={async (values, { resetForm }) => {
               setModalIsOpenLoadning(true);
               try {
-                const tokenJWT = sessionStorage.getItem('tokenJWT');
-                const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-                  method: 'GET',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenJWT}`,
-                  },
-                  credentials: 'include',
-                });
-
-                if (resquestXsrfToken.ok) {
-                  const data = await resquestXsrfToken.json();
-                  const tokenXSRF = data.token;
+                const tokenXSRF = await fetchCsrfToken(setError);
 
                   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type/${contract.id}`, {
                     method: 'PUT',
@@ -162,9 +136,6 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
                   setContracts(contracts.map(c => (c.id === putData.id ? putData : c)));
                   setEditingContractId(null);
                   resetForm();
-                } else {
-                  console.error('Failed to fetch XSRF token, response not OK');
-                }
               } catch (error) {
                 console.error('Error updating contract type:', error);
                 throw error;
@@ -261,19 +232,7 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
         onSubmit={async (values, { resetForm }) => {
           setModalIsOpenLoadning(true);
           try {
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${tokenJWT}`,
-              },
-              credentials: 'include',
-            });
-
-            if (resquestXsrfToken.ok) {
-              const data = await resquestXsrfToken.json();
-              const tokenXSRF = data.token;
+            const tokenXSRF = await fetchCsrfToken(setError);
 
               const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type`, {
                 method: 'POST',
@@ -296,9 +255,6 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
               setIsAddModalOpen(true);
               setContracts([...contracts, postData]);
               resetForm();
-            } else {
-              console.error('Failed to fetch XSRF token, response not OK');
-            }
           } catch (error) {
             console.error('Error adding contract type:', error);
             setError('Błąd podczas dodawania typu umowy');

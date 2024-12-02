@@ -11,6 +11,7 @@ import Notification from '@/components/types/notification';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import '@/styles/main.css';
+import { fetchCsrfToken } from "@/services/csrfService";
 interface NavbarTopProps {
     onAccountIconClick: () => void;
     userId: number;
@@ -102,39 +103,22 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
         setUnreadCount(notifications.filter(notification => !notification.read && notification.id !== id).length);
         setModalIsOpenLoadning(true);
         try {
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-                method: 'GET',
+            const tokenXSRF = await fetchCsrfToken(setError);
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notification/${id}/read`, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenJWT}`,
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
                 },
                 credentials: 'include',
             });
-
-            if (resquestXsrfToken.ok) {
-                const data = await resquestXsrfToken.json();
-                const tokenXSRF = data.token;
-
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notification/${id}/read`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                        'X-XSRF-TOKEN': tokenXSRF,
-                    },
-                    credentials: 'include',
-                });
-                if (!response.ok) {
-                    console.error("Failed to mark notification as read: ", response.statusText);
-                    throw new Error(`Failed to mark notification as read: ${id}`);
-                }
-                setModalIsOpenLoadning(false);
-
-            } else {
-                console.error('Failed to fetch XSRF token, response not OK');
+            if (!response.ok) {
+                console.error("Failed to mark notification as read: ", response.statusText);
+                throw new Error(`Failed to mark notification as read: ${id}`);
             }
-
+            setModalIsOpenLoadning(false);
         } catch (error) {
             console.error(`Error marking notification ${id} as read:`, error);
             setError('Błąd podczas czytania powiadomień');

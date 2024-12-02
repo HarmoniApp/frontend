@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 import styles from './main.module.scss';
 import { jwtDecode } from "jwt-decode";
 import MyJwtPayload from '@/components/types/myJwtPayload';
+import { fetchCsrfToken } from '@/services/csrfService';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -62,97 +63,81 @@ const Login = () => {
   const handleSubmit = async (values: any) => {
     setModalIsOpenLoadning(true);
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: values.email,
-            password: values.password,
-          }),
-        });
-  
-        if (response.ok) {
-          setLoginError(null);
-          setModalIsOpenLoadning(false);
-          const data = await response.json();
-          const tokenJWT = data.jwtToken;
-          setPasswordPath(data.path);
-  
-          const decodedToken = jwtDecode<MyJwtPayload>(tokenJWT);
-          const userId = decodedToken.id;
-          const username = decodedToken.username;
-          const isAdmin = decodedToken.authorities === 'ROLE_ADMIN';
-  
-          sessionStorage.setItem('tokenJWT', tokenJWT);
-          sessionStorage.setItem('userId', userId.toString());
-          sessionStorage.setItem('username', username);
-          sessionStorage.setItem('isAdmin', JSON.stringify(isAdmin));
-  
-          const oneTimeUsedPass = data.path || '';
-          if (oneTimeUsedPass.length > 0) {
-            setIsChangePasswordModalOpen(true);
-          } else {
-            if (isAdmin) {
-              router.push('/dashboard');
-            } else {
-              router.push('/schedule');
-            }
-          }
-        } else if (response.status === 401) {
-          setLoginError("Niepoprawne hasło lub login.");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: values.email,
+          password: values.password,
+        }),
+      });
+
+      if (response.ok) {
+        setLoginError(null);
+        setModalIsOpenLoadning(false);
+        const data = await response.json();
+        const tokenJWT = data.jwtToken;
+        setPasswordPath(data.path);
+
+        const decodedToken = jwtDecode<MyJwtPayload>(tokenJWT);
+        const userId = decodedToken.id;
+        const username = decodedToken.username;
+        const isAdmin = decodedToken.authorities === 'ROLE_ADMIN';
+
+        sessionStorage.setItem('tokenJWT', tokenJWT);
+        sessionStorage.setItem('userId', userId.toString());
+        sessionStorage.setItem('username', username);
+        sessionStorage.setItem('isAdmin', JSON.stringify(isAdmin));
+
+        const oneTimeUsedPass = data.path || '';
+        if (oneTimeUsedPass.length > 0) {
+          setIsChangePasswordModalOpen(true);
         } else {
-          setLoginError("Wystąpił błąd podczas logowania.");
+          if (isAdmin) {
+            router.push('/dashboard');
+          } else {
+            router.push('/schedule');
+          }
         }
+      } else if (response.status === 401) {
+        setLoginError("Niepoprawne hasło lub login.");
+      } else {
+        setLoginError("Wystąpił błąd podczas logowania.");
+      }
     } catch (error) {
       console.error("An error occurred:", error);
       setLoginError("Wystąpił błąd podczas logowania.");
       setError('Błąd podczas logowania');
     }
   };
-  
+
   const handlePasswordChangeSubmit = async (values: any) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-        method: 'GET',
+      const tokenXSRF = await fetchCsrfToken(setError);
+
+      const requestBody = {
+        newPassword: values.newPassword,
+      };
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${passwordPath}`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          'X-XSRF-TOKEN': tokenXSRF,
         },
         credentials: 'include',
+        body: JSON.stringify(requestBody),
       });
-
-      if (resquestXsrfToken.ok) {
-        const data = await resquestXsrfToken.json();
-        const tokenXSRF = data.token;
-
-        const requestBody = {
-          newPassword: values.newPassword,
-        };
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${passwordPath}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-          body: JSON.stringify(requestBody),
-        });
-        if (!response.ok) {
-          console.error("Failed to change password: ", response.statusText);
-          throw new Error('Error changing password');
-        }
-        setModalIsOpenLoadning(false);
-        setIsChangePasswordModalOpen(false);
-
-      } else {
-        console.error('Failed to fetch XSRF token, response not OK');
+      if (!response.ok) {
+        console.error("Failed to change password: ", response.statusText);
+        throw new Error('Error changing password');
       }
+      setModalIsOpenLoadning(false);
+      setIsChangePasswordModalOpen(false);
     } catch (error) {
       console.error("An error occurred while changing password:", error);
       setError('Błąd');

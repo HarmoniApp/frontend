@@ -8,6 +8,7 @@ import AbsenceType from '@/components/types/absenceType';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import { Message } from 'primereact/message';
+import { fetchCsrfToken } from '@/services/csrfService';
 
 interface AbsenceEmployeesRequestProps {
     onClose: () => void;
@@ -125,49 +126,34 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                     onSubmit={async (values) => {
                         setModalIsOpenLoading(true);
                         try {
-                            const tokenJWT = sessionStorage.getItem('tokenJWT');
-                            const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-                                method: 'GET',
+                            const tokenXSRF = await fetchCsrfToken(setError);
+
+                            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence`, {
+                                method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${tokenJWT}`,
+                                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                                    'X-XSRF-TOKEN': tokenXSRF,
                                 },
                                 credentials: 'include',
+                                body: JSON.stringify({
+                                    absence_type_id: values.absence_type_id,
+                                    start: values.start,
+                                    end: values.end,
+                                    user_id: onSend,
+                                }),
                             });
-
-                            if (resquestXsrfToken.ok) {
-                                const data = await resquestXsrfToken.json();
-                                const tokenXSRF = data.token;
-
-                                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence`, {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                                        'X-XSRF-TOKEN': tokenXSRF,
-                                    },
-                                    credentials: 'include',
-                                    body: JSON.stringify({
-                                        absence_type_id: values.absence_type_id,
-                                        start: values.start,
-                                        end: values.end,
-                                        user_id: onSend,
-                                    }),
-                                });
-                                if (!response.ok) {
-                                    const errorData = await response.json();
-                                    console.error('Failed to add absence: ', response.statusText);
-                                    throw new Error(`Server error: ${errorData.message || 'Unknown error'}`);
-                                }
-                                setModalIsOpenLoading(false);
-                                setIsSubmitted(true);
-                                onRefresh();
-                            } else {
-                                console.error('Failed to fetch XSRF token, response not OK');
+                            if (!response.ok) {
+                                const errorData = await response.json();
+                                console.error('Failed to add absence: ', response.statusText);
+                                throw new Error(`Server error: ${errorData.message || 'Unknown error'}`);
                             }
+                            setModalIsOpenLoading(false);
+                            setIsSubmitted(true);
+                            onRefresh();
                         } catch (error) {
                             console.error('Error adding absence:', error);
-                            setError('Error adding absence');
+                            setError('Błąd podczas dodawania urlopu');
                         }
                     }}
                 >

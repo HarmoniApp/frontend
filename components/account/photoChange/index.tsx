@@ -1,5 +1,5 @@
 'use client';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,6 +7,7 @@ import { faUpload, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import styles from './main.module.scss';
 import { Message } from 'primereact/message';
+import { fetchCsrfToken } from '@/services/csrfService';
 
 interface PhotoChangeProps {
     onClose: () => void;
@@ -43,40 +44,26 @@ const PhotoChange: React.FC<PhotoChangeProps> = ({ onClose }) => {
         setLoading(true);
         try {
             const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-                method: 'GET',
+            const tokenXSRF = await fetchCsrfToken(setError);
+
+            const formData = new FormData();
+            if (values.file) {
+                formData.append('file', values.file);
+            }
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}/uploadPhoto`, {
+                method: 'PATCH',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${tokenJWT}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
                 },
                 credentials: 'include',
+                body: formData,
             });
 
-            if (resquestXsrfToken.ok) {
-                const data = await resquestXsrfToken.json();
-                const tokenXSRF = data.token;
-
-                const formData = new FormData();
-                if (values.file) {
-                    formData.append('file', values.file);
-                }
-
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}/uploadPhoto`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Authorization': `Bearer ${tokenJWT}`,
-                        'X-XSRF-TOKEN': tokenXSRF,
-                    },
-                    credentials: 'include',
-                    body: formData,
-                });
-
-                if (!response.ok) {
-                    console.error('Error uploading photo, response not OK');
-                    throw new Error('Error uploading photo');
-                }
-            } else {
-                console.error('Failed to fetch XSRF token, response not OK');
+            if (!response.ok) {
+                console.error('Error uploading photo, response not OK');
+                throw new Error('Error uploading photo');
             }
         } catch (error) {
             console.error('Error uploading photo: ', error);
@@ -103,7 +90,7 @@ const PhotoChange: React.FC<PhotoChangeProps> = ({ onClose }) => {
                 {({ setFieldValue, isSubmitting }) => (
                     <Form className={styles.form}>
                         <label htmlFor="file" className={styles.uploadLabel}>
-                            <FontAwesomeIcon icon={faUpload} className={styles.icon}/> 
+                            <FontAwesomeIcon icon={faUpload} className={styles.icon} />
                             <label className={styles.fileLabel}>Wybierz plik</label>
                             <input
                                 id="file"

@@ -10,12 +10,13 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
+import { fetchCsrfToken } from '@/services/csrfService';
 
 interface PredefinedShiftsProps {
   setError: (errorMessage: string | null) => void;
 }
 
-const PredefinedShifts: React.FC<PredefinedShiftsProps> = ( {setError} ) => {
+const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
   const [shifts, setShifts] = useState<PredefinedShift[]>([]);
   const [editingShiftId, setEditingShiftId] = useState<number | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -67,38 +68,23 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ( {setError} ) => {
   const handleDeleteShift = async (shiftId: number) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-        method: 'GET',
+      const tokenXSRF = await fetchCsrfToken(setError);
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${shiftId}`, {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          'X-XSRF-TOKEN': tokenXSRF,
         },
         credentials: 'include',
       });
-
-      if (resquestXsrfToken.ok) {
-        const data = await resquestXsrfToken.json();
-        const tokenXSRF = data.token;
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${shiftId}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-        });
-        if (!response.ok) {
-          console.error('Failed to delete shift:', response.statusText);
-          throw new Error('Failed to delete shift');
-        }
-        setModalIsOpenLoadning(false);
-        setShifts(shifts.filter((shift) => shift.id !== shiftId));
-      } else {
-        console.error('Failed to fetch XSRF token, response not OK');
+      if (!response.ok) {
+        console.error('Failed to delete shift:', response.statusText);
+        throw new Error('Failed to delete shift');
       }
+      setModalIsOpenLoadning(false);
+      setShifts(shifts.filter((shift) => shift.id !== shiftId));
     } catch (error) {
       console.error('Error deleting shift:', error);
       setError('Błąd podczas usuwania predefiniowalnych zmian');
@@ -147,14 +133,14 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ( {setError} ) => {
         {shifts.map((shift) => (
           <Formik
             key={shift.id + shift.name + shift.start + shift.end}
-            initialValues={{ 
-              id: shift.id, 
-              name: shift.name, 
+            initialValues={{
+              id: shift.id,
+              name: shift.name,
               start: formatTimeToHHMM(shift.start || '00:00'),
-              end: formatTimeToHHMM(shift.end || '00:00'), 
+              end: formatTimeToHHMM(shift.end || '00:00'),
             }}
             validationSchema={shiftValidationSchema}
-            onSubmit={async (values, { resetForm }, ) => {
+            onSubmit={async (values, { resetForm },) => {
               setModalIsOpenLoadning(true);
               const formattedValues = {
                 ...values,
@@ -162,42 +148,27 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ( {setError} ) => {
                 end: formatTimeToHHMM(values.end),
               };
               try {
-                const tokenJWT = sessionStorage.getItem('tokenJWT');
-                const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-                  method: 'GET',
+                const tokenXSRF = await fetchCsrfToken(setError);
+
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${shift.id}`, {
+                  method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenJWT}`,
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
                   },
                   credentials: 'include',
+                  body: JSON.stringify(formattedValues),
                 });
-
-                if (resquestXsrfToken.ok) {
-                  const data = await resquestXsrfToken.json();
-                  const tokenXSRF = data.token;
-
-                  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${shift.id}`, {
-                    method: 'PUT',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                      'X-XSRF-TOKEN': tokenXSRF,
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify(formattedValues),
-                  });
-                  if (!response.ok) {
-                    console.error('Failed to edit predefine shifts: ', response.statusText);
-                    throw new Error('Failed to edit predefine shifts');
-                  }
-                  setModalIsOpenLoadning(false);
-                  const putData: PredefinedShift = await response.json();
-                  setShifts(shifts.map(s => (s.id === putData.id ? putData : s)));
-                  setEditingShiftId(null);
-                  resetForm();
-                } else {
-                  console.error('Failed to fetch XSRF token, response not OK');
+                if (!response.ok) {
+                  console.error('Failed to edit predefine shifts: ', response.statusText);
+                  throw new Error('Failed to edit predefine shifts');
                 }
+                setModalIsOpenLoadning(false);
+                const putData: PredefinedShift = await response.json();
+                setShifts(shifts.map(s => (s.id === putData.id ? putData : s)));
+                setEditingShiftId(null);
+                resetForm();
               } catch (error) {
                 console.error('Error updating shift:', error);
                 setError('Błąd podczas edycji predefiniowalnej zmiany');
@@ -227,7 +198,7 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ( {setError} ) => {
                       ) : (
                         <>
                           <p className={styles.shiftNameParagraph}>{shift.name}</p>
-                          <p className={styles.shiftTimeParagraph}>{shift.start ? shift.start.slice(0,5) : 'Brak godziny'} - {shift.end ? shift.end.slice(0, 5) : 'Brak godziny'}</p>
+                          <p className={styles.shiftTimeParagraph}>{shift.start ? shift.start.slice(0, 5) : 'Brak godziny'} - {shift.end ? shift.end.slice(0, 5) : 'Brak godziny'}</p>
 
                         </>
                       )}
@@ -321,43 +292,28 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ( {setError} ) => {
             end: formatTimeToHHMM(values.end),
           };
           try {
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-              method: 'GET',
+            const tokenXSRF = await fetchCsrfToken(setError);
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift`, {
+              method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${tokenJWT}`,
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
               },
               credentials: 'include',
+              body: JSON.stringify(formattedValues),
             });
-
-            if (resquestXsrfToken.ok) {
-              const data = await resquestXsrfToken.json();
-              const tokenXSRF = data.token;
-
-              const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                  'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-                body: JSON.stringify(formattedValues),
-              });
-              if (!response.ok) {
-                console.error('Failed to add shift:', response.statusText);
-                throw new Error('Failed to add shift');
-              }
-              const dataPost: PredefinedShift = await response.json();
-              setModalIsOpenLoadning(false);
-              setShifts((prevShifts) => [...prevShifts, dataPost]);
-              setAddedPredefineShiftName(dataPost.name);
-              setIsAddModalOpen(true);
-              resetForm();
-            } else {
-              console.error('Failed to fetch XSRF token, response not OK');
+            if (!response.ok) {
+              console.error('Failed to add shift:', response.statusText);
+              throw new Error('Failed to add shift');
             }
+            const dataPost: PredefinedShift = await response.json();
+            setModalIsOpenLoadning(false);
+            setShifts((prevShifts) => [...prevShifts, dataPost]);
+            setAddedPredefineShiftName(dataPost.name);
+            setIsAddModalOpen(true);
+            resetForm();
           } catch (error) {
             console.error('Error adding shift:', error);
             setError('Błąd podczas dodawania predefiniowalnej zmiany');

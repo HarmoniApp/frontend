@@ -15,6 +15,7 @@ import { Card } from 'primereact/card';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import './main.css';
+import { fetchCsrfToken } from '@/services/csrfService';
 
 interface CalendarRowProps {
   currentWeek: Date[];
@@ -177,19 +178,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const handleAddShift = async (shiftData: { start: string; end: string; userId: number; roleName: string; }) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        },
-        credentials: 'include',
-      });
-
-      if (resquestXsrfToken.ok) {
-        const data = await resquestXsrfToken.json();
-        const tokenXSRF = data.token;
+      const tokenXSRF = await fetchCsrfToken(setError);
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift`, {
           method: 'POST',
@@ -214,9 +203,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
         }
         setModalIsOpenLoadning(false);
         fetchUserSchedule(shiftData.userId);
-      } else {
-        console.error('Failed to fetch XSRF token, response not OK');
-      }
     } catch (error) {
       console.error('Error adding add shift:', error);
       setError('Błąd podczas dodawania zmiany');
@@ -228,19 +214,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const handleEditShift = async (shiftData: { id: number; start: string; end: string; userId: number; roleName: string; }) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        },
-        credentials: 'include',
-      });
-
-      if (resquestXsrfToken.ok) {
-        const data = await resquestXsrfToken.json();
-        const tokenXSRF = data.token;
+      const tokenXSRF = await fetchCsrfToken(setError);
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftData.id}`, {
           method: 'PUT',
@@ -264,9 +238,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
         }
         setModalIsOpenLoadning(false);
         fetchUserSchedule(shiftData.userId);
-      } else {
-        console.error('Failed to fetch XSRF token, response not OK');
-      }
     } catch (error) {
       console.error('Error editing shift:', error);
       setError('Błąd podczas edycji zmiany');
@@ -278,19 +249,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const handleDeleteShift = async (shiftId: number, userId: number) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        },
-        credentials: 'include',
-      });
-
-      if (resquestXsrfToken.ok) {
-        const data = await resquestXsrfToken.json();
-        const tokenXSRF = data.token;
+      const tokenXSRF = await fetchCsrfToken(setError);
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
           method: 'DELETE',
@@ -307,9 +266,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
         }
         setModalIsOpenLoadning(false);
         fetchUserSchedule(userId);
-      } else {
-        console.error('Failed to fetch XSRF token, response not OK');
-      }
     } catch (error) {
       console.error('Error deleting shift:', error);
       setError('Błąd podczas usuwania zmiany');
@@ -332,19 +288,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     shiftsToPublish.forEach(async (shift) => {
       setModalIsOpenLoadning(true);
       try {
-        const tokenJWT = sessionStorage.getItem('tokenJWT');
-        const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${tokenJWT}`,
-          },
-          credentials: 'include',
-        });
-
-        if (resquestXsrfToken.ok) {
-          const data = await resquestXsrfToken.json();
-          const tokenXSRF = data.token;
+        const tokenXSRF = await fetchCsrfToken(setError);
 
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shift.id}`, {
             method: 'PATCH',
@@ -369,9 +313,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
               ),
             },
           }));
-        } else {
-          console.error('Failed to fetch XSRF token, response not OK');
-        }
       } catch (error) {
         console.error('Error publishing shift:', error);
         setError('Błąd podczas publikacji');

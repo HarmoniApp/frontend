@@ -17,6 +17,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
+import { fetchCsrfToken } from '@/services/csrfService';
 
 const AddEmployee: React.FC = () => {
   const router = useRouter();
@@ -240,19 +241,7 @@ const AddEmployee: React.FC = () => {
   const handleSubmit = async (values: typeof initialValues, { resetForm }: { resetForm: () => void }) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        },
-        credentials: 'include',
-      });
-
-      if (resquestXsrfToken.ok) {
-        const data = await resquestXsrfToken.json();
-        const tokenXSRF = data.token;
+      const tokenXSRF = await fetchCsrfToken(setError);
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user`, {
           method: 'POST',
@@ -284,9 +273,6 @@ const AddEmployee: React.FC = () => {
             return prev - 1;
           });
         }, 1000);
-      } else {
-        console.error('Failed to fetch XSRF token, response not OK');
-      }
     } catch (error) {
       console.error('Error adding employee:', error);
       throw error;

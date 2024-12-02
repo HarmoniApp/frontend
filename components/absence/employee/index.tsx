@@ -6,6 +6,7 @@ import AbsenceRequest from '@/components/absence/employee/absenceRequest';
 import CancelConfirmation from './cancelConfirmation';
 import styles from './main.module.scss';
 import { Message } from 'primereact/message';
+import { fetchCsrfToken } from '@/services/csrfService';
 
 interface AbsenceEmployeesProps {
     userId: number;
@@ -88,19 +89,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
 
         setLoading(true);
         try {
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenJWT}`,
-                },
-                credentials: 'include',
-            });
-
-            if (resquestXsrfToken.ok) {
-                const data = await resquestXsrfToken.json();
-                const tokenXSRF = data.token;
+            const tokenXSRF = await fetchCsrfToken(setError);
 
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/${selectedAbsenceId}/status/3`, {
                     method: 'DELETE',
@@ -117,9 +106,6 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                 }
                 setLoading(false);
                 fetchUserAbsences();
-            } else {
-                console.error('Failed to fetch XSRF token, response not OK');
-            }
         } catch (error) {
             console.error(`Error canceling absence with ID ${selectedAbsenceId}:`, error);
             setError('Error canceling absence');

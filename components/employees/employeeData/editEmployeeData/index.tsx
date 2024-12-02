@@ -18,6 +18,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import * as Yup from 'yup';
 import classNames from 'classnames';
+import { fetchCsrfToken } from '@/services/csrfService';
 
 interface EditEmployeeDataProps {
   employee: EmployeeDataWorkAdressOnlyId;
@@ -303,19 +304,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   const handleSubmit = async (values: typeof initialValues) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        },
-        credentials: 'include',
-      });
-
-      if (resquestXsrfToken.ok) {
-        const data = await resquestXsrfToken.json();
-        const tokenXSRF = data.token;
+      const tokenXSRF = await fetchCsrfToken(setError);
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${employee.id}`, {
           method: 'PATCH',
@@ -337,11 +326,6 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
         setChangedData(changedData);
         setModalIsOpenLoadning(false);
         setIsModalOpen(true);
-
-      } else {
-        console.error('Failed to fetch XSRF token, response not OK');
-      }
-
     } catch (error) {
       console.error('Błąd podczas aktualizacji danych pracownika:', error);
       setError('Błąd podczas edycji pracownika');

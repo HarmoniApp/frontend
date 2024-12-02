@@ -6,6 +6,7 @@ import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import styles from './main.module.scss';
+import { fetchCsrfToken } from '@/services/csrfService';
 
 interface SendMessageFormProps {
     selectedChat: ChatPartner | null;
@@ -45,45 +46,32 @@ const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSele
             }
 
             try {
-                const tokenJWT = sessionStorage.getItem('tokenJWT');
-                const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-                    method: 'GET',
+                const tokenXSRF = await fetchCsrfToken(setError);
+
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/send`, {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${tokenJWT}`,
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
                     },
                     credentials: 'include',
+                    body: JSON.stringify(messageData),
                 });
-                if (resquestXsrfToken.ok) {
-                    const dataToken = await resquestXsrfToken.json();
-                    const tokenXSRF = dataToken.token;
-                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/send`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                            'X-XSRF-TOKEN': tokenXSRF,
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify(messageData),
-                    });
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(`Błąd podczas wysyłania wiadomości: ${errorData.message || 'Nieznany błąd'}`);
-                    }
-
-                    const data = await response.json();
-                    setMessages([...messages, data]);
-                    if (selectedChat.type === 'user') {
-                        loadChatPartnersIndividual(true);
-                    } else if (selectedChat.type === 'group') {
-                        loadChatPartnersGroups(true);
-                    }
-                    //await fetchChatHistory(selectedChat, language);
-                    setSelectedChat(selectedChat);
-                } else {
-                    console.error('Failed to fetch XSRF token, response not OK');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`Błąd podczas wysyłania wiadomości: ${errorData.message || 'Nieznany błąd'}`);
                 }
+
+                const data = await response.json();
+                setMessages([...messages, data]);
+                if (selectedChat.type === 'user') {
+                    loadChatPartnersIndividual(true);
+                } else if (selectedChat.type === 'group') {
+                    loadChatPartnersGroups(true);
+                }
+                //await fetchChatHistory(selectedChat, language);
+                setSelectedChat(selectedChat);
             } catch (error) {
                 console.error("Error:", error);
                 setError('Błąd podczas wysyłania wiadomości');

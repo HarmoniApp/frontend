@@ -15,6 +15,7 @@ import SockJS from 'sockjs-client';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Message as PrimeMessage } from 'primereact/message';
 import { fetchLanguages } from "@/services/languageService";
+import { fetchCsrfToken } from '@/services/csrfService';
 
 const Chat = () => {
   const [chatPartners, setChatPartners] = useState<ChatPartner[]>([]);
@@ -343,18 +344,8 @@ const Chat = () => {
         setMessages(data);
 
         try {
-          const tokenJWT = sessionStorage.getItem('tokenJWT');
-          const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${tokenJWT}`,
-            },
-            credentials: 'include',
-          });
-          if (resquestXsrfToken.ok) {
-            const data = await resquestXsrfToken.json();
-            const tokenXSRF = data.token;
+          const tokenXSRF = await fetchCsrfToken(setError);
+
             await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/mark-all-read?userId1=${userId}&userId2=${partner.id}`, {
               method: 'PATCH',
               headers: {
@@ -364,12 +355,13 @@ const Chat = () => {
               },
               credentials: 'include',
             });
-          } else {
-            console.error('Failed to fetch XSRF token, response not OK');
-          }
+            if (!response.ok) {
+              console.error('Failed to fetch chat history:', response.statusText);
+              throw new Error('Failed to fetch chat history');
+            }
         } catch (error) {
           console.error("Error:", error);
-          setError('Error fetching chat hisotry');
+          setError('Błąd podczas pobierania histori czatu');
         }
       } else {
         const tokenJWT = sessionStorage.getItem('tokenJWT');

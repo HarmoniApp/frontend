@@ -9,6 +9,7 @@ import CancelConfirmation from './popUps/cancelConfirmation';
 import AproveConfirmation from './popUps/aproveConfirmation';
 import styles from './main.module.scss';
 import { Message } from 'primereact/message';
+import { fetchCsrfToken } from '@/services/csrfService';
 
 interface AbsenceCardProps {
     absence: Absence;
@@ -70,19 +71,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     const updateAbsenceStatus = async (absenceId: number, statusId: number) => {
         setModalIsOpenLoadning(true);
         try {
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenJWT}`,
-                },
-                credentials: 'include',
-            });
-
-            if (resquestXsrfToken.ok) {
-                const data = await resquestXsrfToken.json();
-                const tokenXSRF = data.token;
+            const tokenXSRF = await fetchCsrfToken(setError);
 
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v2/absence/${absenceId}/status/${statusId}`, {
                     method: 'PATCH',
@@ -102,11 +91,6 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                 setModalIsOpenLoadning(false);
                 // const responseData = await response.json();
                 // console.log('Updated absence status response data:', responseData);
-
-            } else {
-                console.error('Failed to fetch XSRF token, response not OK');
-            }
-
         } catch (error) {
             console.error('Error updating absence status:', error);
             setError('Error updating absence status');

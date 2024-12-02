@@ -3,6 +3,7 @@ import ChatPartner from '@/components/types/chatPartner';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import styles from './main.module.scss';
+import { fetchCsrfToken } from '@/services/csrfService';
 
 interface CreateGroupChatFormProps {
   userId: number;
@@ -28,45 +29,30 @@ const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setCh
     };
 
     try {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const resquestXsrfToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/csrf`, {
-        method: 'GET',
+      const tokenXSRF = await fetchCsrfToken(setError);
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          'X-XSRF-TOKEN': tokenXSRF,
         },
         credentials: 'include',
+        body: JSON.stringify(groupData),
       });
 
-      if (resquestXsrfToken.ok) {
-        const data = await resquestXsrfToken.json();
-        const tokenXSRF = data.token;
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-          body: JSON.stringify(groupData),
-        });
-
-        if (response.ok) {
-          const newGroup = await response.json();
-          setChatType('group');
-          loadChatPartnersGroups(false);
-          setNewChat(false);
-          setChatPartners([...chatPartners, newGroup]);
-          setSelectedChat(newGroup);
-          fetchChatHistory(newGroup);
-        } else {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Błąd podczas tworzenia grupy');
-        }
+      if (response.ok) {
+        const newGroup = await response.json();
+        setChatType('group');
+        loadChatPartnersGroups(false);
+        setNewChat(false);
+        setChatPartners([...chatPartners, newGroup]);
+        setSelectedChat(newGroup);
+        fetchChatHistory(newGroup);
       } else {
-        console.error('Failed to fetch XSRF token, response not OK');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Błąd podczas tworzenia grupy');
       }
     } catch (error) {
       console.error('Błąd podczas tworzenia grupy:', error);
