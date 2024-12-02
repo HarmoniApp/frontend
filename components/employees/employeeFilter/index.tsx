@@ -5,6 +5,9 @@ import Language from '@/components/types/language';
 import Role from '@/components/types/role';
 import styles from './main.module.scss';
 import Flag from 'react-flagkit';
+import { fetchLanguages } from "@/services/languageService";
+import { fetchRoles } from "@/services/roleService"
+
 interface FilterEmployeeProps {
   onApplyFilters: (filters: { roles?: number[]; languages?: number[]; order?: string }) => void;
   setError: (errorMessage: string | null) => void;
@@ -16,47 +19,22 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters, setErro
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
   const [selectedLanguages, setSelectedLanguages] = useState<number[]>([]);
   const [order, setOrder] = useState<string | null>(null);
-
-  const fetchRoles = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setRoles(data);
-    } catch (error) {
-      console.error('Error fetching roles:', error);
-      setError('Błąd podczas pobierania roli');
-    }
-  };
-
-  const fetchLanguages = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/language`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setLanguages(data);
-    } catch (error) {
-      console.error('Error fetching languages:', error);
-      setError('Błąd podczas pobierania języków');
-    }
-  };
+  const [loading, setLoading] = useState(false);
+  const [isPositionOpen, setIsPositionOpen] = useState(false);
+  const [isSortOpen, setIsSortOpen] = useState(false);
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  const positionListRef = useRef<HTMLDivElement>(null);
+  const sortListRef = useRef<HTMLDivElement>(null);
+  const languageListRef = useRef<HTMLDivElement>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
-    fetchRoles();
-  }, []);
+    const loadData = async () => {
+      await fetchRoles(setRoles, setError, setLoading);
+      await fetchLanguages(setLanguages, setError, setLoading);
+    };
 
-  useEffect(() => {
-    fetchLanguages();
+    loadData();
   }, []);
 
   useEffect(() => {
@@ -98,14 +76,6 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters, setErro
     onApplyFilters({});
   };
 
-  const [isPositionOpen, setIsPositionOpen] = useState(false);
-  const [isSortOpen, setIsSortOpen] = useState(false);
-  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
-
-  const positionListRef = useRef<HTMLDivElement>(null);
-  const sortListRef = useRef<HTMLDivElement>(null);
-  const languageListRef = useRef<HTMLDivElement>(null);
-
   const toggleSection = (setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, ref: React.RefObject<HTMLDivElement>) => {
     setIsOpen(prevIsOpen => {
       const isOpen = !prevIsOpen;
@@ -120,7 +90,6 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters, setErro
     });
   };
 
-  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {

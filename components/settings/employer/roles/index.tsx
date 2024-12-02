@@ -2,11 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
-import RoleWithColour from '@/components/types/roleWithColour';
+import Role from '@/components/types/role';
 import AddNotification from '../popUps/addNotification';
 import DeleteConfirmation from '../popUps/deleteConfirmation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { fetchRoles } from "@/services/roleService"
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
@@ -18,7 +19,7 @@ interface RolesProps {
 const Roles: React.FC<RolesProps> = ({ setError }) => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [roles, setRoles] = useState<RoleWithColour[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
   const [editingRoleId, setEditingRoleId] = useState<number | null>(null);
   const [addedRoleName, setAddedRoleName] = useState<string>('');
   const [deleteRoleId, setDeleteRoleId] = useState<number | null>(null);
@@ -30,25 +31,12 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
   };
 
   useEffect(() => {
-    fetchRoles();
-  }, []);
+    const loadRoles = async () => {
+      await fetchRoles(setRoles, setError, setModalIsOpenLoadning);
+    };
 
-  const fetchRoles = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        }
-      });
-      const data = await response.json();
-      setRoles(data);
-    } catch (error) {
-      console.error('Error fetching roles:', error);
-      setError('Błąd podczas pobierania ról');
-    }
-  };
+    loadRoles();  
+  }, []);
 
   const handleDeleteRole = async (roleId: number) => {
     setModalIsOpenLoadning(true);
@@ -81,7 +69,7 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
           throw new Error('Failed to delete role');
         }
         setModalIsOpenLoadning(false);
-        await fetchRoles();
+        await fetchRoles(setRoles, setError, setModalIsOpenLoadning);
       } else {
         console.error('Failed to fetch XSRF token, response not OK');
       }
@@ -128,7 +116,7 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
         const newRole = await response.json();
         setAddedRoleName(newRole.name);
         setIsAddModalOpen(true);
-        await fetchRoles();
+        await fetchRoles(setRoles, setError, setModalIsOpenLoadning);
         resetForm();
       } else {
         console.error('Failed to fetch XSRF token, response not OK');
@@ -176,7 +164,7 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
           }
           setModalIsOpenLoadning(false);
           await response.json();
-          await fetchRoles();
+          await fetchRoles(setRoles, setError, setModalIsOpenLoadning);
           setEditingRoleId(null);
           resetForm();
         } else {

@@ -14,6 +14,7 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Message as PrimeMessage } from 'primereact/message';
+import { fetchLanguages } from "@/services/languageService";
 
 const Chat = () => {
   const [chatPartners, setChatPartners] = useState<ChatPartner[]>([]);
@@ -45,28 +46,11 @@ const Chat = () => {
   };;
 
   useEffect(() => {
-    setLoading(true);
-
-    const fetchLanguages = async () => {
-      try {
-        const tokenJWT = sessionStorage.getItem('tokenJWT');
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/language`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${tokenJWT}`,
-          }
-        });
-        if (!response.ok) throw new Error('Failed to fetch languages');
-        const data = await response.json();
-        setLanguages(data);
-      } catch (error) {
-        console.error('Error while fetching languages:', error);
-        setError('Error fetching languages');
-      }
+    const loadData = async () => {
+      await fetchLanguages(setLanguages, setError, setLoading);
     };
-    fetchLanguages();
-    setLoading(false);
+
+    loadData();
   }, []);
 
   useEffect(() => {

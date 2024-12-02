@@ -10,6 +10,8 @@ import Contract from '@/components/types/contract';
 import Language from '@/components/types/language';
 import Supervisor from '@/components/types/supervisor';
 import Department from '@/components/types/department';
+import { fetchLanguages } from "@/services/languageService";
+import { fetchRoles } from "@/services/roleService"
 import { Message } from 'primereact/message';
 import styles from './main.module.scss';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -103,46 +105,16 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     }
   };
 
-  const fetchRoles = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setRoles(data);
-    } catch (error) {
-      console.error('Error fetching roles:', error);
-      setError('Błąd podczas pobierania ról');
-    }
-  };
-
-  const fetchLanguages = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/language`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setLanguages(data);
-    } catch (error) {
-      console.error('Error fetching languages:', error);
-      setError('Błąd podczas pobierania języków');
-    }
-  };
-
   useEffect(() => {
-    fetchContracts();
-    fetchDepartments();
-    fetchSupervisors();
-    fetchRoles();
-    fetchLanguages();
+    const loadData = async () => {
+      await fetchContracts();
+      await fetchDepartments();
+      await fetchSupervisors();
+      await fetchRoles(setRoles, setError, setModalIsOpenLoadning);
+      await fetchLanguages(setLanguages, setError, setModalIsOpenLoadning);
+    };
+
+    loadData();
   }, []);
 
   const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {

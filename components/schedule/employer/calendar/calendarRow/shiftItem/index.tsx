@@ -2,14 +2,14 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarPlus, faPersonThroughWindow } from '@fortawesome/free-solid-svg-icons';
 import Shift from '@/components/types/shift';
-import RoleWithColour from '@/components/types/roleWithColour';
+import Role from '@/components/types/role';
 import styles from './main.module.scss';
 
 interface ShiftItemProps {
   date: string;
   shifts: Shift[];
   absence: boolean;
-  roles: RoleWithColour[];
+  roles: Role[];
 }
 
 const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence, roles }) => {

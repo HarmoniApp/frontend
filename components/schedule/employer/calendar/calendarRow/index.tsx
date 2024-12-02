@@ -7,9 +7,9 @@ import WeekSchedule from '@/components/types/weekSchedule';
 import User from '@/components/types/user';
 import Shift from '@/components/types/shift';
 import { Message } from 'primereact/message';
-import RoleWithColour from '@/components/types/roleWithColour';
+import Role from '@/components/types/role';
 import styles from './main.module.scss';
-
+import { fetchRoles } from "@/services/roleService"
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Card } from 'primereact/card';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
@@ -34,7 +34,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [abortController, setAbortController] = useState<AbortController | null>(null);
-  const [roles, setRoles] = useState<RoleWithColour[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,28 +43,11 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
-    const fetchRoles = async () => {
-      setLoadingRoles(true);
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${tokenJWT}`,
-          }
-        });
-        const data = await response.json();
-        setRoles(data);
-      } catch (error) {
-        console.error('Error fetching roles:', error);
-        setError('Błąd podczas pobierania roli');
-      } finally {
-        setLoadingRoles(false);
-      }
+    const loadData = async () => {
+      await fetchRoles(setRoles, setError, setLoadingRoles);
     };
 
-    fetchRoles();
+    loadData();
   }, []);
 
   const fetchFilteredUsers = async (filters: { query?: string } = {}, pageNumber: number = 1, pageSize: number = 20) => {
