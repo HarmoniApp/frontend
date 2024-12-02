@@ -69,7 +69,7 @@ const AbsenceEmployer: React.FC = () => {
       setUsers(allUsers);
     } catch (error) {
       console.error('Error fetching users:', error);
-      setError('Error fetching users');
+      setError('Błąd podczas pobierania użytkowników');
     } finally {
       setLoading(false);
     }

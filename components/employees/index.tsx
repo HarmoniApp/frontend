@@ -70,7 +70,7 @@ const EmployeesComponent: React.FC = () => {
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
-      setError('Błąd podczas filtrowania danych');
+      setError('Błąd podczas filtrowania danychTets');
       setLoading(false);
     }
   };

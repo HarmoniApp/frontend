@@ -27,10 +27,36 @@ $white-4: #e8e8e8; //1of1
 // $employeeCalendar-border-colour: #CCC; //1of1 //probably not needed
 
 .errorMessageComponent {
-    text-align: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    margin-top: 100px;
+    position: fixed;
+    top: 70px; /* Margines od lewej strony */
+    right: 20px; /* Początkowa pozycja */
+    width: calc(100% - 40px); /* Zachowaj marginesy */
+    max-width: 400px; /* Ogranicz szerokość */
+    z-index: 1000; /* Wyższy indeks, aby były widoczne */
+    // background-color: #f8d7da;
+    // color: #721c24;
+    // border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    animation: slideDown 0.3s ease-in-out;
+}
+
+/* Dodaj animację dla błędów */
+@keyframes slideDown {
+    from {
+        transform: translateX(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Każdy kolejny błąd przesunięty w górę */
+.errorMessageComponent:nth-child(n) {
+    bottom: calc(20px + (50px * (n - 1))); /* Pozycjonuj błędy w stosunku do siebie */
+    opacity: 1;
 }
