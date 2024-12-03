@@ -3,7 +3,7 @@ import ChatPartner from '@/components/types/chatPartner';
 import Message from '@/components/types/message';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AuthorizedImage from '@/components/chat/authorizedImage';
-import { faEye, faUsers, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faUsers, faUsersRectangle } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 
 interface ConversationProps {
@@ -43,7 +43,7 @@ const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType,
                     <h2>{selectedChat.name}</h2>
                     <p></p>
                     <div onClick={() => setIsEditGroupModalOpen(true)} className={styles.editIcon}>
-                        <FontAwesomeIcon icon={faCircleInfo} className={styles.info} />
+                        <FontAwesomeIcon icon={faUsersRectangle} className={styles.info} />
                     </div>
                 </div>
             )}

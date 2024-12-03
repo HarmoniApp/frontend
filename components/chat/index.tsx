@@ -16,6 +16,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { Message as PrimeMessage } from 'primereact/message';
 import { fetchLanguages } from "@/services/languageService";
 import { fetchCsrfToken } from '@/services/csrfService';
+import NewConversationForm from './newConversationForm';
 
 const Chat = () => {
   const [chatPartners, setChatPartners] = useState<ChatPartner[]>([]);
@@ -211,6 +212,55 @@ const Chat = () => {
     }
   }
 
+  const loadChatPartners = async (selectFirstPartner = false) => {
+  setLoading(true);
+
+  try {
+    const tokenJWT = sessionStorage.getItem('tokenJWT');
+
+    // Pobranie partnerów indywidualnych
+    const chatPartnersIndividualResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/chat-partners?userId=${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokenJWT}`,
+      }
+    });
+    if (!chatPartnersIndividualResponse.ok) throw new Error('Błąd podczas pobierania partnerów indywidualnych');
+    const dataIndividual = await chatPartnersIndividualResponse.json();
+    const individualPartners = await Promise.all(dataIndividual.map((id: number) => fetchUserDetails(id)));
+
+    // Pobranie partnerów grupowych
+    const chatPartnersGroupsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/chat-partners?userId=${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokenJWT}`,
+      }
+    });
+    if (!chatPartnersGroupsResponse.ok) throw new Error('Błąd podczas pobierania partnerów grupowych');
+    const dataGroups = await chatPartnersGroupsResponse.json();
+    const groupPartners = await Promise.all(dataGroups.map((id: number) => fetchGroupDetails(id)));
+
+    // Połącz partnerów indywidualnych i grupowych
+    const combinedPartners = [...individualPartners, ...groupPartners];
+    setChatPartners(combinedPartners);
+
+    // Automatyczny wybór pierwszego partnera
+    if (selectFirstPartner && combinedPartners.length > 0) {
+      const newestChatPartner = combinedPartners[0];
+      setSelectedChat(newestChatPartner);
+      await fetchChatHistory(newestChatPartner, selectedLanguage);
+    }
+  } catch (error) {
+    console.error('Error loading chat partners:', error);
+    setError('Error loading chat partners');
+  } finally {
+    setLoading(false);
+  }
+};
+
+
   useEffect(() => {
     setLoading(true);
 
@@ -225,6 +275,7 @@ const Chat = () => {
     };
 
     loadPartners();
+    loadChatPartners();
     setLoading(false);
   }, [chatType, userId]);
 
@@ -420,8 +471,8 @@ const Chat = () => {
               selectedChat={selectedChat}
               setSelectedChat={setSelectedChat}
               setNewChat={setNewChat}
-              chatType={chatType}
-              setChatType={setChatType}
+              // chatType={chatType}
+              // setChatType={setChatType}
               chatPartners={chatPartners}
               loading={setLoading}
               fetchChatHistory={fetchChatHistory}
@@ -429,25 +480,37 @@ const Chat = () => {
           </div>
           <div className={styles.chatWindow}>
             {newChat ? (
-              chatType === 'group' ? (
-                <div className={styles.newChat}>
-                  <CreateGroupChatForm
-                    userId={userId}
-                    setChatType={setChatType}
-                    setNewChat={setNewChat}
-                    chatPartners={chatPartners}
-                    setChatPartners={setChatPartners}
-                    setSelectedChat={setSelectedChat}
-                    fetchChatHistory={fetchChatHistory}
-                    loadChatPartnersGroups={loadChatPartnersGroups}
-                    loading={setLoading}
-                    setError={setError}
-                  />
-                </div>
-              ) : (
-                <div className={styles.newChat}>
-                  <SearchUser handleSelectUser={handleSelectUser} groupChat={false} setError={setError} />
-                </div>)
+              // chatType === 'group' ? (
+              //   <div className={styles.newChat}>
+              //     <CreateGroupChatForm
+                    // userId={userId}
+                    // setChatType={setChatType}
+                    // setNewChat={setNewChat}
+                    // chatPartners={chatPartners}
+                    // setChatPartners={setChatPartners}
+                    // setSelectedChat={setSelectedChat}
+                    // fetchChatHistory={fetchChatHistory}
+                    // loadChatPartnersGroups={loadChatPartnersGroups}
+                    // loading={setLoading}
+                    // setError={setError}
+              //     />
+              //   </div>
+              // ) : (
+              //   <div className={styles.newChat}>
+              //     <SearchUser handleSelectUser={handleSelectUser} groupChat={false} setError={setError} />
+              //   </div>)
+              <NewConversationForm 
+                userId={userId}
+                setChatType={setChatType}
+                setNewChat={setNewChat}
+                chatPartners={chatPartners}
+                setChatPartners={setChatPartners}
+                setSelectedChat={setSelectedChat}
+                fetchChatHistory={fetchChatHistory}
+                loadChatPartnersGroups={loadChatPartnersGroups}
+                loading={setLoading}
+                setError={setError}
+                handleSelectUser={handleSelectUser}/>
             ) : selectedChat ? (
               <>
                 <Conversation

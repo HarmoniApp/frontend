@@ -1,0 +1,46 @@
+@import '@/styles/variables.scss';
+
+// .newConversationForm {
+//     display: flex;
+//     flex-direction: column;
+//     padding: 20px;
+//     gap: 20px;
+// }
+
+.newConversationForm {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+    gap: 40px; // Dodatkowy odstęp między kolumnami
+}
+
+.userNewConversation,
+.groupNewConversation {
+    flex: 1; // Każda kolumna zajmuje równą przestrzeń
+}
+
+@media (max-width: 768px) {
+    .newConversationForm {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px;
+    }
+}
+
+
+.newConversationLabel {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: $main-colour; // Kolor zdefiniowany w variables.scss
+    margin-bottom: 10px;
+}
+
+.userNewConversation, .groupNewConversation {
+    background-color: $white-4; // Subtelne tło
+    padding: 20px;
+    border: 1px solid $main-colour;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); // Delikatny cień
+}

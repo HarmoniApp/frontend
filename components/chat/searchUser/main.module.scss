@@ -6,11 +6,11 @@
     width: 100%;
     max-width: 750px;
     margin: 0 auto;
-    background-color: $white;
-    border: 2px solid $main-colour;
-    border-radius: 8px;
+    // background-color: $white;
+    // border: 2px solid $main-colour;
+    // border-radius: 8px;
     padding: 16px;
-    box-shadow: 0 4px 6px $black-transparency-01;
+    // box-shadow: 0 4px 6px $black-transparency-01;
 
     .searchUserInputContainer {
         display: flex;
@@ -22,7 +22,7 @@
             flex: 1;
             padding: 8px 12px;
             font-size: 14px;
-            border: 1px solid $black;
+            border: 2px solid $main-colour;
             border-radius: 4px;
             outline: none;
             transition: border-color 0.3s;

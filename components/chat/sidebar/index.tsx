@@ -13,29 +13,31 @@ interface SidebarProps {
     selectedChat: ChatPartner | null;
     setSelectedChat: (chatPartner: ChatPartner | null) => void;
     setNewChat: (newChat: boolean) => void;
-    chatType: 'user' | 'group';
-    setChatType: (chatType: 'user' | 'group') => void;
+    // chatType: 'user' | 'group';
+    // setChatType: (chatType: 'user' | 'group') => void;
     chatPartners: ChatPartner[];
     loading: (loading: boolean) => void;
     fetchChatHistory: (selectedChat: ChatPartner, language: string) => void;
     setError: (errorMessage: string | null) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, setError }) => {
-    const handleNewIndividualChat = () => {
+// const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, setError }) => {
+    const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatPartners, loading, fetchChatHistory, setError }) => {
+    const handleNewChat = () => {
+        // const handleNewIndividualChat = () => {
         loading(true);
         setNewChat(true);
         setSelectedChat(null);
         loading(false);
     };
 
-    const handleNewGroupChat = () => {
-        loading(true);
-        setNewChat(true);
-        setChatType('group');
-        setSelectedChat(null);
-        loading(false);
-    };
+    // const handleNewGroupChat = () => {
+    //     loading(true);
+    //     setNewChat(true);
+    //     setChatType('group');
+    //     setSelectedChat(null);
+    //     loading(false);
+    // };
 
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         loading(true);
@@ -48,22 +50,15 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
         loading(false);
     };
 
-    const trimmedLastChatMessages = () => {
-        chatPartners.forEach((partner) => {
-            if (partner.lastMessage) {
-                partner.lastMessage = partner.lastMessage.length > 25 ? `${partner.lastMessage.slice(0, 25)}...` : partner.lastMessage;
-            }
-        });
-    }
-
     return (
         <>
             <div className={styles.sidebarHeader}>
                 <div
                     className={styles.newChatContainer}
-                    onClick={chatType === 'user' ? handleNewIndividualChat : handleNewGroupChat}
+                    // onClick={chatType === 'user' ? handleNewIndividualChat : handleNewGroupChat}
+                    onClick={handleNewChat}
                 >
-                    {chatType === 'user' ? (
+                    {/* {chatType === 'user' ? (
                         <>
                             <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon}/>
                             <label className={styles.newChatLabel}>Nowy chat indywidualny</label>
@@ -73,9 +68,12 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                             <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon}/>
                             <label className={styles.newChatLabel}>Nowy chat grupowy</label>
                         </>
-                    )}
+                    )} */}
+
+                    <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon} />
+                    <label className={styles.newChatLabel}>Dodaj chat/grupę</label>
                 </div>
-                <div className={styles.selectedChatContainer}>
+                {/* <div className={styles.selectedChatContainer}>
                     <div className={styles.sectionSelector}>
                         <div
                             onClick={() => setChatType('user')}
@@ -92,7 +90,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                             <label>Grupowy</label>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
             <ul className={styles.chatList}>
                 {chatPartners.map((partner) => (
