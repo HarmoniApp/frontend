@@ -7,6 +7,7 @@ import CancelConfirmation from './cancelConfirmation';
 import styles from './main.module.scss';
 import { Message } from 'primereact/message';
 import { fetchCsrfToken } from '@/services/csrfService';
+import { fetchAvailableAbsenceDays } from '@/services/absenceService';
 
 interface AbsenceEmployeesProps {
     userId: number;
@@ -114,32 +115,12 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
         }
     };
 
-    const fetchAvailableAbsenceDays = async () => {
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}/availableAbsenceDays`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                },
-            });
-
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error(`Error fetching absence available days for ID ${userId}:`, error);
-            setError('Error fetching absence available days');
-            return 'Unknown';
-        }
-    };
-
     useEffect(() => {
-        const loadAvailableAbsenceDays = async () => {
-            const days = await fetchAvailableAbsenceDays();
-            setAvailableAbsenceDays(days);
+        const fetchData = async () => {
+           await fetchAvailableAbsenceDays(userId, setAvailableAbsenceDays, setError, setLoading)
         };
 
-        loadAvailableAbsenceDays();
+        fetchData();
     }, []);
 
     return (

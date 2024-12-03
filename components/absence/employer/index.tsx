@@ -11,6 +11,7 @@ import styles from './main.module.scss';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
+import { fetchAbsences } from '@/services/absenceService';
 
 const AbsenceEmployer: React.FC = () => {
   const [absences, setAbsences] = useState<Absence[]>([]);
@@ -21,28 +22,6 @@ const AbsenceEmployer: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  const fetchAbsences = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setAbsences(data.content);
-    } catch (error) {
-      console.error('Error fetching absences:', error);
-      setError('Error fetching absences');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -76,8 +55,11 @@ const AbsenceEmployer: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchAbsences();
-    fetchUsers();
+    const fetchData = async () => {
+      await fetchAbsences(setAbsences, setError, setLoading);
+      fetchUsers();
+    };
+    fetchData();
 
     const fetchAbsencesStatus = async () => {
       try {
@@ -208,7 +190,7 @@ const AbsenceEmployer: React.FC = () => {
               : styles.cardsViewContainerList
           }>
             {filteredAbsences.map(absence => (
-              <AbsenceCard key={absence.id} absence={absence} onStatusUpdate={fetchAbsences} />
+              <AbsenceCard key={absence.id} absence={absence} onStatusUpdate={() => fetchAbsences(setAbsences, setError, setLoading)} />
             ))}
           </div>
         )}
