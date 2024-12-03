@@ -3,7 +3,7 @@ import ChatPartner from '@/components/types/chatPartner';
 import AuthorizedImage from '@/components/chat/authorizedImage';
 import Language from '@/components/types/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUsers, faUser, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faUser, faPlus, faLanguage } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 
 interface SidebarProps {
@@ -48,55 +48,48 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
         loading(false);
     };
 
+    const trimmedLastChatMessages = () => {
+        chatPartners.forEach((partner) => {
+            if (partner.lastMessage) {
+                partner.lastMessage = partner.lastMessage.length > 25 ? `${partner.lastMessage.slice(0, 25)}...` : partner.lastMessage;
+            }
+        });
+    }
+
     return (
         <>
             <div className={styles.sidebarHeader}>
-                <div className={styles.headerTop}>
-                    <span>Translate: </span>
-                    <select
-                        value={selectedLanguage}
-                        onChange={handleLanguageChange}
-                        className={styles.languageSelect}
-                    >
-                        <option value="">None</option>
-                        {languages.map((language) => (
-                            <option key={language.code} value={language.code}>
-                                {language.name}
-                            </option>
-                        ))}
-                    </select>
+                <div className={styles.newChatContainer}>
+                    {chatType === 'user' ? (
+                        <>
+                            <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon} onClick={handleNewIndividualChat} />
+                            <label className={styles.newChatLabel}>Nowy chat indywidualny</label>
+                        </>
+                    ) : (
+                        <>
+                            <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon} onClick={handleNewGroupChat} />
+                            <label className={styles.newChatLabel}>Nowy chat grupowy</label>
+                        </>
+                    )}
                 </div>
-                <div className={styles.headerBottom}>
+                <div className={styles.selectedChatContainer}>
                     <div className={styles.sectionSelector}>
                         <div
                             onClick={() => setChatType('user')}
                             className={`${styles.sectionBlock} ${chatType === 'user' ? styles.activeSection : ''}`}
                         >
-                            <FontAwesomeIcon icon={faUser} /> Individual
+                            <FontAwesomeIcon icon={faUser} className={styles.activeIcon} />
+                            <label>Indywidualny</label>
                         </div>
-
                         <div
                             onClick={() => setChatType('group')}
                             className={`${styles.sectionBlock} ${chatType === 'group' ? styles.activeSection : ''}`}
                         >
-                            <FontAwesomeIcon icon={faUsers} /> Groups
+                            <FontAwesomeIcon icon={faUsers} />
+                            <label>Grupowy</label>
                         </div>
                     </div>
-
                 </div>
-                {chatType === 'user' && (
-                    <div>
-                        <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewIndividualChat} />
-                        New individual
-                    </div>
-                )}
-
-                {chatType === 'group' && (
-                    <div>
-                        <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleNewGroupChat} />
-                        New group
-                    </div>
-                )}
             </div>
             <ul className={styles.chatList}>
                 {chatPartners.map((partner) => (
@@ -113,13 +106,35 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                         ) : (
                             <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
                         )}
-                        <div>
-                            <p className={styles.chatName}>{partner.name}</p>
-                            <p className={styles.lastMessage}>{partner.lastMessage || 'Brak wiadomości'}</p>
+                        <div className={styles.messagesTileInfo}>
+                            <label className={styles.chatName}>{partner.name}</label>
+                            <label className={styles.lastMessage}>
+                                {partner.lastMessage
+                                    ? partner.lastMessage.length > 25
+                                        ? `${partner.lastMessage.slice(0, 25)}...`
+                                        : partner.lastMessage
+                                    : 'Brak wiadomości'}
+                            </label>
                         </div>
                     </li>
                 ))}
             </ul>
+            <div className={styles.translateContainer}>
+                <FontAwesomeIcon icon={faLanguage} />
+                <span>Przetłumacz: </span>
+                <select
+                    value={selectedLanguage}
+                    onChange={handleLanguageChange}
+                    className={styles.languageSelect}
+                >
+                    <option value="">Oryginalny</option>
+                    {languages.map((language) => (
+                        <option key={language.code} value={language.code}>
+                            {language.name}
+                        </option>
+                    ))}
+                </select>
+            </div>
         </>
     );
 };

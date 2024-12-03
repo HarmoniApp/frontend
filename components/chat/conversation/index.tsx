@@ -46,8 +46,7 @@ const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType,
                 {messages.map((message) => (
                     <div
                         key={message.id}
-                        className={`${styles.message} ${message.sender_id === userId ? styles.selfMessage : styles.otherMessage
-                            } ${message.is_read ? styles.readMessage : styles.unreadMessage}`}
+                        className={`${styles.message} ${message.sender_id === userId ? styles.selfMessage : styles.otherMessage}`}
                     >
                         {message.sender_id !== userId && (
                             <div className={styles.messageAvatar}>
@@ -65,10 +64,12 @@ const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType,
                             <span>{message.groupSenderName}</span>
                         )}
                         <p>{message.content}</p>
-                        <span className={styles.timestamp}>{message.sent_at}</span>
-                        {message.sender_id === userId && message.is_read && (
-                            <FontAwesomeIcon icon={faEye} className={styles.readIcon} />
-                        )}
+                        <div className={styles.timeAndReadMessagesContainer}>
+                            {message.sender_id === userId && message.is_read ? (
+                                <FontAwesomeIcon icon={faEye} className={styles.readIcon} />
+                            ): (null)}
+                            <span className={styles.timestamp}>{message.sent_at}</span>
+                        </div>
                     </div>
                 ))}
             </div>

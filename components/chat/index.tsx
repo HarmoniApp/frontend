@@ -346,19 +346,19 @@ const Chat = () => {
         try {
           const tokenXSRF = await fetchCsrfToken(setError);
 
-            await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/mark-all-read?userId1=${userId}&userId2=${partner.id}`, {
-              method: 'PATCH',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                'X-XSRF-TOKEN': tokenXSRF,
-              },
-              credentials: 'include',
-            });
-            if (!response.ok) {
-              console.error('Failed to fetch chat history:', response.statusText);
-              throw new Error('Failed to fetch chat history');
-            }
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/mark-all-read?userId1=${userId}&userId2=${partner.id}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+              'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+          });
+          if (!response.ok) {
+            console.error('Failed to fetch chat history:', response.statusText);
+            throw new Error('Failed to fetch chat history');
+          }
         } catch (error) {
           console.error("Error:", error);
           setError('Błąd podczas pobierania histori czatu');
@@ -473,11 +473,15 @@ const Chat = () => {
                 />
               </>
             ) : (
-              <p>Select chat</p>
+              <p>Select chat</p> 
             )}
           </div>
         </>
-      ) : (<div className={styles.spinnerContainer}><ProgressSpinner /></div>)}
+      ) : (
+        <div className={styles.spinnerContainer}>
+          <ProgressSpinner />
+        </div>
+      )}
       {isEditGroupModalOpen && (
         <EditGroup
           editGroupModal={setIsEditGroupModalOpen}
