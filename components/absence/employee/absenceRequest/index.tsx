@@ -9,6 +9,7 @@ import classNames from 'classnames';
 import styles from './main.module.scss';
 import { Message } from 'primereact/message';
 import { fetchCsrfToken } from '@/services/csrfService';
+import { fetchAbsenceTypes } from '@/services/absenceService';
 
 interface AbsenceEmployeesRequestProps {
     onClose: () => void;
@@ -24,25 +25,10 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchAbsenceTypes = async () => {
-            setError(null);
-
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence-type`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    },
-                });
-                const data = await response.json();
-                setAbsenceTypes(data);
-            } catch (error) {
-                setError('Error fetching absence types');
-                console.error('Error fetching absence types:', error);
-            }
-        };
-
-        fetchAbsenceTypes();
+        const fetchData = async () => {
+            await fetchAbsenceTypes(setAbsenceTypes, setError, setModalIsOpenLoading);
+          };
+          fetchData();
     }, []);
 
     useEffect(() => {

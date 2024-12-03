@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRectangleList, faGrip, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import AbsenceCard from '@/components/absence/employer/absenceCard';
 import Absence from '@/components/types/absence';
-import AbsenceUser from '@/components/types/absenceUser';
+import SimpleUser from '@/components/types/simpleUser';
 import AbsenceStatus from '@/components/types/absenceStatus';
 import User from '@/components/types/user';
 import styles from './main.module.scss';
@@ -109,7 +109,7 @@ const AbsenceEmployer: React.FC = () => {
     }
   };
 
-  const getUserById = (userId: number): AbsenceUser | undefined => {
+  const getUserById = (userId: number): SimpleUser | undefined => {
     return users.find(user => user.id === userId);
   };
 

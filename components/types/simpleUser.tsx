@@ -1,4 +1,4 @@
-export default interface absenceUser {
+export default interface SimpleUser {
     id: number;
     firstname: string;
     surname: string;
