@@ -10,78 +10,120 @@
     margin: 0 auto;
 }
 
-.chatHeader {
+.groupChatHeader {
     display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
     padding: 20px;
     border-bottom: 1px solid #ddd;
+
+    .info{
+        color: $main-colour;
+        font-size: 1.5em;
+        cursor: pointer;
+    }
 }
 
-.chatAvatar {
-    width: 40px;
-    height: 40px;
-    background-color: #ccc;
-    border-radius: 50%;
-    margin-right: 10px;
+
+
+.userChatHeader{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+
+    .defaultAvatarIcon {
+        border-radius: 50%;
+        overflow: hidden;
+    }
 }
 
 .chatMessages {
     max-width: 100%;
-    max-height: 465px;
+    height: 465px;
     flex-grow: 1;
     padding: 20px;
     overflow-y: auto;
 }
 
-.message .selfMessage{
+.message {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 10px;
+
+    &.selfMessage {
+        justify-content: flex-end;
+
+        .avatarAndNameContainer{
+            display: none;
+        }
+
+        .messageContent {
+            background-color: $main-colour;
+            color: $font-dark-colour;
+        }
+    }
+
+    &.otherMessage {
+        justify-content: flex-start;
+
+        .messageContent {
+            background-color: $gray-powder;
+            color: $font-dark-colour;
+        }
+    }
+}
+
+.avatarAndNameContainer {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+
+    .messageAvatar {
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .groupSenderName {
+        font-size: 0.9em;
+        color: $font-dark-colour;
+        text-align: center;
+    }
+}
+
+.messageContentContainer {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin-bottom: 10px;
-  
-    p {
-      background-color: #e5e5e5;
-      padding: 10px;
-      border-radius: 10px;
-      margin: 0;
-      white-space: normal;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      max-width: 40%;
+    gap: 8px;
+
+    .messageContent {
+        padding: 10px;
+        border-radius: 10px;
+        margin: 0;
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+   
     }
-  }
 
-.selfMessage {
-    justify-content: flex-end;
+    .timeAndReadMessagesContainer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
 
-    p {
-        background-color: $main-colour;
+        .timestamp {
+            font-size: 0.8em;
+            color: $font-dark-colour;
+        }
+
+        .readIcon {
+            color: $main-colour;
+            font-size: 1em;
+            margin: 0 10px 0 0;
+        }
     }
-}
-
-.otherMessage {
-    justify-content: flex-start;
-}
-
-.messageAvatar {
-    width: 30px;
-    height: 30px;
-    background-color: #ccc;
-    border-radius: 50%;
-    margin-right: 10px;
-}
-
-.timestamp {
-    font-size: 0.8em;
-    color: #888;
-    display: block;
-    margin-top: 4px;
-    text-align: right;
-}
-
-.timeAndReadMessagesContainer{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
 }

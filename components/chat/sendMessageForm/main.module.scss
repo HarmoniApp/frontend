@@ -9,10 +9,10 @@
     .messageInput {
         flex-grow: 1;
         padding: 10px;
-        border: none;
+        border: 2px solid $main-colour;
         border-radius: 10px;
         outline: none;
-        margin: 0 10px;
+        margin: 0 10px 0 0;
     }
 
     .sendButton {

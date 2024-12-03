@@ -59,15 +59,18 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
     return (
         <>
             <div className={styles.sidebarHeader}>
-                <div className={styles.newChatContainer}>
+                <div
+                    className={styles.newChatContainer}
+                    onClick={chatType === 'user' ? handleNewIndividualChat : handleNewGroupChat}
+                >
                     {chatType === 'user' ? (
                         <>
-                            <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon} onClick={handleNewIndividualChat} />
+                            <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon}/>
                             <label className={styles.newChatLabel}>Nowy chat indywidualny</label>
                         </>
                     ) : (
                         <>
-                            <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon} onClick={handleNewGroupChat} />
+                            <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon}/>
                             <label className={styles.newChatLabel}>Nowy chat grupowy</label>
                         </>
                     )}

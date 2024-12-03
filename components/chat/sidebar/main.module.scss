@@ -26,6 +26,17 @@
     border: 2px solid $main-colour;
     border-radius: 8px;
     padding:10px 0;
+    cursor: pointer;
+}
+
+.newChatLabel{
+    cursor: pointer;
+}
+
+.sectionBlock .activeSection {
+    .activeIcon{
+        color:$main-colour;
+    }
 }
 
 .selectedChatContainer{
@@ -38,35 +49,15 @@
     padding:10px 0;
 }
 
-.activeSection{
-    .activeIcon{
-        color:$main-colour;
-    }
+.addNewConversationContainer{
+    cursor: pointer;
 }
-
-// .headerBottom {
-//     display: flex;
-//     align-items: center;
-//     margin-bottom: 10px;
-// }
 
 .sectionSelector {
     display: flex;
     justify-content: space-between;
 }
 
-// .sectionBlock {
-//     flex: 1;
-//     padding: 10px;
-//     cursor: pointer;
-//     text-align: center;
-// }
-
-// .icon {
-//     color: $main-colour;
-//     width: 30px;
-//     height: 30px;
-// }
 
 .chatList {
     flex-grow: 1;
