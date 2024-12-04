@@ -1,9 +1,10 @@
+'use client';
 import React, { useState, useEffect } from 'react';
 import ChatPartner from '@/components/types/chatPartner';
 import AuthorizedImage from '@/components/chat/authorizedImage';
 import Language from '@/components/types/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUsers, faUser, faPlus, faLanguage } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faXmark, faPlus, faLanguage } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import NewConversationForm from '../newConversationForm';
 
@@ -57,35 +58,13 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
         loading(false);
     };
 
-    const closeModalNewConversationModal = () => setNewConversationModal(false);
     return (
         <>
             <div className={styles.sidebarHeader}>
                 <div
                     className={styles.newChatContainer}
-                    onClick={() => { handleNewChat(); setNewConversationModal(true); }}
+                    onClick={() => { setNewConversationModal(true); }}
                 >
-                    {newConversationModal && (
-                        <div className={styles.modalOverlay}>
-                            <div className={styles.modalContent}>
-                                <NewConversationForm
-                                    userId={userId}
-                                    setChatType={setChatType}
-                                    setNewChat={setNewChat}
-                                    chatPartners={chatPartners}
-                                    setChatPartners={setChatPartners}
-                                    setSelectedChat={setSelectedChat}
-                                    fetchChatHistory={fetchChatHistoryForm}
-                                    loadChatPartnersGroups={loadChatPartnersGroups}
-                                    loading={loading}
-                                    setError={setError}
-                                    handleSelectUser={handleSelectUser}
-                                    onClose={closeModalNewConversationModal}
-                                />
-                            </div>
-                        </div>
-                    )}
-
                     <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon} />
                     <label className={styles.newChatLabel}>Dodaj chat/grupę</label>
                 </div>
@@ -139,6 +118,26 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                     ))}
                 </select>
             </div>
+            {newConversationModal && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <NewConversationForm
+                            userId={userId}
+                            setChatType={setChatType}
+                            setNewChat={setNewChat}
+                            chatPartners={chatPartners}
+                            setChatPartners={setChatPartners}
+                            setSelectedChat={setSelectedChat}
+                            fetchChatHistory={fetchChatHistoryForm}
+                            loadChatPartnersGroups={loadChatPartnersGroups}
+                            loading={loading}
+                            setError={setError}
+                            handleSelectUser={handleSelectUser}
+                        />
+                        <FontAwesomeIcon icon={faXmark} onClick={() => { setNewConversationModal(false) }} />
+                    </div>
+                </div>
+            )}
         </>
     );
 };

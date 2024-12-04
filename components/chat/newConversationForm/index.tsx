@@ -18,10 +18,8 @@ interface NewConversationFormProps {
     loading: (loading: boolean) => void;
     setError: (errorMessage: string | null) => void;
     handleSelectUser: (user: ChatPartner) => void;
-    onClose: () => void;
 }
-const NewConversationForm: React.FC<NewConversationFormProps> = ({ userId, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartnersGroups, loading, setError, handleSelectUser, onClose }) => {
-console.log('NewConversationFormProps', onClose);
+const NewConversationForm: React.FC<NewConversationFormProps> = ({ userId, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartnersGroups, loading, setError, handleSelectUser }) => {
     return (
         <div className={styles.newConversationForm}>
             <div className={styles.userNewConversation}>
@@ -43,7 +41,6 @@ console.log('NewConversationFormProps', onClose);
                     setError={setError}
                 />
             </div>
-            <FontAwesomeIcon icon={faXmark} onClick={onClose} className={styles.closeIcon} />
         </div>
     );
 };

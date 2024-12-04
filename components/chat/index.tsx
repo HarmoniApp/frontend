@@ -388,7 +388,7 @@ const Chat = () => {
               languages={languages}
               selectedChat={selectedChat}
               setSelectedChat={setSelectedChat}
-              setNewChat={setNewChat}
+              setNewChat={setNewChat}//tutaj nigdzie nie wywolujemy
               chatType={chatType}
               setChatType={setChatType}
               chatPartners={chatPartners}
