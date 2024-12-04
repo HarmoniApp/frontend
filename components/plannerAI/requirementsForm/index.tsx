@@ -1,33 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import PredefinedShift from '@/components/types/predefinedShifts';
 import RoleWithColour from '@/components/types/roleWithColour';
 import Instruction from '@/components/plannerAI/instruction';
+import IRequirementsForm from '@/components/types/requirementsForm';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan, faEraser, faPlus, faChartSimple, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import * as Yup from 'yup';
 import styles from './main.module.scss';
 
-interface RequirementsForm {
-    id: number;
-    date: string;
-    shifts: {
-        shiftId: number;
-        roles: {
-            roleId: number;
-            quantity: number;
-        }[];
-    }[];
-}
-
-interface GeneratingProgressDto {
-    generation: number;
-    fitness: number;
-}
-
 const RequirementsForm: React.FC = () => {
-    const [forms, setForms] = useState<RequirementsForm[]>([
+    const [forms, setForms] = useState<IRequirementsForm[]>([
         { id: Date.now(), date: '', shifts: [] },
     ]);
     const [shifts, setShifts] = useState<PredefinedShift[]>([]);
@@ -366,16 +350,7 @@ const RequirementsForm: React.FC = () => {
                             {modalIsOpenLoadning && (
                                 <div className={styles.loadingModalOverlay}>
                                     <div className={styles.loadingModalContent}>
-                                        <h3>Generowanie grafiku...</h3>
-                                        {/* <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                                        {progress ? (
-                                            <div>
-                                                <p>Generacja: {progress.generation}</p>
-                                                <p>Fitness: {progress.fitness.toFixed(2)}</p>
-                                            </div>
-                                        ) : (
-                                            <ProgressSpinner />
-                                        )} */}
+                                        <ProgressSpinner />
                                     </div>
                                 </div>
                             )}
