@@ -6,6 +6,7 @@ import ChatPartner from '@/components/types/chatPartner';
 
 interface NewConversationFormProps {
     userId: number;
+    chatType: 'user' | 'group';
     setChatType: (type: 'user' | 'group') => void;
     setNewChat: (newChat: boolean) => void;
     chatPartners: ChatPartner[];
@@ -17,7 +18,9 @@ interface NewConversationFormProps {
     setError: (errorMessage: string | null) => void;
     handleSelectUser: (user: ChatPartner) => void;
 }
-const NewConversationForm: React.FC<NewConversationFormProps> = ({ userId, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartnersGroups, loading, setError, handleSelectUser }) => {
+const NewConversationForm: React.FC<NewConversationFormProps> = ({ userId, chatType, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartnersGroups, loading, setError, handleSelectUser }) => {
+    setChatType(chatType);
+    
     return (
         <div className={styles.newConversationForm}>
             <div className={styles.userNewConversation}>

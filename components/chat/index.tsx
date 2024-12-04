@@ -40,6 +40,11 @@ const Chat = () => {
     setLoading(true);
     setNewChat(false);
     setSelectedChat(user);
+    if (user.type && user.type === 'user') {
+      setChatType('user');
+    } else {
+      setChatType('group');
+    }
     fetchChatHistory(user);
     setLoading(false);
   };;
@@ -158,9 +163,12 @@ const Chat = () => {
     const data = await chatPartnersResponse.json();
     const partners = await Promise.all(
       data.map((partner: { partnerId: number; partnerType: string }) => {
-        return partner.partnerType === "USER"
-          ? fetchUserDetails(partner.partnerId)
-          : fetchGroupDetails(partner.partnerId);
+        if (partner.partnerType === "USER") {
+          return fetchUserDetails(partner.partnerId);
+        } else {
+          setChatType('group');
+          return fetchGroupDetails(partner.partnerId);
+        }
       })
     );
 

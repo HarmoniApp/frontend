@@ -6,7 +6,6 @@ import { faSearch, faUser } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 
 interface SearchUserProps {
-  // onSearchResults: (results: ChatPartner[]) => void;
   handleSelectUser: (user: ChatPartner) => void;
   groupChat: boolean;
   setChatType?: (type: 'user' | 'group') => void
@@ -19,9 +18,6 @@ const SearchUser: React.FC<SearchUserProps> = ({ handleSelectUser, groupChat, se
   const [searchResults, setSearchResults] = useState<ChatPartner[]>([]);
 
   const customClass = groupChat ? styles.searchGroupUserContaner : styles.searchPrivUserContaner;
-
-  if(setChatType)
-    setChatType('user')
 
   const handleSearch = async (query: string) => {
     setLoading(true);
