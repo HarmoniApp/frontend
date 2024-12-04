@@ -388,7 +388,8 @@ const Chat = () => {
               languages={languages}
               selectedChat={selectedChat}
               setSelectedChat={setSelectedChat}
-              setNewChat={setNewChat}//tutaj nigdzie nie wywolujemy
+              newChat={newChat}
+              setNewChat={setNewChat}
               chatType={chatType}
               setChatType={setChatType}
               chatPartners={chatPartners}
@@ -402,49 +403,6 @@ const Chat = () => {
               handleSelectUser={handleSelectUser}
               />
           </div>
-          {/* <div className={styles.chatWindow}>
-            {newChat ? (
-              <NewConversationForm 
-                userId={userId}
-                setChatType={setChatType}
-                setNewChat={setNewChat}
-                chatPartners={chatPartners}
-                setChatPartners={setChatPartners}
-                setSelectedChat={setSelectedChat}
-                fetchChatHistory={fetchChatHistory}
-                loadChatPartnersGroups={loadChatPartners}
-                handleSelectUser={handleSelectUser}
-                loading={setLoading}
-                setError={setError}
-                />
-            ) : selectedChat ? (
-              <>
-                <Conversation
-                  userId={userId}
-                  messages={messages}
-                  chatType={chatType}
-                  selectedChat={selectedChat}
-                  setIsEditGroupModalOpen={setIsEditGroupModalOpen}
-                  setError={setError}
-                />
-
-                <SendMessageForm
-                  selectedChat={selectedChat}
-                  setSelectedChat={setSelectedChat}
-                  messages={messages}
-                  setMessages={setMessages}
-                  userId={userId}
-                  loadChatPartnersIndividual={loadChatPartners}
-                  loadChatPartnersGroups={loadChatPartners}
-                  selectedLanguage={selectedLanguage}
-                  loading={setLoading}
-                  setError={setError}
-                />
-              </>
-            ) : (
-              <p>Select chat</p> 
-            )}
-          </div> */}
           <div className={styles.chatWindow}>
             {selectedChat && (
               <>

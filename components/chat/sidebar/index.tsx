@@ -14,6 +14,7 @@ interface SidebarProps {
     languages: Language[];
     selectedChat: ChatPartner | null;
     setSelectedChat: (chatPartner: ChatPartner | null) => void;
+    newChat: boolean;
     setNewChat: (newChat: boolean) => void;
     chatType: 'user' | 'group';
     setChatType: (chatType: 'user' | 'group') => void;
@@ -28,24 +29,7 @@ interface SidebarProps {
     handleSelectUser: (user: ChatPartner) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, setError, userId, setChatPartners, fetchChatHistoryForm, loadChatPartnersGroups, handleSelectUser }) => {
-    // const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatPartners, loading, fetchChatHistory, setError }) => {
-    const [newConversationModal, setNewConversationModal] = useState(false);
-
-    const handleNewChat = () => {
-        loading(true);
-        setNewChat(true);
-        // setSelectedChat(null);
-        loading(false);
-    };
-
-    // const handleNewGroupChat = () => {
-    //     loading(true);
-    //     setNewChat(true);
-    //     setChatType('group');
-    //     setSelectedChat(null);
-    //     loading(false);
-    // };
+const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, newChat, setNewChat, setChatType, chatPartners, loading, fetchChatHistory, setError, userId, setChatPartners, fetchChatHistoryForm, loadChatPartnersGroups, handleSelectUser }) => {
 
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         loading(true);
@@ -63,7 +47,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
             <div className={styles.sidebarHeader}>
                 <div
                     className={styles.newChatContainer}
-                    onClick={() => { setNewConversationModal(true); }}
+                    onClick={() => { setNewChat(true); }}
                 >
                     <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon} />
                     <label className={styles.newChatLabel}>Dodaj chat/grupę</label>
@@ -118,7 +102,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                     ))}
                 </select>
             </div>
-            {newConversationModal && (
+            {newChat && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
                         <NewConversationForm
@@ -134,7 +118,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                             setError={setError}
                             handleSelectUser={handleSelectUser}
                         />
-                        <FontAwesomeIcon icon={faXmark} onClick={() => { setNewConversationModal(false) }} />
+                        <FontAwesomeIcon icon={faXmark} onClick={() => { setNewChat(false) }} />
                     </div>
                 </div>
             )}
