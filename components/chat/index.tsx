@@ -394,7 +394,10 @@ const Chat = () => {
               chatPartners={chatPartners}
               loading={setLoading}
               fetchChatHistory={fetchChatHistory}
-              setError={setError} />
+              setError={setError} 
+              userId={userId}
+              setChatPartners={setChatPartners}
+              />
           </div>
           <div className={styles.chatWindow}>
             {newChat ? (

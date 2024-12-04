@@ -20,9 +20,11 @@ interface SidebarProps {
     loading: (loading: boolean) => void;
     fetchChatHistory: (selectedChat: ChatPartner, language: string) => void;
     setError: (errorMessage: string | null) => void;
+    userId: number;
+    setChatPartners: (chatPartners: ChatPartner[]) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, setError }) => {
+const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, setError , userId, setChatPartners}) => {
     // const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatPartners, loading, fetchChatHistory, setError }) => {
     const handleNewChat = () => {
         loading(true);
@@ -57,7 +59,19 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                     className={styles.newChatContainer}
                     onClick={handleNewChat}
                 >
-                    <NewConversationForm />
+                    <NewConversationForm 
+                    userId={userId}
+                    setChatType={setChatType}
+                    setNewChat={setNewChat}
+                    chatPartners={chatPartners}
+                    setChatPartners={setChatPartners}
+                    setSelectedChat={setSelectedChat}
+                    fetchChatHistory={fetchChatHistory}
+                    loadChatPartnersGroups={loadChatPartners}
+                    loading={loading}
+                    setError={setError}
+                    handleSelectUser={handleSelectUser}
+                    />
                     <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon} />
                     <label className={styles.newChatLabel}>Dodaj chat/grupę</label>
                 </div>
