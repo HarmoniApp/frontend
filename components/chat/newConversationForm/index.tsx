@@ -6,21 +6,19 @@ import ChatPartner from '@/components/types/chatPartner';
 
 interface NewConversationFormProps {
     userId: number;
-    chatType: 'user' | 'group';
     setChatType: (type: 'user' | 'group') => void;
     setNewChat: (newChat: boolean) => void;
     chatPartners: ChatPartner[];
     setChatPartners: (chatPartners: ChatPartner[]) => void;
     setSelectedChat: (chatPartner: ChatPartner) => void;
     fetchChatHistory: (partner: ChatPartner) => void;
-    loadChatPartnersGroups: (selectFirstPartner: boolean) => void;
+    loadChatPartners: (selectFirstPartner: boolean) => void;
     loading: (loading: boolean) => void;
     setError: (errorMessage: string | null) => void;
     handleSelectUser: (user: ChatPartner) => void;
 }
-const NewConversationForm: React.FC<NewConversationFormProps> = ({ userId, chatType, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartnersGroups, loading, setError, handleSelectUser }) => {
-    setChatType(chatType);
-    
+const NewConversationForm: React.FC<NewConversationFormProps> = ({ userId, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartners, loading, setError, handleSelectUser }) => {
+
     return (
         <div className={styles.newConversationForm}>
             <div className={styles.userNewConversation}>
@@ -37,7 +35,7 @@ const NewConversationForm: React.FC<NewConversationFormProps> = ({ userId, chatT
                     setChatPartners={setChatPartners}
                     setSelectedChat={setSelectedChat}
                     fetchChatHistory={fetchChatHistory}
-                    loadChatPartnersGroups={loadChatPartnersGroups}
+                    loadChatPartners={loadChatPartners}
                     loading={loading}
                     setError={setError}
                 />

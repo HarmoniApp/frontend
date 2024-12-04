@@ -14,14 +14,13 @@ interface SendMessageFormProps {
     messages: Message[];
     setMessages: (messages: Message[]) => void;
     userId: number;
-    loadChatPartnersIndividual: (selectFirstPartner: boolean) => void;
-    loadChatPartnersGroups: (selectFirstPartner: boolean) => void;
+    loadChatPartners: (selectFirstPartner: boolean) => void;
     selectedLanguage: string;
     loading: (loading: boolean) => void;
     setError: (errorMessage: string | null) => void;
 }
 
-const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSelectedChat, messages, setMessages, userId, loadChatPartnersIndividual, loadChatPartnersGroups, selectedLanguage, loading, setError }) => {
+const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSelectedChat, messages, setMessages, userId, loadChatPartners, selectedLanguage, loading, setError }) => {
 
     const handleSendMessage = async (content: string, language: string = '') => {
         loading(true);
@@ -65,11 +64,7 @@ const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSele
 
                 const data = await response.json();
                 setMessages([...messages, data]);
-                if (selectedChat.type === 'user') {
-                    loadChatPartnersIndividual(true);
-                } else if (selectedChat.type === 'group') {
-                    loadChatPartnersGroups(true);
-                }
+                loadChatPartners(true);
                 //await fetchChatHistory(selectedChat, language);
                 setSelectedChat(selectedChat);
             } catch (error) {

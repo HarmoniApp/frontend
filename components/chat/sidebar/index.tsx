@@ -25,11 +25,11 @@ interface SidebarProps {
     userId: number;
     setChatPartners: (chatPartners: ChatPartner[]) => void;
     fetchChatHistoryForm: (partner: ChatPartner) => void;
-    loadChatPartnersGroups: (selectFirstPartner: boolean) => void;
+    loadChatPartners: (selectFirstPartner: boolean) => void;
     handleSelectUser: (user: ChatPartner) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, newChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, setError, userId, setChatPartners, fetchChatHistoryForm, loadChatPartnersGroups, handleSelectUser }) => {
+const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, newChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, setError, userId, setChatPartners, fetchChatHistoryForm, loadChatPartners, handleSelectUser }) => {
 
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         loading(true);
@@ -107,14 +107,13 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                     <div className={styles.modalContent}>
                         <NewConversationForm
                             userId={userId}
-                            chatType={chatType}
                             setChatType={setChatType}
                             setNewChat={setNewChat}
                             chatPartners={chatPartners}
                             setChatPartners={setChatPartners}
                             setSelectedChat={setSelectedChat}
                             fetchChatHistory={fetchChatHistoryForm}
-                            loadChatPartnersGroups={loadChatPartnersGroups}
+                            loadChatPartners={loadChatPartners}
                             loading={loading}
                             setError={setError}
                             handleSelectUser={handleSelectUser}

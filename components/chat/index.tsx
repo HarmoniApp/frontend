@@ -14,6 +14,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { Message as PrimeMessage } from 'primereact/message';
 import { fetchLanguages } from "@/services/languageService";
 import { fetchCsrfToken } from '@/services/csrfService';
+import { group } from 'console';
 
 const Chat = () => {
   const [chatPartners, setChatPartners] = useState<ChatPartner[]>([]);
@@ -166,7 +167,6 @@ const Chat = () => {
         if (partner.partnerType === "USER") {
           return fetchUserDetails(partner.partnerId);
         } else {
-          setChatType('group');
           return fetchGroupDetails(partner.partnerId);
         }
       })
@@ -176,6 +176,9 @@ const Chat = () => {
 
     if (selectFirstPartner && partners.length > 0) {
       const newestChatPartner = partners[0];
+      if(newestChatPartner.type == 'group'){
+        setChatType('group')
+      }
       setSelectedChat(newestChatPartner);
       await fetchChatHistory(newestChatPartner, selectedLanguage);
     }
@@ -402,7 +405,7 @@ const Chat = () => {
               userId={userId}
               setChatPartners={setChatPartners}
               fetchChatHistoryForm = {fetchChatHistory}
-              loadChatPartnersGroups={loadChatPartners}
+              loadChatPartners={loadChatPartners}
               handleSelectUser={handleSelectUser}
               />
           </div>
@@ -424,8 +427,7 @@ const Chat = () => {
                   messages={messages}
                   setMessages={setMessages}
                   userId={userId}
-                  loadChatPartnersIndividual={loadChatPartners}
-                  loadChatPartnersGroups={loadChatPartners}
+                  loadChatPartners={loadChatPartners}
                   selectedLanguage={selectedLanguage}
                   loading={setLoading}
                   setError={setError}
