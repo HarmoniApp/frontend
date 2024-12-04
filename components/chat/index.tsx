@@ -5,9 +5,7 @@ import Message from '@/components/types/message';
 import Language from '@/components/types/language';
 import ChatPartner from '@/components/types/chatPartner';
 import EditGroup from '@/components/chat/editGroup';
-import SearchUser from '@/components/chat/searchUser';
 import SendMessageForm from '@/components/chat/sendMessageForm';
-import CreateGroupChatForm from '@/components/chat/createGroupChatForm';
 import Conversation from '@/components/chat/conversation';
 import Sidebar from '@/components/chat/sidebar';
 import { Client } from '@stomp/stompjs';
@@ -16,7 +14,6 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { Message as PrimeMessage } from 'primereact/message';
 import { fetchLanguages } from "@/services/languageService";
 import { fetchCsrfToken } from '@/services/csrfService';
-import NewConversationForm from './newConversationForm';
 
 const Chat = () => {
   const [chatPartners, setChatPartners] = useState<ChatPartner[]>([]);
@@ -79,7 +76,6 @@ const Chat = () => {
                 ? [...prevMessages, newMessage]
                 : prevMessages
             );
-            // loadChatPartnersIndividual();
             loadChatPartners();
           });
 
@@ -118,7 +114,6 @@ const Chat = () => {
                 ? [...prevMessages, newMessage]
                 : prevMessages
             );
-            // loadChatPartnersGroups();
             loadChatPartners();
           });
 
