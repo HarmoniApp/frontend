@@ -174,38 +174,36 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
     };
 
     return (
-        <>
-            <div className={styles.modalOverlay}>
-                <div className={styles.modalContent}>
-                    <h3 className={styles.title}>Edit group</h3>
-                    <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true} setError={setError} />
-                    <div className={styles.selectedUsers}>
-                        {selectedUsers.map((user) => (
-                            <div key={user.id} className={styles.selectedUser}>
-                                {user.photo ? (
-                                    <AuthorizedImage
-                                        src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
-                                        setError={setError}
-                                    />
-                                ) : (
-                                    <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
-                                )}
-                                <p>{user.name}</p>
-                                <FontAwesomeIcon icon={faUserMinus} onClick={() => handleRemoveUserFromGroup(user.id)} className={styles.removeIcon} />
-                            </div>
-                        ))}
-                    </div>
-                    <div className={styles.groupActions}>
-                        <FontAwesomeIcon
-                            icon={faTrash}
-                            className={styles.deleteIcon}
-                            onClick={handleDeleteGroup}
-                        />
-                    </div>
-                    <FontAwesomeIcon icon={faXmark} onClick={() => editGroupModal(false)} className={styles.closeIcon} />
+        <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
+                <h3 className={styles.title}>Edit group</h3>
+                <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true} setError={setError} />
+                <div className={styles.selectedUsers}>
+                    {selectedUsers.map((user) => (
+                        <div key={user.id} className={styles.selectedUser}>
+                            {user.photo ? (
+                                <AuthorizedImage
+                                    src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
+                                    setError={setError}
+                                />
+                            ) : (
+                                <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
+                            )}
+                            <p>{user.name}</p>
+                            <FontAwesomeIcon icon={faUserMinus} onClick={() => handleRemoveUserFromGroup(user.id)} className={styles.removeIcon} />
+                        </div>
+                    ))}
                 </div>
+                <div className={styles.groupActions}>
+                    <FontAwesomeIcon
+                        icon={faTrash}
+                        className={styles.deleteIcon}
+                        onClick={handleDeleteGroup}
+                    />
+                </div>
+                <FontAwesomeIcon icon={faXmark} onClick={() => editGroupModal(false)} className={styles.closeIcon} />
             </div>
-        </>
+        </div>
     );
 };
 

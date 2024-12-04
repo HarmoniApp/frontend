@@ -79,7 +79,8 @@ const Chat = () => {
                 ? [...prevMessages, newMessage]
                 : prevMessages
             );
-            loadChatPartnersIndividual();
+            // loadChatPartnersIndividual();
+            loadChatPartners();
           });
 
           stompClient.subscribe(`/client/messages/readStatus/${userId}`, (message) => {
@@ -117,7 +118,8 @@ const Chat = () => {
                 ? [...prevMessages, newMessage]
                 : prevMessages
             );
-            loadChatPartnersGroups();
+            // loadChatPartnersGroups();
+            loadChatPartners();
           });
 
           stompClient.subscribe(`/client/groupMessages/readStatus/${userId}`, (message) => {
@@ -144,122 +146,43 @@ const Chat = () => {
     };
   }, [userId, selectedChat]);
 
-  const loadChatPartnersIndividual = async (selectFirstPartner = false) => {
-    setLoading(true);
+  const loadChatPartners = async (selectFirstPartner = false) => {
+  setLoading(true);
 
-    try {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const chatPartnersIndividual = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/chat-partners?userId=${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        }
-      });
-      if (!chatPartnersIndividual.ok) throw new Error('Błąd podczas pobierania partnerów czatu');
-      const dataIndividual = await chatPartnersIndividual.json();
+  try {
+    const tokenJWT = sessionStorage.getItem('tokenJWT');
 
-      const partnersWithDetails = await Promise.all(
-        dataIndividual.map(async (partnerId: number) => await fetchUserDetails(partnerId))
-      );
-
-      setChatPartners(partnersWithDetails);
-
-      if (selectFirstPartner && partnersWithDetails.length > 0) {
-        const newestChatPartner = partnersWithDetails[0];
-        setSelectedChat(newestChatPartner);
-        await fetchChatHistory(newestChatPartner, selectedLanguage);
+    const chatPartnersResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/all-chat-partners?userId=${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokenJWT}`,
       }
-    } catch (error) {
-      console.error('Error loading chat partners individual:', error);
-      setError('Error loading chat partners individual');
-    } finally {
-      setLoading(false);
+    });
+    if (!chatPartnersResponse.ok) throw new Error('Błąd podczas pobierania partnerów chatu');
+    const data = await chatPartnersResponse.json();
+    const partners = await Promise.all(
+      data.map((partner: { partnerId: number; partnerType: string }) => {
+        return partner.partnerType === "USER"
+          ? fetchUserDetails(partner.partnerId)
+          : fetchGroupDetails(partner.partnerId);
+      })
+    );
+
+    setChatPartners(partners);
+
+    if (selectFirstPartner && partners.length > 0) {
+      const newestChatPartner = partners[0];
+      setSelectedChat(newestChatPartner);
+      await fetchChatHistory(newestChatPartner, selectedLanguage);
     }
+  } catch (error) {
+    console.error('Error loading chat partners:', error);
+    setError('Error loading chat partners');
+  } finally {
+    setLoading(false);
   }
-
-  const loadChatPartnersGroups = async (selectFirstPartner = false) => {
-    setLoading(true);
-
-    try {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const chatPartnersGroups = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/chat-partners?userId=${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        }
-      });
-      if (!chatPartnersGroups.ok) throw new Error('Błąd podczas pobierania partnerów czatu');
-      const dataGroups = await chatPartnersGroups.json();
-
-      const groupsWithDetails = await Promise.all(
-        dataGroups.map(async (partnerId: number) => await fetchGroupDetails(partnerId))
-      );
-
-      setChatPartners(groupsWithDetails);
-
-      if (selectFirstPartner && groupsWithDetails.length > 0) {
-        const newestChatPartner = groupsWithDetails[0];
-        setSelectedChat(newestChatPartner);
-        await fetchChatHistory(newestChatPartner, selectedLanguage);
-      }
-    } catch (error) {
-      console.error('Error loading chat partners groups:', error);
-      setError('Error loading chat partners groups');
-    } finally {
-      setLoading(false);
-    }
-  }
-
-//   const loadChatPartners = async (selectFirstPartner = false) => {
-//   setLoading(true);
-
-//   try {
-//     const tokenJWT = sessionStorage.getItem('tokenJWT');
-
-//     // Pobranie partnerów indywidualnych
-//     const chatPartnersIndividualResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/chat-partners?userId=${userId}`, {
-//       method: 'GET',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Authorization': `Bearer ${tokenJWT}`,
-//       }
-//     });
-//     if (!chatPartnersIndividualResponse.ok) throw new Error('Błąd podczas pobierania partnerów indywidualnych');
-//     const dataIndividual = await chatPartnersIndividualResponse.json();
-//     const individualPartners = await Promise.all(dataIndividual.map((id: number) => fetchUserDetails(id)));
-
-//     // Pobranie partnerów grupowych
-//     const chatPartnersGroupsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/chat-partners?userId=${userId}`, {
-//       method: 'GET',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Authorization': `Bearer ${tokenJWT}`,
-//       }
-//     });
-//     if (!chatPartnersGroupsResponse.ok) throw new Error('Błąd podczas pobierania partnerów grupowych');
-//     const dataGroups = await chatPartnersGroupsResponse.json();
-//     const groupPartners = await Promise.all(dataGroups.map((id: number) => fetchGroupDetails(id)));
-
-//     // Połącz partnerów indywidualnych i grupowych
-//     const combinedPartners = [...individualPartners, ...groupPartners];
-//     setChatPartners(combinedPartners);
-
-//     // Automatyczny wybór pierwszego partnera
-//     if (selectFirstPartner && combinedPartners.length > 0) {
-//       const newestChatPartner = combinedPartners[0];
-//       setSelectedChat(newestChatPartner);
-//       await fetchChatHistory(newestChatPartner, selectedLanguage);
-//     }
-//   } catch (error) {
-//     console.error('Error loading chat partners:', error);
-//     setError('Error loading chat partners');
-//   } finally {
-//     setLoading(false);
-//   }
-// };
-
+};
 
   useEffect(() => {
     setLoading(true);
@@ -267,17 +190,12 @@ const Chat = () => {
     setIsEditGroupModalOpen(false);
     setNewChat(false);
     const loadPartners = async () => {
-      if (chatType === 'user') {
-        await loadChatPartnersIndividual(true);
-      } else {
-        await loadChatPartnersGroups(true);
-      }
+      await loadChatPartners(true);
     };
 
     loadPartners();
-    // loadChatPartners();
     setLoading(false);
-  }, [chatType, userId]);
+  }, [userId]);
 
   useEffect(() => {
     setIsEditGroupModalOpen(false);
@@ -507,7 +425,7 @@ const Chat = () => {
                 setChatPartners={setChatPartners}
                 setSelectedChat={setSelectedChat}
                 fetchChatHistory={fetchChatHistory}
-                loadChatPartnersGroups={loadChatPartnersGroups}
+                loadChatPartnersGroups={loadChatPartners}
                 loading={setLoading}
                 setError={setError}
                 handleSelectUser={handleSelectUser}/>
@@ -528,8 +446,8 @@ const Chat = () => {
                   messages={messages}
                   setMessages={setMessages}
                   userId={userId}
-                  loadChatPartnersIndividual={loadChatPartnersIndividual}
-                  loadChatPartnersGroups={loadChatPartnersGroups}
+                  loadChatPartnersIndividual={loadChatPartners}
+                  loadChatPartnersGroups={loadChatPartners}
                   selectedLanguage={selectedLanguage}
                   loading={setLoading}
                   setError={setError}

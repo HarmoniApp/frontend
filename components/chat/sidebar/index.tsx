@@ -5,6 +5,7 @@ import Language from '@/components/types/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers, faUser, faPlus, faLanguage } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
+import NewConversationForm from '../newConversationForm';
 
 interface SidebarProps {
     selectedLanguage: string;
@@ -24,7 +25,6 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, setError }) => {
     // const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatPartners, loading, fetchChatHistory, setError }) => {
     const handleNewChat = () => {
-        // const handleNewIndividualChat = () => {
         loading(true);
         setNewChat(true);
         setSelectedChat(null);
@@ -55,41 +55,11 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
             <div className={styles.sidebarHeader}>
                 <div
                     className={styles.newChatContainer}
-                    // onClick={chatType === 'user' ? handleNewIndividualChat : handleNewGroupChat}
                     onClick={handleNewChat}
                 >
-                    {/* {chatType === 'user' ? (
-                        <>
-                            <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon}/>
-                            <label className={styles.newChatLabel}>Nowy chat indywidualny</label>
-                        </>
-                    ) : (
-                        <>
-                            <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon}/>
-                            <label className={styles.newChatLabel}>Nowy chat grupowy</label>
-                        </>
-                    )} */}
-
+                    <NewConversationForm />
                     <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon} />
                     <label className={styles.newChatLabel}>Dodaj chat/grupę</label>
-                </div>
-                <div className={styles.selectedChatContainer}>
-                    <div className={styles.sectionSelector}>
-                        <div
-                            onClick={() => setChatType('user')}
-                            className={`${styles.sectionBlock} ${chatType === 'user' ? styles.activeSection : ''}`}
-                        >
-                            <FontAwesomeIcon icon={faUser} className={styles.activeIcon} />
-                            <label>Indywidualny</label>
-                        </div>
-                        <div
-                            onClick={() => setChatType('group')}
-                            className={`${styles.sectionBlock} ${chatType === 'group' ? styles.activeSection : ''}`}
-                        >
-                            <FontAwesomeIcon icon={faUsers} />
-                            <label>Grupowy</label>
-                        </div>
-                    </div>
                 </div>
             </div>
             <ul className={styles.chatList}>
@@ -97,7 +67,12 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                     <li
                         key={partner.id}
                         className={`${styles.chatItem} ${selectedChat === partner ? styles.activeChat : ''}`}
-                        onClick={() => fetchChatHistory(partner, selectedLanguage)}
+                        onClick={() => {
+                            if (partner.type) {
+                                setChatType(partner.type);
+                            }
+                            fetchChatHistory(partner, selectedLanguage);
+                        }}
                     >
                         {partner.photo ? (
                             <AuthorizedImage
