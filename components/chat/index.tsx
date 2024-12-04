@@ -397,29 +397,13 @@ const Chat = () => {
               setError={setError} 
               userId={userId}
               setChatPartners={setChatPartners}
+              fetchChatHistoryForm = {fetchChatHistory}
+              loadChatPartnersGroups={loadChatPartners}
+              handleSelectUser={handleSelectUser}
               />
           </div>
-          <div className={styles.chatWindow}>
+          {/* <div className={styles.chatWindow}>
             {newChat ? (
-              // chatType === 'group' ? (
-              //   <div className={styles.newChat}>
-              //     <CreateGroupChatForm
-                    // userId={userId}
-                    // setChatType={setChatType}
-                    // setNewChat={setNewChat}
-                    // chatPartners={chatPartners}
-                    // setChatPartners={setChatPartners}
-                    // setSelectedChat={setSelectedChat}
-                    // fetchChatHistory={fetchChatHistory}
-                    // loadChatPartnersGroups={loadChatPartnersGroups}
-                    // loading={setLoading}
-                    // setError={setError}
-              //     />
-              //   </div>
-              // ) : (
-              //   <div className={styles.newChat}>
-              //     <SearchUser handleSelectUser={handleSelectUser} groupChat={false} setError={setError} />
-              //   </div>)
               <NewConversationForm 
                 userId={userId}
                 setChatType={setChatType}
@@ -429,9 +413,10 @@ const Chat = () => {
                 setSelectedChat={setSelectedChat}
                 fetchChatHistory={fetchChatHistory}
                 loadChatPartnersGroups={loadChatPartners}
+                handleSelectUser={handleSelectUser}
                 loading={setLoading}
                 setError={setError}
-                handleSelectUser={handleSelectUser}/>
+                />
             ) : selectedChat ? (
               <>
                 <Conversation
@@ -458,6 +443,33 @@ const Chat = () => {
               </>
             ) : (
               <p>Select chat</p> 
+            )}
+          </div> */}
+          <div className={styles.chatWindow}>
+            {selectedChat && (
+              <>
+                <Conversation
+                  userId={userId}
+                  messages={messages}
+                  chatType={chatType}
+                  selectedChat={selectedChat}
+                  setIsEditGroupModalOpen={setIsEditGroupModalOpen}
+                  setError={setError}
+                />
+
+                <SendMessageForm
+                  selectedChat={selectedChat}
+                  setSelectedChat={setSelectedChat}
+                  messages={messages}
+                  setMessages={setMessages}
+                  userId={userId}
+                  loadChatPartnersIndividual={loadChatPartners}
+                  loadChatPartnersGroups={loadChatPartners}
+                  selectedLanguage={selectedLanguage}
+                  loading={setLoading}
+                  setError={setError}
+                />
+              </>
             )}
           </div>
         </>

@@ -22,14 +22,19 @@ interface SidebarProps {
     setError: (errorMessage: string | null) => void;
     userId: number;
     setChatPartners: (chatPartners: ChatPartner[]) => void;
+    fetchChatHistoryForm: (partner: ChatPartner) => void;
+    loadChatPartnersGroups: (selectFirstPartner: boolean) => void;
+    handleSelectUser: (user: ChatPartner) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, setError , userId, setChatPartners}) => {
+const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, setError, userId, setChatPartners, fetchChatHistoryForm, loadChatPartnersGroups, handleSelectUser }) => {
     // const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatPartners, loading, fetchChatHistory, setError }) => {
+    const [newConversationModal, setNewConversationModal] = useState(false);
+
     const handleNewChat = () => {
         loading(true);
         setNewChat(true);
-        setSelectedChat(null);
+        // setSelectedChat(null);
         loading(false);
     };
 
@@ -52,26 +57,35 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
         loading(false);
     };
 
+    const closeModalNewConversationModal = () => setNewConversationModal(false);
     return (
         <>
             <div className={styles.sidebarHeader}>
                 <div
                     className={styles.newChatContainer}
-                    onClick={handleNewChat}
+                    onClick={() => { handleNewChat(); setNewConversationModal(true); }}
                 >
-                    <NewConversationForm 
-                    userId={userId}
-                    setChatType={setChatType}
-                    setNewChat={setNewChat}
-                    chatPartners={chatPartners}
-                    setChatPartners={setChatPartners}
-                    setSelectedChat={setSelectedChat}
-                    fetchChatHistory={fetchChatHistory}
-                    loadChatPartnersGroups={loadChatPartners}
-                    loading={loading}
-                    setError={setError}
-                    handleSelectUser={handleSelectUser}
-                    />
+                    {newConversationModal && (
+                        <div className={styles.modalOverlay}>
+                            <div className={styles.modalContent}>
+                                <NewConversationForm
+                                    userId={userId}
+                                    setChatType={setChatType}
+                                    setNewChat={setNewChat}
+                                    chatPartners={chatPartners}
+                                    setChatPartners={setChatPartners}
+                                    setSelectedChat={setSelectedChat}
+                                    fetchChatHistory={fetchChatHistoryForm}
+                                    loadChatPartnersGroups={loadChatPartnersGroups}
+                                    loading={loading}
+                                    setError={setError}
+                                    handleSelectUser={handleSelectUser}
+                                    onClose={closeModalNewConversationModal}
+                                />
+                            </div>
+                        </div>
+                    )}
+
                     <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon} />
                     <label className={styles.newChatLabel}>Dodaj chat/grupę</label>
                 </div>
