@@ -13,16 +13,16 @@ interface SidebarProps {
     selectedChat: ChatPartner | null;
     setSelectedChat: (chatPartner: ChatPartner | null) => void;
     setNewChat: (newChat: boolean) => void;
-    // chatType: 'user' | 'group';
-    // setChatType: (chatType: 'user' | 'group') => void;
+    chatType: 'user' | 'group';
+    setChatType: (chatType: 'user' | 'group') => void;
     chatPartners: ChatPartner[];
     loading: (loading: boolean) => void;
     fetchChatHistory: (selectedChat: ChatPartner, language: string) => void;
     setError: (errorMessage: string | null) => void;
 }
 
-// const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, setError }) => {
-    const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatPartners, loading, fetchChatHistory, setError }) => {
+const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, setError }) => {
+    // const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, setNewChat, chatPartners, loading, fetchChatHistory, setError }) => {
     const handleNewChat = () => {
         // const handleNewIndividualChat = () => {
         loading(true);
@@ -73,7 +73,7 @@ interface SidebarProps {
                     <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon} />
                     <label className={styles.newChatLabel}>Dodaj chat/grupę</label>
                 </div>
-                {/* <div className={styles.selectedChatContainer}>
+                <div className={styles.selectedChatContainer}>
                     <div className={styles.sectionSelector}>
                         <div
                             onClick={() => setChatType('user')}
@@ -90,7 +90,7 @@ interface SidebarProps {
                             <label>Grupowy</label>
                         </div>
                     </div>
-                </div> */}
+                </div>
             </div>
             <ul className={styles.chatList}>
                 {chatPartners.map((partner) => (
