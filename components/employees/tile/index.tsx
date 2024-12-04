@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import AuthorizedImage from '@/components/authorizedImage';
 import styles from './main.module.scss';
 import PersonTile from '@/components/types/personTile';
 import Flag from 'react-flagkit';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 interface LanguageTileProps {
   person: PersonTile;
   view: 'tiles' | 'list';
@@ -60,13 +63,15 @@ const Tile: React.FC<LanguageTileProps> = ({ person, view, setError }) => {
   }, [person.photo]);
 
   if (!imageSrc) {
-    return <div className={styles.spinnerContainer}><ProgressSpinner /></div>;
+    return <FontAwesomeIcon icon={faUser} className={styles.defaultAvatarIcon} />;
+    // return <div className={styles.spinnerContainer}><ProgressSpinner /></div>;
   }
 
   return (
     <div onClick={handleClick} className={tileClassName}>
       <div className={styles.employeeImageContainer}>
-        <img className={styles.employeeImage} src={imageSrc} alt="User Photo" />
+        <AuthorizedImage src={imageSrc} />
+        {/* <img className={styles.employeeImage} src={imageSrc} alt="User Photo" /> */}
       </div>
       <div className={styles.fullNameContainer}>
         <label className={styles.fullNameParagraph}>{person.firstname}</label>

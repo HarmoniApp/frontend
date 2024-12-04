@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import ChatPartner from '@/components/types/chatPartner';
-import AuthorizedImage from '@/components/chat/authorizedImage';
+import AuthorizedImage from '@/components/authorizedImage';
 import Language from '@/components/types/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers, faXmark, faPlus, faLanguage } from '@fortawesome/free-solid-svg-icons';
@@ -30,7 +30,6 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, newChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, setError, userId, setChatPartners, fetchChatHistoryForm, loadChatPartners, handleSelectUser }) => {
-
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         loading(true);
         const language = event.target.value;
@@ -65,14 +64,16 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                             fetchChatHistory(partner, selectedLanguage);
                         }}
                     >
-                        {partner.photo ? (
+                        <div className={styles.imageContainer}>
+                        <AuthorizedImage src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${partner.photo}`}/>
+                        </div>
+                        {/* {partner.photo ? (
                             <AuthorizedImage
                                 src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${partner.photo}`}
-                                setError={setError}
                             />
                         ) : (
                             <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
-                        )}
+                        )} */}
                         <div className={styles.messagesTileInfo}>
                             <label className={styles.chatName}>{partner.name}</label>
                             <label className={styles.lastMessage}>

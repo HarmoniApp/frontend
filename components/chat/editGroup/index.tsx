@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ChatPartner from '@/components/types/chatPartner';
-import AuthorizedImage from '@/components/chat/authorizedImage';
+import AuthorizedImage from '@/components/authorizedImage';
 import SearchUser from '@/components/chat/searchUser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers, faUserMinus, faXmark, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -180,18 +180,15 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
                 <h3 className={styles.title}>Edit group</h3>
-                <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true} setError={setError} />
+                    <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true} setError={setError} />
                 <div className={styles.selectedUsers}>
                     {selectedUsers.map((user) => (
                         <div key={user.id} className={styles.selectedUser}>
-                            {user.photo ? (
+                            <div className={styles.imageContainer}>
                                 <AuthorizedImage
                                     src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
-                                    setError={setError}
                                 />
-                            ) : (
-                                <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
-                            )}
+                            </div>
                             <p>{user.name}</p>
                             <FontAwesomeIcon icon={faUserMinus} onClick={() => handleRemoveUserFromGroup(user.id)} className={styles.removeIcon} />
                         </div>

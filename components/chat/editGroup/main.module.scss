@@ -39,30 +39,39 @@
   margin-top: 10px;
 
   .selectedUser {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 5px;
-      border: 2px solid $main-colour;
-      border-radius: 5px;
-      background-color: $white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px;
+    border: 2px solid $main-colour;
+    border-radius: 5px;
+    background-color: $white;
 
-      p {
-          margin: 0;
-          font-size: 0.9rem;
-          color: $font-dark-colour;
+    .imageContainer {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      margin-left: 10px;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: $font-dark-colour;
+    }
+
+    .removeIcon {
+      color: $red;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: color 0.2s;
+
+      &:hover {
+        color: $red-dark;
       }
-
-      .removeIcon {
-          color: $red;
-          cursor: pointer;
-          font-size: 1.2rem;
-          transition: color 0.2s;
-
-          &:hover {
-              color: $red-dark;
-          }
-      }
+    }
   }
 }
 
@@ -72,14 +81,14 @@
   margin-top: 10px;
 
   .deleteIcon {
-      color: $red;
-      cursor: pointer;
-      font-size: 1.5rem;
-      transition: color 0.2s;
+    color: $red;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: color 0.2s;
 
-      &:hover {
-          color: $red-dark;
-      }
+    &:hover {
+      color: $red-dark;
+    }
   }
 }
 
@@ -93,6 +102,6 @@
   transition: color 0.2s;
 
   &:hover {
-      color: $font-dark-colour;
+    color: $font-dark-colour;
   }
 }

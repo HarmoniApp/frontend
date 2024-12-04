@@ -34,9 +34,13 @@
     padding: 20px;
     border-bottom: 1px solid #ddd;
 
-    .defaultAvatarIcon {
+    .imageContainer {
+        width: 60px;
+        height: 60px;
         border-radius: 50%;
         overflow: hidden;
+        flex-shrink: 0;
+        margin-left: 10px;
     }
 }
 
@@ -83,9 +87,13 @@
     align-items: center;
     margin-right: 10px;
 
-    .messageAvatar {
+    .imageContainer {
+        width: 60px;
+        height: 60px;
         border-radius: 50%;
         overflow: hidden;
+        flex-shrink: 0;
+        margin-left: 10px;
     }
 
     .groupSenderName {

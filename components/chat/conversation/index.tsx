@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import ChatPartner from '@/components/types/chatPartner';
 import Message from '@/components/types/message';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import AuthorizedImage from '@/components/chat/authorizedImage';
-import { faEye, faUsers, faUsersRectangle } from '@fortawesome/free-solid-svg-icons';
+import AuthorizedImage from '@/components/authorizedImage';
+import { faEye, faUser, faUsers, faUsersRectangle } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 
 interface ConversationProps {
@@ -30,15 +30,14 @@ const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType,
         <>
             {chatType === 'user' ? (
                 <div className={styles.userChatHeader}>
-                    <div className={styles.defaultAvatarIcon}>
+                    <div className={styles.imageContainer}>
                         <AuthorizedImage
                             src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${selectedChat.photo}`}
-                            setError={setError}
                         />
                     </div>
                     <h2>{selectedChat.name}</h2>
                 </div>
-                ) : (
+            ) : (
                 <div className={styles.groupChatHeader}>
                     <h2>{selectedChat.name}</h2>
                     <p></p>
@@ -55,15 +54,10 @@ const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType,
                     >
                         {message.sender_id !== userId && (
                             <div className={styles.avatarAndNameContainer}>
-                                <div className={styles.messageAvatar}>
-                                    {message.groupSenderPhoto || selectedChat.photo ? (
-                                        <AuthorizedImage
-                                            src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${message.groupSenderPhoto || selectedChat.photo}`}
-                                            setError={setError}
-                                        />
-                                    ) : (
-                                        <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
-                                    )}
+                                <div className={styles.imageContainer}>
+                                    <AuthorizedImage
+                                        src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${message.groupSenderPhoto || selectedChat.photo}`}
+                                    />
                                 </div>
                                 {selectedChat?.type === 'group' && (
                                     <span className={styles.groupSenderName}>

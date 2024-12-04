@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import '@/styles/main.css';
 
 interface AuthorizedImageProps {
     src: string;
-    setError: (errorMessage: string | null) => void;
 }
 
-const AuthorizedImage: React.FC<AuthorizedImageProps> = ({ src, setError }) => {
+const AuthorizedImage: React.FC<AuthorizedImageProps> = ({ src }) => {
     const [imageUrl, setImageUrl] = useState<string | null>(null);
+    const [hasError, setHasError] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchImage = async () => {
@@ -17,6 +19,7 @@ const AuthorizedImage: React.FC<AuthorizedImageProps> = ({ src, setError }) => {
                 const tokenJWT = sessionStorage.getItem('tokenJWT');
                 if (!tokenJWT) {
                     console.error('Brak tokena JWT');
+                    setHasError(true);
                     return;
                 }
 
@@ -28,7 +31,13 @@ const AuthorizedImage: React.FC<AuthorizedImageProps> = ({ src, setError }) => {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Nie udało się pobrać obrazu');
+                    if (response.status === 404) {
+                        console.error('Obraz nie został znaleziony (404)');
+                        setHasError(true);
+                    } else {
+                        throw new Error(`Błąd HTTP: ${response.status}`);
+                    }
+                    return;
                 }
 
                 const blob = await response.blob();
@@ -36,7 +45,7 @@ const AuthorizedImage: React.FC<AuthorizedImageProps> = ({ src, setError }) => {
                 setImageUrl(objectUrl);
             } catch (error) {
                 console.error('Błąd podczas pobierania obrazu:', error);
-                setError('Błąd podczas pobierania obrazu');
+                setHasError(true);
             }
         };
 
@@ -49,7 +58,14 @@ const AuthorizedImage: React.FC<AuthorizedImageProps> = ({ src, setError }) => {
         };
     }, [src]);
 
-    return imageUrl ? <img src={imageUrl} alt="User Photo" className={styles.userAvatar} /> : <ProgressSpinner className="spinnerChatImage"/>;
+    if (hasError) {
+        return <FontAwesomeIcon icon={faUser} className={styles.defaultAvatarIcon} />;
+    }
+    
+    return imageUrl ? (
+        <img src={imageUrl} alt="User Photo" className={styles.customImage} />
+    ) : (
+        <ProgressSpinner className="spinnerChatImage" />
+    );
 };
-
 export default AuthorizedImage;

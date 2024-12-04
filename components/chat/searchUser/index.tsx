@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import ChatPartner from '@/components/types/chatPartner';
-import AuthorizedImage from '@/components/chat/authorizedImage';
+import AuthorizedImage from '@/components/authorizedImage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faUser } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
+import '@/styles/main.css';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 interface SearchUserProps {
   handleSelectUser: (user: ChatPartner) => void;
@@ -60,7 +62,6 @@ const SearchUser: React.FC<SearchUserProps> = ({ handleSelectUser, groupChat, se
           placeholder="Wyszukaj użytkownika ..."
           className={styles.searchInput}
         />
-        {/* <FontAwesomeIcon icon={faSearch} className={styles.icon}/> */}
       </div>
       <div className={styles.searchUserResult}>
         {searchResults.map((user) => (
@@ -69,21 +70,16 @@ const SearchUser: React.FC<SearchUserProps> = ({ handleSelectUser, groupChat, se
             onClick={() => handleSelectUser(user)}
             className={styles.searchUserResultItem}
           >
-            <div className={styles.userImageContainer}>
-              {user.photo ? (
-                <AuthorizedImage
-                  src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
-                  setError={setError}
-                />
-              ) : (
-                <FontAwesomeIcon icon={faUser} className={styles.defaultAvatarIcon} />
-              )}
+            <div className={styles.imageContainer}>
+              <AuthorizedImage
+                src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
+              />
             </div>
             <label className={styles.fullNameLabel}>{user.name}</label>
           </div>
         ))}
       </div>
-      {loading && <div>Loading...</div>}
+      {loading && <ProgressSpinner className="spinnerChatImage" />}
     </div>
   );
 };

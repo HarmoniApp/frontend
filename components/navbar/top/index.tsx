@@ -12,6 +12,7 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import '@/styles/main.css';
 import { fetchCsrfToken } from "@/services/csrfService";
+import AuthorizedImage from "@/components/authorizedImage";
 interface NavbarTopProps {
     onAccountIconClick: () => void;
     userId: number;
@@ -25,8 +26,9 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
     const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
     const [userPhoto, setUserPhoto] = useState<Blob | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const userPhotoUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${userId}`;
 
-    const pathname = usePathname();
+    // const pathname = usePathname();
     const router = useRouter();
 
     const fetchNotifications = async () => {
@@ -160,6 +162,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
         }
     };
 
+
     useEffect(() => {
         fetchUserPhoto(userId);
     }, [userId]);
@@ -188,6 +191,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
                     ) : (
                         <ProgressSpinner className="progressSpinnerImage" />
                     )}
+                    {/* <AuthorizedImage src={userPhotoUrl} /> */}
                 </div>
             </div>
 
