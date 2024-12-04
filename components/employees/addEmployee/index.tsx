@@ -10,11 +10,14 @@ import Contract from '@/components/types/contract';
 import Language from '@/components/types/language';
 import Supervisor from '@/components/types/supervisor';
 import Department from '@/components/types/department';
+import { fetchLanguages } from "@/services/languageService";
+import { fetchRoles } from "@/services/roleService"
 import styles from './main.module.scss';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
+import { fetchCsrfToken } from '@/services/csrfService';
 
 const AddEmployee: React.FC = () => {
   const router = useRouter();
@@ -30,25 +33,10 @@ const AddEmployee: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalCountdown, setModalCountdown] = useState(10);
   const [employeeLink, setEmployeeLink] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
 
   if (modalCountdown === 0) onBack();
-
-  const fetchRoles = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setRoles(data);
-    } catch (error) {
-      console.error('Error fetching roles:', error);
-    }
-  };
 
   const fetchContracts = async () => {
     try {
@@ -63,22 +51,6 @@ const AddEmployee: React.FC = () => {
       setContracts(data);
     } catch (error) {
       console.error('Error fetching contract types:', error);
-    }
-  };
-
-  const fetchLanguages = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/language`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setLanguages(data);
-    } catch (error) {
-      console.error('Error fetching languages:', error);
     }
   };
 
@@ -115,11 +87,15 @@ const AddEmployee: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchRoles();
-    fetchContracts();
-    fetchLanguages();
-    fetchSupervisors();
-    fetchDepartments();
+    const loadData = async () => {
+      await fetchRoles(setRoles, setError, setModalIsOpenLoadning);
+      await fetchContracts();
+      await fetchLanguages(setLanguages, setError, setModalIsOpenLoadning);
+      await fetchSupervisors();
+      await fetchDepartments();
+    };
+
+    loadData();
   }, []);
 
   const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
@@ -265,19 +241,7 @@ const AddEmployee: React.FC = () => {
   const handleSubmit = async (values: typeof initialValues, { resetForm }: { resetForm: () => void }) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        },
-        credentials: 'include',
-      });
-
-      if (resquestXsrfToken.ok) {
-        const data = await resquestXsrfToken.json();
-        const tokenXSRF = data.token;
+      const tokenXSRF = await fetchCsrfToken(setError);
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user`, {
           method: 'POST',
@@ -309,9 +273,6 @@ const AddEmployee: React.FC = () => {
             return prev - 1;
           });
         }, 1000);
-      } else {
-        console.error('Failed to fetch XSRF token, response not OK');
-      }
     } catch (error) {
       console.error('Error adding employee:', error);
       throw error;

@@ -2,14 +2,16 @@
 import React, { useState, useEffect } from "react";
 import { usePathname, useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay, faSearch, faBell, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faBell } from '@fortawesome/free-solid-svg-icons';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { Message } from 'primereact/message';
 import styles from "./main.module.scss";
-import './main.css';
 import Notifications from "./notifications";
 import Notification from '@/components/types/notification';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import '@/styles/main.css';
+import { fetchCsrfToken } from "@/services/csrfService";
 interface NavbarTopProps {
     onAccountIconClick: () => void;
     userId: number;
@@ -21,6 +23,9 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
     const [unreadCount, setUnreadCount] = useState(0);
     const [showNotifications, setShowNotifications] = useState(false);
     const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+    const [userPhoto, setUserPhoto] = useState<Blob | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
     const pathname = usePathname();
     const router = useRouter();
 
@@ -40,6 +45,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
             setUnreadCount(data.filter(notification => !notification.read).length);
         } catch (error) {
             console.error('Error while fetching notifications:', error);
+            setError('Błąd podczas pobierania powiadomień');
         }
     };
 
@@ -97,21 +103,9 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
         setUnreadCount(notifications.filter(notification => !notification.read && notification.id !== id).length);
         setModalIsOpenLoadning(true);
         try {
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${tokenJWT}`,
-              },
-              credentials: 'include',
-            });
-      
-            if (resquestXsrfToken.ok) {
-              const data = await resquestXsrfToken.json();
-              const tokenXSRF = data.token;
+            const tokenXSRF = await fetchCsrfToken(setError);
 
-              const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notification/${id}/read`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notification/${id}/read`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -120,20 +114,15 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
                 },
                 credentials: 'include',
             });
-              if (!response.ok) {
+            if (!response.ok) {
                 console.error("Failed to mark notification as read: ", response.statusText);
                 throw new Error(`Failed to mark notification as read: ${id}`);
-              }
-              setModalIsOpenLoadning(false);
-      
-            } else {
-              console.error('Failed to fetch XSRF token, response not OK');
             }
-      
-          } catch (error) {
+            setModalIsOpenLoadning(false);
+        } catch (error) {
             console.error(`Error marking notification ${id} as read:`, error);
-            throw error;
-          }
+            setError('Błąd podczas czytania powiadomień');
+        }
     };
 
     const clikOnLogo = (loggedUser: boolean) => {
@@ -145,10 +134,39 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
         }
     };
 
+    const fetchUserPhoto = async (userId: number) => {
+        try {
+            const tokenJWT = sessionStorage.getItem('tokenJWT');
+            if (!tokenJWT) {
+                throw new Error('Token JWT not found in session storage');
+            }
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}/photo`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${tokenJWT}`,
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch user photo: ${response.statusText}`);
+            }
+
+            const blob = await response.blob();
+            setUserPhoto(blob);
+        } catch (error) {
+            console.error('Error while fetching user photo:', error);
+            setError('Błąd podczas pobierania zdjęcia');
+        }
+    };
+
+    useEffect(() => {
+        fetchUserPhoto(userId);
+    }, [userId]);
+
     return (
         <nav className={styles.navbar}>
             <div className={styles.leftSection}>
-                {/* {!mustBeBackButton && <p><FontAwesomeIcon icon={faPlay} className={`${styles.icon} ${styles.rotate}`} /></p>} */}
                 <span className={styles.logo} onClick={() => clikOnLogo(isThisAdmin)}>HA</span>
             </div>
             <div className={styles.rightSection}>
@@ -160,11 +178,20 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
                         )}
                     </p>
                 </div>
-                <p onClick={onAccountIconClick}>
-                    <FontAwesomeIcon icon={faUser} className={`${styles.icon} ${pathname === '/settings' ? styles.active : ''}`} />
-                </p>
+                <div onClick={onAccountIconClick} className={styles.userPhotoParagraph}>
+                    {userPhoto ? (
+                        <img
+                            src={URL.createObjectURL(userPhoto)}
+                            alt="UserPhoto"
+                            className={styles.userPhoto}
+                        />
+                    ) : (
+                        <ProgressSpinner className="progressSpinnerImage" />
+                    )}
+                </div>
             </div>
 
+            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
 
             {showNotifications && (
                 <div className={styles.modalOverlayOfNotification}>
@@ -173,12 +200,12 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
                     </div>
 
                     {modalIsOpenLoadning && (
-                    <div className={styles.loadingModalOverlay}>
-                      <div className={styles.loadingModalContent}>
-                        <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                      </div>
-                    </div>
-                  )}
+                        <div className={styles.loadingModalOverlay}>
+                            <div className={styles.loadingModalContent}>
+                                <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
         </nav>

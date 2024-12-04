@@ -1,0 +1,26 @@
+@import '@/styles/variables.scss';
+
+.newGroupForm {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-self: center;
+    gap: 20px;
+    padding: 20px;
+
+    .groupNameInput{
+        width: 100%;
+        padding: 10px;
+        border: 2px solid $main-colour;
+        border-radius: 8px;
+    }
+    button {
+        padding: 10px;
+        border: 2px solid $main-colour;
+        border-radius: 8px;
+        background-color: $main-colour;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+}

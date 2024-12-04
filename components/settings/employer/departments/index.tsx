@@ -11,8 +11,13 @@ import * as Yup from "yup";
 import classNames from "classnames";
 import DepartmentAddress from "@/components/types/departmentAddress";
 import styles from "./main.module.scss";
+import { fetchCsrfToken } from "@/services/csrfService";
 
-const Departments: React.FC = () => {
+interface DepartmentsProps {
+    setError: (errorMessage: string | null) => void;
+}
+
+const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
     const [departments, setDepartments] = useState<DepartmentAddress[]>([]);
     const [editingDepartmentId, setEditingDepartmentId] = useState<number | null>(null);
     const [noChangesError, setNoChangesError] = useState<string | null>(null);
@@ -48,28 +53,52 @@ const Departments: React.FC = () => {
         }
         catch (error) {
             console.error("Error fetching departments:", error);
+            setError('Błąd podczas pobierania oddziałów');
         }
     };
 
     const handleAddDepartment = async (values: DepartmentAddress, { resetForm }: any) => {
         setModalIsOpenLoadning(true);
         try {
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
-                method: 'GET',
+            const tokenXSRF = await fetchCsrfToken(setError);
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address`, {
+                method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenJWT}`,
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
                 },
                 credentials: 'include',
+                body: JSON.stringify(values),
             });
+            if (!response.ok) {
+                console.error("Failed to addd department: ", response.statusText);
+                throw new Error('Error adding department');
+            }
+            setModalIsOpenLoadning(false);
+            const addedDepartment = await response.json();
+            setAddedDepartmentName(addedDepartment.department_name);
+            setIsAddModalOpen(true);
+            setDepartments([...departments, addedDepartment]);
+            resetForm();
+        }
+        catch (error) {
+            console.error("Error adding department:", error);
+            setError('Błąd podczas dodawania oddziałów');
+        } finally {
+            setModalIsOpenLoadning(false);
+        }
+    };
 
-            if (resquestXsrfToken.ok) {
-                const data = await resquestXsrfToken.json();
-                const tokenXSRF = data.token;
+    const handleSaveEdit = async (values: DepartmentAddress) => {
+        if (editingDepartmentId !== null) {
+            setModalIsOpenLoadning(true);
+            try {
+                const tokenXSRF = await fetchCsrfToken(setError);
 
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address`, {
-                    method: 'POST',
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${editingDepartmentId}`, {
+                    method: 'PUT',
                     headers: {
                         "Content-Type": "application/json",
                         'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
@@ -79,70 +108,21 @@ const Departments: React.FC = () => {
                     body: JSON.stringify(values),
                 });
                 if (!response.ok) {
-                    console.error("Failed to addd department: ", response.statusText);
-                    throw new Error('Error adding department');
+                    console.error("Failed to update department: ", response.statusText);
+                    throw new Error('Error updating department');
                 }
                 setModalIsOpenLoadning(false);
-                const addedDepartment = await response.json();
-                setAddedDepartmentName(addedDepartment.department_name);
-                setIsAddModalOpen(true);
-                setDepartments([...departments, addedDepartment]);
-                resetForm();
-
-            } else {
-                console.error('Failed to fetch XSRF token, response not OK');
-            }
-        }
-        catch (error) {
-            console.error("Error adding department:", error);
-        }
-    };
-
-    const handleSaveEdit = async (values: DepartmentAddress) => {
-        if (editingDepartmentId !== null) {
-            setModalIsOpenLoadning(true);
-            try {
-                const tokenJWT = sessionStorage.getItem('tokenJWT');
-                const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${tokenJWT}`,
-                    },
-                    credentials: 'include',
-                });
-
-                if (resquestXsrfToken.ok) {
-                    const data = await resquestXsrfToken.json();
-                    const tokenXSRF = data.token;
-
-                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${editingDepartmentId}`, {
-                        method: 'PUT',
-                        headers: {
-                            "Content-Type": "application/json",
-                            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                            'X-XSRF-TOKEN': tokenXSRF,
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify(values),
-                    });
-                    if (!response.ok) {
-                        console.error("Failed to update department: ", response.statusText);
-                        throw new Error('Error updating department');
-                    }
-                    setModalIsOpenLoadning(false);
-                    const updatedDepartment = await response.json();
-                    setDepartments((prevDepartments) =>
-                        prevDepartments.map((dept) => (dept.id === updatedDepartment.id ? updatedDepartment : dept))
-                    );
-                    setEditingDepartmentId(null);
-
-                } else {
-                    console.error('Failed to fetch XSRF token, response not OK');
-                }
+                const updatedDepartment = await response.json();
+                setDepartments((prevDepartments) =>
+                    prevDepartments.map((dept) => (dept.id === updatedDepartment.id ? updatedDepartment : dept))
+                );
+                setEditingDepartmentId(null);
             }
             catch (error) {
                 console.error("Error updating department:", error);
+                setError('Błąd podczas dodawania oddziałów');
+            } finally {
+                setModalIsOpenLoadning(false);
             }
         }
     };
@@ -150,42 +130,29 @@ const Departments: React.FC = () => {
     const handleDeleteDepartment = async (departmentId: number) => {
         setModalIsOpenLoadning(true);
         try {
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
-                method: 'GET',
+            const tokenXSRF = await fetchCsrfToken(setError);
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${departmentId}`, {
+                method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenJWT}`,
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
                 },
                 credentials: 'include',
             });
-
-            if (resquestXsrfToken.ok) {
-                const data = await resquestXsrfToken.json();
-                const tokenXSRF = data.token;
-
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${departmentId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        "Content-Type": "application/json",
-                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                        'X-XSRF-TOKEN': tokenXSRF,
-                    },
-                    credentials: 'include',
-                });
-                if (!response.ok) {
-                    console.error("Failed to delete department: ", response.statusText);
-                    throw new Error('Error delete department');
-                }
-                setModalIsOpenLoadning(false);
-                setDepartments(departments.filter((dept) => dept.id !== departmentId));
-
-            } else {
-                console.error('Failed to fetch XSRF token, response not OK');
+            if (!response.ok) {
+                console.error("Failed to delete department: ", response.statusText);
+                throw new Error('Error delete department');
             }
+            setModalIsOpenLoadning(false);
+            setDepartments(departments.filter((dept) => dept.id !== departmentId));
         }
         catch (error) {
             console.error("Error deleting department:", error);
+            setError('Błąd podczas usuwania oddziałów');
+        } finally {
+            setModalIsOpenLoadning(false);
         }
     };
 
@@ -254,7 +221,7 @@ const Departments: React.FC = () => {
             <div className={styles.showDepartmentsMapContainer}>
                 {departments.map((department) => (
                     <Formik
-                        key={department.id}
+                        key={department.id + department.department_name + department.city + department.street + department.zip_code + department.building_number + department.apartment}
                         initialValues={{
                             id: department.id,
                             department_name: department.department_name,

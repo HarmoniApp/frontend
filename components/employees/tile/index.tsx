@@ -7,9 +7,10 @@ import Flag from 'react-flagkit';
 interface LanguageTileProps {
   person: PersonTile;
   view: 'tiles' | 'list';
+  setError: (errorMessage: string | null) => void;
 }
 
-const Tile: React.FC<LanguageTileProps> = ({ person, view }) => {
+const Tile: React.FC<LanguageTileProps> = ({ person, view, setError }) => {
   const router = useRouter()
   const [imageSrc, setImageSrc] = useState<string | null>(null);
 
@@ -43,7 +44,6 @@ const Tile: React.FC<LanguageTileProps> = ({ person, view }) => {
         );
 
         if (response.ok) {
-          console.log("Zdjęcie pobrane pomyślnie", response);
           const blob = await response.blob();
           const imageObjectUrl = URL.createObjectURL(blob);
           setImageSrc(imageObjectUrl);
@@ -52,6 +52,7 @@ const Tile: React.FC<LanguageTileProps> = ({ person, view }) => {
         }
       } catch (error) {
         console.error("Błąd podczas żądania:", error);
+        setError('Błąd podczas pobierania obrazu');
       }
     };
 

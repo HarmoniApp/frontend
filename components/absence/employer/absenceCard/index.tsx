@@ -4,10 +4,13 @@ import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import Absence from '@/components/types/absence';
 import AbsenceType from '@/components/types/absenceType';
-import AbsenceUser from '@/components/types/absenceUser';
+import SimpleUser from "@/components/types/simpleUser";
 import CancelConfirmation from './popUps/cancelConfirmation';
 import AproveConfirmation from './popUps/aproveConfirmation';
 import styles from './main.module.scss';
+import { Message } from 'primereact/message';
+import { fetchCsrfToken } from '@/services/csrfService';
+import { fetchUser } from '@/services/userService';
 
 interface AbsenceCardProps {
     absence: Absence;
@@ -16,12 +19,18 @@ interface AbsenceCardProps {
 
 const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpdate }) => {
     const [absenceType, setAbsenceType] = useState<AbsenceType | null>(null);
-    const [user, setUser] = useState<AbsenceUser | null>(null);
+    const [user, setUser] = useState<SimpleUser | null>(null);
     const [modalIsOpenCancelAbsence, setModalIsOpenCancelAbsence] = useState(false);
     const [modalIsOpenAproveAbsence, setModalIsOpenAproveAbsence] = useState(false);
     const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        const fetchData = async () => {
+            await fetchUser(absence, setUser, setError,setModalIsOpenLoadning);
+          };
+          fetchData();
+
         const fetchAbsenceType = async () => {
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence-type/${absence.absence_type_id}`, {
@@ -35,27 +44,11 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                 setAbsenceType(data);
             } catch (error) {
                 console.error('Error fetching absence type:', error);
-            }
-        };
-
-        const fetchUser = async () => {
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/${absence.user_id}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    },
-                });
-                const data = await response.json();
-                setUser(data);
-            } catch (error) {
-                console.error('Error fetching user:', error);
+                setError('Error fetching absencee type');
             }
         };
 
         fetchAbsenceType();
-        fetchUser();
     }, [absence.absence_type_id, absence.user_id]);
 
     const subbmisionDate = () => new Date(absence.submission).toLocaleDateString();
@@ -66,21 +59,9 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     const updateAbsenceStatus = async (absenceId: number, statusId: number) => {
         setModalIsOpenLoadning(true);
         try {
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenJWT}`,
-                },
-                credentials: 'include',
-            });
+            const tokenXSRF = await fetchCsrfToken(setError);
 
-            if (resquestXsrfToken.ok) {
-                const data = await resquestXsrfToken.json();
-                const tokenXSRF = data.token;
-
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/${absenceId}/status/${statusId}`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v2/absence/${absenceId}/status/${statusId}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
@@ -98,14 +79,9 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                 setModalIsOpenLoadning(false);
                 // const responseData = await response.json();
                 // console.log('Updated absence status response data:', responseData);
-
-            } else {
-                console.error('Failed to fetch XSRF token, response not OK');
-            }
-
         } catch (error) {
             console.error('Error updating absence status:', error);
-            throw error;
+            setError('Error updating absence status');
         }
     };
 
@@ -236,6 +212,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                     </div>
                 </div>
             )}
+            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
 
             {modalIsOpenLoadning && (
                 <div className={styles.loadingModalOverlay}>

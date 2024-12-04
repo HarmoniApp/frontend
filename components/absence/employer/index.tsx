@@ -4,13 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRectangleList, faGrip, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import AbsenceCard from '@/components/absence/employer/absenceCard';
 import Absence from '@/components/types/absence';
-import AbsenceUser from '@/components/types/absenceUser';
+import SimpleUser from '@/components/types/simpleUser';
 import AbsenceStatus from '@/components/types/absenceStatus';
 import User from '@/components/types/user';
 import styles from './main.module.scss';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
+import { fetchAbsences } from '@/services/absenceService';
 
 const AbsenceEmployer: React.FC = () => {
   const [absences, setAbsences] = useState<Absence[]>([]);
@@ -21,28 +22,6 @@ const AbsenceEmployer: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  const fetchAbsences = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setAbsences(data.content);
-    } catch (error) {
-      console.error('Error fetching absences:', error);
-      setError('Error fetching absences');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -69,15 +48,18 @@ const AbsenceEmployer: React.FC = () => {
       setUsers(allUsers);
     } catch (error) {
       console.error('Error fetching users:', error);
-      setError('Error fetching users');
+      setError('Błąd podczas pobierania użytkowników');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchAbsences();
-    fetchUsers();
+    const fetchData = async () => {
+      await fetchAbsences(setAbsences, setError, setLoading);
+      fetchUsers();
+    };
+    fetchData();
 
     const fetchAbsencesStatus = async () => {
       try {
@@ -127,7 +109,7 @@ const AbsenceEmployer: React.FC = () => {
     }
   };
 
-  const getUserById = (userId: number): AbsenceUser | undefined => {
+  const getUserById = (userId: number): SimpleUser | undefined => {
     return users.find(user => user.id === userId);
   };
 
@@ -197,7 +179,7 @@ const AbsenceEmployer: React.FC = () => {
         </div>
 
         {loading && <div className={styles.spinnerContainer}><ProgressSpinner /></div>}
-        {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessage} />}
+        {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
         {!loading && !error && filteredAbsences.length === 0 && (
           <Card title="No Data" className={styles.noDataCard}><p>There is no data available at the moment.</p></Card>
         )}
@@ -208,7 +190,7 @@ const AbsenceEmployer: React.FC = () => {
               : styles.cardsViewContainerList
           }>
             {filteredAbsences.map(absence => (
-              <AbsenceCard key={absence.id} absence={absence} onStatusUpdate={fetchAbsences} />
+              <AbsenceCard key={absence.id} absence={absence} onStatusUpdate={() => fetchAbsences(setAbsences, setError, setLoading)} />
             ))}
           </div>
         )}

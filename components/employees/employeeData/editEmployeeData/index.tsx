@@ -10,11 +10,15 @@ import Contract from '@/components/types/contract';
 import Language from '@/components/types/language';
 import Supervisor from '@/components/types/supervisor';
 import Department from '@/components/types/department';
+import { fetchLanguages } from "@/services/languageService";
+import { fetchRoles } from "@/services/roleService"
+import { Message } from 'primereact/message';
 import styles from './main.module.scss';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import * as Yup from 'yup';
 import classNames from 'classnames';
+import { fetchCsrfToken } from '@/services/csrfService';
 
 interface EditEmployeeDataProps {
   employee: EmployeeDataWorkAdressOnlyId;
@@ -37,6 +41,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [changedData, setChangedData] = useState<ChangedData>({});
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchContracts = async () => {
     try {
@@ -51,6 +56,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
       setContracts(data);
     } catch (error) {
       console.error('Error fetching contracts:', error);
+      setError('Błąd podczas pobierania umów');
     }
   };
 
@@ -73,6 +79,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
       setDepartmentMap(deptMap);
     } catch (error) {
       console.error('Error fetching departments:', error);
+      setError('Błąd podczas pobierania oddziałów');
     }
   };
 
@@ -95,47 +102,20 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
       setSupervisorMap(supervisorMap);
     } catch (error) {
       console.error('Error fetching supervisors:', error);
-    }
-  };
-
-  const fetchRoles = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setRoles(data);
-    } catch (error) {
-      console.error('Error fetching roles:', error);
-    }
-  };
-
-  const fetchLanguages = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/language`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setLanguages(data);
-    } catch (error) {
-      console.error('Error fetching languages:', error);
+      setError('Błąd podczas pobierania przełoonych');
     }
   };
 
   useEffect(() => {
-    fetchContracts();
-    fetchDepartments();
-    fetchSupervisors();
-    fetchRoles();
-    fetchLanguages();
+    const loadData = async () => {
+      await fetchContracts();
+      await fetchDepartments();
+      await fetchSupervisors();
+      await fetchRoles(setRoles, setError, setModalIsOpenLoadning);
+      await fetchLanguages(setLanguages, setError, setModalIsOpenLoadning);
+    };
+
+    loadData();
   }, []);
 
   const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
@@ -324,50 +304,33 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   const handleSubmit = async (values: typeof initialValues) => {
     setModalIsOpenLoadning(true);
     try {
-        const tokenJWT = sessionStorage.getItem('tokenJWT');
-        const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${tokenJWT}`,
-            },
-            credentials: 'include',
+      const tokenXSRF = await fetchCsrfToken(setError);
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${employee.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+          body: JSON.stringify(values),
         });
 
-        if (resquestXsrfToken.ok) {
-            const data = await resquestXsrfToken.json();
-            const tokenXSRF = data.token;
-
-            const response = await fetch(`http://localhost:8080/api/v1/user/${employee.id}`, {
-              method: 'PATCH',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                'X-XSRF-TOKEN': tokenXSRF,
-              },
-              credentials: 'include',
-              body: JSON.stringify(values),
-            });
-
-            const changedData = getChangedData(values);
-            if (!response.ok) {
-                console.error('Error updating absence status, response not OK');
-                throw new Error('Error updating absence status');
-            }
-
-            setChangedData(changedData);
-            setModalIsOpenLoadning(false);
-            setIsModalOpen(true);
-            
-        } else {
-            console.error('Failed to fetch XSRF token, response not OK');
+        const changedData = getChangedData(values);
+        if (!response.ok) {
+          console.error('Error updating absence status, response not OK');
+          throw new Error('Error updating absence status');
         }
 
+        setChangedData(changedData);
+        setModalIsOpenLoadning(false);
+        setIsModalOpen(true);
     } catch (error) {
-        console.error('Błąd podczas aktualizacji danych pracownika:', error);
-        throw error;
+      console.error('Błąd podczas aktualizacji danych pracownika:', error);
+      setError('Błąd podczas edycji pracownika');
     }
-};
+  };
 
   const initialValues = {
     firstname: employee.firstname || '',
@@ -694,6 +657,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
                 </div>
               </div>
             )}
+            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
 
             {modalIsOpenLoadning && (
               <div className={styles.loadingModalOverlay}>
