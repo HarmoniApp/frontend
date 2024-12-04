@@ -84,6 +84,9 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
 
             if (response.ok) {
                 setSelectedUsers(selectedUsers.filter((user: ChatPartner) => user.id !== userId));
+                if (userId === parseInt(sessionStorage.getItem('userId') || '0')) {
+                    window.location.reload();
+                }
             } else {
                 console.error('Błąd podczas usuwania użytkownika z grupy');
             }
