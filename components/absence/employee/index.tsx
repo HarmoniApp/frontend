@@ -8,6 +8,7 @@ import styles from './main.module.scss';
 import { Message } from 'primereact/message';
 import { fetchCsrfToken } from '@/services/csrfService';
 import { fetchAvailableAbsenceDays, fetchUserAbsences } from '@/services/absenceService';
+import AbsenceType from '@/components/types/absenceType';
 
 interface AbsenceEmployeesProps {
     userId: number;
@@ -29,40 +30,6 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
     useEffect(() => {
         fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences, setLoading);
     }, []);
-
-    // const fetchUserAbsences = async () => {
-    //     try {
-    //         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/user/${userId}`, {
-    //             method: 'GET',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-    //             },
-    //         });
-    //         const data = await response.json();
-
-    //         const absences = data.content;
-    //         setAbsences(absences);
-
-    //         const typeNames: { [key: number]: string } = {};
-    //         const typePromises = absences.map((absence: any) => {
-    //             if (!(absence.absence_type_id in typeNames)) {
-    //                 return fetchAbsenceTypeName(absence.absence_type_id, setLoading).then((typeName) => {
-    //                     typeNames[absence.absence_type_id] = typeName;
-    //                 });
-    //             }
-    //             return Promise.resolve();
-    //         });
-
-    //         await Promise.all(typePromises);
-    //         setAbsenceTypeNames(typeNames);
-    //     } catch (error) {
-    //         console.error('Error fetching user absences:', error);
-    //         setError('Error fetching user absences');
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
 
     const handleCancelAbsence = async () => {
         if (selectedAbsenceId === null) return;

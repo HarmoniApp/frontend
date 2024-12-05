@@ -45,44 +45,41 @@ export const fetchAbsenceType = async (
 
 export const fetchUserAbsences = async (
     userId: number,
-    setAbsenceTypeNames: (types: {[key: number]: string}) => void,
+    setAbsenceTypeNames: (types: { [key: number]: string }) => void,
     setAbsences: (absences: Absence[]) => void,
     setLoading: (loading: boolean) => void): Promise<void> => {
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/user/${userId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                },
-            });
-            const data = await response.json();
-            const absences = data.content;
-            setAbsences(absences);
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/user/${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            },
+        });
+        const data = await response.json();
+        const absences = data.content;
+        setAbsences(absences);
 
-            const typeNames: { [key: number]: string } = {};
-            const typePromises = absences.map((absence: any) => {
-                if (!(absence.absence_type_id in typeNames)) {
-                    return fetchAbsenceTypeName(absence.absence_type_id, setLoading).then((typeName) => {
-                        typeNames[absence.absence_type_id] = typeName;
-                    });
+        const typeNames: { [key: number]: string } = {};
+        await Promise.all(
+            absences.map(async (absence: Absence) => {
+                if (!typeNames[absence.absence_type_id]) {
+                    const name = await fetchAbsenceTypeName(absence.absence_type_id);
+                    typeNames[absence.absence_type_id] = name;
                 }
-                // return Promise.resolve();
-            });
+            })
+        );
 
-            await Promise.all(typePromises);
-            setAbsenceTypeNames(typeNames);
-        } catch (error) {
-            console.error('Error fetching user absences:', error);
-        } finally {
-            setLoading(false);
-        }
+        setAbsenceTypeNames(typeNames);
+    } catch (error) {
+        console.error('Error fetching user absences:', error);
+    } finally {
+        setLoading(false);
+    }
 }
 
 export const fetchAbsenceTypeName = async (
-    id: number,
-    setLoading: (loading: boolean) => void): Promise<string> => {
-    setLoading(true);
+    id: number): Promise<string> => {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence-type/${id}`, {
             method: 'GET',
@@ -97,8 +94,6 @@ export const fetchAbsenceTypeName = async (
     } catch (error) {
         console.error(`Error fetching absence type name for ID ${id}:`, error);
         return 'Nieznane';
-    } finally {
-        setLoading(false)
     }
 };
 
