@@ -1,4 +1,4 @@
-@import '@/styles/abstracts/variables.scss';
+@import '@/styles/abstracts/main.scss';
 
 @mixin respond-to-md {
   @media (max-width: $breakpoint-md) {
