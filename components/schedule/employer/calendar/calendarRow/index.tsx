@@ -45,7 +45,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
 
   useEffect(() => {
     const loadData = async () => {
-      await fetchRoles(setRoles, setError, setLoadingRoles);
+      await fetchRoles(setRoles, setLoadingRoles);
     };
 
     loadData();

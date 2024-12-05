@@ -2,7 +2,6 @@ import Role from "@/components/types/role";
 
 export const fetchRoles = async (
     setRoles: (roles: Role[]) => void,
-    setError: (errorMessage: string | null) => void,
     setLoading: (loading: boolean) => void): Promise<void> => {
     setLoading(true);
     try {
@@ -18,7 +17,6 @@ export const fetchRoles = async (
         setRoles(data);
     } catch (error) {
         console.error('Error fetching roles:', error);
-        setError('Błąd podczas pobierania ról');
     } finally {
         setLoading(false);
     }

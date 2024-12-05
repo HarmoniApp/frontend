@@ -33,7 +33,7 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
 
   useEffect(() => {
     const loadRoles = async () => {
-      await fetchRoles(setRoles, setError, setModalIsOpenLoadning);
+      await fetchRoles(setRoles, setModalIsOpenLoadning);
     };
 
     loadRoles();
@@ -58,7 +58,7 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
         throw new Error('Failed to delete role');
       }
       setModalIsOpenLoadning(false);
-      await fetchRoles(setRoles, setError, setModalIsOpenLoadning);
+      await fetchRoles(setRoles, setModalIsOpenLoadning);
     } catch (error) {
       console.error('Error deleting role:', error);
       setError('Błąd podczas usuwania roli');
@@ -90,7 +90,7 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
       const newRole = await response.json();
       setAddedRoleName(newRole.name);
       setIsAddModalOpen(true);
-      await fetchRoles(setRoles, setError, setModalIsOpenLoadning);
+      await fetchRoles(setRoles, setModalIsOpenLoadning);
       resetForm();
     } catch (error) {
       console.error('Error adding role:', error);
@@ -122,7 +122,7 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
           }
           setModalIsOpenLoadning(false);
           await response.json();
-          await fetchRoles(setRoles, setError, setModalIsOpenLoadning);
+          await fetchRoles(setRoles, setModalIsOpenLoadning);
           setEditingRoleId(null);
           resetForm();
       } catch (error) {

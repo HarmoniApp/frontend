@@ -72,7 +72,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
       await fetchContracts(setContracts, setModalIsOpenLoadning);
       await fetchDepartments(setDepartments, setModalIsOpenLoadning);
       await fetchSupervisors();
-      await fetchRoles(setRoles, setError, setModalIsOpenLoadning);
+      await fetchRoles(setRoles, setModalIsOpenLoadning);
       await fetchLanguages(setLanguages, setError, setModalIsOpenLoadning);
     };
 

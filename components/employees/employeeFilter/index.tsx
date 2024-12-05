@@ -30,7 +30,7 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters, setErro
 
   useEffect(() => {
     const loadData = async () => {
-      await fetchRoles(setRoles, setError, setLoading);
+      await fetchRoles(setRoles, setLoading);
       await fetchLanguages(setLanguages, setError, setLoading);
     };
 

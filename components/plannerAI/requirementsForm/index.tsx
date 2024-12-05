@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import PredefinedShift from '@/components/types/predefinedShifts';
-import RoleWithColour from '@/components/types/roleWithColour';
+import Role from '@/components/types/role';
 import Instruction from '@/components/plannerAI/instruction';
 import IRequirementsForm from '@/components/types/requirementsForm';
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -9,20 +9,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan, faEraser, faPlus, faChartSimple, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import * as Yup from 'yup';
 import styles from './main.module.scss';
+import { fetchRoles } from '@/services/roleService';
 
 const RequirementsForm: React.FC = () => {
     const [forms, setForms] = useState<IRequirementsForm[]>([
         { id: Date.now(), date: '', shifts: [] },
     ]);
     const [shifts, setShifts] = useState<PredefinedShift[]>([]);
-    const [roles, setRoles] = useState<RoleWithColour[]>([]);
+    const [roles, setRoles] = useState<Role[]>([]);
     const [formCounter, setFormCounter] = useState(1);
     const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
     const [isInstructionOpen, setIsInstructionOpen] = useState(false);
 
     useEffect(() => {
-        fetchPredefinedShifts();
-        fetchRole();
+        const loadData = async () => {
+        await fetchPredefinedShifts();
+        await fetchRoles(setRoles, setModalIsOpenLoadning);
+        }
+
+        loadData();
     }, []);
 
     const fetchPredefinedShifts = async () => {
@@ -38,27 +43,6 @@ const RequirementsForm: React.FC = () => {
             const data = await response.json();
             if (Array.isArray(data)) {
                 setShifts(data);
-            } else {
-                console.error('Fetched data is not an array:', data);
-            }
-        } catch (error) {
-            console.error('Error fetching predefined shifts:', error);
-        }
-    };
-
-    const fetchRole = async () => {
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                },
-            });
-
-            const data = await response.json();
-            if (Array.isArray(data)) {
-                setRoles(data);
             } else {
                 console.error('Fetched data is not an array:', data);
             }

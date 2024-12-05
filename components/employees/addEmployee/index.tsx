@@ -58,7 +58,7 @@ const AddEmployee: React.FC = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      await fetchRoles(setRoles, setError, setModalIsOpenLoadning);
+      await fetchRoles(setRoles, setModalIsOpenLoadning);
       await fetchContracts(setContracts, setModalIsOpenLoadning);
       await fetchLanguages(setLanguages, setError, setModalIsOpenLoadning);
       await fetchSupervisors();
