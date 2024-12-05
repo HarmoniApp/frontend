@@ -4,6 +4,8 @@ import { faChevronLeft, faChevronRight, faCloudArrowDown, faCalendarCheck } from
 import PublishConfirmation from './publishConfirmation';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import styles from './main.module.scss';
+import { downloadSchedulePdf } from '@/services/pdfService';
+import { downloadScheduleXLSX } from '@/services/xlsxService';
 
 interface ScheduleBarProps {
   currentWeek: Date[];
@@ -18,84 +20,6 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const downloadPdf = async () => {
-    setLoading(true);
-
-    try {
-      const startOfWeek = currentWeek[0].toISOString().split('T')[0];
-      const endOfWeek = currentWeek[6].toISOString().split('T')[0];
-      const responsePDF = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/pdf/generate-pdf-shift?startOfWeek=${startOfWeek}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      }
-      );
-
-      if (!responsePDF.ok) {
-        console.error('Error downloading PDF');
-        return;
-      }
-
-      const blob = await responsePDF.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-
-      const filename = `shifts_${startOfWeek} - ${endOfWeek}.pdf`;
-
-      link.setAttribute('download', filename);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      console.error('Error:', error);
-      setError('Błąd');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const downloadXLSX = async () => {
-    setLoading(true);
-
-    try {
-      const startOfWeek = currentWeek[0].toISOString().split('T')[0];
-      const endOfWeek = currentWeek[6].toISOString().split('T')[0];
-      const responseXLSX = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/excel/shifts/export-excel?start=${startOfWeek}&end=${endOfWeek}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      }
-      );
-
-      if (!responseXLSX.ok) {
-        console.error('Error downloading XLSX');
-        return;
-      }
-
-      const blob = await responseXLSX.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-
-      const filename = `shifts_${startOfWeek} - ${endOfWeek}.xlsx`;
-
-      link.setAttribute('download', filename);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      console.error('Error:', error);
-      setError('Błąd');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const formatDate = (date: Date) => {
     const [year, month, day] = date.toISOString().split('T')[0].split('-');
     return `${day}.${month}.${year}`;
@@ -108,7 +32,7 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
     return `${startOfWeek} - ${endOfWeek}`;
   };
 
-  const handleExport = (format: string) => {
+  const handleExport = async (format: string) => {
     setDropdownVisible(false);
     const weekRange = getThisWeek();
     const confirmDownload = window.confirm(`Czy na pewno chcesz pobrać plik w formacie ${format.toUpperCase()} na ten tydzień: ${weekRange}?`);
@@ -118,9 +42,9 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
     }
 
     if (format === 'pdf') {
-      downloadPdf();
+      await downloadSchedulePdf(currentWeek, setLoading);
     } else if (format === 'xlsx') {
-      downloadXLSX();
+      await downloadScheduleXLSX(currentWeek, setLoading);
     }
   };
 

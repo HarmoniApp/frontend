@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRectangleList, faGrip, faUserPlus, faCloudArrowDown, faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import styles from './main.module.scss';
+import { downloadUsersPDF } from '@/services/pdfService';
+import { downloadUsersXLSX } from '@/services/xlsxService';
 
 interface EmployeeBarProps {
   setActiveView: (view: 'tiles' | 'list') => void;
@@ -23,67 +25,7 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
     setDropdownVisible(!dropdownVisible);
   };
 
-  const downloadPDF = async () => {
-    setLoading(true);
-    const responsePDF = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/pdf/generate-pdf-all-employees`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-      }
-    });
-
-    if (!responsePDF.ok) {
-      console.error('Error downloading PDF');
-      setLoading(false);
-      return;
-    }
-
-    const blob = await responsePDF.blob();
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-
-    const filename = `allUsers.pdf`;
-
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setLoading(false);
-  };
-
-  const downloadXLSX = async () => {
-    setLoading(true);
-    const responseXLSX = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/excel/users/export-excel`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-      }
-    });
-
-    if (!responseXLSX.ok) {
-      console.error('Error downloading XLSX');
-      setLoading(false);
-      return;
-    }
-
-    const blob = await responseXLSX.blob();
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-
-    const filename = `allUsers.xlsx`;
-
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setLoading(false);
-  };
-
-  const handleExport = (format: string) => {
+  const handleExport = async (format: string) => {
     setDropdownVisible(false);
 
     const confirmDownload = window.confirm(
@@ -95,9 +37,9 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
     }
 
     if (format === 'pdf') {
-      downloadPDF();
+      await downloadUsersPDF(setLoading);
     } else if (format === 'xlsx') {
-      downloadXLSX();
+      await downloadUsersXLSX(setLoading);
     }
   };
 
