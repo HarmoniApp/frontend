@@ -7,7 +7,7 @@ import CancelConfirmation from './cancelConfirmation';
 import styles from './main.module.scss';
 import { Message } from 'primereact/message';
 import { fetchCsrfToken } from '@/services/csrfService';
-import { fetchAvailableAbsenceDays } from '@/services/absenceService';
+import { fetchAvailableAbsenceDays, fetchUserAbsences } from '@/services/absenceService';
 
 interface AbsenceEmployeesProps {
     userId: number;
@@ -27,63 +27,42 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
     const [availableAbsenceDays, setAvailableAbsenceDays] = useState<number | string>('Ładowanie...');
 
     useEffect(() => {
-        fetchUserAbsences();
+        fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences, setLoading);
     }, []);
 
-    const fetchUserAbsences = async () => {
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/user/${userId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                },
-            });
-            const data = await response.json();
+    // const fetchUserAbsences = async () => {
+    //     try {
+    //         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/user/${userId}`, {
+    //             method: 'GET',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+    //             },
+    //         });
+    //         const data = await response.json();
 
-            const absences = data.content;
-            setAbsences(absences);
+    //         const absences = data.content;
+    //         setAbsences(absences);
 
-            const typeNames: { [key: number]: string } = {};
-            const typePromises = absences.map((absence: any) => {
-                if (!(absence.absence_type_id in typeNames)) {
-                    return fetchAbsenceTypeName(absence.absence_type_id).then((typeName) => {
-                        typeNames[absence.absence_type_id] = typeName;
-                    });
-                }
-                return Promise.resolve();
-            });
+    //         const typeNames: { [key: number]: string } = {};
+    //         const typePromises = absences.map((absence: any) => {
+    //             if (!(absence.absence_type_id in typeNames)) {
+    //                 return fetchAbsenceTypeName(absence.absence_type_id, setLoading).then((typeName) => {
+    //                     typeNames[absence.absence_type_id] = typeName;
+    //                 });
+    //             }
+    //             return Promise.resolve();
+    //         });
 
-            await Promise.all(typePromises);
-            setAbsenceTypeNames(typeNames);
-        } catch (error) {
-            console.error('Error fetching user absences:', error);
-            setError('Error fetching user absences');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const fetchAbsenceTypeName = async (id: number): Promise<string> => {
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence-type/${id}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                },
-            });
-
-            const data = await response.json();
-            return data.name;
-        } catch (error) {
-            console.error(`Error fetching absence type name for ID ${id}:`, error);
-            setError('Error fetching absence type name');
-            return 'Unknown';
-        } finally {
-            setLoading(false)
-        }
-    };
+    //         await Promise.all(typePromises);
+    //         setAbsenceTypeNames(typeNames);
+    //     } catch (error) {
+    //         console.error('Error fetching user absences:', error);
+    //         setError('Error fetching user absences');
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     const handleCancelAbsence = async () => {
         if (selectedAbsenceId === null) return;
@@ -106,7 +85,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                     throw new Error(`Failed to cancel absence with ID ${selectedAbsenceId}`);
                 }
                 setLoading(false);
-                fetchUserAbsences();
+                fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences, setLoading)
         } catch (error) {
             console.error(`Error canceling absence with ID ${selectedAbsenceId}:`, error);
             setError('Error canceling absence');
@@ -182,7 +161,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
             {modalIsOpenAbsenceRequest && (
                 <div className={styles.addAbsencetModalOverlay}>
                     <div className={styles.addAbsenceModalContent}>
-                        <AbsenceRequest onSend={userId} onClose={() => setModalIsOpenAbsenceRequest(false)} onRefresh={fetchUserAbsences} />
+                        <AbsenceRequest onSend={userId} onClose={() => setModalIsOpenAbsenceRequest(false)} onRefresh={() => fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences, setLoading)} />
                     </div>
                 </div>
             )}
