@@ -11,13 +11,14 @@ import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
+import { formatTimeToHHMM, fetchPredefinedShifts} from '@/services/predefineShiftService';
 
 interface PredefinedShiftsProps {
   setError: (errorMessage: string | null) => void;
 }
 
 const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
-  const [shifts, setShifts] = useState<PredefinedShift[]>([]);
+  const [predefineShifts, setPredefineShifts] = useState<PredefinedShift[]>([]);
   const [editingShiftId, setEditingShiftId] = useState<number | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -40,30 +41,12 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
   }
 
   useEffect(() => {
-    fetchPredefinedShifts();
-  }, []);
-
-  const fetchPredefinedShifts = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        }
-      });
-      const data = await response.json();
-      const validatedData = data.map((shift: PredefinedShift) => ({
-        ...shift,
-        start: formatTimeToHHMM(shift.start || '00:00'),
-        end: formatTimeToHHMM(shift.end || '00:00'),
-      }));
-      setShifts(validatedData);
-    } catch (error) {
-      console.error('Error fetching predefined shifts:', error);
-      setError('Błąd podczas pobierania predefiniowalnych zmian');
+    const loadData = async () => {
+      await fetchPredefinedShifts(setPredefineShifts);
     }
-  };
+
+    loadData();
+  }, []);
 
   const handleDeleteShift = async (shiftId: number) => {
     setModalIsOpenLoadning(true);
@@ -84,7 +67,7 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
         throw new Error('Failed to delete shift');
       }
       setModalIsOpenLoadning(false);
-      setShifts(shifts.filter((shift) => shift.id !== shiftId));
+      setPredefineShifts(predefineShifts.filter((shift) => shift.id !== shiftId));
     } catch (error) {
       console.error('Error deleting shift:', error);
       setError('Błąd podczas usuwania predefiniowalnych zmian');
@@ -121,16 +104,11 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
       }),
   });
 
-  const formatTimeToHHMM = (time: string): string => {
-    if (!time) return '00:00';
-    const [hours, minutes] = time.split(':');
-    return `${hours}:${minutes}`;
-  };
 
   return (
     <div className={styles.predefinedShiftsContainerMain}>
       <div className={styles.showShiftMapContainer}>
-        {shifts.map((shift) => (
+        {predefineShifts.map((shift) => (
           <Formik
             key={shift.id + shift.name + shift.start + shift.end}
             initialValues={{
@@ -166,7 +144,7 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
                 }
                 setModalIsOpenLoadning(false);
                 const putData: PredefinedShift = await response.json();
-                setShifts(shifts.map(s => (s.id === putData.id ? putData : s)));
+                setPredefineShifts(predefineShifts.map(s => (s.id === putData.id ? putData : s)));
                 setEditingShiftId(null);
                 resetForm();
               } catch (error) {
@@ -310,7 +288,7 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
             }
             const dataPost: PredefinedShift = await response.json();
             setModalIsOpenLoadning(false);
-            setShifts((prevShifts) => [...prevShifts, dataPost]);
+            setPredefineShifts((prevShifts) => [...prevShifts, dataPost]);
             setAddedPredefineShiftName(dataPost.name);
             setIsAddModalOpen(true);
             resetForm();

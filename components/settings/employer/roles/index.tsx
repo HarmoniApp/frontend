@@ -32,11 +32,11 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
   };
 
   useEffect(() => {
-    const loadRoles = async () => {
+    const loadData = async () => {
       await fetchRoles(setRoles, setModalIsOpenLoadning);
     };
 
-    loadRoles();
+    loadData();
   }, []);
 
   const handleDeleteRole = async (roleId: number) => {

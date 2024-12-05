@@ -8,6 +8,8 @@ import User from '@/components/types/user';
 import PredefinedShifts from '@/components/types/predefinedShifts';
 import classNames from 'classnames';
 import styles from './main.module.scss';
+import { fetchUserRoles } from '@/services/roleService';
+import { fetchPredefinedShifts } from '@/services/predefineShiftService';
 
 interface AddShiftModalProps {
     isOpen: boolean;
@@ -80,39 +82,13 @@ const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShi
 
     useEffect(() => {
         if (!isOpen) return;
-    
-        const fetchRolesAndShifts = async () => {
-            try {
-                const rolesResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/user/${user.id}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    },
-                });
-                if (!rolesResponse.ok) {
-                    throw new Error(`HTTP error! status: ${rolesResponse.status}`);
-                }
-                const rolesData = await rolesResponse.json();
-                setRoles(rolesData);
-    
-                const shiftsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    },
-                });
-                if (!shiftsResponse.ok) {
-                    throw new Error(`HTTP error! status: ${shiftsResponse.status}`);
-                }
-                const shiftsData = await shiftsResponse.json();
-                setPredefineShifts(shiftsData);
-    
-            } catch (error) {
-                console.error('Error fetching roles or predefine shifts:', error);
-            }
-        };
-    
-        fetchRolesAndShifts();
+        
+        const loadData = async () => {
+            await fetchPredefinedShifts(setPredefineShifts);
+            await fetchUserRoles(user.id, setRoles);
+        }
+
+        loadData();
     }, [isOpen, user.id]);
 
     const handlePredefinedShift = (predefinedShift: PredefinedShifts, setFieldValue: any) => {

@@ -10,12 +10,13 @@ import { faTrashCan, faEraser, faPlus, faChartSimple, faCircleInfo } from '@fort
 import * as Yup from 'yup';
 import styles from './main.module.scss';
 import { fetchRoles } from '@/services/roleService';
+import { fetchPredefinedShifts } from '@/services/predefineShiftService';
 
 const RequirementsForm: React.FC = () => {
     const [forms, setForms] = useState<IRequirementsForm[]>([
         { id: Date.now(), date: '', shifts: [] },
     ]);
-    const [shifts, setShifts] = useState<PredefinedShift[]>([]);
+    const [predefineShifts, setPredefineShifts] = useState<PredefinedShift[]>([]);
     const [roles, setRoles] = useState<Role[]>([]);
     const [formCounter, setFormCounter] = useState(1);
     const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
@@ -23,33 +24,12 @@ const RequirementsForm: React.FC = () => {
 
     useEffect(() => {
         const loadData = async () => {
-        await fetchPredefinedShifts();
-        await fetchRoles(setRoles, setModalIsOpenLoadning);
+            await fetchPredefinedShifts(setPredefineShifts);
+            await fetchRoles(setRoles, setModalIsOpenLoadning);
         }
 
         loadData();
     }, []);
-
-    const fetchPredefinedShifts = async () => {
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                },
-            });
-
-            const data = await response.json();
-            if (Array.isArray(data)) {
-                setShifts(data);
-            } else {
-                console.error('Fetched data is not an array:', data);
-            }
-        } catch (error) {
-            console.error('Error fetching predefined shifts:', error);
-        }
-    };
 
     const handleRevoke = async () => {
         setModalIsOpenLoadning(true);
@@ -232,7 +212,7 @@ const RequirementsForm: React.FC = () => {
                                 )}
                             </div>
                             <div className={styles.predefineShiftsContainer}>
-                                {shifts.map((shift) => {
+                                {predefineShifts.map((shift) => {
                                     const isSelected = values.shifts.some((s) => s.shiftId === shift.id);
                                     return (
                                         <label key={shift.id} className={styles.predefineShiftLabel}>
@@ -263,7 +243,7 @@ const RequirementsForm: React.FC = () => {
                                     <>
                                         <div className={styles.rolesInfoContainer}>
                                             <hr />
-                                            <p className={styles.editingShiftIdParagraph}>Ustawiasz rolę dla predefiniowanej zmiany o nazwie: <label className={styles.setRolesForPredefineShiftHighlight}>{shifts.find(s => s.id === shift.shiftId)?.name || 'Nieznana zmiana'}</label></p>
+                                            <p className={styles.editingShiftIdParagraph}>Ustawiasz rolę dla predefiniowanej zmiany o nazwie: <label className={styles.setRolesForPredefineShiftHighlight}>{predefineShifts.find(s => s.id === shift.shiftId)?.name || 'Nieznana zmiana'}</label></p>
                                         </div>
                                         <div key={shift.shiftId} className={styles.roleContainer}>
                                             {roles.map((role) => {

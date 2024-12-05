@@ -7,6 +7,8 @@ import Role from '@/components/types/role';
 import Shift from '@/components/types/shift';
 import PredefinedShifts from '@/components/types/predefinedShifts';
 import styles from './main.module.scss';
+import { fetchUserRoles } from '@/services/roleService';
+import { fetchPredefinedShifts } from '@/services/predefineShiftService';
 
 interface EditShiftModalProps {
   isOpen: boolean;
@@ -24,33 +26,12 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   useEffect(() => {
-    const fetchRolesAndShifts = async () => {
-      try {
-        const rolesResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/user/${shift.user_id}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-          },
-        });
-        const rolesData = await rolesResponse.json();
-        setRoles(rolesData);
-  
-        const shiftsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-          },
-        });
-        const shiftsData = await shiftsResponse.json();
-        setPredefineShifts(shiftsData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-  
-    fetchRolesAndShifts();
+    const loadData = async () => {
+      await fetchPredefinedShifts(setPredefineShifts);
+      await fetchUserRoles(shift.user_id, setRoles);
+  }
+
+  loadData();
   }, [shift.user_id]);
 
   const validationSchema = Yup.object({
