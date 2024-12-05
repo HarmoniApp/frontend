@@ -5,6 +5,7 @@ import Navbar from "@/components/navbar";
 import EditEmployeeDataPopUp from '@/components/employees/employeeData/editEmployeeData';
 import EmployeeData from '@/components/types/employeeData';
 import styles from './main.module.scss';
+import { fetchUserData } from '@/services/userService';
 
 const EditEmployeePage: React.FC = () => {
   const router = useRouter();
@@ -15,38 +16,21 @@ const EditEmployeePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchEmployeeData = async () => {
+    const loadData = async () => {
         if (!id) {
             setError('No userId provided');
             setLoading(false);
             return;
         }
-
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${id}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                }
-            });
-            if (!response.ok) {
-                throw new Error('Failed to fetch employee data');
-            }
-            const data = await response.json();
-            setEmployee(data);
-        } catch (error) {
-            if (error instanceof Error) {
-                setError(error.message);
-            } else {
-                setError('An unknown error occurred');
-            }
-        } finally {
+        if (typeof id === 'string') {
+            await fetchUserData(id, setEmployee, setLoading);
+        } else {
+            setError('Invalid userId format');
             setLoading(false);
         }
     };
 
-    fetchEmployeeData();
+    loadData();
 }, [id]);
 
   if (loading) return <div>Loading...</div>;

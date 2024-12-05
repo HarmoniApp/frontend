@@ -10,7 +10,7 @@ import AproveConfirmation from './popUps/aproveConfirmation';
 import styles from './main.module.scss';
 import { Message } from 'primereact/message';
 import { fetchCsrfToken } from '@/services/csrfService';
-import { fetchUser } from '@/services/userService';
+import { fetchSimpleUser } from '@/services/userService';
 
 interface AbsenceCardProps {
     absence: Absence;
@@ -27,7 +27,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
 
     useEffect(() => {
         const fetchData = async () => {
-            await fetchUser(absence, setUser, setError,setModalIsOpenLoadning);
+            await fetchSimpleUser(absence, setUser, setError,setModalIsOpenLoadning);
           };
           fetchData();
 
