@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
-import ContractWithDays from '@/components/types/contractWithDays';
+import Contract from '@/components/types/contract';
 import AddNotification from '../popUps/addNotification';
 import DeleteConfirmation from '../popUps/deleteConfirmation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -11,13 +11,14 @@ import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
+import { fetchContracts } from '@/services/contracrsService';
 
 interface ContractTypesProps {
   setError: (errorMessage: string | null) => void;
 }
 
 const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
-  const [contracts, setContracts] = useState<ContractWithDays[]>([]);
+  const [contracts, setContracts] = useState<Contract[]>([]);
   const [editingContractId, setEditingContractId] = useState<number | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -31,27 +32,8 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
   };
 
   useEffect(() => {
-    fetchContractsWithDays();
+    fetchContracts(setContracts, setModalIsOpenLoadning);
   }, []);
-
-  const fetchContractsWithDays = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-        credentials: 'include',
-      });
-      const data = await response.json();
-      setContracts(data);
-    }
-    catch (error) {
-      console.error('Error fetching contract types:', error);
-      setError('Błąd podczas pobierania umów');
-    }
-  };
 
   const handleDeleteContractType = async (contractId: number) => {
     setModalIsOpenLoadning(true);
@@ -132,7 +114,7 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
                     throw new Error('Failed to edit contract type');
                   }
                   setModalIsOpenLoadning(false);
-                  const putData: ContractWithDays = await response.json();
+                  const putData: Contract = await response.json();
                   setContracts(contracts.map(c => (c.id === putData.id ? putData : c)));
                   setEditingContractId(null);
                   resetForm();
@@ -250,7 +232,7 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
                 throw new Error('Failed to add contract type');
               }
               setModalIsOpenLoadning(false);
-              const postData: ContractWithDays = await response.json();
+              const postData: Contract = await response.json();
               setAddedContractName(postData.name);
               setIsAddModalOpen(true);
               setContracts([...contracts, postData]);

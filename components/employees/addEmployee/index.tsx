@@ -18,6 +18,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import { fetchCsrfToken } from '@/services/csrfService';
+import { fetchContracts } from '@/services/contracrsService';
 
 const AddEmployee: React.FC = () => {
   const router = useRouter();
@@ -37,22 +38,6 @@ const AddEmployee: React.FC = () => {
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
 
   if (modalCountdown === 0) onBack();
-
-  const fetchContracts = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setContracts(data);
-    } catch (error) {
-      console.error('Error fetching contract types:', error);
-    }
-  };
 
   const fetchSupervisors = async () => {
     try {
@@ -89,7 +74,7 @@ const AddEmployee: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       await fetchRoles(setRoles, setError, setModalIsOpenLoadning);
-      await fetchContracts();
+      await fetchContracts(setContracts, setModalIsOpenLoadning);
       await fetchLanguages(setLanguages, setError, setModalIsOpenLoadning);
       await fetchSupervisors();
       await fetchDepartments();

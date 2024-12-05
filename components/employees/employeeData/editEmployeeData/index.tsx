@@ -19,6 +19,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import { fetchCsrfToken } from '@/services/csrfService';
+import { fetchContracts } from '@/services/contracrsService';
 
 interface EditEmployeeDataProps {
   employee: EmployeeDataWorkAdressOnlyId;
@@ -42,23 +43,6 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   const [changedData, setChangedData] = useState<ChangedData>({});
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const fetchContracts = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setContracts(data);
-    } catch (error) {
-      console.error('Error fetching contracts:', error);
-      setError('Błąd podczas pobierania umów');
-    }
-  };
 
   const fetchDepartments = async () => {
     try {
@@ -108,7 +92,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
 
   useEffect(() => {
     const loadData = async () => {
-      await fetchContracts();
+      await fetchContracts(setContracts, setModalIsOpenLoadning);
       await fetchDepartments();
       await fetchSupervisors();
       await fetchRoles(setRoles, setError, setModalIsOpenLoadning);
