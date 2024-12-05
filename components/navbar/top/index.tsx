@@ -12,7 +12,7 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import '@/styles/main.css';
 import { fetchCsrfToken } from "@/services/csrfService";
-import AuthorizedImage from "@/components/authorizedImage";
+// import AuthorizedImage from "@/components/authorizedImage";
 interface NavbarTopProps {
     onAccountIconClick: () => void;
     userId: number;
@@ -26,7 +26,8 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
     const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
     const [userPhoto, setUserPhoto] = useState<Blob | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const userPhotoUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${userId}`;
+    // const userPhotoUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${userId}/photo`;
+    // console.log(userPhotoUrl);
 
     // const pathname = usePathname();
     const router = useRouter();

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import Image from "next/image";
+import UserPhoto from '@/assets/photo/default.jpg';
 import { ProgressSpinner } from 'primereact/progressspinner';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import '@/styles/main.css';
 
@@ -59,7 +59,7 @@ const AuthorizedImage: React.FC<AuthorizedImageProps> = ({ src }) => {
     }, [src]);
 
     if (hasError) {
-        return <FontAwesomeIcon icon={faUser} className={styles.defaultAvatarIcon} />;
+        return <Image src={UserPhoto} alt="Default User Photo" className={styles.customImage}/>;
     }
     
     return imageUrl ? (
