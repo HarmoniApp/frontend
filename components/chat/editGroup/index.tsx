@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import ChatPartner from '@/components/types/chatPartner';
-import AuthorizedImage from '@/components/authorizedImage';
+// import AuthorizedImage from '@/components/authorizedImage';
 import SearchUser from '@/components/chat/searchUser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers, faUserMinus, faXmark, faTrash } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
+import UserImage from '@/components/userImage';
 
 interface EditGroupProps {
     editGroupModal: (open: boolean) => void;
@@ -185,9 +186,10 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                     {selectedUsers.map((user) => (
                         <div key={user.id} className={styles.selectedUser}>
                             <div className={styles.imageContainer}>
-                                <AuthorizedImage
+                                <UserImage userId={user.id} />
+                                {/* <AuthorizedImage
                                     src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
-                                />
+                                /> */}
                             </div>
                             <p>{user.name}</p>
                             <FontAwesomeIcon icon={faUserMinus} onClick={() => handleRemoveUserFromGroup(user.id)} className={styles.removeIcon} />

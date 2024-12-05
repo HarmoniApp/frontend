@@ -1,12 +1,13 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import ChatPartner from '@/components/types/chatPartner';
-import AuthorizedImage from '@/components/authorizedImage';
+// import AuthorizedImage from '@/components/authorizedImage';
 import Language from '@/components/types/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers, faXmark, faPlus, faLanguage } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import NewConversationForm from '../newConversationForm';
+import UserImage from '@/components/userImage';
 
 interface SidebarProps {
     selectedLanguage: string;
@@ -65,7 +66,8 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                         }}
                     >
                         <div className={styles.imageContainer}>
-                        <AuthorizedImage src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${partner.photo}`}/>
+                            <UserImage userId={partner.id} type={partner.type}/>
+                        {/* <AuthorizedImage src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${partner.photo}`}/> */}
                         </div>
                         {/* {partner.photo ? (
                             <AuthorizedImage

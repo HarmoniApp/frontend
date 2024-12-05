@@ -11,9 +11,9 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
-  }
+}
 
-  .modalContentOfNotification{
+.modalContentOfNotification {
     display: flex;
     flex-direction: column;
     border: 2px solid $main-colour;
@@ -30,7 +30,7 @@
         width: 90%;
         max-height: 70vh;
     }
-  }
+}
 
 .navbar {
     display: flex;
@@ -139,11 +139,7 @@
 .userPhotoParagraph {
     height: 40px;
     width: 40px;
+    border-radius: 50%;
+    overflow: hidden;
     cursor: pointer;
-
-    .userPhoto{
-        height: 100%;
-        width: 100%;
-        border-radius: 50%;
-    }
 }

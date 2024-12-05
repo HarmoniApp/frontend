@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from "react";
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -12,7 +12,7 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import '@/styles/main.css';
 import { fetchCsrfToken } from "@/services/csrfService";
-// import AuthorizedImage from "@/components/authorizedImage";
+import UserImage from "@/components/userImage";
 interface NavbarTopProps {
     onAccountIconClick: () => void;
     userId: number;
@@ -24,12 +24,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
     const [unreadCount, setUnreadCount] = useState(0);
     const [showNotifications, setShowNotifications] = useState(false);
     const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
-    const [userPhoto, setUserPhoto] = useState<Blob | null>(null);
     const [error, setError] = useState<string | null>(null);
-    // const userPhotoUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${userId}/photo`;
-    // console.log(userPhotoUrl);
-
-    // const pathname = usePathname();
     const router = useRouter();
 
     const fetchNotifications = async () => {
@@ -137,37 +132,6 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
         }
     };
 
-    const fetchUserPhoto = async (userId: number) => {
-        try {
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            if (!tokenJWT) {
-                throw new Error('Token JWT not found in session storage');
-            }
-
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}/photo`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${tokenJWT}`,
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error(`Failed to fetch user photo: ${response.statusText}`);
-            }
-
-            const blob = await response.blob();
-            setUserPhoto(blob);
-        } catch (error) {
-            console.error('Error while fetching user photo:', error);
-            setError('Błąd podczas pobierania zdjęcia');
-        }
-    };
-
-
-    useEffect(() => {
-        fetchUserPhoto(userId);
-    }, [userId]);
-
     return (
         <nav className={styles.navbar}>
             <div className={styles.leftSection}>
@@ -183,16 +147,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
                     </p>
                 </div>
                 <div onClick={onAccountIconClick} className={styles.userPhotoParagraph}>
-                    {userPhoto ? (
-                        <img
-                            src={URL.createObjectURL(userPhoto)}
-                            alt="UserPhoto"
-                            className={styles.userPhoto}
-                        />
-                    ) : (
-                        <ProgressSpinner className="progressSpinnerImage" />
-                    )}
-                    {/* <AuthorizedImage src={userPhotoUrl} /> */}
+                    <UserImage userId={userId} />
                 </div>
             </div>
 

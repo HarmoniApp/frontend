@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AuthorizedImage from '@/components/authorizedImage';
 import { faEye, faUser, faUsers, faUsersRectangle } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
+import UserImage from '@/components/userImage';
 
 interface ConversationProps {
     userId: number;
@@ -31,9 +32,11 @@ const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType,
             {chatType === 'user' ? (
                 <div className={styles.userChatHeader}>
                     <div className={styles.imageContainer}>
-                        <AuthorizedImage
+                        {/* <AuthorizedImage
                             src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${selectedChat.photo}`}
-                        />
+                            
+                        /> */}
+                        <UserImage userId={selectedChat.id} />
                     </div>
                     <h2>{selectedChat.name}</h2>
                 </div>
@@ -58,6 +61,7 @@ const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType,
                                     <AuthorizedImage
                                         src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${message.groupSenderPhoto || selectedChat.photo}`}
                                     />
+                                    {/* <UserImage userId={message.id || selectedChat.id} /> */}
                                 </div>
                                 {selectedChat?.type === 'group' && (
                                     <span className={styles.groupSenderName}>

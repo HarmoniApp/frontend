@@ -1,9 +1,9 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import AuthorizedImage from '@/components/authorizedImage';
-import styles from './main.module.scss';
 import PersonTile from '@/components/types/personTile';
+import UserImage from '@/components/userImage';
 import Flag from 'react-flagkit';
+import styles from './main.module.scss';
 interface LanguageTileProps {
   person: PersonTile;
   view: 'tiles' | 'list';
@@ -31,7 +31,7 @@ const Tile: React.FC<LanguageTileProps> = ({ person, view, setError }) => {
   return (
     <div onClick={handleClick} className={tileClassName}>
       <div className={styles.employeeImageContainer}>
-        <AuthorizedImage src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${person.photo}`} />
+        <UserImage userId={person.id} />
       </div>
       <div className={styles.fullNameContainer}>
         <label className={styles.fullNameParagraph}>{person.firstname}</label>
