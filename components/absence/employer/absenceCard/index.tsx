@@ -11,6 +11,7 @@ import styles from './main.module.scss';
 import { Message } from 'primereact/message';
 import { fetchCsrfToken } from '@/services/csrfService';
 import { fetchSimpleUser } from '@/services/userService';
+import { fetchAbsenceType } from '@/services/absenceService';
 
 interface AbsenceCardProps {
     absence: Absence;
@@ -28,27 +29,10 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     useEffect(() => {
         const fetchData = async () => {
             await fetchSimpleUser(absence, setUser, setError,setModalIsOpenLoadning);
+            await fetchAbsenceType(absence.absence_type_id, setAbsenceType);
           };
           fetchData();
 
-        const fetchAbsenceType = async () => {
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence-type/${absence.absence_type_id}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    },
-                });
-                const data = await response.json();
-                setAbsenceType(data);
-            } catch (error) {
-                console.error('Error fetching absence type:', error);
-                setError('Error fetching absencee type');
-            }
-        };
-
-        fetchAbsenceType();
     }, [absence.absence_type_id, absence.user_id]);
 
     const subbmisionDate = () => new Date(absence.submission).toLocaleDateString();

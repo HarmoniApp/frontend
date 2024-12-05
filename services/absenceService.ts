@@ -25,6 +25,25 @@ export const fetchAbsences = async (
     }
 };
 
+
+export const fetchAbsenceType = async (
+    id: number,
+    setAbsenceType: (absences: AbsenceType | null) => void): Promise<void> => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence-type/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            },
+        });
+        const data = await response.json();
+        setAbsenceType(data);
+    } catch (error) {
+        console.error('Error fetching absence type:', error);
+    }
+};
+
 export const fetchAbsenceTypes = async (
     setAbsenceTypes: (absences: AbsenceType[]) => void,
     setError: (errorMessage: string | null) => void,
@@ -43,7 +62,7 @@ export const fetchAbsenceTypes = async (
         setError('Error fetching absence types');
         console.error('Błąd podczas pobierania typów urlopów:', error);
     } finally {
-        setLoading(false)
+        setLoading(false);
     }
 };
 
