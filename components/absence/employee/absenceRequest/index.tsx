@@ -112,7 +112,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                     onSubmit={async (values) => {
                         setModalIsOpenLoading(true);
                         try {
-                            const tokenXSRF = await fetchCsrfToken(setError);
+                            const tokenXSRF = await fetchCsrfToken();
 
                             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence`, {
                                 method: 'POST',

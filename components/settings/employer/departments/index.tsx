@@ -44,7 +44,7 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
     const handleAddDepartment = async (values: DepartmentAddress, { resetForm }: any) => {
         setModalIsOpenLoadning(true);
         try {
-            const tokenXSRF = await fetchCsrfToken(setError);
+            const tokenXSRF = await fetchCsrfToken();
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address`, {
                 method: 'POST',
@@ -79,7 +79,7 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
         if (editingDepartmentId !== null) {
             setModalIsOpenLoadning(true);
             try {
-                const tokenXSRF = await fetchCsrfToken(setError);
+                const tokenXSRF = await fetchCsrfToken();
 
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${editingDepartmentId}`, {
                     method: 'PUT',
@@ -114,7 +114,7 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
     const handleDeleteDepartment = async (departmentId: number) => {
         setModalIsOpenLoadning(true);
         try {
-            const tokenXSRF = await fetchCsrfToken(setError);
+            const tokenXSRF = await fetchCsrfToken();
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${departmentId}`, {
                 method: 'DELETE',

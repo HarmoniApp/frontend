@@ -44,7 +44,7 @@ const PhotoChange: React.FC<PhotoChangeProps> = ({ onClose }) => {
         setLoading(true);
         try {
             const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const tokenXSRF = await fetchCsrfToken(setError);
+            const tokenXSRF = await fetchCsrfToken();
 
             const formData = new FormData();
             if (values.file) {

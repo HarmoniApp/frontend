@@ -178,7 +178,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const handleAddShift = async (shiftData: { start: string; end: string; userId: number; roleName: string; }) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken(setError);
+      const tokenXSRF = await fetchCsrfToken();
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift`, {
           method: 'POST',
@@ -214,7 +214,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const handleEditShift = async (shiftData: { id: number; start: string; end: string; userId: number; roleName: string; }) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken(setError);
+      const tokenXSRF = await fetchCsrfToken();
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftData.id}`, {
           method: 'PUT',
@@ -249,7 +249,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const handleDeleteShift = async (shiftId: number, userId: number) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken(setError);
+      const tokenXSRF = await fetchCsrfToken();
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
           method: 'DELETE',
@@ -288,7 +288,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     shiftsToPublish.forEach(async (shift) => {
       setModalIsOpenLoadning(true);
       try {
-        const tokenXSRF = await fetchCsrfToken(setError);
+        const tokenXSRF = await fetchCsrfToken();
 
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shift.id}`, {
             method: 'PATCH',

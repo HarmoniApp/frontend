@@ -45,7 +45,7 @@ const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSele
             }
 
             try {
-                const tokenXSRF = await fetchCsrfToken(setError);
+                const tokenXSRF = await fetchCsrfToken();
 
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/send`, {
                     method: 'POST',

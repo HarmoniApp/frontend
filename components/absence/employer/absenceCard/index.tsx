@@ -43,7 +43,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     const updateAbsenceStatus = async (absenceId: number, statusId: number) => {
         setModalIsOpenLoadning(true);
         try {
-            const tokenXSRF = await fetchCsrfToken(setError);
+            const tokenXSRF = await fetchCsrfToken();
 
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v2/absence/${absenceId}/status/${statusId}`, {
                     method: 'PATCH',

@@ -11,6 +11,7 @@ import * as Yup from 'yup';
 import styles from './main.module.scss';
 import { fetchRoles } from '@/services/roleService';
 import { fetchPredefinedShifts } from '@/services/predefineShiftService';
+import { fetchCsrfToken } from '@/services/csrfService';
 
 const RequirementsForm: React.FC = () => {
     const [forms, setForms] = useState<IRequirementsForm[]>([
@@ -40,40 +41,25 @@ const RequirementsForm: React.FC = () => {
         }
 
         try {
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
-                method: 'GET',
+            const tokenXSRF = await fetchCsrfToken();
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/aiSchedule/revoke`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenJWT}`,
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
                 },
                 credentials: 'include',
             });
-
-            if (resquestXsrfToken.ok) {
-                const data = await resquestXsrfToken.json();
-                const tokenXSRF = data.token;
-
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/aiSchedule/revoke`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                        'X-XSRF-TOKEN': tokenXSRF,
-                    },
-                    credentials: 'include',
-                });
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    console.error('Error from server:', errorData.message);
-                    alert(`Błąd: ${errorData.message}`);
-                }
-                setModalIsOpenLoadning(false);
-                if (response.ok) {
-                    alert('Usunięto pomyślnie.');
-                }
-            } else {
-                console.error('Failed to fetch XSRF token, response not OK');
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Error from server:', errorData.message);
+                alert(`Błąd: ${errorData.message}`);
+            }
+            setModalIsOpenLoadning(false);
+            if (response.ok) {
+                alert('Usunięto pomyślnie.');
             }
         } catch (error) {
             console.error('Failed to send data:', error);
@@ -122,41 +108,26 @@ const RequirementsForm: React.FC = () => {
         }
 
         try {
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const resquestXsrfToken = await fetch(`http://localhost:8080/api/v1/csrf`, {
-                method: 'GET',
+            const tokenXSRF = await fetchCsrfToken();
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/aiSchedule/generate`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenJWT}`,
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
                 },
                 credentials: 'include',
+                body: JSON.stringify(payload),
             });
-
-            if (resquestXsrfToken.ok) {
-                const data = await resquestXsrfToken.json();
-                const tokenXSRF = data.token;
-
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/aiSchedule/generate`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                        'X-XSRF-TOKEN': tokenXSRF,
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify(payload),
-                });
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    console.error('Error from server:', errorData.message);
-                    alert(`Błąd: ${errorData.message}`);
-                }
-                setModalIsOpenLoadning(false);
-                if (response.ok) {
-                    alert('Wygenerowano pomyślnie.');
-                }
-            } else {
-                console.error('Failed to fetch XSRF token, response not OK');
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Error from server:', errorData.message);
+                alert(`Błąd: ${errorData.message}`);
+            }
+            setModalIsOpenLoadning(false);
+            if (response.ok) {
+                alert('Wygenerowano pomyślnie.');
             }
         } catch (error) {
             console.error('Failed to send data:', error);

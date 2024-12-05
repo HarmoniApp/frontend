@@ -36,23 +36,23 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
 
         setLoading(true);
         try {
-            const tokenXSRF = await fetchCsrfToken(setError);
+            const tokenXSRF = await fetchCsrfToken();
 
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/${selectedAbsenceId}/status/3`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                        'X-XSRF-TOKEN': tokenXSRF,
-                    },
-                    credentials: 'include',
-                });
-                if (!response.ok) {
-                    console.error('Failed to cancel absence: ', response.statusText);
-                    throw new Error(`Failed to cancel absence with ID ${selectedAbsenceId}`);
-                }
-                setLoading(false);
-                fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences, setLoading)
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/${selectedAbsenceId}/status/3`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
+                },
+                credentials: 'include',
+            });
+            if (!response.ok) {
+                console.error('Failed to cancel absence: ', response.statusText);
+                throw new Error(`Failed to cancel absence with ID ${selectedAbsenceId}`);
+            }
+            setLoading(false);
+            fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences, setLoading)
         } catch (error) {
             console.error(`Error canceling absence with ID ${selectedAbsenceId}:`, error);
             setError('Error canceling absence');
@@ -63,7 +63,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-           await fetchAvailableAbsenceDays(userId, setAvailableAbsenceDays, setError, setLoading)
+            await fetchAvailableAbsenceDays(userId, setAvailableAbsenceDays, setError, setLoading)
         };
 
         fetchData();
