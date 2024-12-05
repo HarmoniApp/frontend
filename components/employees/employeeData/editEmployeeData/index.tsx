@@ -19,7 +19,8 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import { fetchCsrfToken } from '@/services/csrfService';
-import { fetchContracts } from '@/services/contracrsService';
+import { fetchContracts } from '@/services/contractService';
+import { fetchDepartments } from '@/services/departmentService';
 
 interface EditEmployeeDataProps {
   employee: EmployeeDataWorkAdressOnlyId;
@@ -34,7 +35,6 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
 
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [departmentMap, setDepartmentMap] = useState<{ [key: number]: string }>({});
   const [supervisorMap, setSupervisorMap] = useState<{ [key: number]: string }>({});
   const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
@@ -43,29 +43,6 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   const [changedData, setChangedData] = useState<ChangedData>({});
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const fetchDepartments = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/departments`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setDepartments(data);
-
-      const deptMap: { [key: number]: string } = {};
-      data.forEach((dept: Department) => {
-        deptMap[dept.id] = dept.departmentName;
-      });
-      setDepartmentMap(deptMap);
-    } catch (error) {
-      console.error('Error fetching departments:', error);
-      setError('Błąd podczas pobierania oddziałów');
-    }
-  };
 
   const fetchSupervisors = async () => {
     try {
@@ -93,7 +70,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   useEffect(() => {
     const loadData = async () => {
       await fetchContracts(setContracts, setModalIsOpenLoadning);
-      await fetchDepartments();
+      await fetchDepartments(setDepartments, setModalIsOpenLoadning);
       await fetchSupervisors();
       await fetchRoles(setRoles, setError, setModalIsOpenLoadning);
       await fetchLanguages(setLanguages, setError, setModalIsOpenLoadning);
@@ -254,7 +231,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     if (values.contract_expiration !== employee.contract_expiration) changes.contract_expiration = values.contract_expiration;
 
     if (values.work_address.id !== employee.work_address.id) {
-      const departmentName = departmentMap[values.work_address.id];
+      const departmentName = departments[values.work_address.id];
       changes.work_address = departmentName ? departmentName : 'Unknown Department';
     }
 

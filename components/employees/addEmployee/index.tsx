@@ -18,7 +18,8 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import { fetchCsrfToken } from '@/services/csrfService';
-import { fetchContracts } from '@/services/contracrsService';
+import { fetchContracts } from '@/services/contractService';
+import { fetchDepartments } from '@/services/departmentService';
 
 const AddEmployee: React.FC = () => {
   const router = useRouter();
@@ -55,29 +56,13 @@ const AddEmployee: React.FC = () => {
     }
   };
 
-  const fetchDepartments = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/departments`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setDepartments(data);
-    } catch (error) {
-      console.error('Error fetching departments:', error);
-    }
-  };
-
   useEffect(() => {
     const loadData = async () => {
       await fetchRoles(setRoles, setError, setModalIsOpenLoadning);
       await fetchContracts(setContracts, setModalIsOpenLoadning);
       await fetchLanguages(setLanguages, setError, setModalIsOpenLoadning);
       await fetchSupervisors();
-      await fetchDepartments();
+      await fetchDepartments(setDepartments, setModalIsOpenLoadning);
     };
 
     loadData();

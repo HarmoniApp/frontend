@@ -13,6 +13,7 @@ import styles from './main.module.scss';
 import NewPassword from './newPassword';
 import { Message } from 'primereact/message';
 import { fetchCsrfToken } from '@/services/csrfService';
+import { fetchDepartments } from '@/services/departmentService';
 
 const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   const [employee, setEmployee] = useState<EmployeeData | null>(null);
@@ -31,23 +32,6 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
 
   useEffect(() => {
     if (userId) {
-      const fetchDepartments = async () => {
-        try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/departments`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            },
-          });
-          const data = await response.json();
-          setDepartments(data);
-        } catch (error) {
-          console.error('Error fetching departments:', error);
-          setError('Błąd podczas pobierania oddziałów');
-        }
-      };
-
       const fetchEmployee = async () => {
         try {
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}`, {
@@ -85,8 +69,13 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
         }
       };
 
-      fetchDepartments();
-      fetchEmployee();
+
+      const loadData = async () => {
+        await fetchDepartments(setDepartments, setModalIsOpenLoadning);
+        await fetchEmployee();
+      }
+
+      loadData();
     }
   }, [userId]);
 
@@ -103,24 +92,24 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
     try {
       const tokenXSRF = await fetchCsrfToken(setError);
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${employee.id}/generatePassword`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-        });
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${employee.id}/generatePassword`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          'X-XSRF-TOKEN': tokenXSRF,
+        },
+        credentials: 'include',
+      });
 
-        if (!response.ok) {
-          console.error('Error reseting password, response not OK');
-          throw new Error('Error reseting password');
-        }
-        const result = await response.text();
-        setNewPassword(result);
-        setModalIsOpenLoadning(false);
-        setModalNewPassword(true);
+      if (!response.ok) {
+        console.error('Error reseting password, response not OK');
+        throw new Error('Error reseting password');
+      }
+      const result = await response.text();
+      setNewPassword(result);
+      setModalIsOpenLoadning(false);
+      setModalNewPassword(true);
     } catch (error) {
       console.error('Błąd podczas resetowania hasła: ', error);
       setError('Błąd podczas resetowania hasła');

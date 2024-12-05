@@ -12,6 +12,7 @@ import classNames from "classnames";
 import DepartmentAddress from "@/components/types/departmentAddress";
 import styles from "./main.module.scss";
 import { fetchCsrfToken } from "@/services/csrfService";
+import { fetchDepartmentsAddress } from "@/services/departmentService";
 
 interface DepartmentsProps {
     setError: (errorMessage: string | null) => void;
@@ -33,29 +34,12 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
     };
 
     useEffect(() => {
-        fetchDepartments();
-    }, []);
+        const loadData = async () => {
+        await fetchDepartmentsAddress(setDepartments, setModalIsOpenLoadning);
+        }
 
-    const fetchDepartments = async () => {
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address`, {
-                method: 'GET',
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                }
-            });
-            const data = await response.json();
-            const filteredDepartments = data.filter(
-                (dept: DepartmentAddress) => dept?.department_name !== undefined && dept.department_name !== null
-            );
-            setDepartments(filteredDepartments);
-        }
-        catch (error) {
-            console.error("Error fetching departments:", error);
-            setError('Błąd podczas pobierania oddziałów');
-        }
-    };
+        loadData();
+    }, []);
 
     const handleAddDepartment = async (values: DepartmentAddress, { resetForm }: any) => {
         setModalIsOpenLoadning(true);

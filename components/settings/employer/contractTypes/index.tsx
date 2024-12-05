@@ -11,7 +11,7 @@ import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
-import { fetchContracts } from '@/services/contracrsService';
+import { fetchContracts } from '@/services/contractService';
 
 interface ContractTypesProps {
   setError: (errorMessage: string | null) => void;
