@@ -2,8 +2,7 @@ import React, { useEffect } from 'react';
 import ChatPartner from '@/components/types/chatPartner';
 import Message from '@/components/types/message';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import AuthorizedImage from '@/components/authorizedImage';
-import { faEye, faUser, faUsers, faUsersRectangle } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faUsersRectangle } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import UserImage from '@/components/userImage';
 
@@ -32,10 +31,6 @@ const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType,
             {chatType === 'user' ? (
                 <div className={styles.userChatHeader}>
                     <div className={styles.imageContainer}>
-                        {/* <AuthorizedImage
-                            src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${selectedChat.photo}`}
-                            
-                        /> */}
                         <UserImage userId={selectedChat.id} />
                     </div>
                     <h2>{selectedChat.name}</h2>
@@ -58,9 +53,6 @@ const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType,
                         {message.sender_id !== userId && (
                             <div className={styles.avatarAndNameContainer}>
                                 <div className={styles.imageContainer}>
-                                    {/* <AuthorizedImage
-                                        src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${message.groupSenderPhoto || selectedChat.photo}`}
-                                    /> */}
                                     <UserImage userId={message.sender_id} />
                                 </div>
                                 {selectedChat?.type === 'group' && (

@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 import ChatPartner from '@/components/types/chatPartner';
-// import AuthorizedImage from '@/components/authorizedImage';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faSearch, faUser } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import '@/styles/main.css';
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -73,9 +70,6 @@ const SearchUser: React.FC<SearchUserProps> = ({ handleSelectUser, groupChat, se
           >
             <div className={styles.imageContainer}>
               <UserImage userId={user.id} />
-              {/* <AuthorizedImage
-                src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${user.photo}`}
-              /> */}
             </div>
             <label className={styles.fullNameLabel}>{user.name}</label>
           </div>
