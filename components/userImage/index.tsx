@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import Image from "next/image";
 import UserDefaultPhoto from '@/assets/photo/default.jpg';
+import GroupDefaultPhoto from '@/assets/photo/groupPhoto.png';
+
 import styles from './main.module.scss';
 
 interface UserImageProps {
@@ -44,6 +46,10 @@ const UserImage: React.FC<UserImageProps> = ({ userId, type }) => {
 
   if (!userPhoto) {
     return <Image src={UserDefaultPhoto} alt="Default User Photo" className={styles.customImage}/>;
+  }
+  if(type === 'group'){
+    return <Image src={GroupDefaultPhoto} alt="Default Group Photo" className={styles.customImage}/>;
+
   }
 
   return  userPhoto ? (

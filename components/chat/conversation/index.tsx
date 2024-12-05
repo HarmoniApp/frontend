@@ -58,10 +58,10 @@ const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType,
                         {message.sender_id !== userId && (
                             <div className={styles.avatarAndNameContainer}>
                                 <div className={styles.imageContainer}>
-                                    <AuthorizedImage
+                                    {/* <AuthorizedImage
                                         src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${message.groupSenderPhoto || selectedChat.photo}`}
-                                    />
-                                    {/* <UserImage userId={message.id || selectedChat.id} /> */}
+                                    /> */}
+                                    <UserImage userId={message.sender_id} />
                                 </div>
                                 {selectedChat?.type === 'group' && (
                                     <span className={styles.groupSenderName}>
