@@ -6,9 +6,10 @@
 }
 
 .navList {
-    display: flex;
-    justify-content: left;
-    align-items: center;
+    // display: flex;
+    // justify-content: left;
+    // align-items: center;
+    @include displayDFJA(flex, null, left, center);
     list-style-type: none;
     margin: 0;
     padding: 0;

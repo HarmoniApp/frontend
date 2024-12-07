@@ -7,15 +7,17 @@
     right: 0;
     bottom: 0;
     background: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    @include displayDFJA(flex, null, center, center);
     z-index: 1000;
 }
 
 .modalContentOfNotification {
-    display: flex;
-    flex-direction: column;
+    // display: flex;
+    // flex-direction: column;
+    @include displayDFJA(flex, column, null, null);
     border: 2px solid $main-colour;
     border-radius: 8px;
     background-color: $gray;
@@ -33,9 +35,10 @@
 }
 
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    // display: flex;
+    // justify-content: space-between;
+    // align-items: center;
+    @include displayDFJA(flex, null, space-between, center);
     background-color: $gray;
     color: $font-light-colour;
     padding: 10px;
@@ -43,8 +46,9 @@
 
 .leftSection,
 .rightSection {
-    display: flex;
-    align-items: center;
+    // display: flex;
+    // align-items: center;
+    @include displayDFJA(flex, null, null, center);
 }
 
 .leftSection .logo {
@@ -77,8 +81,9 @@
 .rightSection p,
 .leftSection p {
     margin: 0 10px;
-    display: flex;
-    align-items: center;
+    // display: flex;
+    // align-items: center;
+    @include displayDFJA(flex, null, null, center);
 }
 
 .rightSection p {
@@ -105,36 +110,36 @@
     font-weight: bold;
 }
 
-.loadingModalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+// .loadingModalOverlay {
+//     position: fixed;
+//     top: 0;
+//     left: 0;
+//     right: 0;
+//     bottom: 0;
+//     background: $black-transparency-05;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     z-index: 1000;
 
-    .loadingModalContent {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
+//     .loadingModalContent {
+//         display: flex;
+//         flex-direction: column;
+//         text-align: center;
 
-        .spinnerContainer {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-        }
-    }
-}
+//         .spinnerContainer {
+//             display: flex;
+//             flex-direction: column;
+//             justify-content: center;
+//             align-items: center;
+//             position: absolute;
+//             top: 50%;
+//             left: 50%;
+//             transform: translate(-50%, -50%);
+//             z-index: 9999;
+//         }
+//     }
+// }
 
 .userPhotoParagraph {
     height: 40px;
