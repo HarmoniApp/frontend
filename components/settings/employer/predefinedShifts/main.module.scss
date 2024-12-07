@@ -7,15 +7,17 @@
     right: 0;
     bottom: 0;
     background: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    @include displayDFJA(flex, null, center, center);
     z-index: 1000;
 }
 
 .modalContentOfAdd, .modalContentOfDelete {
-    display: flex;
-    flex-direction: column;
+    // display: flex;
+    // flex-direction: column;
+    @include displayDFJA(flex, column, null, null);
     border: 2px solid $main-colour;
     border-radius: 8px;
     background-color: $gray;
@@ -37,24 +39,26 @@
     color: $font-light-colour;
     padding: 20px 0 0 0;
     border-radius: 10px;
-    display: flex;
-    flex-direction: column;
+    // display: flex;
+    // flex-direction: column;
+    @include displayDFJA(flex, column, null, null);
     width: 100%;
     height: 100%;
     gap: 15px;
 }
 
 .showShiftMapContainer {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    // display: grid;
+    // grid-template-columns: repeat(3, 1fr);
+    @include gridQG(3, 10px);
     grid-template-rows: minmax(auto, 1fr);
     grid-auto-rows: 1fr;
-    gap: 10px;
+    // gap: 10px;
 
     .showShiftContainerMain {
-        display: flex;
-        flex-direction: column;
-        //align-items: center;
+        // display: flex;
+        // flex-direction: column;
+        @include displayDFJA(flex, column, null, null);
         height: 100%;
         padding: 10px;
         background-color: $white-3;
@@ -62,17 +66,19 @@
         gap: 15px;
 
         .showShiftContainer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            // display: flex;
+            // justify-content: space-between;
+            // align-items: center;
+            @include displayDFJA(flex, null, center, center);
             height: 100%;
             gap: 15px;
 
             .shiftInfoContainer {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
+                // display: flex;
+                // flex-direction: row;
+                // align-items: center;
+                // justify-content: space-between;
+                @include displayDFJA(flex, row, space-between, center);
                 text-align: center;
                 padding: 0;
                 width: 100%;
@@ -80,8 +86,9 @@
 
                 .shiftNameParagraph,
                 .shiftTimeParagraph {
-                    display: flex;
-                    align-items: left;
+                    // display: flex;
+                    // align-items: left;
+                    @include displayDFJA(flex, null, null, left);
                     margin: 0;
                     color: $font-dark-colour;
                     font-weight: bold;
@@ -101,8 +108,9 @@
             }
 
             .editAndRemoveButtonContainer {
-                display: flex;
-                flex-direction: row;
+                // display: flex;
+                // flex-direction: row;
+                @include displayDFJA(flex, row, null, null);
                 gap: 10px;
 
                 .shiftTimeSelect {
@@ -116,21 +124,23 @@
 
 @media (max-width: 1200px) {
     .showShiftMapContainer {
-        grid-template-columns: repeat(3, 1fr);
+        @include gridQG(3, 10px);
+        // grid-template-columns: repeat(3, 1fr);
     }
 
 }
 
 @media (max-width: 800px) {
     .showShiftMapContainer {
-        grid-template-columns: repeat(2, 1fr);
+        @include gridQG(2, 10px);
+        // grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 600px) {
     .showShiftMapContainer {
-        grid-template-columns: 1fr;
-
+        @include gridQG(1, 10px);
+        // grid-template-columns: 1fr;
     }
 }
 
@@ -166,9 +176,10 @@
 }
 
 .addContainer {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    // display: flex;
+    // flex-direction: row;
+    // align-items: center;
+    @include displayDFJA(flex, row, null, center);
     gap: 10px;
     margin: 10px 0 0 0;
 
@@ -209,9 +220,10 @@
 
 .shiftTimeSelect,
 .addShiftTimeSelect {
-    -webkit-appearance: none; // Safari
-    -moz-appearance: none; // Firefox
-    appearance: none; //Standard
+    // -webkit-appearance: none; // Safari
+    // -moz-appearance: none; // Firefox
+    // appearance: none; //Standard
+    @include appearance-none;
     height: 5vh;
     padding: 10px 3.5vh 10px 10px;
     background-image:
@@ -238,9 +250,10 @@
 }
 
 .formInput {
-    -webkit-appearance: none; //Safari
-    -moz-appearance: none; //Firefox
-    appearance: none; //Standard
+    // -webkit-appearance: none; //Safari
+    // -moz-appearance: none; //Firefox
+    // appearance: none; //Standard
+    @include appearance-none;
     width: 100%;
     height: 5vh;
     border-radius: 5px;
@@ -274,33 +287,33 @@
     }
 }
 
-.loadingModalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+// .loadingModalOverlay {
+//     position: fixed;
+//     top: 0;
+//     left: 0;
+//     right: 0;
+//     bottom: 0;
+//     background: $black-transparency-05;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     z-index: 1000;
 
-    .loadingModalContent {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
+//     .loadingModalContent {
+//         display: flex;
+//         flex-direction: column;
+//         text-align: center;
 
-        .spinnerContainer {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-        }
-    }
-}
+//         .spinnerContainer {
+//             display: flex;
+//             flex-direction: column;
+//             justify-content: center;
+//             align-items: center;
+//             position: absolute;
+//             top: 50%;
+//             left: 50%;
+//             transform: translate(-50%, -50%);
+//             z-index: 9999;
+//         }
+//     }
+// }
