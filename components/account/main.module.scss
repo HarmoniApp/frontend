@@ -7,15 +7,17 @@
     right: 0;
     bottom: 0;
     background: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    @include displayDFJA(flex, null, center, center);
     z-index: 1000;
 }
 
 .modalContentOfChangePhoto {
-    display: flex;
-    flex-direction: column;
+    // display: flex;
+    // flex-direction: column;
+    @include displayDFJA(flex, column, null, null);
     border: 2px solid $main-colour;
     border-radius: 8px;
     background-color: $gray;
@@ -42,9 +44,10 @@
     color: $font-dark-colour;
     transition: right 0.3s ease-in-out;
     z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: space-between;
+    @include displayDFJA(flex, column, space-between, null);
     box-shadow: -2px 0 5px $black-transparency-05;
 }
 
@@ -61,10 +64,11 @@
 .header {
     background-color: $gray;
     color: $main-colour;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+    // display: flex;
+    // flex-direction: row;
+    // align-items: center;
+    // justify-content: center;
+    @include displayDFJA(flex, row, center, center);
     padding: 20px;
 }
 
@@ -73,28 +77,31 @@
 }
 
 .adminContent {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: space-between;
+    // align-items: center;
+    @include displayDFJA(flex, column, space-between, center);
     padding: 20px;
     flex-grow: 1;
     margin-top:20px;
 }
 
 .userContent {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: flex-start;
+    // align-items: center;
+    @include displayDFJA(flex, column, flex-start, center);
     padding: 20px;
     flex-grow: 1;
     margin-top:20px;
 }
 
 .item {
-    display: flex;
-    align-items: center;
+    // display: flex;
+    // align-items: center;
+    @include displayDFJA(flex, null, null, center);
     margin-bottom: 20px;
     cursor: pointer;
 }
@@ -111,17 +118,19 @@
 .footer {
     padding: 20px;
     background-color: $gray;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
+    // display: flex;
+    // flex-direction: row;
+    // align-items: center;
+    // justify-content: space-around;
+    @include displayDFJA(flex, row, space-around, center);
     bottom: 0;
 }
 
 .logout {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    @include displayDFJA(flex, null, center, center);
     color: $white;
     cursor: pointer;
 }
@@ -132,13 +141,15 @@
 }
 
 .languages {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    // display: flex;
+    // flex-direction: row;
+    // align-items: center;
+    @include displayDFJA(flex, row, null, center);
 }
 
 .languages .flags {
-    display: flex;
+    // display: flex;
+    @include displayDFJA(flex, null, null, null);
     margin-top: 10px;
 }
 
