@@ -1,18 +1,20 @@
 @import '@/styles/main.scss';
 
 .planerAiContainer {
-    display: flex;
-    flex-direction: column-reverse;
+    // display: flex;
+    // flex-direction: column-reverse;
+    @include displayDFJA(flex, column-reverse, null, null);
     width: 90%;
     margin: 20px auto;
     gap: 20px;
 }
 
 .buttonContainer {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    // display: flex;
+    // flex-direction: row;
+    // align-items: center;
+    // justify-content: space-between;
+    @include displayDFJA(flex, row, space-between, center);
     flex: 1;
     padding: 20px;
     border-radius: 10px;
@@ -26,9 +28,10 @@
 .deleteGenerateShiftsButton,
 .infoButton,
 .deleteDayButton {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    @include displayDFJA(flex, null, center, center);
     background-color: $main-colour;
     color: $font-dark-colour;
     padding: 10px 20px;
@@ -56,8 +59,9 @@
 }
 
 .planerAiForm {
-    display: flex;
-    flex-direction: column;
+    // display: flex;
+    // flex-direction: column;
+    @include displayDFJA(flex, column, null, null);
     gap: 20px;
     padding: 20px;
     border-radius: 10px;
@@ -66,8 +70,9 @@
 }
 
 .dateContainer {
-    display: flex;
-    align-items: center;
+    // display: flex;
+    // align-items: center;
+    @include displayDFJA(flex, null, null, center);
     gap: 10px;
 }
 
@@ -93,17 +98,19 @@
 }
 
 .predefineShiftsContainer {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    @include gridQG(4, 20px);
+    // display: grid;
+    // grid-template-columns: repeat(4, 1fr);
+    // gap: 20px;
 }
 
 .predefineShiftLabel,
 .roleLabel {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    // display: flex;
+    // flex-direction: row;
+    // align-items: center;
+    // justify-content: space-between;
+    @include displayDFJA(flex, row, space-between, center);
     text-align: center;
     gap: 10px;
     background-color: $white-4;
@@ -131,9 +138,10 @@
 }
 
 .roleContainer {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    @include gridQG(4, 20px);
+    // display: grid;
+    // grid-template-columns: repeat(4, 1fr);
+    // gap: 20px;
 }
 
 .rolesInfoContainer {
@@ -146,8 +154,9 @@
     }
 
     .editingShiftIdParagraph {
-        display: flex;
-        justify-content: flex-start;
+        // display: flex;
+        // justify-content: flex-start;
+        @include displayDFJA(flex, null, flex-start, null);
         font-weight: bold;
         gap: 10px;
 
@@ -167,33 +176,33 @@
     outline: none;
 }
 
-.loadingModalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+// .loadingModalOverlay {
+//     position: fixed;
+//     top: 0;
+//     left: 0;
+//     right: 0;
+//     bottom: 0;
+//     background: $black-transparency-05;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     z-index: 1000;
 
-    .loadingModalContent {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
+//     .loadingModalContent {
+//         display: flex;
+//         flex-direction: column;
+//         text-align: center;
 
-        .spinnerContainer {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-        }
-    }
-}
+//         .spinnerContainer {
+//             display: flex;
+//             flex-direction: column;
+//             justify-content: center;
+//             align-items: center;
+//             position: absolute;
+//             top: 50%;
+//             left: 50%;
+//             transform: translate(-50%, -50%);
+//             z-index: 9999;
+//         }
+//     }
+// }
