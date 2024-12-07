@@ -38,7 +38,7 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
   const handleDeleteContractType = async (contractId: number) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken(setError);
+      const tokenXSRF = await fetchCsrfToken();
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type/${contractId}`, {
         method: 'DELETE',
@@ -97,7 +97,7 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
             onSubmit={async (values, { resetForm }) => {
               setModalIsOpenLoadning(true);
               try {
-                const tokenXSRF = await fetchCsrfToken(setError);
+                const tokenXSRF = await fetchCsrfToken();
 
                   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type/${contract.id}`, {
                     method: 'PUT',
@@ -214,7 +214,7 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
         onSubmit={async (values, { resetForm }) => {
           setModalIsOpenLoadning(true);
           try {
-            const tokenXSRF = await fetchCsrfToken(setError);
+            const tokenXSRF = await fetchCsrfToken();
 
               const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type`, {
                 method: 'POST',

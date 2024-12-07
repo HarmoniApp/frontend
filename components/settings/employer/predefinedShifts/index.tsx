@@ -51,7 +51,7 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
   const handleDeleteShift = async (shiftId: number) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken(setError);
+      const tokenXSRF = await fetchCsrfToken();
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${shiftId}`, {
         method: 'DELETE',
@@ -126,7 +126,7 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
                 end: formatTimeToHHMM(values.end),
               };
               try {
-                const tokenXSRF = await fetchCsrfToken(setError);
+                const tokenXSRF = await fetchCsrfToken();
 
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${shift.id}`, {
                   method: 'PUT',
@@ -270,7 +270,7 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
             end: formatTimeToHHMM(values.end),
           };
           try {
-            const tokenXSRF = await fetchCsrfToken(setError);
+            const tokenXSRF = await fetchCsrfToken();
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift`, {
               method: 'POST',

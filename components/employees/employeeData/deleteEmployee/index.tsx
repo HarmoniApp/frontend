@@ -32,7 +32,7 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
   const handleDeleteEmployee = async () => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken(setError);
+      const tokenXSRF = await fetchCsrfToken();
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}`, {
           method: 'DELETE',

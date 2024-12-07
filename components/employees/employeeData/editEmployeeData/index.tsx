@@ -265,7 +265,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   const handleSubmit = async (values: typeof initialValues) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken(setError);
+      const tokenXSRF = await fetchCsrfToken();
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${employee.id}`, {
           method: 'PATCH',

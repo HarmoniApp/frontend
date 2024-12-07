@@ -70,7 +70,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                 console.error("Error: No group to edit.");
                 return;
             }
-            const tokenXSRF = await fetchCsrfToken(setError);
+            const tokenXSRF = await fetchCsrfToken();
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}/user/${userId}/remove`, {
                 method: 'PATCH',
@@ -112,7 +112,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         loading(true);
 
         try {
-            const tokenXSRF = await fetchCsrfToken(setError);
+            const tokenXSRF = await fetchCsrfToken();
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}`, {
                 method: 'DELETE',
@@ -151,7 +151,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                 console.error("Error: No group to edit.");
                 return;
             }
-            const tokenXSRF = await fetchCsrfToken(setError);
+            const tokenXSRF = await fetchCsrfToken();
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}/user/${user.id}/add`, {
                 method: 'PATCH',

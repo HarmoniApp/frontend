@@ -42,7 +42,7 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
   const handleDeleteRole = async (roleId: number) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken(setError);
+      const tokenXSRF = await fetchCsrfToken();
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/${roleId}`, {
         method: 'DELETE',
@@ -70,7 +70,7 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
   const handleAddRole = async (values: { newRoleName: string; newRoleColor: string }, { resetForm }: any) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken(setError);
+      const tokenXSRF = await fetchCsrfToken();
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
         method: 'POST',
@@ -104,7 +104,7 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
     if (editingRoleId !== null) {
       setModalIsOpenLoadning(true);
       try {
-        const tokenXSRF = await fetchCsrfToken(setError);
+        const tokenXSRF = await fetchCsrfToken();
 
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/${editingRoleId}`, {
             method: 'PUT',

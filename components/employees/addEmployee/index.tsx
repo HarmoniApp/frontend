@@ -211,7 +211,7 @@ const AddEmployee: React.FC = () => {
   const handleSubmit = async (values: typeof initialValues, { resetForm }: { resetForm: () => void }) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken(setError);
+      const tokenXSRF = await fetchCsrfToken();
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user`, {
           method: 'POST',

@@ -1,10 +1,7 @@
-export const fetchCsrfToken = async (
-    setError: (errorMessage: string | null) => void
-  ): Promise<string> => {
+export const fetchCsrfToken = async (): Promise<string> => {
     const tokenJWT = sessionStorage.getItem('tokenJWT');
     if (!tokenJWT) {
       const errorMessage = 'JWT token not found in session storage';
-      setError(errorMessage);
       throw new Error(errorMessage);
     }
   
@@ -20,7 +17,6 @@ export const fetchCsrfToken = async (
   
       if (!response.ok) {
         const errorMessage = `Failed to fetch CSRF token: ${response.statusText}`;
-        setError(errorMessage);
         throw new Error(errorMessage);
       }
   
@@ -28,7 +24,6 @@ export const fetchCsrfToken = async (
       return data.token;
     } catch (error) {
       console.error('Error fetching CSRF token:', error);
-      setError('Błąd z tokenem CSRF');
       throw error;
     }
   };

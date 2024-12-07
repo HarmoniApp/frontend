@@ -319,7 +319,7 @@ const Chat = () => {
         setMessages(data);
 
         try {
-          const tokenXSRF = await fetchCsrfToken(setError);
+          const tokenXSRF = await fetchCsrfToken();
 
           await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/mark-all-read?userId1=${userId}&userId2=${partner.id}`, {
             method: 'PATCH',

@@ -29,7 +29,7 @@ const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setCh
     };
 
     try {
-      const tokenXSRF = await fetchCsrfToken(setError);
+      const tokenXSRF = await fetchCsrfToken();
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group`, {
         method: 'POST',

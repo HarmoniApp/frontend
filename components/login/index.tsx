@@ -116,7 +116,7 @@ const Login = () => {
   const handlePasswordChangeSubmit = async (values: any) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken(setError);
+      const tokenXSRF = await fetchCsrfToken();
 
       const requestBody = {
         newPassword: values.newPassword,
