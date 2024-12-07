@@ -2,15 +2,17 @@
 
 
 .absenceEmployerContainerMain {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    // display: flex;
+    // flex-direction: column;
+    // align-items: center;
+    // justify-content: center;
+    @include displayDFJA(flex, column, center, center);
     width: 100%;
 
     .absenceEmployerContainer {
-        display: flex;
-        flex-direction: column;
+        // display: flex;
+        // flex-direction: column;
+        @include displayDFJA(flex, column, null, null);
         width: 90%;
         gap: 20px;
         margin: 20px 0;
@@ -18,8 +20,9 @@
 }
 
 .buttonContainer {
-    display: flex;
-    justify-content: space-between;
+    // display: flex;
+    // justify-content: space-between;
+    @include displayDFJA(flex, null, space-between, null);
     margin: 0;
 
     .roleSelect {
@@ -60,15 +63,17 @@
     }
 
     .viewContainer {
-        display: flex;
+        // display: flex;
+        @include displayDFJA(flex, null, null, null);
         gap: 15px;
         margin: 0 10px;
 
         .listViewButton,
         .tilesViewButton {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            // display: inline-flex;
+            // align-items: center;
+            // justify-content: center;
+            @include displayDFJA(inline-flex, null, center, center);
             background: none;
             border: none;
             padding: 0;
@@ -78,9 +83,10 @@
         }
 
         .active {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            // display: inline-flex;
+            // align-items: center;
+            // justify-content: center;
+            @include displayDFJA(inline-flex, null, center, center);
             background: none;
             border: none;
             padding: 0;
@@ -92,8 +98,9 @@
 }
 
 .selectContainer {
-    display: flex;
-    flex-direction: row;
+    // display: flex;
+    // flex-direction: row;
+    @include displayDFJA(flex, row, null, null);
     gap: 20px;
 }
 
@@ -117,19 +124,21 @@
 }
 
 .cardsViewContainerTiles {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-
+    // display: grid;
+    // grid-template-columns: repeat(3, 1fr);
+    // gap: 20px;
+    @include gridQG(3, 20px);
     @media (max-width: 768px) {
-        grid-template-columns: repeat(2, 1fr);
+        @include gridQG(2, 20px);
+        // grid-template-columns: repeat(2, 1fr);
     }
 }
 
 .cardsViewContainerList {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 20px;
+    // display: grid;
+    // grid-template-columns: repeat(1, 1fr);
+    // gap: 20px;
+    @include gridQG(1, 20px);
 }
 
 .searchContainer{

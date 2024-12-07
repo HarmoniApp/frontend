@@ -1,11 +1,27 @@
+@import '../abstracts/variables.scss';
+@import '../abstracts/mixins.scss';
+
+.loadingModalOverlay {
+    @include displayDFJA(flex, null, center, center);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $black-transparency-05;
+    z-index: 1000;
+}
+
+.loadingModalContent {
+    @include displayDFJA(flex, column, null, null);
+    text-align: center;
+}
+
 .spinner-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    @include displayDFJA(flex, column, center, center);
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 9999;
-  }
+}

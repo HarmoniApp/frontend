@@ -1,8 +1,14 @@
-@mixin flex-center($direction: column, $align: center, $justify: center) {
+@mixin displayDFJA($display:flex , $direction: column, $justify: center, $align: center) {
     display: flex;
     flex-direction: $direction;
-    align-items: $align;
     justify-content: $justify;
+    align-items: $align;
+}
+
+@mixin gridQG($quantity: 3, $gap: 20px) {
+    display: grid;
+    grid-template-columns: repeat($quantity, 1fr);
+    gap: $gap;
 }
 
 @mixin appearance-none{
