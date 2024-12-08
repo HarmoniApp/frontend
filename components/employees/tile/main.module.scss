@@ -1,10 +1,11 @@
 @import '@/styles/main.scss';
 
 .tileContainerMain {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  // display: flex;
+  // flex-direction: row;
+  // justify-content: space-between;
+  // align-items: center;
+  @include displayDFJA(flex, row, space-between, center);
   background-color: $main-colour;
   border: 1px solid $font-dark-colour;
   box-shadow: 0px 4px 6px $black-transparency-01;
@@ -29,10 +30,11 @@
   }
 
   .fullNameContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: center;
+    // align-items: center;
+    @include displayDFJA(flex, column, center, center);
     flex-grow: 1;
     gap:3px;
 
@@ -46,10 +48,11 @@
   }
 
   .languagesContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: flex-end;
+    // align-items: center;
+    @include displayDFJA(flex, column, flex-end, center);
     margin-right: 10px;
   
     .languageFlag {
@@ -66,11 +69,12 @@
       color: $font-dark-colour;
   
       &:hover .tooltipContent {
-        display: flex;
+        // display: flex;
+        @include displayDFJA(flex, null, null, null);
       }
   
       .tooltipContent {
-        display: none;
+        // display: none;
         position: absolute;
         top: 20px;
         background-color: $white;
@@ -79,7 +83,8 @@
         padding: 10px;
         box-shadow: 0px 4px 6px $black-transparency-01;
         z-index: 10;
-        flex-direction: row;
+        // flex-direction: row;
+        @include displayDFJA(none, row, null, null);
         justify-content: center; 
   
         .languageFlag {
@@ -93,10 +98,11 @@
 }
 
 .listContainerMain {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  // display: flex;
+  // flex-direction: row;
+  // justify-content: space-between;
+  // align-items: center;
+  @include displayDFJA(flex, row, space-between, center);
   background-color: $main-colour;
   border: 1px solid $font-dark-colour;
   box-shadow: 0px 4px 6px $black-transparency-01;
@@ -128,10 +134,11 @@
   }
 
   .fullNameContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+    // display: flex;
+    // flex-direction: row;
+    // justify-content: center;
+    // align-items: center;
+    @include displayDFJA(flex, row, center, center);
     flex-grow: 1;
     gap:3px;
 
@@ -151,7 +158,8 @@
   }
   
   .listContainerMain .languagesContainer {
-    justify-content: flex-end;
+    // justify-content: flex-end;
+    @include displayDFJA(flex, null, flex-end, null);
   }
   
   .languageFlag {
@@ -162,10 +170,11 @@
 }
 
 .spinnerContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  // display: flex;
+  // flex-direction: column;
+  // justify-content: center;
+  // align-items: center;
+  @include displayDFJA(flex, column, center, center);
   position: absolute;
   top: 50%;
   left: 50%;

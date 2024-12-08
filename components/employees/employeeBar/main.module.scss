@@ -15,14 +15,16 @@
 }
 
 .employeeBarContainerMain {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    // display: flex;
+    // justify-content: space-between;
+    // align-items: center;
+    @include displayDFJA(flex, null, space-between, center);
     padding: 10px 20px;
 }
 
 .actionContainer {
-    display: flex;
+    // display: flex;
+    @include displayDFJA(flex, null, null, null);
     gap: 15px;
     margin: 0 10px;
 }
@@ -30,8 +32,9 @@
 .addEmployeeButton,
 .importEmployeeButton,
 .editRoles {
-    display: flex;
-    align-items: center;
+    // display: flex;
+    // align-items: center;
+    @include displayDFJA(flex, null, null, center);
     padding: 10px;
     background-color: $white;
     color: $font-dark-colour;
@@ -54,15 +57,17 @@
 }
 
 .viewContainer {
-    display: flex;
+    // display: flex;
+    @include displayDFJA(flex, null, null, null);
     gap: 15px;
     margin: 0 10px;
 
     .listViewButton,
     .tilesViewButton {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+        // display: inline-flex;
+        // align-items: center;
+        // justify-content: center;
+        @include displayDFJA(inline-flex, null, center, center);
         background: none;
         border: none;
         padding: 0;
@@ -71,9 +76,10 @@
     }
 
     .active {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+        // display: inline-flex;
+        // align-items: center;
+        // justify-content: center;
+        @include displayDFJA(inline-flex, null, center, center);
         background: none;
         border: none;
         padding: 0;
@@ -85,7 +91,8 @@
 
 .exportDropdownContainer {
     position: relative;
-    display: inline-block;
+    // display: inline-block;
+    @include displayDFJA(inline-block, null, null, null);
 
     .exportDropdownMenu {
         position: absolute;
@@ -95,10 +102,11 @@
         z-index: 1000;
 
         button {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
+            // display: flex;
+            // flex-direction: row;
+            // align-items: center;
+            // justify-content: space-between;
+            @include displayDFJA(flex, row, space-between, center);
             text-align: center;
             background-color: $white-4;
             padding: 10px;
@@ -115,20 +123,20 @@
     }
 }
 
-.spinnerOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
+// .spinnerOverlay {
+//     position: fixed;
+//     top: 0;
+//     left: 0;
+//     right: 0;
+//     bottom: 0;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     z-index: 1000;
+//   }
   
-  .spinnerContainer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+//   .spinnerContainer {
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//   }
