@@ -7,15 +7,17 @@
     right: 0;
     bottom: 0;
     background: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    @include displayDFJA(flex, null, center, center);
     z-index: 1000;
 }
 
 .modalContentOfDeleteEmployee, .modalContentOfNewPassword {
-    display: flex;
-    flex-direction: column;
+    // display: flex;
+    // flex-direction: column;
+    @include displayDFJA(flex, column, null, null);
     border: 2px solid $main-colour;
     border-radius: 8px;
     background-color: $gray;
@@ -26,32 +28,35 @@
     gap: 20px;
     padding: 20px;
 
-    @media (max-width: 768px) {
+    @media (max-width: $breakpoint-md) {
         width: 90%;
         max-height: 70vh;
     }
 }
 
 .employeeDataContainerMain {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    // display: flex;
+    // flex-direction: column;
+    // align-items: center;
+    // justify-content: center;
+    @include displayDFJA(flex, column, center, center);
     gap: 20px;
     width: 100%;
     margin: 20px 0;
 }
 
 .rowButtonContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
+    // display: flex;
+    // flex-direction: row;
+    // justify-content: space-evenly;
+    // align-items: center;
+    @include displayDFJA(flex, row, space-evenly, center);
     width: 90%;
     gap: 20px;
 
-    @media (max-width: 1225px) {
-        flex-direction: column;
+    @media (max-width: $breakpoint-lg) {
+        // flex-direction: column;
+        @include displayDFJA(flex, column, null, null);
 
         .buttonContainer {
             width: 100%;
@@ -59,10 +64,11 @@
     }
 
     .buttonContainer {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-evenly;
+        // display: flex;
+        // flex-direction: row;
+        // align-items: center;
+        // justify-content: space-evenly;
+        @include displayDFJA(flex, row, space-evenly, center);
         flex: 1;
         padding: 20px;
 
@@ -76,8 +82,9 @@
         .resetPasswordButton,
         .editButton,
         .deleteButton {
-            display: flex;
-            align-items: center;
+            // display: flex;
+            // align-items: center;
+            @include displayDFJA(flex, null, null, center);
             background-color: $main-colour;
             color: $font-dark-colour;
             padding: 10px 20px;
@@ -107,15 +114,17 @@
 }
 
 .fullNameAndIdContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: stretch;
+    // display: flex;
+    // flex-direction: row;
+    // justify-content: center;
+    // align-items: stretch;
+    @include displayDFJA(flex, row, center, stretch);
     width: 90%;
     gap: 20px;
 
-    @media (max-width: 1225px) {
-        flex-direction: column;
+    @media (max-width: $breakpoint-lg) {
+        // flex-direction: column;
+        @include displayDFJA(flex, column, null, null);
         gap: 20px;
 
         .fullNameColumnContainer,
@@ -126,10 +135,11 @@
     }
 
     .fullNameColumnContainer {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: center;
+        // display: flex;
+        // flex-direction: row;
+        // justify-content: space-around;
+        // align-items: center;
+        @include displayDFJA(flex, row, space-around, center);
         flex: 1;
         width: 100%;
         height: auto;
@@ -140,10 +150,11 @@
 
         .firstNameContainer,
         .surnameContainer {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
+            // display: flex;
+            // flex-direction: row;
+            // justify-content: center;
+            // align-items: center;
+            @include displayDFJA(flex, row, center, center);
             height: auto;
             gap: 10px;
 
@@ -183,16 +194,17 @@
     }
 
     .employeeIdContainer {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
+        // display: flex;
+        // flex-direction: row;
+        // justify-content: center;
+        // align-items: center;
+        @include displayDFJA(flex, row, center, center);
         flex: 1;
         width: 100%;
         gap: 2%;
         height: auto;
 
-        @media (max-width: 1225px) {
+        @media (max-width: $breakpoint-lg) {
             padding: 10px;
         }
 
@@ -223,28 +235,32 @@
 }
 
 .emplyeeDataContainer {
-    display: flex;
+    // display: flex;
+    @include displayDFJA(flex, null, null, null);
     flex-wrap: wrap;
     gap: 20px;
     width: 90%;
 
-    @media (max-width: 1225px) {
-        flex-direction: column;
+    @media (max-width: $breakpoint-lg) {
+        // flex-direction: column;
+        @include displayDFJA(flex, column, null, null);
 
         .columnContainer {
             width: 100%;
         }
     }
 
-    @media (max-width: 768px) {
-        flex-direction: column;
+    @media (max-width: $breakpoint-md) {
+        // flex-direction: column;
+        @include displayDFJA(flex, column, null, null);
         gap: 10px;
     }
 }
 
 .columnContainer {
-    display: flex;
-    flex-direction: column;
+    // display: flex;
+    // flex-direction: column;
+    @include displayDFJA(flex, column, null, null);
     flex: 1;
     padding: 20px;
     background-color: $white;
@@ -260,9 +276,10 @@
     .endContractDateLables,
     .contractTypeLabel,
     .departmentLabel {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        // display: flex;
+        // align-items: center;
+        // justify-content: space-between;
+        @include displayDFJA(flex, null, space-between, center);
         padding: 0 10px;
         color: $font-dark-colour;
         border-bottom: 2px solid $main-colour;
@@ -283,38 +300,42 @@
 }
 
 .roleAndLanguagesContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
+    // display: flex;
+    // flex-direction: row;
+    // justify-content: space-evenly;
+    // align-items: center;
+    @include displayDFJA(flex, row, space-evenly, center);
     gap: 20px;
     width: 90%;
 
 
-    @media (max-width: 1225px) {
-        flex-direction: column;
+    @media (max-width: $breakpoint-lg) {
+        // flex-direction: column;
+        @include displayDFJA(flex, column, null, null);
 
         .columnContainer {
             width: 100%;
         }
     }
 
-    @media (max-width: 768px) {
-        flex-direction: column;
+    @media (max-width: $breakpoint-md) {
+        // flex-direction: column;
+        @include displayDFJA(flex, column, null, null);
         gap: 10px;
     }
 
     .columnContainer {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        // display: flex;
+        // flex-direction: column;
+        // justify-content: center;
+        // align-items: center;
+        @include displayDFJA(flex, column, center, center);
         max-height: 45vh;
         border-radius: 10px;
         background-color: $white;
         box-shadow: 0 4px 8px $black-transparency-01;
 
-        @media (max-width: 768px) {
+        @media (max-width: $breakpoint-md) {
             margin: 10px;
             max-height: 60vh;
             padding: 10px;
@@ -329,37 +350,43 @@
         }
 
         .roleContainer {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            // display: grid;
+            // grid-template-columns: repeat(3, 1fr);
+            // gap: 20px;
+            @include gridQG(3, 20px);
             margin: 20px;
             width: 100%;
             overflow-y: auto;
 
-            @media (max-width: 1225px) {
-                grid-template-columns: repeat(3, 1fr);
+            @media (max-width: $breakpoint-lg) {
+                // grid-template-columns: repeat(3, 1fr);
+                @include gridQG(3, 20px);
                 height: fit-content;
             }
 
             @media (max-width: 825px) {
-                grid-template-columns: repeat(2, 1fr);
+                // grid-template-columns: repeat(2, 1fr);
+                @include gridQG(2, 20px);
                 height: fit-content;
             }
 
             @media (max-width: 650px) {
-                grid-template-columns: repeat(2, 1fr);
+                // grid-template-columns: repeat(2, 1fr);
+                @include gridQG(2, 20px);
                 height: fit-content;
             }
 
             @media (max-width: 350px) {
-                grid-template-columns: 1fr;
+                // grid-template-columns: 1fr;
+                @include gridQG(1, 20px);
             }
 
             .roleLabel {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
+                // display: flex;
+                // flex-direction: row;
+                // align-items: center;
+                // justify-content: space-between;
+                @include displayDFJA(flex, row, space-between, center);
                 text-align: center;
                 gap: 10px;
                 background-color: $white-4;
@@ -371,7 +398,7 @@
                 width: 100%;
                 padding: 10px;
 
-                @media (max-width: 768px) {
+                @media (max-width: $breakpoint-md) {
                     padding: 8px;
                     width: 100%;
                 }
@@ -380,34 +407,40 @@
         }
 
         .languagesContainer {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            // display: grid;
+            // grid-template-columns: repeat(4, 1fr);
+            // gap: 20px;
+            @include gridQG(4, 20px);
             margin: 20px;
             width: 100%;
             overflow-y: auto;
 
-            @media (max-width: 1225px) {
-                grid-template-columns: repeat(3, 1fr);
+            @media (max-width: $breakpoint-lg) {
+                // grid-template-columns: repeat(3, 1fr);
+                @include gridQG(3, 20px);
             }
 
             @media (max-width: 825px) {
-                grid-template-columns: repeat(2, 1fr);
+                // grid-template-columns: repeat(2, 1fr);
+                @include gridQG(2, 20px);
             }
 
             @media (max-width: 650px) {
-                grid-template-columns: repeat(2, 1fr);
+                // grid-template-columns: repeat(2, 1fr);
+                @include gridQG(2, 20px);
             }
 
             @media (max-width: 350px) {
-                grid-template-columns: 1fr;
+                // grid-template-columns: 1fr;
+                @include gridQG(1, 20px);
             }
 
             .languageLabel {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
+                // display: flex;
+                // flex-direction: row;
+                // align-items: center;
+                // justify-content: space-between;
+                @include displayDFJA(flex, row, space-between, center);
                 text-align: center;
                 gap: 10px;
                 background-color: $white-4;
@@ -419,7 +452,7 @@
                 width: 100%;
                 padding: 10px;
 
-                @media (max-width: 768px) {
+                @media (max-width: $breakpoint-md) {
                     padding: 8px;
                 }
 
@@ -433,45 +466,46 @@
     }
 }
 
-.spinnerContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999;
-}
+// .spinnerContainer {
+//     // display: flex;
+//     // flex-direction: column;
+//     // justify-content: center;
+//     // align-items: center;
+//     @include displayDFJA(flex, column, center, center);
+//     position: absolute;
+//     top: 50%;
+//     left: 50%;
+//     transform: translate(-50%, -50%);
+//     z-index: 9999;
+// }
 
-.loadingModalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+// .loadingModalOverlay {
+//     position: fixed;
+//     top: 0;
+//     left: 0;
+//     right: 0;
+//     bottom: 0;
+//     background: $black-transparency-05;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     z-index: 1000;
 
-    .loadingModalContent {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
+//     .loadingModalContent {
+//         display: flex;
+//         flex-direction: column;
+//         text-align: center;
 
-        .spinnerContainer {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-        }
-    }
-}
+//         .spinnerContainer {
+//             display: flex;
+//             flex-direction: column;
+//             justify-content: center;
+//             align-items: center;
+//             position: absolute;
+//             top: 50%;
+//             left: 50%;
+//             transform: translate(-50%, -50%);
+//             z-index: 9999;
+//         }
+//     }
+// }

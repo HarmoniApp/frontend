@@ -1,23 +1,24 @@
 @import '@/styles/main.scss';
 
 .deleteConfirmationContainerMain {
-    display: flex;
+    // display: flex;
     background-color: $gray;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    // flex-direction: column;
+    // align-items: center;
+    // justify-content: center;
+    @include displayDFJA(flex, column, center, center);
     width: 100%;
-    ;
     padding: 0px 40px;
     box-sizing: border-box;
 }
 
 .headerContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    // display: flex;
+    // flex-direction: column;
+    // align-items: center;
     text-align: center;
-    justify-content: center;
+    // justify-content: center;
+    @include displayDFJA(flex, column, center, center);
     width: 100%;
     margin: 0;
 
@@ -38,24 +39,27 @@
 }
 
 .counterContainter {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    // display: flex;
+    // flex-direction: column;
+    // align-items: center;
+    // justify-content: center;
+    @include displayDFJA(flex, column, center, center);
     width: 100%;
     margin: 0;
 
     .counterParagraph {
-        display: flex;
-        align-items: center;
+        // display: flex;
+        // align-items: center;
+        @include displayDFJA(flex, null, null, center);
         text-align: center;
         color: $font-light-colour;
         margin: 0;
     }
 
     .counterTimer {
-        display: flex;
-        align-items: center;
+        // display: flex;
+        // align-items: center;
+        @include displayDFJA(flex, null, null, center);
         text-align: center;
         color: $font-light-colour;
         margin: 0;
@@ -69,8 +73,9 @@
         }
 
         .counterTimerParagraph {
-            display: flex;
-            align-items: center;
+            // display: flex;
+            // align-items: center;
+            @include displayDFJA(flex, null, null, center);
             text-align: center;
             color: $font-light-colour;
             margin: 0 0 10px 0;
@@ -79,10 +84,11 @@
 }
 
 .buttonConianer {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+    // display: flex;
+    // flex-direction: row;
+    // align-items: center;
+    // justify-content: center;
+    @include displayDFJA(flex, row, center, center);
     width: 100%;
 
     .employeeInfo {
@@ -101,8 +107,9 @@
     }
 
     .closeButton {
-        display: flex;
-        align-items: center;
+        // display: flex;
+        // align-items: center;
+        @include displayDFJA(flex, null, null, center);
         background-color: $main-colour;
         color: $font-dark-colour;
         padding: 10px 20px;

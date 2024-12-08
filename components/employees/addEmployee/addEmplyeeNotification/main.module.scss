@@ -58,9 +58,10 @@
     }
 
     .counterTimerContainer {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        // display: flex;
+        // align-items: center;
+        // justify-content: center;
+        @include displayDFJA(flex, null, center, center);
         text-align: center;
         color: $font-light-colour;
         margin: 0;
@@ -73,8 +74,9 @@
         }
 
         .counterTimerLabel {
-            display: flex;
-            align-items: center;
+            // display: flex;
+            // align-items: center;
+            @include displayDFJA(flex, null, null, center);
             text-align: center;
             color: $font-light-colour;
         }
@@ -82,10 +84,11 @@
 }
 
 .buttonConianer{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-evenly;
+    // display: flex;
+    // flex-direction: row;
+    // align-items: center;
+    // justify-content: space-evenly;
+    @include displayDFJA(flex, row, space-evenly, center);
     width: 100%;
     gap: 20px;
 
@@ -105,8 +108,9 @@
     }
 
     .closeButton {
-        display: flex;
-        align-items: center;
+        // display: flex;
+        // align-items: center;
+        @include displayDFJA(flex, null, null, center);
         background-color: $main-colour;
         color: $font-dark-colour;
         padding: 10px 20px;
@@ -132,8 +136,9 @@
     }
 
     .detailsButton {
-        display: flex;
-        align-items: center;
+        // display: flex;
+        // align-items: center;
+        @include displayDFJA(flex, null, null, center);
         background-color: $green;
         color: $font-light-colour;
         padding: 10px 20px;
