@@ -3,20 +3,22 @@
 .chatWindow {
     flex-grow: 1;
     width: 80%;
-    display: flex;
-    flex-direction: column;
+    // display: flex;
+    // flex-direction: column;
+    @include displayDFJA(flex, column, null, null);
     background-color: $gray;
     margin-left: 20px;
     margin: 0 auto;
 }
 
 .groupChatHeader {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    // display: flex;
+    // flex-direction: row;
+    // justify-content: space-between;
+    // align-items: center;
+    @include displayDFJA(flex, row, space-between, center);
     padding: 20px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid $gray-powder;
 
     .info{
         color: $main-colour;
@@ -28,11 +30,12 @@
 
 
 .userChatHeader{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    // display: flex;
+    // flex-direction: row;
+    // align-items: center;
+    @include displayDFJA(flex, row, null, center);
     padding: 20px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid $gray-powder;
 
     .imageContainer {
         width: 60px;
@@ -53,15 +56,18 @@
 }
 
 .message {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 10px;
+    // display: flex;
+    // align-items: flex-start;
+    @include displayDFJA(flex, null, null, flex-start);
+    margin: 0 0 10px 0;
 
     &.selfMessage {
-        justify-content: flex-end;
+        @include displayDFJA(flex, null, flex-end, null);
+        // justify-content: flex-end;
 
         .avatarAndNameContainer{
-            display: none;
+            // display: none;
+            @include displayDFJA(none, null, nul, null);
         }
 
         .messageContent {
@@ -71,7 +77,8 @@
     }
 
     &.otherMessage {
-        justify-content: flex-start;
+        // justify-content: flex-start;
+        @include displayDFJA(flex, null, flex-start, null);
 
         .messageContent {
             background-color: $gray-powder;
@@ -81,10 +88,11 @@
 }
 
 .avatarAndNameContainer {
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: center;
-    align-items: center;
+    // display: flex;
+    // flex-direction: column-reverse;
+    // justify-content: center;
+    // align-items: center;
+    @include displayDFJA(flex, column-reverse, center, center);
     margin-right: 10px;
 
     .imageContainer {
@@ -104,8 +112,9 @@
 }
 
 .messageContentContainer {
-    display: flex;
-    flex-direction: column;
+    // display: flex;
+    // flex-direction: column;
+    @include displayDFJA(flex, column, null, null);
     gap: 8px;
 
     .messageContent {
@@ -119,9 +128,10 @@
     }
 
     .timeAndReadMessagesContainer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        // display: flex;
+        // justify-content: space-between;
+        // align-items: center;
+        @include displayDFJA(flex, null, space-between, center);
 
         .timestamp {
             font-size: 0.8em;

@@ -1,9 +1,10 @@
 @import '@/styles/main.scss';
 
 .chatContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+  // display: flex;
+  // flex-direction: row;
+  // justify-content: center;
+  @include displayDFJA(flex, row, center, null);
   gap:20px;
   height: 78vh;
   width: 96%;
@@ -12,8 +13,9 @@
 }
 
 .sidebar {
-  display: flex;
-  flex-direction: column;
+  // display: flex;
+  // flex-direction: column;
+  @include displayDFJA(flex, column, null, null);
   padding: 20px;
   background-color: $white;
   border-radius: 10px;

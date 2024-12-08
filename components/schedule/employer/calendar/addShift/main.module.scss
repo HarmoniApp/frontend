@@ -1,16 +1,4 @@
-$main-colour: #dee2e6;
-$black-transparency-01: rgba(0, 0, 0, 0.1);
-$black-transparency-05: rgba(0, 0, 0, 0.5);
-$gray: #4F4E4E;
-$font-light-colour: #FFFFFF;
-$font-dark-colour: #000000;
-$main-colour: #FFCF70;
-$main-colour-hover: #FFBE4D;
-$white-4: #e8e8e8;
-$red: #dc3545;
-$red-powder: #ffe6e6;
-$green: #008000;
-$green-hover: #00a000;
+@import '@/styles/main.scss';
 
 .addShiftModalOverlay {
   position: fixed;
