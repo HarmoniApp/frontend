@@ -1,16 +1,11 @@
 @import '@/styles/main.scss';
 
-@mixin respond-to-md {
-  @media (max-width: $breakpoint-md) {
-    @content;
-  }
-}
-
 .shiftInfo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  // display: flex;
+  // flex-direction: column;
+  // align-items: center;
+  // justify-content: center;
+  @include displayDFJA(flex, column, center, center);
   width: 100%;
   padding: 5px;
   gap: 5px;

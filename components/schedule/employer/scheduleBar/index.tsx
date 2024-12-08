@@ -102,9 +102,9 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
       )}
 
       {loading && (
-        <div className={styles.spinnerOverlay}>
-          <div className={styles.spinnerContainer}>
-            <ProgressSpinner />
+        <div className={styles.loadingModalOverlay}>
+          <div className={styles.loadingModalContent}>
+            <div className={styles.spinnerContainer}><ProgressSpinner /></div>
           </div>
         </div>
       )}

@@ -1,16 +1,11 @@
 @import '@/styles/main.scss';
 
-@mixin respond-to-md {
-  @media (max-width: $breakpoint-md) {
-    @content;
-  }
-}
-
 .scheduleEmployee {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  // display: flex;
+  // flex-direction: column;
+  // justify-content: center;
+  // align-items: center;
+  @include displayDFJA(flex, column, center, center);
   width: 90%;
   gap: 20px;
   padding: 20px;

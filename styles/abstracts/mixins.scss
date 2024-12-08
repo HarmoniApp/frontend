@@ -16,3 +16,15 @@
     -moz-appearance: none; // Firefox
     appearance: none; // Standard
 }
+
+@mixin respond-to-md {
+    @media (max-width: $breakpoint-md) {
+        @content;
+    }
+}
+
+@mixin respond-to-sm {
+    @media (max-width: $breakpoint-sm) {
+      @content;
+    }
+}

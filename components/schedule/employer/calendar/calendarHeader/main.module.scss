@@ -4,35 +4,25 @@
   * The reference md(only number) is still in index.tsx(21 line) because it changes the full name of the day to the abbreviation. 
   */
 
-
-@mixin respond-to-sm {
-  @media (max-width: $breakpoint-sm) {
-    @content;
-  }
-}
-
-@mixin respond-to-md {
-  @media (max-width: $breakpoint-md) {
-    @content;
-  }
-}
-
 .calendarHeaderContainerMain {
-  display: flex;
-  align-items: center;
+  // display: flex;
+  // align-items: center;
+  @include displayDFJA(flex, null, null, center);
   width: 100%;
   gap: 30px;
 
   @include respond-to-md {
-    flex-direction: column;
+    // flex-direction: column;
+    @include displayDFJA(flex, column, null, null);
     gap: 15px;
   }
 
   .searchContainer {
-    display: flex;
+    // display: flex;
+    @include displayDFJA(flex, null, null, center);
     position: relative;
     flex:1;
-    align-items: center;
+    // align-items: center;
     background-color: $main-colour;
     border-radius: 8px;
     width: 100%;
@@ -71,12 +61,14 @@
 
   .calendarDayContainer {
     flex: 4;
-    display: flex;
+    // display: flex;
+    @include displayDFJA(flex, null, null, null);
     gap: 15px;
     margin: 0;
 
     @include respond-to-md {
-      flex-direction: row;
+      // flex-direction: row;
+      @include displayDFJA(flex, row, null, null);
       width: 100%;
       gap: 10px;
     }
@@ -84,10 +76,11 @@
     .dayContainer {
       flex: 1;
       text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      // display: flex;
+      // flex-direction: column;
+      // align-items: center;
+      // justify-content: center;
+      @include displayDFJA(flex, column, center, center);
       width: 100%;
       height: 8vh;
       color: $font-dark-colour;

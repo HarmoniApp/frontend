@@ -1,26 +1,23 @@
 @import '@/styles/main.scss';
 
-@mixin respond-to-md {
-  @media (max-width: $breakpoint-md) {
-    @content;
-  }
-}
-
 .calendarRowContainerMain {
-  display: flex;
-  align-items: center;
+  // display: flex;
+  // align-items: center;
+  @include displayDFJA(flex, null, null, center);
   gap: 30px;
   margin: 0 0 15px 0;
 
   @include respond-to-md {
-    flex-direction: column;
+    // flex-direction: column;
+    @include displayDFJA(flex, column, null, null);
     gap: 15px;
   }
 
   .employeeItemContainer {
+    @include displayDFJA(flex, null, null, center);
     flex: 1;
-    display: flex;
-    align-items: center;
+    // display: flex;
+    // align-items: center;
     cursor: pointer;
 
     @include respond-to-md {
@@ -30,11 +27,13 @@
 
   .shiftItemContainer {
     flex: 4;
-    display: flex;
+    // display: flex;
+    @include displayDFJA(flex, null, null, null);
     gap: 15px;
 
     @include respond-to-md {
-      flex-direction: row;
+      // flex-direction: row;
+      @include displayDFJA(flex, row, null, null);
       width: 100%;
       gap: 10px;
     }
@@ -46,18 +45,18 @@
   }
 }
 
-.spinnerContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
-  margin-top: 200px;
-}
+// .spinnerContainer {
+//   // display: flex;
+//   // flex-direction: column;
+//   // justify-content: center;
+//   // align-items: center;
+//   position: absolute;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+//   z-index: 9999;
+//   margin-top: 200px;
+// }
 
 .noDataCard{
   text-align: center;
@@ -68,33 +67,33 @@
   margin-top: 200px;
 }
 
-.loadingModalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: $black-transparency-05;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+// .loadingModalOverlay {
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   right: 0;
+//   bottom: 0;
+//   background: $black-transparency-05;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   z-index: 1000;
 
-  .loadingModalContent {
-      display: flex;
-      flex-direction: column;
-      text-align: center;
+//   .loadingModalContent {
+//       display: flex;
+//       flex-direction: column;
+//       text-align: center;
 
-      .spinnerContainer {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          z-index: 9999;
-      }
-  }
-}
+//       .spinnerContainer {
+//           display: flex;
+//           flex-direction: column;
+//           justify-content: center;
+//           align-items: center;
+//           position: absolute;
+//           top: 50%;
+//           left: 50%;
+//           transform: translate(-50%, -50%);
+//           z-index: 9999;
+//       }
+//   }
+// }

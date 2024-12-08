@@ -1,16 +1,11 @@
 @import '@/styles/main.scss';
 
-@mixin respond-to-md {
-    @media (max-width: $breakpoint-md) {
-        @content;
-    }
-}
-
 .employeeItemContainerMain {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: center;
+    // align-items: center;
+    @include displayDFJA(flex, column, center, center);
     background-color: $main-colour;
     border: 1px solid $font-dark-colour;
     box-shadow: 0px 4px 6px $black-transparency-01;
@@ -21,15 +16,17 @@
     cursor: pointer;
 
     @include respond-to-md {
-        flex-direction: row;
+        // flex-direction: row;
+        @include displayDFJA(flex, row, null, null);
         gap: 10px;
     }
 
     .fullNameContainer {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
+        // display: flex;
+        // flex-direction: row;
+        // align-items: center;
+        // justify-content: center;
+        @include displayDFJA(flex, row, center, center);
         text-align: center;
         gap: 5px;
         cursor: pointer;
