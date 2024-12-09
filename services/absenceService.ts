@@ -1,4 +1,5 @@
 import Absence from "@/components/types/absence";
+import AbsenceStatus from "@/components/types/absenceStatus";
 import AbsenceType from "@/components/types/absenceType";
 
 export const fetchAbsences = async (
@@ -21,6 +22,41 @@ export const fetchAbsences = async (
         setError('Błąd podczas pobierania urlopów');
     } finally {
         setLoading(false);
+    }
+};
+
+export const fetchAbsencesStatus = async (
+    setAbsencesStatus: (statuses: AbsenceStatus[]) => void): Promise<void> => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/status`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            },
+        });
+        const data = await response.json();
+        setAbsencesStatus(data);
+    } catch (error) {
+        console.error('Error fetching absence statuses:', error);
+    }
+};
+
+export const fetchAbsencesByStatus = async (
+    setAbsences: (absences: Absence[]) => void,
+    statusId: number): Promise<void> => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/status/${statusId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            },
+        });
+        const data = await response.json();
+        setAbsences(data.content);
+    } catch (error) {
+        console.error('Error fetching absence statuses:', error);
     }
 };
 
