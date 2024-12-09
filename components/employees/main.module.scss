@@ -1,15 +1,11 @@
 @import '@/styles/main.scss';
 
 .employeesContainerMain{
-  // display: flex;
-  // flex-direction: column;
   @include displayDFJA(flex, column, null, null);
   margin: 30px;
 }
 
 .employeesFilterAndListContainer{
-  // display: flex;
-  // flex-direction: row;
   @include displayDFJA(flex, row, null, null);
   margin: 30px;
   gap: 30px;
@@ -20,31 +16,21 @@
 }
 
 .employeesListcontainer { 
-  // display: grid;
-  // align-items: center;
   @include displayDFJA(grid, null, null, center);
   width: 100%;
   height: fit-content;
   position: relative;
 
   &.tilesView {
-    // grid-template-columns: repeat(3, 1fr);
-    // gap: 20px;
     @include gridQG(3, 20px);
   }
 
   &.listView {
-    // grid-template-columns: repeat(1, 1fr);
-    // gap: 10px;
     @include gridQG(1, 10px);
   }
 }
 
 .spinnerContainer {
-  // display: flex;
-  // flex-direction: column;
-  // justify-content: center;
-  // align-items: center;
   @include displayDFJA(flex, column, center, center);
   position: absolute;
   top: 50%;

@@ -7,16 +7,11 @@
     right: 0;
     bottom: 0;
     background: $black-transparency-05;
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
     @include displayDFJA(flex, null, center, center);
     z-index: 1000;
 }
 
 .modalContentOfAdd, .modalContentOfDelete {
-    // display: flex;
-    // flex-direction: column;
     @include displayDFJA(flex, column, null, null);
     border: 2px solid $main-colour;
     border-radius: 8px;
@@ -40,8 +35,6 @@
     color: $font-light-colour;
     padding: 20px 0 0 0;
     border-radius: 10px;
-    // display: flex;
-    // flex-direction: column;
     width: 100%;
     height: 100%;
     gap: 15px;
@@ -50,16 +43,10 @@
 
 .showRoleMapConteiner {
     @include gridQG(4, 10px);
-    // display: grid;
-    // grid-template-columns: repeat(4, 1fr);
     grid-template-rows: minmax(auto, 1fr);
     grid-auto-rows: 1fr;
-    // gap: 10px;
 
     .showRoleConteinerMain {
-        // display: flex;
-        // flex-direction: column;
-        // align-items: center;
         @include displayDFJA(flex, column, null, center);
         height: 100%;
         padding: 10px;
@@ -68,23 +55,16 @@
         gap: 10px;
 
         .showRoleConteiner {
-            // display: flex;
-            // justify-content: space-between;
-            // align-items: center;
             @include displayDFJA(flex, null, space-between, center);
             height: 100%;
             gap: 10px;
 
             .roleInfoContainer {
-                // display: flex;
-                // flex-direction: column;
                 @include displayDFJA(flex, column, null, null);
                 gap: 5px;
             }
 
             .roleNameParagraph {
-                // display: flex;
-                // align-items: left;
                 @include displayDFJA(flex, null, null, left);
                 margin: 0;
                 color: $font-dark-colour;
@@ -93,8 +73,6 @@
             }
 
             .editAndRemoveButtonContainer {
-                // display: flex;
-                // flex-direction: row;
                 @include displayDFJA(flex, row, null, null);
                 gap: 10px;
             }
@@ -105,7 +83,6 @@
 @include respond-to-lg {
     .showRoleMapConteiner {
         @include gridQG(3, 10px);
-        // grid-template-columns: repeat(3, 1fr);
     }
 
 }
@@ -113,14 +90,12 @@
 @include respond-to-md {
     .showRoleMapConteiner {
         @include gridQG(2, 10px);
-        // grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @include respond-to-sm {
     .showRoleMapConteiner {
         @include gridQG(1, 10px);
-        // grid-template-columns: 1fr;
     }
 }
 
@@ -164,9 +139,6 @@
 }
 
 .addContainer {
-    // display: flex;
-    // flex-direction: row;
-    // align-items: stretch;
     @include displayDFJA(flex, row, null, stretch);
     height: 100%;
     gap: 10px;
@@ -192,9 +164,6 @@
 }
 
 .formInput {
-    // -webkit-appearance: none; //Safari
-    // -moz-appearance: none; //Firefox
-    // appearance: none; //Standard
     @include appearance-none;
     width: 100%;
     border-radius: 5px;
@@ -221,8 +190,6 @@
 }
 
 .errorMessage {
-    // display: flex;
-    // align-items: center;
     @include displayDFJA(flex, null, null, center);
     color: $red;
     font-size: 16px;
@@ -236,34 +203,3 @@
     border-color: $red;
     background-color: $red-powder;
 }
-
-// .loadingModalOverlay {
-//     position: fixed;
-//     top: 0;
-//     left: 0;
-//     right: 0;
-//     bottom: 0;
-//     background: $black-transparency-05;
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-//     z-index: 1000;
-
-//     .loadingModalContent {
-//         display: flex;
-//         flex-direction: column;
-//         text-align: center;
-
-//         .spinnerContainer {
-//             display: flex;
-//             flex-direction: column;
-//             justify-content: center;
-//             align-items: center;
-//             position: absolute;
-//             top: 50%;
-//             left: 50%;
-//             transform: translate(-50%, -50%);
-//             z-index: 9999;
-//         }
-//     }
-// }

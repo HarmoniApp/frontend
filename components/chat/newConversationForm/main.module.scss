@@ -1,10 +1,6 @@
 @import '@/styles/main.scss';
 
 .newConversationForm {
-    // display: flex;
-    // flex-direction: column;
-    // justify-content: space-between;
-    // align-items: flex-start;
     @include displayDFJA(flex, column, space-between, flex-start);
     padding: 20px;
     gap: 40px;
@@ -17,8 +13,6 @@
 
 @include respond-to-md {
     .newConversationForm {
-        // flex-direction: column;
-        // align-items: stretch;
         @include displayDFJA(flex, column, null, stretch);
         gap: 20px;
     }

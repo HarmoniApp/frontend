@@ -1,9 +1,6 @@
 @import '@/styles/main.scss';
 
 .calendarContainerMain{
-    // display: flex;
-    // flex-direction: column;
-    // align-items: center;
     @include displayDFJA(flex, column, null, center);
     margin:0;
     

@@ -1,11 +1,7 @@
 @import '@/styles/main.scss';
 
 .addAbsenceNotificationContainerMain {
-    // display: flex;
     background-color: $gray;
-    // flex-direction: column;
-    // align-items: center;
-    // justify-content: center;
     @include displayDFJA(flex, column, center, center);
     width: 100%;
     padding: 10px 40px;
@@ -14,10 +10,6 @@
 }
 
 .headerContainer {
-    // display: flex;
-    // flex-direction: row;
-    // align-items: center;
-    // justify-content: center;
     @include displayDFJA(flex, row, center, center);
     width: 100%;
     margin: 0;
@@ -38,18 +30,12 @@
 }
 
 .counterContainter {
-    // display: flex;
-    // flex-direction: column;
-    // align-items: center;
-    // justify-content: center;
     @include displayDFJA(flex, column, center, center);
     width: 100%;
     margin: 0;
     gap: 5px;
 
     .counterParagraph {
-        // display: flex;
-        // align-items: center;
         @include displayDFJA(flex, null, null, center);
         text-align: center;
         color: $font-light-colour;
@@ -57,9 +43,6 @@
     }
 
     .counterTimerContainer {
-        // display: flex;
-        // align-items: center;
-        // justify-content: center;
         @include displayDFJA(flex, null, center, center);
         text-align: center;
         color: $font-light-colour;
@@ -73,8 +56,6 @@
         }
 
         .counterTimerLabel {
-            // display: flex;
-            // align-items: center;
             @include displayDFJA(flex, null, null, center);
             text-align: center;
             color: $font-light-colour;
@@ -83,10 +64,6 @@
 }
 
 .buttonConianer {
-    // display: flex;
-    // flex-direction: row;
-    // align-items: center;
-    // justify-content: space-evenly;
     @include displayDFJA(flex, row, space-evenly, center);
     width: 100%;
 
@@ -106,8 +83,6 @@
     }
 
     .closeButton {
-        // display: flex;
-        // align-items: center;
         @include displayDFJA(flex, null, null, center);
         background-color: $main-colour;
         color: $font-dark-colour;
@@ -135,16 +110,10 @@
 }
 
 .absenceForm {
-    // display: flex;
-    // flex-direction: column;
     @include displayDFJA(flex, column, null, null);
     flex: 1;
 
     .formTitle {
-        // display: flex;
-        // flex-direction: column;
-        // align-items: center;
-        // justify-content: center;
         @include displayDFJA(flex, column, center, center);
         width: 100%;
 
@@ -166,14 +135,9 @@
         margin: 10px 0;
         gap: 20px;
         transition: color 0.3s ease;
-        // display: flex;
-        // align-items: center;
-        // justify-content: space-between;
     }
 
     .quantityOfDaysLabel{
-        // display: flex;
-        // justify-content: flex-start;
         @include displayDFJA(flex, null, flex-start, null);
         font-size: 16px;
         font-weight: bold;
@@ -191,9 +155,6 @@
     }
 
     .formInput {
-        // -webkit-appearance: none; // Safari
-        // -moz-appearance: none; //Firefox
-        // appearance: none; //Standard
         @include appearance-none;
         width: 100%;
         height: 5vh;
@@ -247,17 +208,11 @@
 }
 
 .buttonContainer {
-    // display: flex;
-    // flex-direction: row;
-    // align-items: center;
-    // justify-content: space-between;
     @include displayDFJA(flex, row, space-between, center);
     width: 100%;
     margin: 20px 0 0 0;
 
     .backButton {
-        // display: flex;
-        // align-items: center;
         @include displayDFJA(flex, null, null, center);
         background-color: $main-colour;
         color: $font-dark-colour;
@@ -284,8 +239,6 @@
     }
 
     .addButton {
-        // display: flex;
-        // align-items: center;
         @include displayDFJA(flex, null, null, center);
         background-color: $green;
         color: $font-light-colour;

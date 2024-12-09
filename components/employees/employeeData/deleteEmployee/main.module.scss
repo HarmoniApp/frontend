@@ -1,11 +1,7 @@
 @import '@/styles/main.scss';
 
 .deleteContainerMain {
-    // display: flex;
     background-color: $gray;
-    // flex-direction: column;
-    // align-items: center;
-    // justify-content: center;
     @include displayDFJA(flex, column, center, center);
     width: 100%;
     padding: 10px;
@@ -14,8 +10,6 @@
 }
 
 .questionHeader {
-    // display: flex;
-    // align-items: center;
     @include displayDFJA(flex, null, null, center);
     text-align: center;
     font-weight: bold;
@@ -24,8 +18,6 @@
 }
 
 .fullNameLabel {
-    // display: flex;
-    // align-items: center;
     @include displayDFJA(flex, null, null, center);
     text-align: center;
     font-size: 22px;
@@ -35,10 +27,6 @@
 }
 
 .buttonContainer{
-    // display: flex;
-    // flex-direction: row;
-    // align-items: center;
-    // justify-content: space-evenly;
     @include displayDFJA(flex, row, center, space-evenly);
     width: 100%;
     gap: 20px;
@@ -60,8 +48,6 @@
     }
 
     .closeButton {
-        // display: flex;
-        // align-items: center;
         @include displayDFJA(flex, null, null, center);
         background-color: $main-colour;
         color: $font-dark-colour;
@@ -88,8 +74,6 @@
     }
 
     .deleteButton {
-        // display: flex;
-        // align-items: center;
         @include displayDFJA(flex, null, null, center);
         background-color: $red;
         color: $font-light-colour;
@@ -115,34 +99,3 @@
         }
     }
 }
-
-// .loadingModalOverlay {
-//     position: fixed;
-//     top: 0;
-//     left: 0;
-//     right: 0;
-//     bottom: 0;
-//     background: $black-transparency-05;
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-//     z-index: 1000;
-
-//     .loadingModalContent {
-//         display: flex;
-//         flex-direction: column;
-//         text-align: center;
-
-//         .spinnerContainer {
-//             display: flex;
-//             flex-direction: column;
-//             justify-content: center;
-//             align-items: center;
-//             position: absolute;
-//             top: 50%;
-//             left: 50%;
-//             transform: translate(-50%, -50%);
-//             z-index: 9999;
-//         }
-//     }
-// }

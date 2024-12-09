@@ -3,8 +3,6 @@
 .chatWindow {
     flex-grow: 1;
     width: 80%;
-    // display: flex;
-    // flex-direction: column;
     @include displayDFJA(flex, column, null, null);
     background-color: $gray;
     margin-left: 20px;
@@ -12,10 +10,6 @@
 }
 
 .groupChatHeader {
-    // display: flex;
-    // flex-direction: row;
-    // justify-content: space-between;
-    // align-items: center;
     @include displayDFJA(flex, row, space-between, center);
     padding: 20px;
     border-bottom: 1px solid $gray-powder;
@@ -30,9 +24,6 @@
 
 
 .userChatHeader{
-    // display: flex;
-    // flex-direction: row;
-    // align-items: center;
     @include displayDFJA(flex, row, null, center);
     padding: 20px;
     border-bottom: 1px solid $gray-powder;
@@ -56,17 +47,13 @@
 }
 
 .message {
-    // display: flex;
-    // align-items: flex-start;
     @include displayDFJA(flex, null, null, flex-start);
     margin: 0 0 10px 0;
 
     &.selfMessage {
         @include displayDFJA(flex, null, flex-end, null);
-        // justify-content: flex-end;
 
         .avatarAndNameContainer{
-            // display: none;
             @include displayDFJA(none, null, nul, null);
         }
 
@@ -77,7 +64,6 @@
     }
 
     &.otherMessage {
-        // justify-content: flex-start;
         @include displayDFJA(flex, null, flex-start, null);
 
         .messageContent {
@@ -88,10 +74,6 @@
 }
 
 .avatarAndNameContainer {
-    // display: flex;
-    // flex-direction: column-reverse;
-    // justify-content: center;
-    // align-items: center;
     @include displayDFJA(flex, column-reverse, center, center);
     margin-right: 10px;
 
@@ -112,8 +94,6 @@
 }
 
 .messageContentContainer {
-    // display: flex;
-    // flex-direction: column;
     @include displayDFJA(flex, column, null, null);
     gap: 8px;
 
@@ -128,9 +108,6 @@
     }
 
     .timeAndReadMessagesContainer {
-        // display: flex;
-        // justify-content: space-between;
-        // align-items: center;
         @include displayDFJA(flex, null, space-between, center);
 
         .timestamp {

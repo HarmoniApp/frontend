@@ -1,19 +1,11 @@
 @import '@/styles/main.scss';
 
 .settingsContainerMain {
-    // display: flex;
-    // flex-direction: column;
-    // justify-content: center;
-    // align-items: center;
     @include displayDFJA(flex, column, center, center);
     width: 100%;
 }
 
 .settingsContainer, .rolesContainer, .departmentsContainer, .predefinedShiftsContainer, .contractTypesContainer, .schedulesArchiveContainer {
-    // display: flex;
-    // flex-direction: column;
-    // justify-content: center;
-    // align-items: center;
     @include displayDFJA(flex, column, center, center);
     background-color: $gray;
     color: $font-dark-colour;
@@ -23,10 +15,6 @@
     margin: 30px 0 10px 0;
 
     .settingsTitleContainer, .rolesTitleContainer, .departmentsTitleContainer, .predefinedShiftsTitleContainer, .contractTypesTitleContainer , .schedulesArchiveTitleContainer {
-        // display: flex;
-        // flex-direction: column;
-        // align-items: center;
-        // justify-content: center;
         @include displayDFJA(flex, column, center, center);
         background-color: $main-colour;
         padding: 20px;

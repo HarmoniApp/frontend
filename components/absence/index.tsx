@@ -22,9 +22,6 @@ const Absence = () => {
     }, []);
 
     return (
-        // <div className={styles.absenceContainerMain}>
-        //  {isAdmin ? <Employer /> : <Employee userId={userId}/>}
-        // </div>
             <div className={styles.absenceContainerMain}>
                 {userId !== 0 ? (
                     isAdmin ? <Employer /> : <Employee userId={userId} />

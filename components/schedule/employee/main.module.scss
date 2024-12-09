@@ -1,10 +1,6 @@
 @import '@/styles/main.scss';
 
 .scheduleEmployee {
-  // display: flex;
-  // flex-direction: column;
-  // justify-content: center;
-  // align-items: center;
   @include displayDFJA(flex, column, center, center);
   width: 90%;
   gap: 20px;

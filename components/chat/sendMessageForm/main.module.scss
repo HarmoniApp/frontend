@@ -1,8 +1,6 @@
 @import '@/styles/main.scss';
 
 .messageInputContainer {
-    // display: flex;
-    // align-items: center;
     @include displayDFJA(flex, null, center, null);
     padding: 10px 20px;
     border-top: 1px solid  $gray-powder;

@@ -2,37 +2,31 @@
 
 .archivedSheduleContainer {
   @include gridQG(4, 20px);
-    // display: grid;
-    // grid-template-columns: repeat(4, 1fr);
-    // gap: 20px;
-    padding: 20px 0 0 0;
-    width: 100%;
-  }
-  
-  .shiftItemContainer {
-    // display: flex;
-    // align-items: center;
-    @include displayDFJA(flex, null, null, center);
-    gap: 10px; 
-    padding: 10px;
-    border-radius: 8px; 
-    background-color: $white-3;
-    cursor: pointer;
-    transition: transform 0.5s ease, background-color 0.3s ease;
+  padding: 20px 0 0 0;
+  width: 100%;
+}
 
+.shiftItemContainer {
+  @include displayDFJA(flex, null, null, center);
+  gap: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: $white-3;
+  cursor: pointer;
+  transition: transform 0.5s ease, background-color 0.3s ease;
 
-    &:hover {
-        background-color: $main-powder-colour;
-        transform: translateY(-5px);
-      }
+  &:hover {
+    background-color: $main-powder-colour;
+    transform: translateY(-5px);
   }
-  
-  .pdfIcon {
-    font-size: 1.5rem;
-    color: $red;
-  }
-  
-  .scheduleTitle {
-    font-size: 1.1rem;
-    font-weight: bold;
-  }
+}
+
+.pdfIcon {
+  font-size: 1.5rem;
+  color: $red;
+}
+
+.scheduleTitle {
+  font-size: 1.1rem;
+  font-weight: bold;
+}

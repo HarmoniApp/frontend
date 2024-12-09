@@ -1,11 +1,7 @@
 @import '@/styles/main.scss';
 
 .deleteConfirmationContainerMain {
-    // display: flex;
     background-color: $gray;
-    // flex-direction: column;
-    // align-items: center;
-    // justify-content: center;
     @include displayDFJA(flex, column, center, center);
     width: 100%;
     padding: 0px 40px;
@@ -13,11 +9,7 @@
 }
 
 .headerContainer {
-    // display: flex;
-    // flex-direction: column;
-    // align-items: center;
     text-align: center;
-    // justify-content: center;
     @include displayDFJA(flex, column, center, center);
     width: 100%;
     margin: 0;
@@ -39,17 +31,11 @@
 }
 
 .counterContainter {
-    // display: flex;
-    // flex-direction: column;
-    // align-items: center;
-    // justify-content: center;
     @include displayDFJA(flex, column, center, center);
     width: 100%;
     margin: 0;
 
     .counterParagraph {
-        // display: flex;
-        // align-items: center;
         @include displayDFJA(flex, null, null, center);
         text-align: center;
         color: $font-light-colour;
@@ -57,8 +43,6 @@
     }
 
     .counterTimer {
-        // display: flex;
-        // align-items: center;
         @include displayDFJA(flex, null, null, center);
         text-align: center;
         color: $font-light-colour;
@@ -73,8 +57,6 @@
         }
 
         .counterTimerParagraph {
-            // display: flex;
-            // align-items: center;
             @include displayDFJA(flex, null, null, center);
             text-align: center;
             color: $font-light-colour;
@@ -84,10 +66,6 @@
 }
 
 .buttonConianer {
-    // display: flex;
-    // flex-direction: row;
-    // align-items: center;
-    // justify-content: center;
     @include displayDFJA(flex, row, center, center);
     width: 100%;
 
@@ -107,8 +85,6 @@
     }
 
     .closeButton {
-        // display: flex;
-        // align-items: center;
         @include displayDFJA(flex, null, null, center);
         background-color: $main-colour;
         color: $font-dark-colour;

@@ -15,15 +15,11 @@
 }
 
 .employeeBarContainerMain {
-    // display: flex;
-    // justify-content: space-between;
-    // align-items: center;
     @include displayDFJA(flex, null, space-between, center);
     padding: 10px 20px;
 }
 
 .actionContainer {
-    // display: flex;
     @include displayDFJA(flex, null, null, null);
     gap: 15px;
     margin: 0 10px;
@@ -32,8 +28,6 @@
 .addEmployeeButton,
 .importEmployeeButton,
 .editRoles {
-    // display: flex;
-    // align-items: center;
     @include displayDFJA(flex, null, null, center);
     padding: 10px;
     background-color: $white;
@@ -57,16 +51,12 @@
 }
 
 .viewContainer {
-    // display: flex;
     @include displayDFJA(flex, null, null, null);
     gap: 15px;
     margin: 0 10px;
 
     .listViewButton,
     .tilesViewButton {
-        // display: inline-flex;
-        // align-items: center;
-        // justify-content: center;
         @include displayDFJA(inline-flex, null, center, center);
         background: none;
         border: none;
@@ -76,9 +66,6 @@
     }
 
     .active {
-        // display: inline-flex;
-        // align-items: center;
-        // justify-content: center;
         @include displayDFJA(inline-flex, null, center, center);
         background: none;
         border: none;
@@ -91,7 +78,6 @@
 
 .exportDropdownContainer {
     position: relative;
-    // display: inline-block;
     @include displayDFJA(inline-block, null, null, null);
 
     .exportDropdownMenu {
@@ -102,10 +88,6 @@
         z-index: 1000;
 
         button {
-            // display: flex;
-            // flex-direction: row;
-            // align-items: center;
-            // justify-content: space-between;
             @include displayDFJA(flex, row, space-between, center);
             text-align: center;
             background-color: $white-4;
@@ -122,21 +104,3 @@
         }
     }
 }
-
-// .spinnerOverlay {
-//     position: fixed;
-//     top: 0;
-//     left: 0;
-//     right: 0;
-//     bottom: 0;
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     z-index: 1000;
-//   }
-  
-//   .spinnerContainer {
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//   }

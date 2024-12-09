@@ -1,10 +1,6 @@
 @import '@/styles/main.scss';
 
 .popupHeader {
-    // display: flex;
-    // flex-direction: row;
-    // align-items: center;
-    // justify-content: space-between;
     @include displayDFJA(flex, row, space-between, center);
     padding: 10px;
     font-weight: bold;
@@ -51,7 +47,6 @@
 }
 
 .notificationItem strong {
-    // display: block;
     @include displayDFJA(block, null, null, null);
     font-size: 16px;
     margin-bottom: 5px;

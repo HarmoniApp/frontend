@@ -1,12 +1,8 @@
 @import '@/styles/main.scss';
 
 .CancelContainerMain {
-    // display: flex;
     @include displayDFJA(flex, column, center, center);
     background-color: $gray;
-    // flex-direction: column;
-    // align-items: center;
-    // justify-content: center;
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
@@ -14,10 +10,6 @@
 }
 
 .headerContainer {
-    // display: flex;
-    // flex-direction: column;
-    // align-items: center;
-    // justify-content: center;
     @include displayDFJA(flex, column, center, center);
     width: 100%;
     margin: 0;
@@ -38,15 +30,10 @@
 }
 
 .butonContainter {
-    // display: flex;
-    // flex-direction: row;
-    // justify-content: space-evenly;
     @include displayDFJA(flex, row, space-evenly, null);
     width: 100%;
 
     .cancelButton {
-        // display: flex;
-        // align-items: center;
         @include displayDFJA(flex, null, null, center);
         background-color: $red;
         color: $font-light-colour;
@@ -73,8 +60,6 @@
     }
 
     .closeButton {
-        // display: flex;
-        // align-items: center;
         @include displayDFJA(flex, null, null, center);
         background-color: $main-colour;
         color: $font-dark-colour;

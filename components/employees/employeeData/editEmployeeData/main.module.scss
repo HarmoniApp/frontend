@@ -7,16 +7,11 @@
     right: 0;
     bottom: 0;
     background: $black-transparency-05;
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
     @include displayDFJA(flex, null, center, center);
     z-index: 1000;
 }
 
 .modalContentEditEmployeeNotification {
-    // display: flex;
-    // flex-direction: column;
     @include displayDFJA(flex, column, null, null);
     border: 2px solid $main-colour;
     border-radius: 8px;
@@ -36,10 +31,6 @@
 
 
 .editEmployeeContainerMain {
-    // display: flex;
-    // flex-direction: column;
-    // align-items: center;
-    // justify-content: center;
     @include displayDFJA(flex, column, center, center);
     
 
@@ -50,22 +41,18 @@
 }
 
 .formCotainer {
-    // display: flex;
-    // flex-direction: column;
     @include displayDFJA(flex, column, null, null);
     gap: 20px;
     margin: 20px 0;
 }
 
 .rowContainerTop {
-    // display: flex;
     @include displayDFJA(flex, null, null, null);
     flex-wrap: wrap;
     gap: 20px;
     width: 100%;
 
     @include respond-to-lg {
-        // flex-direction: column;
         @include displayDFJA(flex, column, null, null);
 
         .columnContainer {
@@ -74,15 +61,12 @@
     }
 
     @include respond-to-md {
-        // flex-direction: column;
         @include displayDFJA(flex, column, null, null);
         gap: 10px;
     }
 }
 
 .columnContainer {
-    // display: flex;
-    // flex-direction: column;
     @include displayDFJA(flex, column, null, null);
     flex: 1;
     padding: 20px;
@@ -101,9 +85,6 @@
         color: $font-dark-colour;
         margin: 10px 0;
         transition: color 0.3s ease;
-        // display: flex;
-        // align-items: center;
-        // justify-content: space-between;
         @include displayDFJA(flex, null, space-between, center);
     }
 
@@ -117,12 +98,6 @@
     }
 
     .formInput {
-        // -webkit-appearance: none;
-        // /* Safari */
-        // -moz-appearance: none;
-        // /* Firefox */
-        // appearance: none;
-        // /* Standard */
         @include appearance-none;
         width: 100%;
         height: 5vh;
@@ -176,17 +151,12 @@
 }
 
 .rowContainerMiddle {
-    // display: flex;
-    // flex-direction: row;
-    // justify-content: space-evenly;
-    // align-items: center;
     @include displayDFJA(flex, row, space-evenly, center);
     width: 100%;
     height: auto;
     gap: 20px;
 
     @include respond-to-lg {
-        // flex-direction: column;
         @include displayDFJA(flex, column, null, null);
 
         .columnContainerMiddle {
@@ -195,16 +165,11 @@
     }
 
     @include respond-to-md {
-        // flex-direction: column;
         @include displayDFJA(flex, column, null, null);
         gap: 10px;
     }
 
     .columnContainerMiddle {
-        // display: flex;
-        // flex-direction: column;
-        // justify-content: center;
-        // align-items: center;
         @include displayDFJA(flex, column, center, center);
         max-height: 45vh;
         border-radius: 10px;
@@ -232,41 +197,15 @@
         }
 
         .roleContainer {
-            // display: grid;
-            // grid-template-columns: repeat(2, 1fr);
-            // gap: 20px;
             @include gridQG(2, 20px);
             margin: 20px;
             overflow-y: auto;
 
-            // @include respond-to-lg {
-            //     // grid-template-columns: repeat(2, 1fr);
-            //     @include gridQG(2, 1fr);
-            //     height: fit-content;
-            // }
-
-            // @include respond-to-lg {
-            //     //grid-template-columns: repeat(2, 1fr);
-            //     @include gridQG(2, 1fr);
-            //     height: fit-content;
-            // }
-
-            // @media (max-width: 650px) {
-            //     // grid-template-columns: repeat(2, 1fr);
-            //     @include gridQG(2, 1fr);
-            //     height: fit-content;
-            // }
-
             @include respond-to-lg {
-                //grid-template-columns: 1fr;
                 @include gridQG(1, 1fr);
             }
 
             .roleLabel {
-                // display: flex;
-                // flex-direction: row;
-                // align-items: center;
-                // justify-content: space-between;
                 @include displayDFJA(flex, row, space-between, center);
                 text-align: center;
                 gap: 10px;
@@ -295,37 +234,23 @@
         }
 
         .languagesContainer {
-            // display: grid;
-            // grid-template-columns: repeat(4, 1fr);
-            // gap: 20px;
             @include gridQG(4, 20px);
             margin: 20px;
             overflow-y: auto;
 
             @include respond-to-lg {
-                // grid-template-columns: repeat(3, 1fr);
                 @include gridQG(3, 1fr);
             }
 
             @include respond-to-lg {
-                // grid-template-columns: repeat(2, 1fr);
                 @include gridQG(2, 1fr);
             }
 
-            // @media (max-width: 650px) {
-            //     grid-template-columns: repeat(2, 1fr);
-            // }
-
             @include respond-to-lg {
-                // grid-template-columns: 1fr;
                 @include gridQG(1, 1fr);
             }
 
             .languageLabel {
-                // display: flex;
-                // flex-direction: row;
-                // align-items: center;
-                // justify-content: space-between;
                 @include displayDFJA(flex, row, space-between, center);
                 text-align: center;
                 gap: 10px;
@@ -361,38 +286,26 @@
 }
 
 .rowContainerBottom {
-    // display: flex;
-    // flex-direction: row;
-    // justify-content: space-evenly;
-    // align-items: center;
     @include displayDFJA(flex, row, space-evenly, center);
     width: 100%;
     height: auto;
 
     @include respond-to-md {
-        // flex-direction: column;
         @include displayDFJA(flex, column, null, null);
         gap: 10px;
     }
 
     .buttonContainer {
-        // display: flex;
-        // flex-direction: row;
-        // align-items: center;
-        // justify-content: flex-end;
         @include displayDFJA(flex, row, flex-end, center);
         width: 100%;
         gap: 20px;
 
         @include respond-to-md {
-            // justify-content: center;
             @include displayDFJA(flex, row, center, center);
         }
 
         .backButton,
         .addButton {
-            // display: flex;
-            // align-items: center;
             @include displayDFJA(flex, null, null, center);
             background-color: $main-colour;
             color: $font-dark-colour;
@@ -433,34 +346,3 @@
         }
     }
 }
-
-// .loadingModalOverlay {
-//     position: fixed;
-//     top: 0;
-//     left: 0;
-//     right: 0;
-//     bottom: 0;
-//     background: $black-transparency-05;
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-//     z-index: 1000;
-
-//     .loadingModalContent {
-//         display: flex;
-//         flex-direction: column;
-//         text-align: center;
-
-//         .spinnerContainer {
-//             display: flex;
-//             flex-direction: column;
-//             justify-content: center;
-//             align-items: center;
-//             position: absolute;
-//             top: 50%;
-//             left: 50%;
-//             transform: translate(-50%, -50%);
-//             z-index: 9999;
-//         }
-//     }
-// }

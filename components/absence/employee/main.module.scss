@@ -7,16 +7,11 @@
   right: 0;
   bottom: 0;
   background: $black-transparency-05;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
   @include displayDFJA(flex, null, center, center);
   z-index: 1000;
 }
 
 .addAbsenceModalContent {
-  // display: flex;
-  // flex-direction: column;
   @include displayDFJA(flex, column, null, null);
   border: 2px solid $main-colour;
   border-radius: 8px;
@@ -30,10 +25,6 @@
 }
 
 .absenceEmployeesContainerMain {
-  // display: flex;
-  // flex-direction: column;
-  // align-self: center;
-  // justify-content: center;
   @include displayDFJA(flex, column, center, center);
   gap: 40px;
   margin: 20px auto ;
@@ -41,11 +32,7 @@
 }
 
 .absenceHeaderContainer {
-  // display: flex;
-  // flex-direction: row;
-  // justify-content: space-between;
   @include displayDFJA(flex, row, space-between, center);
-  // align-items: center;
   background-color: $gray;
   border: 2px solid $main-colour;
   border-radius: 10px;
@@ -70,8 +57,6 @@
 }
 
 .tableContainer {
-  // display: flex;
-  // flex-direction: column;
   @include displayDFJA(flex, column, null, null);
   align-self: center;
   background-color: $gray;
@@ -126,9 +111,6 @@
 }
 
 .absenceDataBodyHeadElementButton{
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
   text-align: center;
   @include displayDFJA(flex, null, center, center);
 }
@@ -140,10 +122,6 @@
 .archiveButton,
 .cancelButton,
 .newAbsenceButton {
-  // display: flex;
-  // flex-direction: row;
-  // align-items: center;
-  // justify-content: center;
   @include displayDFJA(flex, row, center, center);
   padding: 10px;
   background-color: $white;
@@ -169,39 +147,5 @@
   color: $red;
   font-size: 14px;
   font-weight: bold;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
   @include displayDFJA(flex, null, center, center);
 }
-
-// .loadingModalOverlay {
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   right: 0;
-//   bottom: 0;
-//   background: $black-transparency-05;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   z-index: 1000;
-
-  // .loadingModalContent {
-  //     display: flex;
-  //     flex-direction: column;
-  //     text-align: center;
-
-      // .spinnerContainer {
-      //     display: flex;
-      //     flex-direction: column;
-      //     justify-content: center;
-      //     align-items: center;
-      //     position: absolute;
-      //     top: 50%;
-      //     left: 50%;
-      //     transform: translate(-50%, -50%);
-      //     z-index: 9999;
-      // }
-  // }
-// }

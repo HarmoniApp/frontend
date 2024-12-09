@@ -1,10 +1,6 @@
 @import '@/styles/main.scss';
 
 .employeeItemContainerMain {
-    // display: flex;
-    // flex-direction: column;
-    // justify-content: center;
-    // align-items: center;
     @include displayDFJA(flex, column, center, center);
     background-color: $main-colour;
     border: 1px solid $font-dark-colour;
@@ -16,16 +12,11 @@
     cursor: pointer;
 
     @include respond-to-md {
-        // flex-direction: row;
         @include displayDFJA(flex, row, null, null);
         gap: 10px;
     }
 
     .fullNameContainer {
-        // display: flex;
-        // flex-direction: row;
-        // align-items: center;
-        // justify-content: center;
         @include displayDFJA(flex, row, center, center);
         text-align: center;
         gap: 5px;

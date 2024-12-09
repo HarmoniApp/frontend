@@ -1,10 +1,6 @@
 @import '@/styles/main.scss';
 
 .newGroupForm {
-    // display: flex;
-    // flex-direction: row;
-    // justify-content: center;
-    // align-self: center;
     @include displayDFJA(flex, row, center, center);
     gap: 20px;
     padding: 20px;

@@ -7,16 +7,11 @@
     right: 0;
     bottom: 0;
     background: $black-transparency-05;
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
     @include displayDFJA(flex, null, center, center);
     z-index: 1000;
 }
 
 .modalContentOfAdd, .modalContentOfDelete {
-    // display: flex;
-    // flex-direction: column;
     @include displayDFJA(flex, column, null, null);
     border: 2px solid $main-colour;
     border-radius: 8px;
@@ -39,8 +34,6 @@
     color: $font-light-colour;
     padding: 20px 0 0 0;
     border-radius: 10px;
-    // display: flex;
-    // flex-direction: column;
     @include displayDFJA(flex, column, null, null);
     width: 100%;
     height: 100%;
@@ -49,18 +42,12 @@
 
 .showDepartmentsMapContainer {
     @include gridQG(3, 10px);
-    // display: grid;
-    // grid-template-columns: repeat(3, 1fr);
     grid-template-rows: minmax(auto, 1fr);
     grid-auto-rows: 1fr;
-    // gap: 10px;
 
     .departmentForm {
 
         .showDepartmentContainer {
-            // display: flex;
-            // flex-direction: column;
-            // justify-content: space-between;
             @include displayDFJA(flex, column, space-between, null);
             background-color: $white-3;
             height: 100%;
@@ -69,17 +56,11 @@
             padding: 10px;
 
             .departmentInfoContainer {
-                // display: flex;
-                // flex-direction: column;
                 @include displayDFJA(flex, column, null, null);
                 margin: 0;
                 padding: 0;
 
                 .inputLabel {
-                    // display: flex;
-                    // flex-direction: row;
-                    // align-items: center;
-                    // justify-content: space-between;
                     @include displayDFJA(flex, row, space-between, center);
                     font-weight: bold;
                     color: $font-dark-colour;
@@ -99,19 +80,11 @@
                 }
 
                 .departmentInfoRowContainer {
-                    // display: flex;
-                    // flex-direction: column;
-                    // align-items: center;
-                    // justify-content: center;
                     @include displayDFJA(flex, column, center, center);
                     margin: 0 0 10px 0;
                     width: 100%;
 
                     .departmentDataContainer {
-                        // display: flex;
-                        // flex-direction: row;
-                        // align-items: center;
-                        // justify-content: center;
                         @include displayDFJA(flex, row, center, center);
                         gap: 5px;
 
@@ -129,8 +102,6 @@
                         }
 
                         .buildingNumbersContainer {
-                            // display: flex;
-                            // flex-direction: row;
                             @include displayDFJA(flex, row, null, null);
 
                             .slash::after {
@@ -146,20 +117,14 @@
 
                 @include respond-to-md {
                     .departmentInfoRowContainer {
-                        // flex-direction: column;
-                        // align-items: flex-start;
                         @include displayDFJA(flex, column, null, flex-start);
                     }
                 }
             }
 
             .editAndRemoveButtonContainer {
-                // display: flex;
-                // flex-direction: row;
                 @include displayDFJA(flex, row, flex-end, center);
                 gap: 10px;
-                // align-items: center;
-                // justify-content: flex-end;
 
                 margin: 10px 0 0 0;
 
@@ -196,23 +161,14 @@
 }
 
 .addDepartmentContainer {
-    // display: grid;
-    // grid-template-columns: repeat(3, 1fr);
-    // gap: 10px;
     @include gridQG(3, 10px);
     margin: 10px 0 0 0;
 
     .addItemContainer {
-        // display: flex;
-        // flex-direction: column;
         @include displayDFJA(flex, column, null, null);
     }
 
     .inputLabel {
-        // display: flex;
-        // flex-direction: row;
-        // align-items: center;
-        // justify-content: space-between;
         @include displayDFJA(flex, row, space-between, center);
         font-weight: bold;
         color: $font-light-colour;
@@ -225,10 +181,6 @@
     margin: 20px 0 0 0;
 
     .addButton {
-        // display: flex;
-        // flex-direction: row;
-        // align-items: center;
-        // justify-content: center;
         @include displayDFJA(flex, row, center, center);
         gap:20px;
         background-color: $main-colour;
@@ -258,7 +210,6 @@
 @include respond-to-lg {
     .showDepartmentsMapContainer {
         @include gridQG(3, 10px);
-        // grid-template-columns: repeat(3, 1fr);
     }
 }
 
@@ -267,7 +218,6 @@
     .showDepartmentsMapContainer,
     .addDepartmentContainer {
         @include gridQG(2, 10px);
-        // grid-template-columns: repeat(2, 1fr);
     }
 }
 
@@ -276,7 +226,6 @@
     .showDepartmentsMapContainer,
     .addDepartmentContainer {
         @include gridQG(1, 10px);
-        // grid-template-columns: 1fr;
     }
 }
 
@@ -290,9 +239,6 @@
 }
 
 .departmentInput {
-    // -webkit-appearance: none; //Safari
-    // -moz-appearance: none; //Firefox
-    // appearance: none; //Standard
     @include appearance-none;
     width: 100%;
     height: 5vh;
@@ -324,34 +270,3 @@
     border-color: $red;
     background-color: $red-powder;
 }
-
-// .loadingModalOverlay {
-//     position: fixed;
-//     top: 0;
-//     left: 0;
-//     right: 0;
-//     bottom: 0;
-//     background: $black-transparency-05;
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-//     z-index: 1000;
-
-//     .loadingModalContent {
-//         display: flex;
-//         flex-direction: column;
-//         text-align: center;
-
-//         .spinnerContainer {
-//             display: flex;
-//             flex-direction: column;
-//             justify-content: center;
-//             align-items: center;
-//             position: absolute;
-//             top: 50%;
-//             left: 50%;
-//             transform: translate(-50%, -50%);
-//             z-index: 9999;
-//         }
-//     }
-// }

@@ -7,16 +7,11 @@
   right: 0;
   bottom: 0;
   background: $black-transparency-05;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
   @include displayDFJA(flex, null, center, center);
   z-index: 1000;
 }
 
 .addShiftModalContent {
-  // display: flex;
-  // flex-direction: column;
   @include displayDFJA(flex, column, null, null);
   border: 2px solid $main-colour;
   border-radius: 8px;
@@ -30,17 +25,12 @@
 }
 
 .editShiftForm {
-  // display: flex;
-  // flex-direction: column;
   @include displayDFJA(flex, column, null, null);
   gap: 20px;
   width: 100%;
 }
 
 .titleContainer {
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
   @include displayDFJA(flex, null, center, center);
   margin: 0;
   padding: 0;
@@ -55,9 +45,6 @@
 }
 
 .basicInfoContainer {
-  // display: flex;
-  // align-items: flex-start;
-  // justify-content: space-between;
   @include displayDFJA(flex, null, space-between, flex-start);
   padding: 0;
   width: 90.5%;
@@ -65,14 +52,10 @@
 
   .personFullnameContainer,
   .dayContainer {
-    // display: flex;
-    // flex-direction: column;
     @include displayDFJA(flex, column, null, null);
 
     .fullNameContainer,
     .dayLabelContainer {
-      // display: flex;
-      // align-items: center;
       @include displayDFJA(flex, null, null, center);
       font-weight: bold;
       color: $font-light-colour;
@@ -80,7 +63,6 @@
 
     .fullNameParagraphContainer,
     .dayParagraphContainer {
-      // display: flex;
       @include displayDFJA(flex, null, null, null);
       gap: 5px;
       color: $main-colour;
@@ -95,18 +77,10 @@
 }
 
 .hoursConstainerMain {
-  // display: flex;
-  // flex-direction: column;
-  // align-items: center;
-  // justify-content: center;
   @include displayDFJA(flex, column, center, center);
   width: 100%;
 
   .hourInfoContainer {
-    // display: flex;
-    // flex-direction: row;
-    // align-items: center;
-    // justify-content: space-between;
     @include displayDFJA(flex, row, space-between, center);
     width: 100%;
     gap: 10px;
@@ -124,10 +98,6 @@
   }
 
   .hoursConstainer {
-    // display: flex;
-    // flex-direction: row;
-    // align-items: flex-start;
-    // justify-content: space-between;
     @include displayDFJA(flex, row, space-between, flex-start);
     width: 100%;
     gap: 10px;
@@ -140,10 +110,6 @@
 
     .startHour,
     .endHour {
-      // display: flex;
-      // flex-direction: column;
-      // align-items: flex-start;
-      // justify-content: center;
       @include displayDFJA(flex, column, center, flex-start);
     }
 
@@ -166,9 +132,6 @@
 }
 
 .predefinedShiftsContainer {
-  // display: grid;
-  // grid-template-columns: repeat(4, 1fr);
-  // gap: 10px;
   @include gridQG(4, 10px);
 
   .predefinedShiftButton {
@@ -206,17 +169,11 @@
 }
 
 .buttonContainer {
-  // display: flex;
-  // justify-content: space-between;
   @include displayDFJA(flex, null, space-between, null);
   align-self: center;
   width: 100%;
 
   .addShiftButton {
-    // display: flex;
-    // flex-direction: row;
-    // align-items: center;
-    // justify-content: center;
     @include displayDFJA(flex, row, center, center);
     gap: 10px;
     border: none;
@@ -243,10 +200,6 @@
   }
 
   .closeButton {
-    // display: flex;
-    // flex-direction: row;
-    // align-items: center;
-    // justify-content: center;
     @include displayDFJA(flex, row, center, center);
     gap: 10px;
     border: none;
@@ -275,9 +228,6 @@
 
 .roleSelect,
 .hourSelect {
-  // -webkit-appearance: none; // Safari
-  // -moz-appearance: none; // Firefox
-  // appearance: none; //Standard
   @include appearance-none;
   width: 100%;
   height: 5vh;
@@ -320,9 +270,6 @@
   font-weight: bold;
   color: $font-dark-colour;
   transition: color 0.3s ease;
-  // display: flex;
-  // align-items: center;
-  // justify-content: space-between;
   @include displayDFJA(flex, null, space-between, center);
   gap: 10px;
 }
@@ -337,11 +284,7 @@
 }
 
 .addShiftNotificationContainerMain {
-  // display: flex;
   background-color: $gray;
-  // flex-direction: column;
-  // align-items: center;
-  // justify-content: center;
   @include displayDFJA(flex, column, center, center);
   width: 100%;
   padding: 10px 40px;
@@ -350,10 +293,6 @@
 }
 
 .headerContainer {
-  // display: flex;
-  // flex-direction: row;
-  // align-items: center;
-  // justify-content: center;
   @include displayDFJA(flex, row, center, center);
   width: 100%;
   margin: 0;
@@ -374,18 +313,12 @@
 }
 
 .counterContainter {
-  // display: flex;
-  // flex-direction: column;
-  // align-items: center;
-  // justify-content: center;
   @include displayDFJA(flex, column, center, center);
   width: 100%;
   margin: 0;
   gap: 5px;
 
   .counterParagraph {
-    // display: flex;
-    // align-items: center;
     text-align: center;
     @include displayDFJA(flex, null, null, center);
     color: $font-light-colour;
@@ -393,9 +326,6 @@
   }
 
   .counterTimerContainer {
-    // display: flex;
-    // align-items: center;
-    // justify-content: center;
     @include displayDFJA(flex, null, center, center);
     text-align: center;
     color: $font-light-colour;
@@ -409,8 +339,6 @@
     }
 
     .counterTimerLabel {
-      // display: flex;
-      // align-items: center;
       @include displayDFJA(flex, null, null, center);
       text-align: center;
       color: $font-light-colour;
@@ -419,10 +347,6 @@
 }
 
 .buttonConianer {
-  // display: flex;
-  // flex-direction: row;
-  // align-items: center;
-  // justify-content: space-evenly;
   @include displayDFJA(flex, row, space-evenly, center);
   width: 100%;
 
@@ -442,8 +366,6 @@
   }
 
   .closeButton {
-    // display: flex;
-    // align-items: center;
     @include displayDFJA(flex, null, null, center);
     background-color: $main-colour;
     color: $font-dark-colour;

@@ -65,7 +65,6 @@ const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSele
                 const data = await response.json();
                 setMessages([...messages, data]);
                 loadChatPartners(true);
-                //await fetchChatHistory(selectedChat, language);
                 setSelectedChat(selectedChat);
             } catch (error) {
                 console.error("Error:", error);

@@ -1,10 +1,6 @@
 @import '@/styles/main.scss';
 
 .tileContainerMain {
-  // display: flex;
-  // flex-direction: row;
-  // justify-content: space-between;
-  // align-items: center;
   @include displayDFJA(flex, row, space-between, center);
   background-color: $main-colour;
   border: 1px solid $font-dark-colour;
@@ -30,10 +26,6 @@
   }
 
   .fullNameContainer {
-    // display: flex;
-    // flex-direction: column;
-    // justify-content: center;
-    // align-items: center;
     @include displayDFJA(flex, column, center, center);
     flex-grow: 1;
     gap:3px;
@@ -48,10 +40,6 @@
   }
 
   .languagesContainer {
-    // display: flex;
-    // flex-direction: column;
-    // justify-content: flex-end;
-    // align-items: center;
     @include displayDFJA(flex, column, flex-end, center);
     margin-right: 10px;
   
@@ -69,15 +57,12 @@
       color: $font-dark-colour;
   
       &:hover .tooltipContent {
-        // display: flex;
         @include displayDFJA(flex, null, null, null);
       }
   
       .tooltipContent {
         @include displayDFJA(null, row, center, null);
         display: none;
-        // flex-direction: row;
-        // justify-content: center;
         position: absolute;
         top: 20px;
         background-color: $white;
@@ -98,10 +83,6 @@
 }
 
 .listContainerMain {
-  // display: flex;
-  // flex-direction: row;
-  // justify-content: space-between;
-  // align-items: center;
   @include displayDFJA(flex, row, space-between, center);
   background-color: $main-colour;
   border: 1px solid $font-dark-colour;
@@ -134,10 +115,6 @@
   }
 
   .fullNameContainer {
-    // display: flex;
-    // flex-direction: row;
-    // justify-content: center;
-    // align-items: center;
     @include displayDFJA(flex, row, center, center);
     flex-grow: 1;
     gap:3px;
@@ -158,7 +135,6 @@
   }
   
   .listContainerMain .languagesContainer {
-    // justify-content: flex-end;
     @include displayDFJA(flex, null, flex-end, null);
   }
   
@@ -170,10 +146,6 @@
 }
 
 .spinnerContainer {
-  // display: flex;
-  // flex-direction: column;
-  // justify-content: center;
-  // align-items: center;
   @include displayDFJA(flex, column, center, center);
   position: absolute;
   top: 50%;

@@ -1,21 +1,13 @@
 @import '@/styles/main.scss';
 
 .searchPrivUserContaner {
-    // display: flex;
-    // flex-direction: column;
     @include displayDFJA(flex, column, null, null);
     width: 100%;
     max-width: 750px;
     margin: 0 auto;
-    // background-color: $white;
-    // border: 2px solid $main-colour;
-    // border-radius: 8px;
     padding: 16px;
-    // box-shadow: 0 4px 6px $black-transparency-01;
 
     .searchUserInputContainer {
-        // display: flex;
-        // align-items: center;
         @include displayDFJA(flex, null, null, center);
         gap: 8px;
         margin-bottom: 16px;
@@ -36,16 +28,9 @@
     }
 
     .searchUserResult {
-        // display: grid;
-        // grid-template-columns: repeat(3, 1fr);
-        // gap: 10px;
         @include gridQG(3, 10px);
 
         .searchUserResultItem {
-            // display: flex;
-            // flex-direction: row;
-            // justify-content: space-between;
-            // align-items: center;
             @include displayDFJA(flex, row, space-between, center);
             background-color: $main-colour;
             border: 1px solid $font-dark-colour;
@@ -82,8 +67,6 @@
 }
 
 .searchGroupUserContaner {
-    // display: flex;
-    // flex-direction: column;
     @include displayDFJA(flex, column, null, null);
     width: 100%;
     max-width: 750px;
@@ -91,8 +74,6 @@
     padding: 16px;
 
     .searchUserInputContainer {
-        // display: flex;
-        // align-items: center;
         @include displayDFJA(flex, null, null, center);
         gap: 8px;
         margin-bottom: 16px;
@@ -113,16 +94,9 @@
     }
 
     .searchUserResult {
-        // display: grid;
-        // grid-template-columns: repeat(3, 1fr);
-        // gap: 10px;
         @include gridQG(3, 10px);
 
         .searchUserResultItem {
-            // display: flex;
-            // flex-direction: row;
-            // justify-content: space-between;
-            // align-items: center;
             @include displayDFJA(flex, row, space-between, center);
             background-color: $main-colour;
             border: 1px solid $font-dark-colour;

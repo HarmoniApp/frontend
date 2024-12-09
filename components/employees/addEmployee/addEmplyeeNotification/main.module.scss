@@ -1,11 +1,7 @@
 @import '@/styles/main.scss';
 
 .addEmplyeeConfirmationContainerMain {
-    // display: flex;
     background-color: $gray;
-    // flex-direction: column;
-    // align-items: center;
-    // justify-content: center;
     @include displayDFJA(flex, column, center, center);
     width: 100%;
     padding:20px 40px;
@@ -14,12 +10,8 @@
 }
 
 .headerContainer{
-    // display: flex;
-    // flex-direction: column;
-    // align-items: center;
     @include displayDFJA(flex, column, center, center);
     text-align: center;
-    // justify-content: center;
     width: 100%;
     margin: 0;
 
@@ -39,18 +31,12 @@
 }
 
 .counterContainter {
-    // display: flex;
-    // flex-direction: column;
-    // align-items: center;
-    // justify-content: center;
     @include displayDFJA(flex, column, center, center);
     width: 100%;
     margin: 0;
     gap: 5px;
 
     .counterParagraph {
-        // display: flex;
-        // align-items: center;
         @include displayDFJA(flex, null, null, center);
         text-align: center;
         color: $font-light-colour;
@@ -58,9 +44,6 @@
     }
 
     .counterTimerContainer {
-        // display: flex;
-        // align-items: center;
-        // justify-content: center;
         @include displayDFJA(flex, null, center, center);
         text-align: center;
         color: $font-light-colour;
@@ -74,8 +57,6 @@
         }
 
         .counterTimerLabel {
-            // display: flex;
-            // align-items: center;
             @include displayDFJA(flex, null, null, center);
             text-align: center;
             color: $font-light-colour;
@@ -84,10 +65,6 @@
 }
 
 .buttonConianer{
-    // display: flex;
-    // flex-direction: row;
-    // align-items: center;
-    // justify-content: space-evenly;
     @include displayDFJA(flex, row, space-evenly, center);
     width: 100%;
     gap: 20px;
@@ -108,8 +85,6 @@
     }
 
     .closeButton {
-        // display: flex;
-        // align-items: center;
         @include displayDFJA(flex, null, null, center);
         background-color: $main-colour;
         color: $font-dark-colour;
@@ -136,8 +111,6 @@
     }
 
     .detailsButton {
-        // display: flex;
-        // align-items: center;
         @include displayDFJA(flex, null, null, center);
         background-color: $green;
         color: $font-light-colour;

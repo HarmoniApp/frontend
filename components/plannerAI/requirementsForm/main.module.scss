@@ -1,8 +1,6 @@
 @import '@/styles/main.scss';
 
 .planerAiContainer {
-    // display: flex;
-    // flex-direction: column-reverse;
     @include displayDFJA(flex, column-reverse, null, null);
     width: 90%;
     margin: 20px auto;
@@ -10,10 +8,6 @@
 }
 
 .buttonContainer {
-    // display: flex;
-    // flex-direction: row;
-    // align-items: center;
-    // justify-content: space-between;
     @include displayDFJA(flex, row, space-between, center);
     flex: 1;
     padding: 20px;
@@ -28,9 +22,6 @@
 .deleteGenerateShiftsButton,
 .infoButton,
 .deleteDayButton {
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
     @include displayDFJA(flex, null, center, center);
     background-color: $main-colour;
     color: $font-dark-colour;
@@ -59,8 +50,6 @@
 }
 
 .planerAiForm {
-    // display: flex;
-    // flex-direction: column;
     @include displayDFJA(flex, column, null, null);
     gap: 20px;
     padding: 20px;
@@ -70,8 +59,6 @@
 }
 
 .dateContainer {
-    // display: flex;
-    // align-items: center;
     @include displayDFJA(flex, null, null, center);
     gap: 10px;
 }
@@ -99,17 +86,10 @@
 
 .predefineShiftsContainer {
     @include gridQG(4, 20px);
-    // display: grid;
-    // grid-template-columns: repeat(4, 1fr);
-    // gap: 20px;
 }
 
 .predefineShiftLabel,
 .roleLabel {
-    // display: flex;
-    // flex-direction: row;
-    // align-items: center;
-    // justify-content: space-between;
     @include displayDFJA(flex, row, space-between, center);
     text-align: center;
     gap: 10px;
@@ -139,9 +119,6 @@
 
 .roleContainer {
     @include gridQG(4, 20px);
-    // display: grid;
-    // grid-template-columns: repeat(4, 1fr);
-    // gap: 20px;
 }
 
 .rolesInfoContainer {
@@ -154,8 +131,6 @@
     }
 
     .editingShiftIdParagraph {
-        // display: flex;
-        // justify-content: flex-start;
         @include displayDFJA(flex, null, flex-start, null);
         font-weight: bold;
         gap: 10px;
@@ -175,34 +150,3 @@
     color: $font-dark-colour;
     outline: none;
 }
-
-// .loadingModalOverlay {
-//     position: fixed;
-//     top: 0;
-//     left: 0;
-//     right: 0;
-//     bottom: 0;
-//     background: $black-transparency-05;
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-//     z-index: 1000;
-
-//     .loadingModalContent {
-//         display: flex;
-//         flex-direction: column;
-//         text-align: center;
-
-//         .spinnerContainer {
-//             display: flex;
-//             flex-direction: column;
-//             justify-content: center;
-//             align-items: center;
-//             position: absolute;
-//             top: 50%;
-//             left: 50%;
-//             transform: translate(-50%, -50%);
-//             z-index: 9999;
-//         }
-//     }
-// }
