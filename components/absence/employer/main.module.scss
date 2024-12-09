@@ -128,7 +128,7 @@
     // grid-template-columns: repeat(3, 1fr);
     // gap: 20px;
     @include gridQG(3, 20px);
-    @media (max-width: 768px) {
+    @include respond-to-md {
         @include gridQG(2, 20px);
         // grid-template-columns: repeat(2, 1fr);
     }

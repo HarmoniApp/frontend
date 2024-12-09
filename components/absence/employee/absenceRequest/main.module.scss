@@ -216,7 +216,7 @@
             color: lighten($font-dark-colour, 30%);
         }
 
-        @media (max-width: 768px) {
+        @include respond-to-md {
             height: 4vh;
             padding: 8px 2vh 8px 8px;
         }

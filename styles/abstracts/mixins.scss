@@ -17,6 +17,12 @@
     appearance: none; // Standard
 }
 
+@mixin respond-to-lg {
+    @media (max-width: $breakpoint-lg) {
+        @content;
+    }
+}
+
 @mixin respond-to-md {
     @media (max-width: $breakpoint-md) {
         @content;
