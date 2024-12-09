@@ -28,7 +28,7 @@
     gap: 20px;
     padding: 20px;
 
-    @mixin respond-to-md {
+    @include respond-to-md {
         width: 90%;
         max-height: 70vh;
     }
@@ -123,21 +123,21 @@
     }
 }
 
-@media (max-width: 1200px) {
+@include respond-to-lg {
     .showContractMapContainer {
         @include gridQG(3, 10px);
         // grid-template-columns: repeat(3, 1fr);
     }
 }
 
-@media (max-width: 800px) {
+@include respond-to-md {
     .showContractMapContainer {
         @include gridQG(2, 10px);
         // grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media (max-width: 600px) {
+@include respond-to-sm {
     .showContractMapContainer {
         @include gridQG(1, 10px);
         // grid-template-columns: 1fr;

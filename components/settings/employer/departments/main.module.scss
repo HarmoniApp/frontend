@@ -28,7 +28,7 @@
     gap: 20px;
     padding: 20px;
 
-    @mixin respond-to-md {
+    @include respond-to-md {
         width: 90%;
         max-height: 70vh;
     }
@@ -144,7 +144,7 @@
                     }
                 }
 
-                @mixin respond-to-md {
+                @include respond-to-md {
                     .departmentInfoRowContainer {
                         // flex-direction: column;
                         // align-items: flex-start;
@@ -255,14 +255,14 @@
     }
 }
 
-@media (max-width: 1200px) {
+@include respond-to-lg {
     .showDepartmentsMapContainer {
         @include gridQG(3, 10px);
         // grid-template-columns: repeat(3, 1fr);
     }
 }
 
-@media (max-width: 800px) {
+@include respond-to-md {
 
     .showDepartmentsMapContainer,
     .addDepartmentContainer {
@@ -271,7 +271,7 @@
     }
 }
 
-@media (max-width: 600px) {
+@include respond-to-sm {
 
     .showDepartmentsMapContainer,
     .addDepartmentContainer {
@@ -314,7 +314,7 @@
         color: lighten($font-dark-colour, 30%);
     }
 
-    @mixin respond-to-md {
+    @include respond-to-md {
         height: 4vh;
         padding: 8px 2vh 8px 8px;
     }

@@ -28,7 +28,7 @@
     gap: 20px;
     padding: 20px;
 
-    @mixin respond-to-lg {
+    @include respond-to-lg {
         width: 90%;
         max-height: 70vh;
     }
@@ -64,7 +64,7 @@
     gap: 20px;
     width: 100%;
 
-    @mixin respond-to-lg {
+    @include respond-to-lg {
         // flex-direction: column;
         @include displayDFJA(flex, column, null, null);
 
@@ -185,7 +185,7 @@
     height: auto;
     gap: 20px;
 
-    @mixin respond-to-lg {
+    @include respond-to-lg {
         // flex-direction: column;
         @include displayDFJA(flex, column, null, null);
 
@@ -239,13 +239,13 @@
             margin: 20px;
             overflow-y: auto;
 
-            // @mixin respond-to-lg {
+            // @include respond-to-lg {
             //     // grid-template-columns: repeat(2, 1fr);
             //     @include gridQG(2, 1fr);
             //     height: fit-content;
             // }
 
-            // @media (max-width: 825px) {
+            // @include respond-to-lg {
             //     //grid-template-columns: repeat(2, 1fr);
             //     @include gridQG(2, 1fr);
             //     height: fit-content;
@@ -257,7 +257,7 @@
             //     height: fit-content;
             // }
 
-            @media (max-width: 350px) {
+            @include respond-to-lg {
                 //grid-template-columns: 1fr;
                 @include gridQG(1, 1fr);
             }
@@ -302,12 +302,12 @@
             margin: 20px;
             overflow-y: auto;
 
-            @mixin respond-to-lg {
+            @include respond-to-lg {
                 // grid-template-columns: repeat(3, 1fr);
                 @include gridQG(3, 1fr);
             }
 
-            @media (max-width: 825px) {
+            @include respond-to-lg {
                 // grid-template-columns: repeat(2, 1fr);
                 @include gridQG(2, 1fr);
             }
@@ -316,7 +316,7 @@
             //     grid-template-columns: repeat(2, 1fr);
             // }
 
-            @media (max-width: 350px) {
+            @include respond-to-lg {
                 // grid-template-columns: 1fr;
                 @include gridQG(1, 1fr);
             }
@@ -338,7 +338,7 @@
                 width: 100%;
                 padding: 10px;
 
-                @mixin respond-to-md {
+                @include respond-to-md {
                     padding: 8px;
                 }
 
