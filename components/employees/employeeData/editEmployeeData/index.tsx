@@ -21,6 +21,7 @@ import classNames from 'classnames';
 import { fetchCsrfToken } from '@/services/csrfService';
 import { fetchContracts } from '@/services/contractService';
 import { fetchDepartments } from '@/services/departmentService';
+import { fetchSupervisors } from '@/services/userService';
 
 interface EditEmployeeDataProps {
   employee: EmployeeDataWorkAdressOnlyId;
@@ -44,20 +45,12 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchSupervisors = async () => {
+  const fetchAllSupervisors = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/supervisor`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setSupervisors(data.content);
+      await fetchSupervisors(setSupervisors)
 
       const supervisorMap: { [key: number]: string } = {};
-      data.content.forEach((supervisor: Supervisor) => {
+      supervisors.forEach((supervisor: Supervisor) => {
         supervisorMap[supervisor.id] = `${supervisor.firstname} ${supervisor.surname}`;
       });
       setSupervisorMap(supervisorMap);
@@ -71,7 +64,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     const loadData = async () => {
       await fetchContracts(setContracts, setModalIsOpenLoadning);
       await fetchDepartments(setDepartments, setModalIsOpenLoadning);
-      await fetchSupervisors();
+      await fetchAllSupervisors();
       await fetchRoles(setRoles, setModalIsOpenLoadning);
       await fetchLanguages(setLanguages, setError, setModalIsOpenLoadning);
     };
