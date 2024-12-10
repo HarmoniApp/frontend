@@ -1,5 +1,7 @@
 import WeekSchedule from "@/components/types/weekSchedule";
 import { fetchCsrfToken } from "./csrfService";
+import Shift from "@/components/types/shift";
+import AbsenceShort from "@/components/types/absenceShort";
 
 export const fetchUserPublishedSchedule = async (
     currentMonth: Date,
@@ -31,6 +33,33 @@ export const fetchUserPublishedSchedule = async (
         console.error('Error fetching week schedule:', error);
     }
 };
+
+export const fetchUserSchedule = async (
+    userId: number, 
+    currentWeek: Date[]): Promise<{ shifts: Shift[], absences: AbsenceShort[] }> => {
+    try {
+        const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
+        const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';  
+        const tokenJWT = sessionStorage.getItem('tokenJWT');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${tokenJWT}`,
+            },
+        });
+
+        const data = await response.json();
+        return {
+            shifts: data.shifts || [],
+            absences: data.absences || []
+        };
+    } catch (error) {
+        console.error(`Error fetching schedule for user ${userId}:`, error);
+        throw error;
+    }
+};
+
 
 // export const deleteShift = async (
 //     shiftId: number,
