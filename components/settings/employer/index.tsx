@@ -4,7 +4,6 @@ import Departments from './departments';
 import PredefinedShifts from './predefinedShifts';
 import ContractTypes from './contractTypes';
 import { Message } from 'primereact/message';
-import SchedulesArchive from './schedulesArchive';
 import styles from './main.module.scss';
 
 const SettingsEmployer = () => {
@@ -45,13 +44,6 @@ const SettingsEmployer = () => {
                 </div>
                 <ContractTypes setError={setError}/>
             </div>
-            {/* <div className={styles.schedulesArchiveContainer}>
-                <div className={styles.schedulesArchiveTitleContainer}>
-                    <label className={styles.schedulesArchiveTitle}>Archiwum Kalendarzy - Twoje dane, zawsze pod ręką!</label>
-                    <label className={styles.schedulesArchiveDescription}>Zachowaj pełną kontrolę nad przeszłością - pobierz i przeglądaj swoje zaarchiwizowane kalendarze miesięczne w każdej chwili.</label>
-                </div>
-                <SchedulesArchive />
-            </div> */}
             {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
         </div>
     );

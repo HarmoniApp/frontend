@@ -245,8 +245,8 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
                 </div>
                 {isDeleteModalOpen && deleteRoleId === role.id && (
                   <>
-                    <div className={styles.modalOverlayOfDelete}>
-                      <div className={styles.modalContentOfDelete}>
+                    <div className={styles.modalOverlay}>
+                      <div className={styles.modalContent}>
                         <DeleteConfirmation
                           onClose={() => setIsDeleteModalOpen(false)}
                           onDelete={() => handleDeleteRole(role.id)}
@@ -293,8 +293,8 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
             </button>
 
             {isAddModalOpen && (
-              <div className={styles.modalOverlayOfAdd}>
-                <div className={styles.modalContentOfAdd}>
+              <div className={styles.modalOverlay}>
+                <div className={styles.modalContent}>
                   <AddNotification onClose={() => setIsAddModalOpen(false)} info={addedRoleName} />
                 </div>
               </div>

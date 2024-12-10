@@ -379,8 +379,8 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
                                 </div>
                                 {isDeleteModalOpen && deleteDepartmentId === department.id && (
                                     <>
-                                        <div className={styles.modalOverlayOfDelete}>
-                                            <div className={styles.modalContentOfDelete}>
+                                        <div className={styles.modalOverlay}>
+                                            <div className={styles.modalContent}>
                                                 <DeleteConfirmation
                                                     onClose={() => setIsDeleteModalOpen(false)}
                                                     onDelete={() => handleDeleteDepartment(department.id)}
@@ -501,8 +501,8 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
                             </button>
                         </div>
                         {isAddModalOpen && (
-                            <div className={styles.modalOverlayOfAdd}>
-                                <div className={styles.modalContentOfAdd}>
+                            <div className={styles.modalOverlay}>
+                                <div className={styles.modalContent}>
                                     <AddNotification
                                         onClose={() => setIsAddModalOpen(false)}
                                         info={addedDepartmentName} />

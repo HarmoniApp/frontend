@@ -1,18 +1,18 @@
 @import '@/styles/main.scss';
 
-.modalContentOfEditRoles {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: 1px solid $main-colour;
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px $black-transparency-01;
-    text-align: center;
-    width: auto;
-    max-height: 80vh;
-    overflow-y: auto;
-}
+// .modalContentOfEditRoles {
+//     position: fixed;
+//     top: 50%;
+//     left: 50%;
+//     transform: translate(-50%, -50%);
+//     border: 1px solid $main-colour;
+//     border-radius: 8px;
+//     box-shadow: 0px 4px 6px $black-transparency-01;
+//     text-align: center;
+//     width: auto;
+//     max-height: 80vh;
+//     overflow-y: auto;
+// }
 
 .employeeBarContainerMain {
     @include displayDFJA(flex, null, space-between, center);

@@ -205,8 +205,8 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
       </div>
 
       {modalIsOpenDeleteEmployee && (
-        <div className={styles.modalOverlayDeleteEmployee}>
-          <div className={styles.modalContentOfDeleteEmployee}>
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
             <DeleteEmployeePopUp
               userId={employee.id}
               firstName={employee.firstname}
@@ -218,8 +218,8 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
       )}
 
       {modalNewPassword && (
-        <div className={styles.modalOverlayNewPassword}>
-          <div className={styles.modalContentOfNewPassword}>
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
             <NewPassword
               newPassword={newPassword}
               onClose={() => setModalNewPassword(false)}

@@ -139,8 +139,8 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
             {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
 
             {showNotifications && (
-                <div className={styles.modalOverlayOfNotification}>
-                    <div className={styles.modalContentOfNotification}>
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
                         <Notifications notifications={notifications} onClose={closeNotifications} markAsRead={markAsRead} />
                     </div>
 

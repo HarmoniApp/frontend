@@ -187,8 +187,8 @@ const Login = () => {
       </Formik>
       {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
       {isChangePasswordModalOpen && (
-        <div className={styles.passwordChangeModalOverlay}>
-          <div className={styles.passwordChangeModalContent}>
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
             <h2>Zmień hasło</h2>
             <Formik
               initialValues={{ newPassword: '', repeatPassword: '' }}

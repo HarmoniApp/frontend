@@ -17,11 +17,42 @@
     text-align: center;
 }
 
-.spinner-container {
+.spinnerContainer {
     @include displayDFJA(flex, column, center, center);
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 9999;
+    // margin: 200px 0 0 0;
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $black-transparency-05;
+    @include displayDFJA(flex, null, center, center);
+    z-index: 1000;
+}
+
+.modalContent {
+    @include displayDFJA(flex, column, null, null);
+    border: 2px solid $main-colour;
+    border-radius: 8px;
+    background-color: $gray;
+    text-align: center;
+    width: auto;
+    max-height: 80vh;
+    overflow-y: auto;
+    gap: 20px;
+    padding: 20px;
+    color: $white;
+
+    @include respond-to-md {
+        width: 90%;
+        max-height: 70vh;
+    }
 }

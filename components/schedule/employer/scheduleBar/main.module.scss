@@ -1,28 +1,28 @@
 @import '@/styles/main.scss';
 
-.publishModalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: $black-transparency-05;
-    @include displayDFJA(flex, null, center, center);
-    z-index: 1000;
-}
+// .publishModalOverlay {
+//     position: fixed;
+//     top: 0;
+//     left: 0;
+//     right: 0;
+//     bottom: 0;
+//     background: $black-transparency-05;
+//     @include displayDFJA(flex, null, center, center);
+//     z-index: 1000;
+// }
 
-.publishModalContent {
-    @include displayDFJA(flex, column, null, null);
-    border: 2px solid $main-colour;
-    border-radius: 8px;
-    background-color: $gray;
-    text-align: center;
-    width: auto;
-    max-height: 80vh;
-    overflow-y: auto;
-    gap: 20px;
-    padding: 20px;
-}
+// .publishModalContent {
+//     @include displayDFJA(flex, column, null, null);
+//     border: 2px solid $main-colour;
+//     border-radius: 8px;
+//     background-color: $gray;
+//     text-align: center;
+//     width: auto;
+//     max-height: 80vh;
+//     overflow-y: auto;
+//     gap: 20px;
+//     padding: 20px;
+// }
 
 .scheduleBarContainerMain {
     @include displayDFJA(flex, row, center, space-between);

@@ -126,16 +126,16 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                 </table>
             </div>
             {modalIsOpenAbsenceRequest && (
-                <div className={styles.addAbsencetModalOverlay}>
-                    <div className={styles.addAbsenceModalContent}>
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
                         <AbsenceRequest onSend={userId} onClose={() => setModalIsOpenAbsenceRequest(false)} onRefresh={() => fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences, setLoading)} />
                     </div>
                 </div>
             )}
             {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
             {modalIsOpenCancelAbsence && (
-                <div className={styles.addAbsencetModalOverlay}>
-                    <div className={styles.addAbsenceModalContent}>
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
                         <CancelConfirmation
                             onCancel={handleCancelAbsence}
                             onClose={() => setModalIsOpenCancelAbsence(false)}

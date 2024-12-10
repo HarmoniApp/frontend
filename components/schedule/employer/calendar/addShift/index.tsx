@@ -97,8 +97,8 @@ const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShi
     };
 
     return isOpen ? (
-        <div className={styles.addShiftModalOverlay}>
-            <div className={styles.addShiftModalContent}>
+        <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
                 {isSubmitted  ? (
                     <div className={styles.addShiftNotificationContainerMain}>
                         <div className={styles.headerContainer}>

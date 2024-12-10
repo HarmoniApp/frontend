@@ -542,8 +542,8 @@ const AddEmployee: React.FC = () => {
             </div>
 
             {isModalOpen && (
-              <div className={styles.modalOverlayOfAddEmployee}>
-                <div className={styles.modalContentOfAddEmployee}>
+              <div className={styles.modalOverlay}>
+                <div className={styles.modalContent}>
                   <AddEmployeeNotificationPopUp
                     firstname={values.firstname}
                     surname={values.surname}

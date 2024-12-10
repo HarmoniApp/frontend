@@ -72,8 +72,8 @@ const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
             {isOpen && <div className={styles.overlay} onClick={toggleSidebar}></div>}
 
             {changePhotoModal && (
-                <div className={styles.modalOverlayChangePhoto}>
-                    <div className={styles.modalContentOfChangePhoto}>
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
                         <PhotoChange
                             onClose={() => setChangePhotoModal(false)}
                          />

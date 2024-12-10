@@ -1,33 +1,33 @@
 @import '@/styles/main.scss';
 
-.cancelAbsenceModalOverlay,
-.aproveAbsenceModalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
+// .cancelAbsenceModalOverlay,
+// .aproveAbsenceModalOverlay {
+//     position: fixed;
+//     top: 0;
+//     left: 0;
+//     right: 0;
+//     bottom: 0;
+//     background: $black-transparency-05;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     z-index: 1000;
+// }
 
-.cancelAbsenceModalContent,
-.aproveAbsenceModalContent {
-    display: flex;
-    flex-direction: column;
-    border: 2px solid $main-colour;
-    border-radius: 8px;
-    background-color: $gray;
-    text-align: center;
-    width: auto;
-    max-height: 80vh;
-    overflow-y: auto;
-    gap: 20px;
-    padding: 20px;
-}
+// .cancelAbsenceModalContent,
+// .aproveAbsenceModalContent {
+//     display: flex;
+//     flex-direction: column;
+//     border: 2px solid $main-colour;
+//     border-radius: 8px;
+//     background-color: $gray;
+//     text-align: center;
+//     width: auto;
+//     max-height: 80vh;
+//     overflow-y: auto;
+//     gap: 20px;
+//     padding: 20px;
+// }
 
 .absenceCardContainerMain {
     background-color: $white;

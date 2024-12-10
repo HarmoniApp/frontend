@@ -90,8 +90,8 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
       </div>
 
       {modalIsOpenPublish && (
-        <div className={styles.publishModalOverlay}>
-          <div className={styles.publishModalContent}>
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
             <PublishConfirmation
               onPublish={onPublishAll}
               onClose={() => setModalIsOpenPublish(false)}

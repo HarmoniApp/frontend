@@ -192,8 +192,8 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
                 </div>
                 {isDeleteModalOpen && deleteContractId === contract.id && (
                   <>
-                    <div className={styles.modalOverlayOfDelete}>
-                      <div className={styles.modalContentOfDelete}>
+                    <div className={styles.modalOverlay}>
+                      <div className={styles.modalContent}>
                         <DeleteConfirmation
                           onClose={() => setIsDeleteModalOpen(false)}
                           onDelete={() => handleDeleteContractType(contract.id)}
@@ -273,8 +273,8 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
             </button>
 
             {isAddModalOpen && (
-              <div className={styles.modalOverlayOfAdd}>
-                <div className={styles.modalContentOfAdd}>
+              <div className={styles.modalOverlay}>
+                <div className={styles.modalContent}>
                   <AddNotification onClose={() => setIsAddModalOpen(false)} info={addedContractName} />
                 </div>
               </div>

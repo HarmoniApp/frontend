@@ -28,7 +28,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
 
     useEffect(() => {
         const fetchData = async () => {
-            await fetchSimpleUser(absence, setUser,setModalIsOpenLoadning);
+            await fetchSimpleUser(absence, setUser, setModalIsOpenLoadning);
             await fetchAbsenceType(absence.absence_type_id, setAbsenceType);
           };
           fetchData();
@@ -173,8 +173,8 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
             </div>
             {renderButtons()}
             {modalIsOpenCancelAbsence && (
-                <div className={styles.cancelAbsenceModalOverlay}>
-                    <div className={styles.cancelAbsenceModalContent}>
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
                         <CancelConfirmation
                             onCancel={handleDeclineClick}
                             onClose={() => setModalIsOpenCancelAbsence(false)}
@@ -185,8 +185,8 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                 </div>
             )}
             {modalIsOpenAproveAbsence && (
-                <div className={styles.aproveAbsenceModalOverlay}>
-                    <div className={styles.aproveAbsenceModalContent}>
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
                         <AproveConfirmation
                             onAprove={handleAcceptClick}
                             onClose={() => setModalIsOpenAproveAbsence(false)}

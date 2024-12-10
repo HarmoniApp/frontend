@@ -92,8 +92,8 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
   }
 
   return (
-    <div className={styles.editShiftModalOverlay}>
-      <div className={styles.editShiftModalContent}>
+    <div className={styles.modalOverlay}>
+      <div className={styles.modalContent}>
         {isDeleteConfirmOpen ? (
           <div className={styles.deleteContainerMain}>
             <div className={styles.headerContainer}>
