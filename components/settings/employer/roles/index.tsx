@@ -7,7 +7,7 @@ import AddNotification from '../popUps/addNotification';
 import DeleteConfirmation from '../popUps/deleteConfirmation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { ProgressSpinner } from 'primereact/progressspinner';
-import { fetchRoles } from "@/services/roleService"
+import { deleteRole, fetchRoles } from "@/services/roleService"
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
@@ -41,31 +41,7 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
   }, []);
 
   const handleDeleteRole = async (roleId: number) => {
-    setModalIsOpenLoadning(true);
-    try {
-      const tokenXSRF = await fetchCsrfToken();
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/${roleId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-          'X-XSRF-TOKEN': tokenXSRF,
-        },
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        console.error('Failed to delete role:', response.statusText);
-        throw new Error('Failed to delete role');
-      }
-      setModalIsOpenLoadning(false);
-      await fetchRoles(setRoles, setModalIsOpenLoadning);
-    } catch (error) {
-      console.error('Error deleting role:', error);
-      setError('Błąd podczas usuwania roli');
-    } finally {
-      setModalIsOpenLoadning(false);
-    }
+    await deleteRole(roleId, setRoles, setModalIsOpenLoadning)
   };
 
   const handleAddRole = async (values: { newRoleName: string; newRoleColor: string }, { resetForm }: any) => {
