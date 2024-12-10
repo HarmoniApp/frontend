@@ -42,6 +42,37 @@ export const fetchUserRoles = async (
     }
 };
 
+export const postRole = async (
+    values: { newRoleName: string; newRoleColor: string },
+    setAddedRoleName: (name: string) => void,
+    setRoles: (roles: Role[]) => void,
+    setLoading: (loading: boolean) => void): Promise<void> => {
+
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+            body: JSON.stringify({ name: values.newRoleName, color: values.newRoleColor }),
+        });
+        if (!response.ok) {
+            console.error('Failed to add role:', response.statusText);
+            throw new Error('Failed to add role');
+        }
+        const newRole = await response.json();
+        setAddedRoleName(newRole.name);
+        await fetchRoles(setRoles, setLoading);
+    } catch (error) {
+        console.error(`Error while generate`, error);
+    }
+};
+
 export const deleteRole = async (
     roleId: number,
     setRoles: (roles: Role[]) => void,
