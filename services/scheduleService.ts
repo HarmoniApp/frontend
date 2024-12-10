@@ -1,7 +1,7 @@
 import WeekSchedule from "@/components/types/weekSchedule";
 import { fetchCsrfToken } from "./csrfService";
 
-export const fetchShiftsAndAbsences = async (
+export const fetchUserPublishedSchedule = async (
     currentMonth: Date,
     userId: number,
     setWeekSchedule: (schedule: WeekSchedule | null) => void): Promise<void> => {
