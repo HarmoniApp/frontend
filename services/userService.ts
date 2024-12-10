@@ -2,6 +2,7 @@ import Absence from "@/components/types/absence";
 import EmployeeData from "@/components/types/employeeData";
 import SimpleUser from "@/components/types/simpleUser";
 import Supervisor from "@/components/types/supervisor";
+import { fetchCsrfToken } from "./csrfService";
 
 export const fetchSimpleUser = async (
     absence?: Absence,
@@ -9,7 +10,7 @@ export const fetchSimpleUser = async (
     setUser?: (users: SimpleUser) => void,
     setSupervisorData?: (supervisor: Supervisor) => void,
     setLoading?: (loading: boolean) => void): Promise<void> => {
-        setLoading?.(true);
+    setLoading?.(true);
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/${absence?.user_id || supervisorId}`, {
             method: 'GET',
@@ -66,5 +67,29 @@ export const fetchSupervisors = async (
         setSupervisors(data.content);
     } catch (error) {
         console.error('Error fetching supervisors:', error);
+    }
+};
+
+export const deleteUser = async (
+    userId: number): Promise<void> => {
+
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+        })
+        if (!response.ok) {
+            console.error('Failed to delete employee: ', response.statusText);
+            throw new Error(`Failed to delete employee`);
+        }
+    } catch (error) {
+        console.error('Error deleting role:', error);
     }
 };

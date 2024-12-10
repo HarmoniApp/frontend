@@ -1,4 +1,5 @@
 import PredefinedShift from "@/components/types/predefinedShifts";
+import { fetchCsrfToken } from "./csrfService";
 
 export const formatTimeToHHMM = (time: string): string => {
     if (!time) return '00:00';
@@ -7,7 +8,7 @@ export const formatTimeToHHMM = (time: string): string => {
 };
 
 export const fetchPredefinedShifts = async (
-    setShifts: (roles: PredefinedShift[]) => void): Promise<void> => {
+    setShifts: (shifts: PredefinedShift[]) => void): Promise<void> => {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift`, {
             method: 'GET',
@@ -22,9 +23,39 @@ export const fetchPredefinedShifts = async (
             ...shift,
             start: formatTimeToHHMM(shift.start || '00:00'),
             end: formatTimeToHHMM(shift.end || '00:00'),
-          }));
+        }));
         setShifts(validatedData);
     } catch (error) {
         console.error('Error fetching predefined shifts:', error);
+    }
+};
+
+export const deletePredefineShift = async (
+    shiftId: number,
+    setPredefineShifts: (shifts: PredefinedShift[]) => void,
+    setLoading: (loading: boolean) => void): Promise<void> => {
+    setLoading(true);
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${shiftId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+        });
+        if (!response.ok) {
+            console.error('Failed to delete shift:', response.statusText);
+            throw new Error('Failed to delete shift');
+        }
+        setLoading(false);
+        await fetchPredefinedShifts(setPredefineShifts)
+    } catch (error) {
+        console.error('Error deleting shift:', error);
+    } finally {
+        setLoading(false);
     }
 };

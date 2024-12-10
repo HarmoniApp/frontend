@@ -6,12 +6,11 @@ import PredefinedShift from '@/components/types/predefinedShifts';
 import AddNotification from '../popUps/addNotification';
 import DeleteConfirmation from '../popUps/deleteConfirmation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
-import { formatTimeToHHMM, fetchPredefinedShifts} from '@/services/predefineShiftService';
+import { formatTimeToHHMM, fetchPredefinedShifts, deletePredefineShift} from '@/services/predefineShiftService';
 import LoadingSpinner from '@/components/loadingSpinner';
 
 interface PredefinedShiftsProps {
@@ -49,32 +48,8 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
     loadData();
   }, []);
 
-  const handleDeleteShift = async (shiftId: number) => {
-    setModalIsOpenLoadning(true);
-    try {
-      const tokenXSRF = await fetchCsrfToken();
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${shiftId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-          'X-XSRF-TOKEN': tokenXSRF,
-        },
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        console.error('Failed to delete shift:', response.statusText);
-        throw new Error('Failed to delete shift');
-      }
-      setModalIsOpenLoadning(false);
-      setPredefineShifts(predefineShifts.filter((shift) => shift.id !== shiftId));
-    } catch (error) {
-      console.error('Error deleting shift:', error);
-      setError('Błąd podczas usuwania predefiniowalnych zmian');
-    } finally {
-      setModalIsOpenLoadning(false);
-    }
+  const handleDeletePredefineShift = async (shiftId: number) => {
+    await deletePredefineShift(shiftId, setPredefineShifts, setModalIsOpenLoadning)
   };
 
   const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
@@ -248,7 +223,7 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
                       <div className={styles.modalContent}>
                         <DeleteConfirmation
                           onClose={() => setIsDeleteModalOpen(false)}
-                          onDelete={() => handleDeleteShift(shift.id)}
+                          onDelete={() => handleDeletePredefineShift(shift.id)}
                           info={shift.name}
                         />
                       </div>

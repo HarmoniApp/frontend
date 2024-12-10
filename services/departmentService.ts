@@ -38,7 +38,7 @@ export const fetchDepartmentsAddress = async (
         });
         const data = await response.json();
         setDepartments(data);
-    }catch (error) {
+    } catch (error) {
         console.error("Error fetching departments:", error);
     } finally {
         setLoading(false)
@@ -75,3 +75,34 @@ export const deleteDepartment = async (
         setLoading(false);
     }
 }
+
+export const postDepartment = async (
+    values: DepartmentAddress,
+    setDepartments: (departments: DepartmentAddress[]) => void,
+    setAddedDepartmentName: (name: string) => void,
+    setLoading: (loading: boolean) => void): Promise<void> => {
+
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+            body: JSON.stringify(values),
+        });
+        if (!response.ok) {
+            console.error("Failed to add department: ", response.statusText);
+            throw new Error('Error adding department');
+        }
+        const addedDepartment = await response.json();
+        setAddedDepartmentName(addedDepartment.department_name);
+        await fetchDepartmentsAddress(setDepartments, setLoading);
+    } catch (error) {
+        console.error(`Error while generate`, error);
+    }
+};

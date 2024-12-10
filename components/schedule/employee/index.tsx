@@ -6,7 +6,7 @@ import CalendarCells from './calendarCells';
 import WeekSchedule from '@/components/types/weekSchedule';
 import { Message } from 'primereact/message';
 import styles from './main.module.scss';
-import { fetchShiftsAndAbsences } from '@/services/scheduleService';
+import { fetchUserPublishedSchedule } from '@/services/scheduleService';
 interface ScheduleEmployeeProps {
     userId: number;
 }
@@ -18,19 +18,19 @@ const ScheduleEmployee: React.FC<ScheduleEmployeeProps> = ({ userId }) => {
 
     useEffect(() => {
         const loadData = async () => {
-            await fetchShiftsAndAbsences(currentMonth, userId, setWeekSchedule);
+            await fetchUserPublishedSchedule(currentMonth, userId, setWeekSchedule);
         }
         loadData();
     }, [currentMonth]);
 
     const handlePrevMonth = () => {
         setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
-        fetchShiftsAndAbsences(currentMonth, userId, setWeekSchedule);
+        fetchUserPublishedSchedule(currentMonth, userId, setWeekSchedule);
     };
 
     const handleNextMonth = () => {
         setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
-        fetchShiftsAndAbsences(currentMonth, userId, setWeekSchedule);
+        fetchUserPublishedSchedule(currentMonth, userId, setWeekSchedule);
     };
 
     return (

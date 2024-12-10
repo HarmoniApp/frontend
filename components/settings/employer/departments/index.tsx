@@ -12,7 +12,7 @@ import classNames from "classnames";
 import DepartmentAddress from "@/components/types/departmentAddress";
 import styles from "./main.module.scss";
 import { fetchCsrfToken } from "@/services/csrfService";
-import { deleteDepartment, fetchDepartmentsAddress } from "@/services/departmentService";
+import { deleteDepartment, fetchDepartmentsAddress, postDepartment } from "@/services/departmentService";
 import LoadingSpinner from "@/components/loadingSpinner";
 
 interface DepartmentsProps {
@@ -45,32 +45,14 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
     const handleAddDepartment = async (values: DepartmentAddress, { resetForm }: any) => {
         setModalIsOpenLoadning(true);
         try {
-            const tokenXSRF = await fetchCsrfToken();
+           postDepartment(values, setDepartments, setAddedDepartmentName, setModalIsOpenLoadning)
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address`, {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-                body: JSON.stringify(values),
-            });
-            if (!response.ok) {
-                console.error("Failed to addd department: ", response.statusText);
-                throw new Error('Error adding department');
-            }
             setModalIsOpenLoadning(false);
-            const addedDepartment = await response.json();
-            setAddedDepartmentName(addedDepartment.department_name);
             setIsAddModalOpen(true);
-            setDepartments([...departments, addedDepartment]);
             resetForm();
         }
         catch (error) {
             console.error("Error adding department:", error);
-            setError('Błąd podczas dodawania oddziałów');
         } finally {
             setModalIsOpenLoadning(false);
         }

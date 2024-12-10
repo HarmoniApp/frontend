@@ -17,6 +17,7 @@ import 'primereact/resources/themes/saga-blue/theme.css';
 import '@/styles/components/pagination.css';
 import { fetchCsrfToken } from '@/services/csrfService';
 import LoadingSpinner from '@/components/loadingSpinner';
+import { deleteShift, fetchUserSchedule } from '@/services/scheduleService';
 
 interface CalendarRowProps {
   currentWeek: Date[];
@@ -203,7 +204,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
           throw new Error('Failed to add add shift');
         }
         setModalIsOpenLoadning(false);
-        fetchUserSchedule(shiftData.userId);
+        fetchUsersSchedule(shiftData.userId);
     } catch (error) {
       console.error('Error adding add shift:', error);
       setError('Błąd podczas dodawania zmiany');
@@ -238,7 +239,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
           throw new Error('Failed to edit shift');
         }
         setModalIsOpenLoadning(false);
-        fetchUserSchedule(shiftData.userId);
+        fetchUsersSchedule(shiftData.userId);
     } catch (error) {
       console.error('Error editing shift:', error);
       setError('Błąd podczas edycji zmiany');
@@ -248,31 +249,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   };
 
   const handleDeleteShift = async (shiftId: number, userId: number) => {
-    setModalIsOpenLoadning(true);
-    try {
-      const tokenXSRF = await fetchCsrfToken();
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-        });
-        if (!response.ok) {
-          console.error('Failed to delete shift: ', response.statusText);
-          throw new Error('Failed to delete shift');
-        }
-        setModalIsOpenLoadning(false);
-        fetchUserSchedule(userId);
-    } catch (error) {
-      console.error('Error deleting shift:', error);
-      setError('Błąd podczas usuwania zmiany');
-    } finally {
-      setModalIsOpenLoadning(false);
-    }
+    await deleteShift(shiftId, userId, fetchUsersSchedule, setModalIsOpenLoadning);
   };
 
   const handlePublishAll = async () => {
@@ -327,30 +304,15 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     publishAll: handlePublishAll,
   }));
 
-  const fetchUserSchedule = async (userId: number) => {
+  const fetchUsersSchedule = async (userId: number) => {
     try {
-      const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
-      const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const userResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        }
-      });
-
-      if (!userResponse.ok) {
-        throw new Error(`Failed to fetch schedule for user ${userId}`);
-      }
-
-      const data = await userResponse.json();
+      const data = await fetchUserSchedule(userId, currentWeek);
 
       setSchedules(prevSchedules => ({
         ...prevSchedules,
         [userId]: {
-          shifts: data.shifts || [],
-          absences: data.absences || []
+          shifts: data.shifts,
+          absences: data.absences
         }
       }));
     } catch (error) {

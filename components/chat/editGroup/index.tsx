@@ -6,6 +6,7 @@ import { faUserMinus, faXmark, faTrash } from '@fortawesome/free-solid-svg-icons
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
 import UserImage from '@/components/userImage';
+import { deleteGroup } from '@/services/chatService';
 
 interface EditGroupProps {
     editGroupModal: (open: boolean) => void;
@@ -101,41 +102,13 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
     const handleDeleteGroup = async (): Promise<void> => {
         if (!selectedChat || selectedChat.type !== 'group') {
             console.error("Error: No group selected or trying to delete a non-group chat.");
-            setError("No group selected or trying to delete a non-group chat.");
             return;
         }
 
-        if (!window.confirm(`Are you sure you want to delete the group "${selectedChat.name}"? This can't be undone!`)) {
+        if (!window.confirm(`Czy na pewno usunąć grupę "${selectedChat.name}"? Tej akcji nie da się cofnąć!`)) {
             return;
         }
-
-        loading(true);
-
-        try {
-            const tokenXSRF = await fetchCsrfToken();
-
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-            });
-
-            if (!response.ok) {
-                throw new Error(`Failed to delete group "${selectedChat.name}"`);
-            }
-
-            console.log("Deleted successfully");
-            window.location.reload();
-        } catch (error) {
-            console.error("Error deleting group:", error);
-            setError('Error deleting group');
-        } finally {
-            loading(false);
-        }
+        await deleteGroup(selectedChat.id, loading)
     };
 
     const handleAddUserToGroup = async (user: ChatPartner): Promise<void> => {
