@@ -13,6 +13,7 @@ import { fetchRoles } from '@/services/roleService';
 import { fetchPredefinedShifts } from '@/services/predefineShiftService';
 import { fetchCsrfToken } from '@/services/csrfService';
 import LoadingSpinner from '@/components/loadingSpinner';
+import { revokeScheduleAi } from '@/services/planerAiService';
 
 const RequirementsForm: React.FC = () => {
     const [forms, setForms] = useState<IRequirementsForm[]>([
@@ -42,26 +43,9 @@ const RequirementsForm: React.FC = () => {
         }
 
         try {
-            const tokenXSRF = await fetchCsrfToken();
-
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/aiSchedule/revoke`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-            });
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Error from server:', errorData.message);
-                alert(`Błąd: ${errorData.message}`);
-            }
+            await revokeScheduleAi();
+            alert('Usunięto pomyślnie.');
             setModalIsOpenLoadning(false);
-            if (response.ok) {
-                alert('Usunięto pomyślnie.');
-            }
         } catch (error) {
             console.error('Failed to send data:', error);
         }
