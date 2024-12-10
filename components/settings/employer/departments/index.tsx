@@ -12,7 +12,7 @@ import classNames from "classnames";
 import DepartmentAddress from "@/components/types/departmentAddress";
 import styles from "./main.module.scss";
 import { fetchCsrfToken } from "@/services/csrfService";
-import { fetchDepartmentsAddress } from "@/services/departmentService";
+import { deleteDepartment, fetchDepartmentsAddress } from "@/services/departmentService";
 import LoadingSpinner from "@/components/loadingSpinner";
 
 interface DepartmentsProps {
@@ -113,32 +113,7 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
     };
 
     const handleDeleteDepartment = async (departmentId: number) => {
-        setModalIsOpenLoadning(true);
-        try {
-            const tokenXSRF = await fetchCsrfToken();
-
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${departmentId}`, {
-                method: 'DELETE',
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-            });
-            if (!response.ok) {
-                console.error("Failed to delete department: ", response.statusText);
-                throw new Error('Error delete department');
-            }
-            setModalIsOpenLoadning(false);
-            setDepartments(departments.filter((dept) => dept.id !== departmentId));
-        }
-        catch (error) {
-            console.error("Error deleting department:", error);
-            setError('Błąd podczas usuwania oddziałów');
-        } finally {
-            setModalIsOpenLoadning(false);
-        }
+        await deleteDepartment(departments, departmentId, setDepartments, setModalIsOpenLoadning);
     };
 
     const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
