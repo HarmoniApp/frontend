@@ -13,14 +13,12 @@ import Department from '@/components/types/department';
 import { fetchLanguages } from "@/services/languageService";
 import { fetchRoles } from "@/services/roleService"
 import styles from './main.module.scss';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
-import { fetchCsrfToken } from '@/services/csrfService';
 import { fetchContracts } from '@/services/contractService';
 import { fetchDepartments } from '@/services/departmentService';
-import { fetchSupervisors } from '@/services/userService';
+import { fetchSupervisors, postUser } from '@/services/userService';
 import LoadingSpinner from '@/components/loadingSpinner';
 
 const AddEmployee: React.FC = () => {
@@ -197,26 +195,8 @@ const AddEmployee: React.FC = () => {
   const handleSubmit = async (values: typeof initialValues, { resetForm }: { resetForm: () => void }) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken();
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-          body: JSON.stringify(values),
-        });
-
-        if (!response.ok) {
-          console.error('Failed to add employee:', response.statusText);
-          throw new Error('Failed to add employee');
-        }
-        setModalIsOpenLoadning(false);
-        const postData = await response.json();
-        setEmployeeLink(postData.id);
+        await postUser(values, setEmployeeLink);
+        
         setIsModalOpen(true);
         resetForm();
 
@@ -232,6 +212,8 @@ const AddEmployee: React.FC = () => {
     } catch (error) {
       console.error('Error adding employee:', error);
       throw error;
+    } finally {
+      setModalIsOpenLoadning(false);
     }
   };
 

@@ -70,6 +70,35 @@ export const fetchSupervisors = async (
     }
 };
 
+export const postUser = async (
+    values: any,
+    setEmployeeLink: (employeeId: number) => void): Promise<void> => {
+
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+          body: JSON.stringify(values),
+        });
+
+        if (!response.ok) {
+          console.error('Failed to add employee:', response.statusText);
+          throw new Error('Failed to add employee');
+        }
+        const postData = await response.json();
+        setEmployeeLink(postData.id);
+    } catch (error) {
+        console.error(`Error while generate`, error);
+    }
+};
+
 export const deleteUser = async (
     userId: number): Promise<void> => {
 
