@@ -1,11 +1,11 @@
 'use client';
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { fetchUserData } from '@/services/userService';
 import Navbar from "@/components/navbar";
 import EditEmployeeDataPopUp from '@/components/employees/employeeData/editEmployeeData';
 import EmployeeData from '@/components/types/employeeData';
-import styles from './main.module.scss';
-import { fetchUserData } from '@/services/userService';
+import styles from '@/styles/components/pages.module.scss';
 
 const EditEmployeePage: React.FC = () => {
   const router = useRouter();
@@ -38,7 +38,7 @@ const EditEmployeePage: React.FC = () => {
   if (!employee) return <div>No employee data found</div>;
 
   return (
-    <div className={styles.editEmployeePageContainerMain}>
+    <div className={styles.pageContainer}>
       <Navbar />
       <EditEmployeeDataPopUp
         employee={employee}

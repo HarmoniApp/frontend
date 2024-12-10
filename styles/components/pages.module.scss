@@ -1,9 +1,7 @@
 @import '@/styles/main.scss';
 
-.addEmployeePageContainerMain{
+.pageContainer{
+    @include displayDFJA(flex, column, null, null);
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
     background-color: $page-main-background-colour;
-    ;
 }
