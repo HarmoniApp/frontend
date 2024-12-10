@@ -113,7 +113,7 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
     };
 
     const handleDeleteDepartment = async (departmentId: number) => {
-        await deleteDepartment(departments, departmentId, setDepartments, setModalIsOpenLoadning);
+        await deleteDepartment(departmentId, setDepartments, setModalIsOpenLoadning);
     };
 
     const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {

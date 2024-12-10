@@ -46,7 +46,6 @@ export const fetchDepartmentsAddress = async (
 }
 
 export const deleteDepartment = async (
-    departments: DepartmentAddress[],
     departmentId: number,
     setDepartments: (departmentsAdress: DepartmentAddress[]) => void,
     setLoading: (loading: boolean) => void): Promise<void> => {
@@ -68,7 +67,7 @@ export const deleteDepartment = async (
             throw new Error('Error delete department');
         }
         setLoading(false);
-        setDepartments(departments.filter((dept) => dept.id !== departmentId));
+        await fetchDepartmentsAddress(setDepartments, setLoading);
     }
     catch (error) {
         console.error("Error deleting department:", error);

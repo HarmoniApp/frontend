@@ -1,4 +1,5 @@
 import WeekSchedule from "@/components/types/weekSchedule";
+import { fetchCsrfToken } from "./csrfService";
 
 export const fetchShiftsAndAbsences = async (
     currentMonth: Date,
@@ -30,3 +31,34 @@ export const fetchShiftsAndAbsences = async (
         console.error('Error fetching week schedule:', error);
     }
 };
+
+// export const deleteShift = async (
+//     shiftId: number,
+//     userId: number,
+//     setLoading: (loading: boolean) => void): Promise<void> => {
+
+//         setLoading(true);
+//     try {
+//         const tokenXSRF = await fetchCsrfToken();
+
+//         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
+//             method: 'DELETE',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+//                 'X-XSRF-TOKEN': tokenXSRF,
+//             },
+//             credentials: 'include',
+//         });
+//         if (!response.ok) {
+//             console.error('Failed to delete shift: ', response.statusText);
+//             throw new Error('Failed to delete shift');
+//         }
+//         setLoading(false);
+//         await fetchUserSchedule(userId);
+//     } catch (error) {
+//         console.error('Error deleting shift:', error);
+//     } finally {
+//         setLoading(false);
+//     }
+// };
