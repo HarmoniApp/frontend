@@ -85,7 +85,7 @@ export const deleteShift = async (
             throw new Error('Failed to delete shift');
         }
         setLoading(false);
-        await fetchUsersSchedule(userId);
+        fetchUsersSchedule(userId);
     } catch (error) {
         console.error('Error deleting shift:', error);
     } finally {
