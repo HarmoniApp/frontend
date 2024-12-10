@@ -13,6 +13,7 @@ import SockJS from 'sockjs-client';
 import '@/styles/main.css';
 import { fetchCsrfToken } from "@/services/csrfService";
 import UserImage from "@/components/userImage";
+import { fetchNotifications } from "@/services/notificationService";
 interface NavbarTopProps {
     onAccountIconClick: () => void;
     userId: number;
@@ -27,28 +28,12 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
-    const fetchNotifications = async () => {
-        try {
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notification/user/${userId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenJWT}`,
-                }
-            });
-            if (!response.ok) throw new Error('Failed to fetch notifications');
-            const data: Notification[] = await response.json();
-            setNotifications(data);
-            setUnreadCount(data.filter(notification => !notification.read).length);
-        } catch (error) {
-            console.error('Error while fetching notifications:', error);
-            setError('Błąd podczas pobierania powiadomień');
-        }
-    };
-
     useEffect(() => {
-        fetchNotifications();
+        const loadData = async () => {
+            await fetchNotifications(setNotifications, setUnreadCount, userId);
+        }
+
+        loadData();
     }, [userId]);
 
     useEffect(() => {
