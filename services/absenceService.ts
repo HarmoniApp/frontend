@@ -1,6 +1,7 @@
 import Absence from "@/components/types/absence";
 import AbsenceStatus from "@/components/types/absenceStatus";
 import AbsenceType from "@/components/types/absenceType";
+import { fetchCsrfToken } from "./csrfService";
 
 export const fetchAbsences = async (
     setAbsences: (absences: Absence[]) => void,
@@ -177,6 +178,39 @@ export const fetchAvailableAbsenceDays = async (
         console.error(`Error fetching absence available days`, error);
         setError('Błąd podczas pobierania dostępnych dni urlopu');
         setAvailableAbsenceDays('Nieznane');
+    } finally {
+        setLoading(false);
+    }
+};
+
+export const deleteAbsence = async (
+    absenceId: number,
+    userId: number,
+    setAbsenceTypeNames: (types: { [key: number]: string }) => void,
+    setAbsences: (absences: Absence[]) => void,
+    setLoading: (loading: boolean) => void): Promise<void> => {
+
+    setLoading(true);
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/${absenceId}/status/3`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+        });
+        if (!response.ok) {
+            console.error('Failed to cancel absence: ', response.statusText);
+            throw new Error(`Failed to cancel absence`);
+        }
+        setLoading(false);
+        fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences, setLoading)
+    } catch (error) {
+        console.error(`Error canceling absence`, error);
     } finally {
         setLoading(false);
     }
