@@ -8,6 +8,7 @@ import DeleteEmployeeNotificationPopUp from './deleteEmployeeNotification';
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
 import LoadingSpinner from '@/components/loadingSpinner';
+import { deleteUser } from '@/services/userService';
 
 interface DeleteEmployeeProps {
   userId: number;
@@ -33,21 +34,7 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
   const handleDeleteEmployee = async () => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken();
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-        })
-        if (!response.ok) {
-          console.error('Failed to delete employee: ', response.statusText);
-          throw new Error(`Failed to delete employee`);
-        }
+      await deleteUser(userId);
         setModalIsOpenLoadning(false);
         setModalStage('delete');
         const countdownInterval = setInterval(() => {
@@ -61,7 +48,6 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
         }, 1000);
     } catch (error) {
       console.error('Error deleting employee:', error)
-      setError('Błąd podczas usuwania użytkownika');
       setModalIsOpenLoadning(false);
     }
   };

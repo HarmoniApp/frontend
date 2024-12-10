@@ -102,7 +102,6 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
     const handleDeleteGroup = async (): Promise<void> => {
         if (!selectedChat || selectedChat.type !== 'group') {
             console.error("Error: No group selected or trying to delete a non-group chat.");
-            setError("No group selected or trying to delete a non-group chat.");
             return;
         }
 
