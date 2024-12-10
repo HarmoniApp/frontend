@@ -183,6 +183,37 @@ export const fetchAvailableAbsenceDays = async (
     }
 };
 
+export const postAbsence = async (
+    values: any,
+    onSend: number): Promise<void> => {
+
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                absence_type_id: values.absence_type_id,
+                start: values.start,
+                end: values.end,
+                user_id: onSend,
+            }),
+        });
+        if (!response.ok) {
+            console.error('Failed to add absence: ', response.statusText);
+            throw new Error(`Failed to add absence'}`);
+        }
+    } catch (error) {
+        console.error(`Error while adding asbence`, error);
+    }
+};
+
 export const deleteAbsence = async (
     absenceId: number,
     userId: number,

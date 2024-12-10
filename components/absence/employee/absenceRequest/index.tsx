@@ -9,7 +9,7 @@ import classNames from 'classnames';
 import styles from './main.module.scss';
 import { Message } from 'primereact/message';
 import { fetchCsrfToken } from '@/services/csrfService';
-import { fetchAbsenceTypes } from '@/services/absenceService';
+import { fetchAbsenceTypes, postAbsence } from '@/services/absenceService';
 import LoadingSpinner from '@/components/loadingSpinner';
 
 interface AbsenceEmployeesRequestProps {
@@ -28,9 +28,23 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
     useEffect(() => {
         const fetchData = async () => {
             await fetchAbsenceTypes(setAbsenceTypes, setError, setModalIsOpenLoading);
-          };
-          fetchData();
+        };
+        fetchData();
     }, []);
+
+    const handleAddAbsence = async (values: any) => {
+        setModalIsOpenLoading(true);
+        try {
+            await postAbsence(values, onSend)
+
+            setIsSubmitted(true);
+            onRefresh();
+        } catch (error) {
+            console.error('Error adding absence:', error);
+        } finally {
+            setModalIsOpenLoading(false);
+        }
+    };
 
     useEffect(() => {
         if (isSubmitted) {
@@ -110,39 +124,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                         absence_type_id: ''
                     }}
                     validationSchema={validationSchema}
-                    onSubmit={async (values) => {
-                        setModalIsOpenLoading(true);
-                        try {
-                            const tokenXSRF = await fetchCsrfToken();
-
-                            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                                    'X-XSRF-TOKEN': tokenXSRF,
-                                },
-                                credentials: 'include',
-                                body: JSON.stringify({
-                                    absence_type_id: values.absence_type_id,
-                                    start: values.start,
-                                    end: values.end,
-                                    user_id: onSend,
-                                }),
-                            });
-                            if (!response.ok) {
-                                const errorData = await response.json();
-                                console.error('Failed to add absence: ', response.statusText);
-                                throw new Error(`Server error: ${errorData.message || 'Unknown error'}`);
-                            }
-                            setModalIsOpenLoading(false);
-                            setIsSubmitted(true);
-                            onRefresh();
-                        } catch (error) {
-                            console.error('Error adding absence:', error);
-                            setError('Błąd podczas dodawania urlopu');
-                        }
-                    }}
+                    onSubmit={handleAddAbsence}
                 >
                     {({ values, errors, touched }) => {
                         const daysDifference = calculateDaysDifference(values.start, values.end);
@@ -215,7 +197,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                                     //     </div>
                                     // </div>
                                     <LoadingSpinner />
-                                    
+
                                 )}
                             </Form>
                         );
