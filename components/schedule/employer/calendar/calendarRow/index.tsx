@@ -17,7 +17,7 @@ import 'primereact/resources/themes/saga-blue/theme.css';
 import './main.css';
 import { fetchCsrfToken } from '@/services/csrfService';
 import LoadingSpinner from '@/components/loadingSpinner';
-import { fetchUserSchedule } from '@/services/scheduleService';
+import { deleteShift, fetchUserSchedule } from '@/services/scheduleService';
 
 interface CalendarRowProps {
   currentWeek: Date[];
@@ -249,31 +249,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   };
 
   const handleDeleteShift = async (shiftId: number, userId: number) => {
-    setModalIsOpenLoadning(true);
-    try {
-      const tokenXSRF = await fetchCsrfToken();
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-        });
-        if (!response.ok) {
-          console.error('Failed to delete shift: ', response.statusText);
-          throw new Error('Failed to delete shift');
-        }
-        setModalIsOpenLoadning(false);
-        fetchUsersSchedule(userId);
-    } catch (error) {
-      console.error('Error deleting shift:', error);
-      setError('Błąd podczas usuwania zmiany');
-    } finally {
-      setModalIsOpenLoadning(false);
-    }
+    await deleteShift(shiftId, userId, fetchUsersSchedule, setModalIsOpenLoadning);
   };
 
   const handlePublishAll = async () => {

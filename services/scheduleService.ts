@@ -35,11 +35,11 @@ export const fetchUserPublishedSchedule = async (
 };
 
 export const fetchUserSchedule = async (
-    userId: number, 
+    userId: number,
     currentWeek: Date[]): Promise<{ shifts: Shift[], absences: AbsenceShort[] }> => {
     try {
         const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
-        const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';  
+        const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
         const tokenJWT = sessionStorage.getItem('tokenJWT');
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}`, {
             method: 'GET',
@@ -61,33 +61,34 @@ export const fetchUserSchedule = async (
 };
 
 
-// export const deleteShift = async (
-//     shiftId: number,
-//     userId: number,
-//     setLoading: (loading: boolean) => void): Promise<void> => {
+export const deleteShift = async (
+    shiftId: number,
+    userId: number,
+    fetchUsersSchedule: (userId: number) => void,
+    setLoading: (loading: boolean) => void): Promise<void> => {
 
-//         setLoading(true);
-//     try {
-//         const tokenXSRF = await fetchCsrfToken();
+    setLoading(true);
+    try {
+        const tokenXSRF = await fetchCsrfToken();
 
-//         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
-//             method: 'DELETE',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-//                 'X-XSRF-TOKEN': tokenXSRF,
-//             },
-//             credentials: 'include',
-//         });
-//         if (!response.ok) {
-//             console.error('Failed to delete shift: ', response.statusText);
-//             throw new Error('Failed to delete shift');
-//         }
-//         setLoading(false);
-//         await fetchUserSchedule(userId);
-//     } catch (error) {
-//         console.error('Error deleting shift:', error);
-//     } finally {
-//         setLoading(false);
-//     }
-// };
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+        });
+        if (!response.ok) {
+            console.error('Failed to delete shift: ', response.statusText);
+            throw new Error('Failed to delete shift');
+        }
+        setLoading(false);
+        await fetchUsersSchedule(userId);
+    } catch (error) {
+        console.error('Error deleting shift:', error);
+    } finally {
+        setLoading(false);
+    }
+};
