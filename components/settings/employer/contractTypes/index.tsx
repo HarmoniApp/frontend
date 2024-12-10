@@ -12,6 +12,7 @@ import classNames from 'classnames';
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
 import { fetchContracts } from '@/services/contractService';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 interface ContractTypesProps {
   setError: (errorMessage: string | null) => void;
@@ -281,11 +282,12 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
             )}
 
             {modalIsOpenLoadning && (
-              <div className={styles.loadingModalOverlay}>
-                <div className={styles.loadingModalContent}>
-                  <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                </div>
-              </div>
+              // <div className={styles.loadingModalOverlay}>
+              //   <div className={styles.loadingModalContent}>
+              //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+              //   </div>
+              // </div>
+              <LoadingSpinner />
             )}
           </Form>
         )}

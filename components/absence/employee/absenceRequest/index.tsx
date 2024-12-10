@@ -10,6 +10,7 @@ import styles from './main.module.scss';
 import { Message } from 'primereact/message';
 import { fetchCsrfToken } from '@/services/csrfService';
 import { fetchAbsenceTypes } from '@/services/absenceService';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 interface AbsenceEmployeesRequestProps {
     onClose: () => void;
@@ -208,11 +209,13 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                                 </div>
 
                                 {modalIsOpenLoading && (
-                                    <div className={styles.loadingModalOverlay}>
-                                        <div className={styles.loadingModalContent}>
-                                            <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                                        </div>
-                                    </div>
+                                    // <div className={styles.loadingModalOverlay}>
+                                    //     <div className={styles.loadingModalContent}>
+                                    //         <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+                                    //     </div>
+                                    // </div>
+                                    <LoadingSpinner />
+                                    
                                 )}
                             </Form>
                         );

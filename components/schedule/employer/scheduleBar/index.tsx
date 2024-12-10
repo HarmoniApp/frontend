@@ -6,6 +6,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import styles from './main.module.scss';
 import { downloadSchedulePdf } from '@/services/pdfService';
 import { downloadScheduleXLSX } from '@/services/xlsxService';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 interface ScheduleBarProps {
   currentWeek: Date[];
@@ -102,11 +103,12 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
       )}
 
       {loading && (
-        <div className={styles.loadingModalOverlay}>
-          <div className={styles.loadingModalContent}>
-            <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-          </div>
-        </div>
+        // <div className={styles.loadingModalOverlay}>
+        //   <div className={styles.loadingModalContent}>
+        //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+        //   </div>
+        // </div>
+        <LoadingSpinner />
       )}
     </div>
   );

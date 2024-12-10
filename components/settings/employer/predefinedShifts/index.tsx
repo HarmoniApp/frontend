@@ -12,6 +12,7 @@ import classNames from 'classnames';
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
 import { formatTimeToHHMM, fetchPredefinedShifts} from '@/services/predefineShiftService';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 interface PredefinedShiftsProps {
   setError: (errorMessage: string | null) => void;
@@ -357,11 +358,12 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
             )}
 
             {modalIsOpenLoadning && (
-              <div className={styles.loadingModalOverlay}>
-                <div className={styles.loadingModalContent}>
-                  <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                </div>
-              </div>
+              // <div className={styles.loadingModalOverlay}>
+              //   <div className={styles.loadingModalContent}>
+              //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+              //   </div>
+              // </div>
+              <LoadingSpinner />
             )}
           </Form>
         )}

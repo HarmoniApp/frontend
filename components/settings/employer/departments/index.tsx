@@ -13,6 +13,7 @@ import DepartmentAddress from "@/components/types/departmentAddress";
 import styles from "./main.module.scss";
 import { fetchCsrfToken } from "@/services/csrfService";
 import { fetchDepartmentsAddress } from "@/services/departmentService";
+import LoadingSpinner from "@/components/loadingSpinner";
 
 interface DepartmentsProps {
     setError: (errorMessage: string | null) => void;
@@ -510,11 +511,12 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
                             </div>
                         )}
                         {modalIsOpenLoadning && (
-                            <div className={styles.loadingModalOverlay}>
-                                <div className={styles.loadingModalContent}>
-                                    <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                                </div>
-                            </div>
+                            // <div className={styles.loadingModalOverlay}>
+                            //     <div className={styles.loadingModalContent}>
+                            //         <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+                            //     </div>
+                            // </div>
+                            <LoadingSpinner />
                         )}
                     </Form>
                 )}

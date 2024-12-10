@@ -15,6 +15,7 @@ import { fetchCsrfToken } from '@/services/csrfService';
 import { fetchDepartments } from '@/services/departmentService';
 import Supervisor from '@/components/types/supervisor';
 import { fetchSimpleUser } from '@/services/userService';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   const [employee, setEmployee] = useState<EmployeeData>();
@@ -231,11 +232,12 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
       {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
 
       {modalIsOpenLoadning && (
-        <div className={styles.loadingModalOverlay}>
-          <div className={styles.loadingModalContent}>
-            <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-          </div>
-        </div>
+        // <div className={styles.loadingModalOverlay}>
+        //   <div className={styles.loadingModalContent}>
+        //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+        //   </div>
+        // </div>
+        <LoadingSpinner />
       )}
     </div>
   );

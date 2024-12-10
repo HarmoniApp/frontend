@@ -12,6 +12,7 @@ import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 interface RolesProps {
   setError: (errorMessage: string | null) => void;
@@ -301,11 +302,12 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
             )}
 
             {modalIsOpenLoadning && (
-              <div className={styles.loadingModalOverlay}>
-                <div className={styles.loadingModalContent}>
-                  <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                </div>
-              </div>
+              // <div className={styles.loadingModalOverlay}>
+              //   <div className={styles.loadingModalContent}>
+              //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+              //   </div>
+              // </div>
+              <LoadingSpinner />
             )}
           </Form>
         )}

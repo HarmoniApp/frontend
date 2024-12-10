@@ -14,6 +14,7 @@ import '@/styles/main.css';
 import { fetchCsrfToken } from "@/services/csrfService";
 import UserImage from "@/components/userImage";
 import { fetchNotifications } from "@/services/notificationService";
+import LoadingSpinner from "@/components/loadingSpinner";
 interface NavbarTopProps {
     onAccountIconClick: () => void;
     userId: number;
@@ -145,11 +146,12 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
                     </div>
 
                     {modalIsOpenLoadning && (
-                        <div className={styles.loadingModalOverlay}>
-                            <div className={styles.loadingModalContent}>
-                                <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                            </div>
-                        </div>
+                        // <div className={styles.loadingModalOverlay}>
+                        //     <div className={styles.loadingModalContent}>
+                        //         <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+                        //     </div>
+                        // </div>
+                        <LoadingSpinner />
                     )}
                 </div>
             )}

@@ -8,6 +8,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import styles from './main.module.scss';
 import { Message } from 'primereact/message';
 import { fetchCsrfToken } from '@/services/csrfService';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 interface PhotoChangeProps {
     onClose: () => void;
@@ -114,11 +115,12 @@ const PhotoChange: React.FC<PhotoChangeProps> = ({ onClose }) => {
             </Formik>
             {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
             {loading && (
-                <div className={styles.loadingModalOverlay}>
-                    <div className={styles.loadingModalContent}>
-                        <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                    </div>
-                </div>
+                // <div className={styles.loadingModalOverlay}>
+                //     <div className={styles.loadingModalContent}>
+                //         <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+                //     </div>
+                // </div>
+                <LoadingSpinner />
             )}
         </div>
     );

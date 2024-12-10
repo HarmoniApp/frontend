@@ -15,6 +15,7 @@ import { Message as PrimeMessage } from 'primereact/message';
 import { fetchLanguages } from "@/services/languageService";
 import { fetchCsrfToken } from '@/services/csrfService';
 import { group } from 'console';
+import LoadingSpinner from '../loadingSpinner';
 
 const Chat = () => {
   const [chatPartners, setChatPartners] = useState<ChatPartner[]>([]);
@@ -452,11 +453,12 @@ const Chat = () => {
       )}
       {error && <PrimeMessage severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
       {loading && (
-        <div className={styles.loadingModalOverlay}>
-          <div className={styles.loadingModalContent}>
-            <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-          </div>
-        </div>
+        // <div className={styles.loadingModalOverlay}>
+        //   <div className={styles.loadingModalContent}>
+        //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+        //   </div>
+        // </div>
+        <LoadingSpinner />
       )}
     </div>
   );

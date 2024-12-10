@@ -12,6 +12,7 @@ import { Message } from 'primereact/message';
 import { fetchCsrfToken } from '@/services/csrfService';
 import { fetchSimpleUser } from '@/services/userService';
 import { fetchAbsenceType } from '@/services/absenceService';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 interface AbsenceCardProps {
     absence: Absence;
@@ -199,11 +200,12 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
             {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
 
             {modalIsOpenLoadning && (
-                <div className={styles.loadingModalOverlay}>
-                    <div className={styles.loadingModalContent}>
-                        <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                    </div>
-                </div>
+                // <div className={styles.loadingModalOverlay}>
+                //     <div className={styles.loadingModalContent}>
+                //         <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+                //     </div>
+                // </div>
+                <LoadingSpinner />
             )}
         </div>
     );

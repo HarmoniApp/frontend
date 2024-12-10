@@ -22,6 +22,7 @@ import { fetchCsrfToken } from '@/services/csrfService';
 import { fetchContracts } from '@/services/contractService';
 import { fetchDepartments } from '@/services/departmentService';
 import { fetchSupervisors } from '@/services/userService';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 interface EditEmployeeDataProps {
   employee: EmployeeDataWorkAdressOnlyId;
@@ -614,11 +615,12 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
             {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
 
             {modalIsOpenLoadning && (
-              <div className={styles.loadingModalOverlay}>
-                <div className={styles.loadingModalContent}>
-                  <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                </div>
-              </div>
+              // <div className={styles.loadingModalOverlay}>
+              //   <div className={styles.loadingModalContent}>
+              //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+              //   </div>
+              // </div>
+              <LoadingSpinner />
             )}
           </Form>
         )}

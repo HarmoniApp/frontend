@@ -7,6 +7,7 @@ import { Message } from 'primereact/message';
 import DeleteEmployeeNotificationPopUp from './deleteEmployeeNotification';
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 interface DeleteEmployeeProps {
   userId: number;
@@ -91,11 +92,12 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
       )}
       {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
       {modalIsOpenLoadning && (
-        <div className={styles.loadingModalOverlay}>
-          <div className={styles.loadingModalContent}>
-            <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-          </div>
-        </div>
+        // <div className={styles.loadingModalOverlay}>
+        //   <div className={styles.loadingModalContent}>
+        //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+        //   </div>
+        // </div>
+        <LoadingSpinner />
       )}
     </div>
   );

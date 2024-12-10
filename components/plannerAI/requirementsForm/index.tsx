@@ -12,6 +12,7 @@ import styles from './main.module.scss';
 import { fetchRoles } from '@/services/roleService';
 import { fetchPredefinedShifts } from '@/services/predefineShiftService';
 import { fetchCsrfToken } from '@/services/csrfService';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 const RequirementsForm: React.FC = () => {
     const [forms, setForms] = useState<IRequirementsForm[]>([
@@ -283,11 +284,12 @@ const RequirementsForm: React.FC = () => {
                                 <p className={styles.buttonParagraph}>Usuń dzień</p>
                             </button>
                             {modalIsOpenLoadning && (
-                                <div className={styles.loadingModalOverlay}>
-                                    <div className={styles.loadingModalContent}>
-                                        <ProgressSpinner />
-                                    </div>
-                                </div>
+                                // <div className={styles.loadingModalOverlay}>
+                                //     <div className={styles.loadingModalContent}>
+                                //         <ProgressSpinner />
+                                //     </div>
+                                // </div>
+                                <LoadingSpinner />
                             )}
                         </Form>
                     )}

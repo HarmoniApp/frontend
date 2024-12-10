@@ -11,6 +11,7 @@ import styles from './main.module.scss';
 import { jwtDecode } from "jwt-decode";
 import MyJwtPayload from '@/components/types/myJwtPayload';
 import { fetchCsrfToken } from '@/services/csrfService';
+import LoadingSpinner from '../loadingSpinner';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -208,11 +209,12 @@ const Login = () => {
                   <button type="submit" className={styles.button}>Zapisz</button>
 
                   {modalIsOpenLoadning && (
-                    <div className={styles.loadingModalOverlay}>
-                      <div className={styles.loadingModalContent}>
-                        <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                      </div>
-                    </div>
+                    // <div className={styles.loadingModalOverlay}>
+                    //   <div className={styles.loadingModalContent}>
+                    //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+                    //   </div>
+                    // </div>
+                    <LoadingSpinner />
                   )}
                 </Form>
               )}

@@ -9,6 +9,7 @@ import { Message } from 'primereact/message';
 import { fetchCsrfToken } from '@/services/csrfService';
 import { fetchAvailableAbsenceDays, fetchUserAbsences } from '@/services/absenceService';
 import AbsenceType from '@/components/types/absenceType';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 interface AbsenceEmployeesProps {
     userId: number;
@@ -145,12 +146,13 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                     </div>
                 </div>
             )}
-            {loading && (
-                <div className={styles.loadingModalOverlay}>
-                    <div className={styles.loadingModalContent}>
-                        <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                    </div>
-                </div>
+            {loading && ( 
+                <LoadingSpinner />
+                // <div className={styles.loadingModalOverlay}>
+                //     <div className={styles.loadingModalContent}>
+                //         <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+                //     </div>
+                // </div>
             )}
         </div>
     );

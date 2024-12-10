@@ -16,6 +16,7 @@ import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import './main.css';
 import { fetchCsrfToken } from '@/services/csrfService';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 interface CalendarRowProps {
   currentWeek: Date[];
@@ -437,11 +438,12 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
             }}
           />
           {modalIsOpenLoadning && (
-            <div className={styles.loadingModalOverlay}>
-              <div className={styles.loadingModalContent}>
-                <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-              </div>
-            </div>
+            // <div className={styles.loadingModalOverlay}>
+            //   <div className={styles.loadingModalContent}>
+            //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+            //   </div>
+            // </div>
+            <LoadingSpinner />
           )}
         </>
       )}
