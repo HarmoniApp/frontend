@@ -56,7 +56,6 @@ const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setCh
       }
     } catch (error) {
       console.error('Błąd podczas tworzenia grupy:', error);
-      setError('Błąd podczas tworzenia grupy');
     } finally {
       loading(false);
     }

@@ -17,7 +17,7 @@ import 'primereact/resources/themes/saga-blue/theme.css';
 import '@/styles/components/pagination.css';
 import { fetchCsrfToken } from '@/services/csrfService';
 import LoadingSpinner from '@/components/loadingSpinner';
-import { deleteShift, fetchUserSchedule } from '@/services/scheduleService';
+import { deleteShift, fetchUserSchedule, postShift } from '@/services/scheduleService';
 
 interface CalendarRowProps {
   currentWeek: Date[];
@@ -180,34 +180,10 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const handleAddShift = async (shiftData: { start: string; end: string; userId: number; roleName: string; }) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken();
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            start: shiftData.start,
-            end: shiftData.end,
-            published: false,
-            user_id: shiftData.userId,
-            role_name: shiftData.roleName,
-          }),
-        });
-
-        if (!response.ok) {
-          console.error('Failed to add add shift:', response.statusText);
-          throw new Error('Failed to add add shift');
-        }
-        setModalIsOpenLoadning(false);
-        fetchUsersSchedule(shiftData.userId);
+      await postShift(shiftData)
+      fetchUsersSchedule(shiftData.userId);
     } catch (error) {
-      console.error('Error adding add shift:', error);
-      setError('Błąd podczas dodawania zmiany');
+      console.error('Error editing shift:', error);
     } finally {
       setModalIsOpenLoadning(false);
     }
@@ -218,28 +194,28 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     try {
       const tokenXSRF = await fetchCsrfToken();
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftData.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            start: shiftData.start,
-            end: shiftData.end,
-            published: false,
-            user_id: shiftData.userId,
-            role_name: shiftData.roleName,
-          }),
-        });
-        if (!response.ok) {
-          console.error('Failed to edit shift');
-          throw new Error('Failed to edit shift');
-        }
-        setModalIsOpenLoadning(false);
-        fetchUsersSchedule(shiftData.userId);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftData.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+          'X-XSRF-TOKEN': tokenXSRF,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          start: shiftData.start,
+          end: shiftData.end,
+          published: false,
+          user_id: shiftData.userId,
+          role_name: shiftData.roleName,
+        }),
+      });
+      if (!response.ok) {
+        console.error('Failed to edit shift');
+        throw new Error('Failed to edit shift');
+      }
+      setModalIsOpenLoadning(false);
+      fetchUsersSchedule(shiftData.userId);
     } catch (error) {
       console.error('Error editing shift:', error);
       setError('Błąd podczas edycji zmiany');
@@ -268,29 +244,29 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
       try {
         const tokenXSRF = await fetchCsrfToken();
 
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shift.id}`, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-              'X-XSRF-TOKEN': tokenXSRF,
-            },
-            credentials: 'include',
-          });
-          if (!response.ok) {
-            console.error(`Failed to publish shift ${shift.id}`);
-            throw new Error(`Failed to publish shift ${shift.id}`);
-          }
-          setModalIsOpenLoadning(false);
-          setSchedules(prevSchedules => ({
-            ...prevSchedules,
-            [shift.user_id]: {
-              ...prevSchedules[shift.user_id],
-              shifts: prevSchedules[shift.user_id].shifts.map(s =>
-                s.id === shift.id ? { ...s, published: true } : s
-              ),
-            },
-          }));
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shift.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+        });
+        if (!response.ok) {
+          console.error(`Failed to publish shift ${shift.id}`);
+          throw new Error(`Failed to publish shift ${shift.id}`);
+        }
+        setModalIsOpenLoadning(false);
+        setSchedules(prevSchedules => ({
+          ...prevSchedules,
+          [shift.user_id]: {
+            ...prevSchedules[shift.user_id],
+            shifts: prevSchedules[shift.user_id].shifts.map(s =>
+              s.id === shift.id ? { ...s, published: true } : s
+            ),
+          },
+        }));
       } catch (error) {
         console.error('Error publishing shift:', error);
         setError('Błąd podczas publikacji');

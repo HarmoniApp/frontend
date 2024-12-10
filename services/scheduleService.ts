@@ -60,6 +60,37 @@ export const fetchUserSchedule = async (
     }
 };
 
+export const postShift = async (
+    shiftData: { start: string; end: string; userId: number; roleName: string; }): Promise<void> => {
+
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                start: shiftData.start,
+                end: shiftData.end,
+                published: false,
+                user_id: shiftData.userId,
+                role_name: shiftData.roleName,
+            }),
+        });
+
+        if (!response.ok) {
+            console.error('Failed to add add shift:', response.statusText);
+            throw new Error('Failed to add add shift');
+        }
+    } catch (error) {
+        console.error(`Error while generate`, error);
+    }
+};
 
 export const deleteShift = async (
     shiftId: number,
