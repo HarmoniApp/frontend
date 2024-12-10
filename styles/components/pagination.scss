@@ -1,0 +1,26 @@
+@use '../abstracts/variables.scss' as vars;
+
+.p-paginator {
+    background-color: vars.$white;
+    border: 1px solid vars.$main-colour;
+    border-radius: 10px;
+    margin: 30px;
+  }
+  
+  .p-paginator .p-paginator-next,
+  .p-paginator .p-paginator-prev {
+    background-color: vars.$main-colour;
+    color: vars.$font-dark-colour;
+  }
+  
+  .p-paginator .p-paginator-page {
+    padding: 10px;
+    background-color: vars.$white;
+    color: vars.$font-dark-colour;
+    border: 1px solid vars.$main-colour;
+  }
+  
+  .p-paginator .p-paginator-page.p-highlight {
+    background-color: vars.$main-colour;
+    color: vars.$font-light-colour;
+  }

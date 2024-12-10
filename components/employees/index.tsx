@@ -5,7 +5,7 @@ import EmployeeFilter from '@/components/employees/employeeFilter';
 import EmployeeBar from '@/components/employees/employeeBar';
 import PersonTile from '@/components/types/personTile';
 import styles from './main.module.scss';
-import './main.css';
+import '@/styles/components/pagination.css';
 
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Card } from 'primereact/card';

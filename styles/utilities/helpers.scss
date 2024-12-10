@@ -17,6 +17,36 @@
 //     text-align: center;
 // }
 
+.errorMessageComponent {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    width: calc(100% - 40px);
+    max-width: 400px;
+    z-index: 1000;
+    padding: 10px;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    animation: slideDown 0.3s ease-in-out;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateX(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.errorMessageComponent:nth-child(n) {
+    bottom: calc(20px + (50px * (n - 1)));
+    opacity: 1;
+}
+
 .spinnerContainer {
     @include displayDFJA(flex, column, center, center);
     position: absolute;

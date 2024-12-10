@@ -14,7 +14,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { Card } from 'primereact/card';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import 'primereact/resources/themes/saga-blue/theme.css';
-import './main.css';
+import '@/styles/components/pagination.css';
 import { fetchCsrfToken } from '@/services/csrfService';
 import LoadingSpinner from '@/components/loadingSpinner';
 
