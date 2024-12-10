@@ -11,7 +11,7 @@ import styles from './main.module.scss';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
-import { fetchAbsences } from '@/services/absenceService';
+import { fetchAbsences, fetchAbsencesByStatus, fetchAbsencesStatus } from '@/services/absenceService';
 
 const AbsenceEmployer: React.FC = () => {
   const [absences, setAbsences] = useState<Absence[]>([]);
@@ -55,29 +55,12 @@ const AbsenceEmployer: React.FC = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    const loadData = async () => {
       await fetchAbsences(setAbsences, setError, setLoading);
+      await fetchAbsencesStatus(setAbsencesStatus);
       fetchUsers();
     };
-    fetchData();
-
-    const fetchAbsencesStatus = async () => {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/status`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-          },
-        });
-        const data = await response.json();
-        setAbsencesStatus(data);
-      } catch (error) {
-        console.error('Error fetching absence statuses:', error);
-      }
-    };
-
-    fetchAbsencesStatus();
+    loadData();
   }, []);
 
   const handleStatusChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -88,19 +71,11 @@ const AbsenceEmployer: React.FC = () => {
     setSelectedStatus(statusId);
 
     try {
-      const url = statusId !== undefined
-        ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/status/${statusId}`
-        : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence`;
-
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setAbsences(data.content);
+      if(statusId !== undefined){
+        await fetchAbsencesByStatus(setAbsences, statusId)
+      } else {
+        await fetchAbsences(setAbsences, setError, setLoading);
+      }
     } catch (error) {
       console.error('Error fetching absences by status:', error);
       setError('Error fetching absences by status');

@@ -20,6 +20,7 @@ import classNames from 'classnames';
 import { fetchCsrfToken } from '@/services/csrfService';
 import { fetchContracts } from '@/services/contractService';
 import { fetchDepartments } from '@/services/departmentService';
+import { fetchSupervisors } from '@/services/userService';
 
 const AddEmployee: React.FC = () => {
   const router = useRouter();
@@ -40,28 +41,12 @@ const AddEmployee: React.FC = () => {
 
   if (modalCountdown === 0) onBack();
 
-  const fetchSupervisors = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/supervisor`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setSupervisors(data.content);
-    } catch (error) {
-      console.error('Error fetching supervisors:', error);
-    }
-  };
-
   useEffect(() => {
     const loadData = async () => {
       await fetchRoles(setRoles, setModalIsOpenLoadning);
       await fetchContracts(setContracts, setModalIsOpenLoadning);
       await fetchLanguages(setLanguages, setError, setModalIsOpenLoadning);
-      await fetchSupervisors();
+      await fetchSupervisors(setSupervisors);
       await fetchDepartments(setDepartments, setModalIsOpenLoadning);
     };
 

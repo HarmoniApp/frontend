@@ -1,6 +1,7 @@
 import Absence from "@/components/types/absence";
 import EmployeeData from "@/components/types/employeeData";
 import SimpleUser from "@/components/types/simpleUser";
+import Supervisor from "@/components/types/supervisor";
 
 export const fetchSimpleUser = async (
     absence: Absence,
@@ -49,3 +50,20 @@ export const fetchUserData = async (
         setLoading(false);
     }
 };
+
+export const fetchSupervisors = async (
+    setSupervisors: (supervisors: Supervisor[]) => void): Promise<void> => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/supervisor`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+        },
+      });
+      const data = await response.json();
+      setSupervisors(data.content);
+    } catch (error) {
+      console.error('Error fetching supervisors:', error);
+    }
+  };

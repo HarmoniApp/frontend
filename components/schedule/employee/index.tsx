@@ -6,6 +6,7 @@ import CalendarCells from './calendarCells';
 import WeekSchedule from '@/components/types/weekSchedule';
 import { Message } from 'primereact/message';
 import styles from './main.module.scss';
+import { fetchShiftsAndAbsences } from '@/services/scheduleService';
 interface ScheduleEmployeeProps {
     userId: number;
 }
@@ -15,46 +16,21 @@ const ScheduleEmployee: React.FC<ScheduleEmployeeProps> = ({ userId }) => {
     const [weekSchedule, setWeekSchedule] = useState<WeekSchedule | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    const getMonthStartAndEnd = () => {
-        const year = currentMonth.getFullYear();
-        const month = currentMonth.getMonth() + 1;
-        const startDate = `${year}-${month.toString().padStart(2, '0')}-01T00:00`;
-        const lastDayOfMonth = new Date(year, month, 0).getDate();
-        const endDate = `${year}-${month.toString().padStart(2, '0')}-${lastDayOfMonth}T23:59`;
-
-        return { startDate, endDate };
-    };
-
-    const fetchShiftsAndAbsences = async () => {
-        try {
-            const { startDate, endDate } = getMonthStartAndEnd();
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}&published=true`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                }
-            });
-            const data: WeekSchedule = await response.json();
-            setWeekSchedule(data);
-        } catch (error) {
-            console.error('Error fetching week schedule:', error);
-            setError('Błąd podczas pobierania kalendarza');
-        }
-    };
-
     useEffect(() => {
-        fetchShiftsAndAbsences();
+        const loadData = async () => {
+            await fetchShiftsAndAbsences(currentMonth, userId, setWeekSchedule);
+        }
+        loadData();
     }, [currentMonth]);
 
     const handlePrevMonth = () => {
         setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
-        fetchShiftsAndAbsences();
+        fetchShiftsAndAbsences(currentMonth, userId, setWeekSchedule);
     };
 
     const handleNextMonth = () => {
         setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
-        fetchShiftsAndAbsences();
+        fetchShiftsAndAbsences(currentMonth, userId, setWeekSchedule);
     };
 
     return (
