@@ -53,7 +53,8 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({ weekData, onSearch }) =
         {weekData.map((day, index) => (
           <div
             key={index}
-            className={`${styles.dayContainer} ${new Date().getDate() === day.getDate() ? styles.today : ''}`}
+            // className={`${styles.dayContainer} ${new Date().getDate() === day.getDate() ? styles.today : ''}`}
+            className={`${styles.dayContainer} ${new Date().toDateString() === day.toDateString() ? styles.today : ''}`} 
           >
             <div className={styles.dayName}>
               {isMobileView ? shortDayNames[getDayIndex(day)] : fullDayNames[getDayIndex(day)]}
