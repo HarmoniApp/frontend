@@ -11,7 +11,7 @@ import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
-import { fetchContracts } from '@/services/contractService';
+import { deleteContractType, fetchContracts } from '@/services/contractService';
 import LoadingSpinner from '@/components/loadingSpinner';
 
 interface ContractTypesProps {
@@ -37,31 +37,7 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
   }, []);
 
   const handleDeleteContractType = async (contractId: number) => {
-    setModalIsOpenLoadning(true);
-    try {
-      const tokenXSRF = await fetchCsrfToken();
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type/${contractId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-          'X-XSRF-TOKEN': tokenXSRF,
-        },
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        console.error('Failed to delete department: ', response.statusText);
-        throw new Error('Failed to delete department');
-      }
-      setModalIsOpenLoadning(false);
-      setContracts(contracts.filter((contract) => contract.id !== contractId));
-    } catch (error) {
-      console.error('Error deleting contract type:', error);
-      setError('Błąd podczas usuwania umów');
-    } finally {
-      setModalIsOpenLoadning(false);
-    }
+    await deleteContractType(contractId, setContracts, setModalIsOpenLoadning)
   };
 
   const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
