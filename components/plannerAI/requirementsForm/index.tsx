@@ -4,16 +4,14 @@ import PredefinedShift from '@/components/types/predefinedShifts';
 import Role from '@/components/types/role';
 import Instruction from '@/components/plannerAI/instruction';
 import IRequirementsForm from '@/components/types/requirementsForm';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan, faEraser, faPlus, faChartSimple, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import * as Yup from 'yup';
 import styles from './main.module.scss';
 import { fetchRoles } from '@/services/roleService';
 import { fetchPredefinedShifts } from '@/services/predefineShiftService';
-import { fetchCsrfToken } from '@/services/csrfService';
 import LoadingSpinner from '@/components/loadingSpinner';
-import { revokeScheduleAi } from '@/services/planerAiService';
+import { generateScheduleAi, revokeScheduleAi } from '@/services/planerAiService';
 
 const RequirementsForm: React.FC = () => {
     const [forms, setForms] = useState<IRequirementsForm[]>([
@@ -85,35 +83,15 @@ const RequirementsForm: React.FC = () => {
             })),
         }));
 
-        console.log('Payload to send:', JSON.stringify(payload, null, 2));
-
         if (payload.some((form) => !form.date || form.shifts.length === 0)) {
             console.error('Payload contains invalid data. Please check your inputs.');
             return;
         }
 
         try {
-            const tokenXSRF = await fetchCsrfToken();
-
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/aiSchedule/generate`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-                body: JSON.stringify(payload),
-            });
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Error from server:', errorData.message);
-                alert(`Błąd: ${errorData.message}`);
-            }
+            await generateScheduleAi(payload);
+            alert('Wygenerowano pomyślnie.');
             setModalIsOpenLoadning(false);
-            if (response.ok) {
-                alert('Wygenerowano pomyślnie.');
-            }
         } catch (error) {
             console.error('Failed to send data:', error);
         }
