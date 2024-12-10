@@ -7,18 +7,19 @@ import { faComments, faUserMinus, faUserPen, faUserLock } from '@fortawesome/fre
 import DeleteEmployeePopUp from '@/components/employees/employeeData/deleteEmployee';
 import EmployeeData from '@/components/types/employeeData';
 import Department from '@/components/types/department';
-import SupervisorDataSimple from '@/components/types/supervisorDataSimple';
 import Flag from 'react-flagkit';
 import styles from './main.module.scss';
 import NewPassword from './newPassword';
 import { Message } from 'primereact/message';
 import { fetchCsrfToken } from '@/services/csrfService';
 import { fetchDepartments } from '@/services/departmentService';
+import Supervisor from '@/components/types/supervisor';
+import { fetchSimpleUser } from '@/services/userService';
 
 const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
-  const [employee, setEmployee] = useState<EmployeeData | null>(null);
+  const [employee, setEmployee] = useState<EmployeeData>();
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [supervisorData, setSupervisorData] = useState<SupervisorDataSimple | null>(null);
+  const [supervisorData, setSupervisorData] = useState<Supervisor | null>(null);
   const [modalIsOpenDeleteEmployee, setModalDeleteEmployee] = useState(false);
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
   const [newPassword, setNewPassword] = useState('');
@@ -44,31 +45,13 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
           const data = await response.json();
           setEmployee(data);
           if (data.supervisor_id) {
-            fetchSupervisor(data.supervisor_id);
+            fetchSimpleUser(undefined, data.supervisor_id, setSupervisorData);
           }
         } catch (error) {
           console.error('Error fetching employee data:', error);
           setError('Błąd podczas pobierania pracownika');
         }
       };
-
-      const fetchSupervisor = async (supervisorId: number) => {
-        try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/${supervisorId}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            },
-          });
-          const supervisorData = await response.json();
-          setSupervisorData(supervisorData);
-        } catch (error) {
-          console.error('Error fetching supervisor data:', error);
-          setError('Błąd podczas pobierania przełoonego');
-        }
-      };
-
 
       const loadData = async () => {
         await fetchDepartments(setDepartments, setModalIsOpenLoadning);
