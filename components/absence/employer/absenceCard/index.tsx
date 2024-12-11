@@ -27,7 +27,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
 
     useEffect(() => {
         const fetchData = async () => {
-            await fetchSimpleUser(absence, undefined, setUser, undefined, setModalIsOpenLoadning);
+            await fetchSimpleUser(absence.id, setUser, undefined, setModalIsOpenLoadning);
             await fetchAbsenceType(absence.absence_type_id, setAbsenceType);
         };
         fetchData();

@@ -46,7 +46,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
           const data = await response.json();
           setEmployee(data);
           if (data.supervisor_id) {
-            fetchSimpleUser(undefined, data.supervisor_id, setSupervisorData);
+            fetchSimpleUser(data.supervisor_id, setSupervisorData);
           }
         } catch (error) {
           console.error('Error fetching employee data:', error);
