@@ -4,14 +4,13 @@ import { useRouter } from 'next/navigation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import { Message } from 'primereact/message';
 import * as Yup from 'yup';
 import styles from './main.module.scss';
 import { jwtDecode } from "jwt-decode";
 import MyJwtPayload from '@/components/types/myJwtPayload';
-import { fetchCsrfToken } from '@/services/csrfService';
 import LoadingSpinner from '../loadingSpinner';
+import { patchChangePassword } from '@/services/passwordService';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,10 +20,6 @@ const Login = () => {
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
   const [passwordPath, setPasswordPath] = useState<string>('');
   const router = useRouter();
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
 
   const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
     const invalidChars = value.split('').filter(char => !allowedPattern.test(char));
@@ -110,38 +105,19 @@ const Login = () => {
     } catch (error) {
       console.error("An error occurred:", error);
       setLoginError("Wystąpił błąd podczas logowania.");
-      setError('Błąd podczas logowania');
     }
   };
 
   const handlePasswordChangeSubmit = async (values: any) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken();
+      await patchChangePassword(values, passwordPath)
 
-      const requestBody = {
-        newPassword: values.newPassword,
-      };
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${passwordPath}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-          'X-XSRF-TOKEN': tokenXSRF,
-        },
-        credentials: 'include',
-        body: JSON.stringify(requestBody),
-      });
-      if (!response.ok) {
-        console.error("Failed to change password: ", response.statusText);
-        throw new Error('Error changing password');
-      }
-      setModalIsOpenLoadning(false);
       setIsChangePasswordModalOpen(false);
     } catch (error) {
       console.error("An error occurred while changing password:", error);
-      setError('Błąd');
+    } finally {
+      setModalIsOpenLoadning(false);
     }
   };
 
@@ -177,7 +153,7 @@ const Login = () => {
               <FontAwesomeIcon
                 icon={showPassword ? faEyeSlash : faEye}
                 className={styles.eyeIcon}
-                onClick={togglePasswordVisibility}
+                onClick={() => setShowPassword(!showPassword)}
               />
             </div>
             <ErrorMessage name="password" component="div" className={styles.error} />
