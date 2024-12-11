@@ -1,0 +1,21 @@
+@import '@/styles/main.scss';
+
+.customButton {
+    @include displayDFJAG(flex, null, null, center, 10px);
+    padding: 10px;
+    background-color: $white;
+    color: $font-dark-colour;
+    border: 2px solid $main-colour;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+
+    &:hover {
+        background-color: $main-colour-hover;
+        color: $font-light-colour;
+        border-color: $main-colour-hover;
+    }
+}

@@ -7,6 +7,7 @@ import styles from './main.module.scss';
 import { downloadUsersPDF } from '@/services/pdfService';
 import { downloadUsersXLSX } from '@/services/xlsxService';
 import LoadingSpinner from '@/components/loadingSpinner';
+import CustomButton from '@/components/customButton';
 
 interface EmployeeBarProps {
   setActiveView: (view: 'tiles' | 'list') => void;
@@ -47,17 +48,19 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
   return (
     <div className={styles.employeeBarContainerMain}>
       <div className={styles.actionContainer}>
-        <button className={styles.addEmployeeButton} onClick={onAddEmployee} >
+        {/* <button className={styles.addEmployeeButton} onClick={onAddEmployee} >
           <FontAwesomeIcon icon={faUserPlus} /> dodaj pracownika
-        </button>
+        </button> */}
+        <CustomButton icon="userPlus" writing="dodaj pracownika" action={onAddEmployee} />
         {/* <button className={styles.importEmployeeButton} >
           <FontAwesomeIcon icon={faCloudArrowUp} /> importuj
         </button> */}
 
         <div className={styles.exportDropdownContainer}>
-          <button className={styles.importEmployeeButton} onClick={toggleDropdown} >
+          {/* <button className={styles.importEmployeeButton} onClick={toggleDropdown} >
             <FontAwesomeIcon icon={faCloudArrowDown} /> exportuj
-          </button>
+          </button> */}
+          <CustomButton icon="cloudArrowDown" writing="exportuj" action={toggleDropdown} />
           {dropdownVisible && (
             <div className={styles.exportDropdownMenu}>
               <button onClick={() => handleExport('pdf')} > Eksportuj do PDF</button>
