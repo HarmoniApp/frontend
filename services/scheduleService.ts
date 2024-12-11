@@ -164,7 +164,7 @@ export const patchPublishShifts = async (
     try {
         const tokenXSRF = await fetchCsrfToken();
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shift.id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
