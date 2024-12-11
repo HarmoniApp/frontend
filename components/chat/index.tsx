@@ -286,7 +286,6 @@ const Chat = () => {
       };
     } catch (error) {
       console.error('Error fetching group details:', error);
-      setError('Error fetching group details');
       return {
         id: partnerId,
         name: '',

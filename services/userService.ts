@@ -57,7 +57,8 @@ export const fetchSimpleUsersWithPagination = async (
 export const fetchUserData = async (
     id: string | number,
     setEmployee: (users: EmployeeData | null) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
+    setLoading: (loading: boolean) => void,
+    setSupervisorData?: (supervisor: Supervisor | null) => void): Promise<void> => {
     setLoading(true);
 
     try {
@@ -71,6 +72,11 @@ export const fetchUserData = async (
         if (!response.ok) throw new Error('Failed to fetch employee data');
         const data = await response.json();
         setEmployee(data);
+        if (setSupervisorData != undefined) {
+            if (data.supervisor_id) {
+                fetchSimpleUser(data.supervisor_id, setSupervisorData);
+            }
+        }
     } catch (error) {
         console.error('Error fetching roles:', error);
     } finally {

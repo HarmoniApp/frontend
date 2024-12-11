@@ -136,7 +136,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
                 if (error.name === 'AbortError') {
                 } else {
                   console.error(`Error fetching schedule for user ${user.id}:`, error);
-                  setError('Błąd podczas pobierania kalendarza');
                 }
                 return { userId: user.id, data: { shifts: [], absences: [] } };
               })
@@ -155,7 +154,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
           setSchedules(schedulesMap);
         } catch (error) {
           console.error('Error fetching schedules:', error);
-          setError('Błąd podczas pobierania kalendarza');
         } finally {
           setLoadingSchedules(false);
         }

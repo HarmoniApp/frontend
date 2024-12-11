@@ -13,12 +13,12 @@ import NewPassword from './newPassword';
 import { Message } from 'primereact/message';
 import { fetchDepartments } from '@/services/departmentService';
 import Supervisor from '@/components/types/supervisor';
-import { fetchSimpleUser } from '@/services/userService';
+import { fetchSimpleUser, fetchUserData } from '@/services/userService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { patchResetPassword } from '@/services/passwordService';
 
 const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
-  const [employee, setEmployee] = useState<EmployeeData>();
+  const [employee, setEmployee] = useState<EmployeeData | null>();
   const [departments, setDepartments] = useState<Department[]>([]);
   const [supervisorData, setSupervisorData] = useState<Supervisor | null>(null);
   const [modalIsOpenDeleteEmployee, setModalDeleteEmployee] = useState(false);
@@ -34,28 +34,9 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
 
   useEffect(() => {
     if (userId) {
-      const fetchEmployee = async () => {
-        try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            },
-          });
-          const data = await response.json();
-          setEmployee(data);
-          if (data.supervisor_id) {
-            fetchSimpleUser(data.supervisor_id, setSupervisorData);
-          }
-        } catch (error) {
-          console.error('Error fetching employee data:', error);
-        }
-      };
-
       const loadData = async () => {
         await fetchDepartments(setDepartments, setModalIsOpenLoadning);
-        await fetchEmployee();
+        await fetchUserData(userId, setEmployee, setModalIsOpenLoadning, setSupervisorData)
       }
 
       loadData();
