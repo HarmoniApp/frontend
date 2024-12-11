@@ -269,6 +269,33 @@ export const posChattMessage = async (
     }
 };
 
+export const postGroup = async (
+    groupData: any): Promise<ChatPartner | undefined> => {
+
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+            body: JSON.stringify(groupData),
+        });
+        if (!response.ok) {
+            console.error('Failed to create group:', response.statusText);
+            throw new Error('Failed to create group');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error(`Error while creating group`, error);
+        return undefined;
+    }
+};
+
 export const patchMarkMessagesAsReadInIndividualChat = async (
     userId: number,
     partnerId: number): Promise<void> => {

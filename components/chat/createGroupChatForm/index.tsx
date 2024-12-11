@@ -4,6 +4,7 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
+import { postGroup } from '@/services/chatService';
 
 interface CreateGroupChatFormProps {
   userId: number;
@@ -29,33 +30,17 @@ const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setCh
     };
 
     try {
-      const tokenXSRF = await fetchCsrfToken();
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-          'X-XSRF-TOKEN': tokenXSRF,
-        },
-        credentials: 'include',
-        body: JSON.stringify(groupData),
-      });
-
-      if (response.ok) {
-        const newGroup = await response.json();
+      const newGroup = await postGroup(groupData);
+      if (newGroup != undefined) {
         setChatType('group');
         loadChatPartners(false);
         setNewChat(false);
         setChatPartners([...chatPartners, newGroup]);
         setSelectedChat(newGroup);
         fetchChatHistory(newGroup);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Błąd podczas tworzenia grupy');
       }
     } catch (error) {
-      console.error('Błąd podczas tworzenia grupy:', error);
+      console.error('Error while creating group:', error);
     } finally {
       loading(false);
     }
