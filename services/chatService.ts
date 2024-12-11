@@ -52,7 +52,7 @@ export const fetchUserSearch = async (
     }
 };
 
-export const fetchUserDetails = async (
+const fetchUserDetails = async (
     partnerId: number): Promise<ChatPartner> => {
 
     const userId = sessionStorage.getItem('userId');
