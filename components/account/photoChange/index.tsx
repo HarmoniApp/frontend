@@ -4,11 +4,10 @@ import { Formik, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import styles from './main.module.scss';
 import { Message } from 'primereact/message';
-import { fetchCsrfToken } from '@/services/csrfService';
 import LoadingSpinner from '@/components/loadingSpinner';
+import { patchPhoto } from '@/services/imageService';
 
 interface PhotoChangeProps {
     onClose: () => void;
@@ -17,7 +16,6 @@ interface PhotoChangeProps {
 const PhotoChange: React.FC<PhotoChangeProps> = ({ onClose }) => {
     const [loading, setLoading] = useState(false);
     const [fileName, setFileName] = useState<string | null>(null);
-    const userId = sessionStorage.getItem('userId');
     const [error, setError] = useState<string | null>(null);
     const initialValues = {
         file: null,
@@ -44,28 +42,11 @@ const PhotoChange: React.FC<PhotoChangeProps> = ({ onClose }) => {
     const handleSubmit = async (values: { file: File | null }) => {
         setLoading(true);
         try {
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const tokenXSRF = await fetchCsrfToken();
-
             const formData = new FormData();
             if (values.file) {
                 formData.append('file', values.file);
             }
-
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}/uploadPhoto`, {
-                method: 'PATCH',
-                headers: {
-                    'Authorization': `Bearer ${tokenJWT}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-                body: formData,
-            });
-
-            if (!response.ok) {
-                console.error('Error uploading photo, response not OK');
-                throw new Error('Error uploading photo');
-            }
+            await patchPhoto(formData)
         } catch (error) {
             console.error('Error uploading photo: ', error);
         } finally {

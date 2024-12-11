@@ -71,12 +71,12 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                 return;
             }
             await patchRemoveUserFromGroup(selectedChat.id, userId)
-                setSelectedUsers(selectedUsers.filter((user: ChatPartner) => user.id !== userId));
-                if (userId === parseInt(sessionStorage.getItem('userId') || '0')) {
-                    window.location.reload();
-                }
+            setSelectedUsers(selectedUsers.filter((user: ChatPartner) => user.id !== userId));
+            if (userId === parseInt(sessionStorage.getItem('userId') || '0')) {
+                window.location.reload();
+            }
         } catch (error) {
-            console.error('Błąd podczas usuwania członka grupy:', error);
+            console.error('Error while removing user from group:', error);
         } finally {
             loading(false);
         }
@@ -119,7 +119,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
                 <h3 className={styles.title}>Edit group</h3>
-                    <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true} setError={setError} />
+                <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true} setError={setError} />
                 <div className={styles.selectedUsers}>
                     {selectedUsers.map((user) => (
                         <div key={user.id} className={styles.selectedUser}>

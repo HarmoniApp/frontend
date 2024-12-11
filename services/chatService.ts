@@ -93,7 +93,7 @@ export const patchRemoveUserFromGroup = async (
             credentials: 'include',
         });
     } catch (error) {
-        console.error(`Error sending message`, error);
+        console.error(`Error while removing user from group`, error);
     }
 };
 
