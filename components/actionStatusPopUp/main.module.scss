@@ -1,0 +1,79 @@
+@import '@/styles/main.scss';
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.actionStatusPopUpContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: $white;
+    border-radius: 8px;
+    padding: 15px 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+
+    animation: slideInRight 0.5s ease-out forwards;
+
+    &.success {
+        border-left: 5px solid $green;
+        background-color: lighten($green, 40%);
+    }
+
+    &.error {
+        border-left: 5px solid $red;
+        background-color: lighten($red, 40%);
+    }
+
+    .icon {
+        font-size: 24px;
+        margin-right: 10px;
+        color: inherit;
+    }
+
+    .content {
+        flex: 1;
+
+        .title {
+            font-weight: bold;
+            font-size: 16px;
+            margin: 0;
+            color: $font-dark-colour;
+        }
+
+        .message {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: $font-dark-colour;
+        }
+    }
+
+    &.fadeOut {
+        animation: slideOutRight 0.5s ease-out forwards;
+    }
+}
