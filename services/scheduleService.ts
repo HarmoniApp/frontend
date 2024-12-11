@@ -2,6 +2,7 @@ import WeekSchedule from "@/components/types/weekSchedule";
 import { fetchCsrfToken } from "./csrfService";
 import Shift from "@/components/types/shift";
 import AbsenceShort from "@/components/types/absenceShort";
+import User from "@/components/types/user";
 
 export const fetchUserPublishedSchedule = async (
     currentMonth: Date,
@@ -40,12 +41,11 @@ export const fetchUserScheduleWithAbsences = async (
     try {
         const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
         const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
-        const tokenJWT = sessionStorage.getItem('tokenJWT');
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${tokenJWT}`,
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
             },
         });
 
@@ -56,6 +56,41 @@ export const fetchUserScheduleWithAbsences = async (
         };
     } catch (error) {
         console.error(`Error fetching schedule for user ${userId}:`, error);
+        throw error;
+    }
+};
+
+export const fetchFilterUsersInSchedule = async (
+    filters: { query?: string } = {},
+    setUsers: (users: User[]) => void,
+    setTotalPages: (pages: number) => void,
+    pageNumber: number,
+    pageSize: number): Promise<void> => {
+    try {
+        let url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+
+        if (filters.query && filters.query.trim() !== '') {
+            url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/search?q=${filters.query}`;
+        }
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            },
+        });
+
+        if (!response.ok) {
+            console.error('Failed to fetch filter schedule:', response.statusText);
+            throw new Error('Failed to fetch filter schedule');
+        }
+        const responseData = await response.json();
+        const usersData = responseData.content || responseData;
+        setUsers(usersData);
+        setTotalPages(responseData.totalPages * pageSize);
+    } catch (error) {
+        console.error(`Error fetching schedule:`, error);
         throw error;
     }
 };

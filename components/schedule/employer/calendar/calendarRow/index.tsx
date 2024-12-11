@@ -17,7 +17,7 @@ import 'primereact/resources/themes/saga-blue/theme.css';
 import '@/styles/components/pagination.css';
 import { fetchCsrfToken } from '@/services/csrfService';
 import LoadingSpinner from '@/components/loadingSpinner';
-import { deleteShift, fetchUserScheduleWithAbsences, postShift, putShift } from '@/services/scheduleService';
+import { deleteShift, fetchFilterUsersInSchedule, fetchUserScheduleWithAbsences, postShift, putShift } from '@/services/scheduleService';
 
 interface CalendarRowProps {
   currentWeek: Date[];
@@ -56,38 +56,8 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const fetchFilteredUsers = async (filters: { query?: string } = {}, pageNumber: number = 1, pageSize: number = 20) => {
     setLoadingUsers(true);
 
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId?pageNumber=${pageNumber}&pageSize=${pageSize}`;
-
-    if (filters.query && filters.query.trim() !== '') {
-      url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/search?q=${filters.query}`;
-    }
-
-    const tokenJWT = sessionStorage.getItem('tokenJWT');
-
     try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const responseData = await response.json();
-      const usersData = responseData.content || responseData;
-
-      if (Array.isArray(usersData)) {
-        setUsers(usersData);
-      } else {
-        console.error('Unexpected response format, expected an array but got:', usersData);
-        setUsers([]);
-      }
-      setTotalPages(responseData.totalPages * pageSize);
-
+      await fetchFilterUsersInSchedule(filters, setUsers, setTotalPages, pageNumber, pageSize)
     } catch (error) {
       console.error('Error while filter:', error);
     } finally {
