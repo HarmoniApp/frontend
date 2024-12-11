@@ -99,24 +99,24 @@ export const putShift = async (
         const tokenXSRF = await fetchCsrfToken();
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftData.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            start: shiftData.start,
-            end: shiftData.end,
-            published: false,
-            user_id: shiftData.userId,
-            role_name: shiftData.roleName,
-          }),
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                start: shiftData.start,
+                end: shiftData.end,
+                published: false,
+                user_id: shiftData.userId,
+                role_name: shiftData.roleName,
+            }),
         });
         if (!response.ok) {
-          console.error('Failed to edit shift');
-          throw new Error('Failed to edit shift');
+            console.error('Failed to edit shift');
+            throw new Error('Failed to edit shift');
         }
     } catch (error) {
         console.error(`Error while edit shift`, error);
