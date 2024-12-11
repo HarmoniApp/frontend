@@ -14,7 +14,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { Message as PrimeMessage } from 'primereact/message';
 import { fetchLanguages } from "@/services/languageService";
 import LoadingSpinner from '../loadingSpinner';
-import { patchMarkMessagesAsReadInIndividualChat } from '@/services/chatService';
+import { fetchMessagesChatHistory, patchMarkMessagesAsReadInIndividualChat } from '@/services/chatService';
 
 const Chat = () => {
   const [chatPartners, setChatPartners] = useState<ChatPartner[]>([]);
@@ -299,58 +299,8 @@ const Chat = () => {
   const fetchChatHistory = async (partner: ChatPartner, language: string = '') => {
     setLoading(true);
     setNewChat(false);
-    const translate = language !== '';
-    const targetLanguageParam = translate ? `&targetLanguage=${language}` : '';
 
-    try {
-      if (partner.type == 'user') {
-        const tokenJWT = sessionStorage.getItem('tokenJWT');
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/history?userId1=${userId}&userId2=${partner.id}&translate=${translate}${targetLanguageParam}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${tokenJWT}`,
-          }
-        });
-        if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
-        const data = await response.json();
-        setMessages(data);
-
-        await patchMarkMessagesAsReadInIndividualChat(userId, partner.id);
-      } else {
-        const tokenJWT = sessionStorage.getItem('tokenJWT');
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/history?userId1=${userId}&groupId=${partner.id}&translate=${translate}${targetLanguageParam}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${tokenJWT}`,
-          }
-        });
-        if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
-        const data = await response.json();
-
-        const groupChatDetails = await Promise.all(
-          data.map(async (message: Message) => {
-            const senderResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/${message.sender_id}`, {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${tokenJWT}`,
-              }
-            });
-            const senderData = await senderResponse.json();
-            return {
-              ...message,
-              groupSenderName: `${senderData.firstname} ${senderData.surname}`,
-              groupSenderPhoto: senderData.photo,
-            };
-          })
-        );
-        setMessages(groupChatDetails);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    await fetchMessagesChatHistory(userId, partner, language, setMessages)
 
     setMessages((prevMessages) =>
       prevMessages.map((msg) =>
