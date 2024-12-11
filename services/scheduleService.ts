@@ -158,6 +158,30 @@ export const putShift = async (
     }
 };
 
+export const patchPublishShifts = async (
+    shiftId: number): Promise<void> => {
+
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shift.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+        });
+        if (!response.ok) {
+          console.error(`Failed to publish shift`);
+          throw new Error(`Failed to publish shift`);
+        }
+    } catch (error) {
+        console.error(`Error while edit shift`, error);
+    }
+};
+
 export const deleteShift = async (
     shiftId: number,
     userId: number,

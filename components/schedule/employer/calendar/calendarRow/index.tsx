@@ -17,7 +17,7 @@ import 'primereact/resources/themes/saga-blue/theme.css';
 import '@/styles/components/pagination.css';
 import { fetchCsrfToken } from '@/services/csrfService';
 import LoadingSpinner from '@/components/loadingSpinner';
-import { deleteShift, fetchFilterUsersInSchedule, fetchUserScheduleWithAbsences, postShift, putShift } from '@/services/scheduleService';
+import { deleteShift, fetchFilterUsersInSchedule, fetchUserScheduleWithAbsences, patchPublishShifts, postShift, putShift } from '@/services/scheduleService';
 
 interface CalendarRowProps {
   currentWeek: Date[];
@@ -170,22 +170,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     shiftsToPublish.forEach(async (shift) => {
       setModalIsOpenLoadning(true);
       try {
-        const tokenXSRF = await fetchCsrfToken();
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shift.id}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-        });
-        if (!response.ok) {
-          console.error(`Failed to publish shift ${shift.id}`);
-          throw new Error(`Failed to publish shift ${shift.id}`);
-        }
-        setModalIsOpenLoadning(false);
+        await patchPublishShifts(shift.id)
         setSchedules(prevSchedules => ({
           ...prevSchedules,
           [shift.user_id]: {
