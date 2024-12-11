@@ -35,7 +35,7 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
 
     useEffect(() => {
         const loadData = async () => {
-        await fetchDepartmentsAddress(setDepartments, setModalIsOpenLoadning);
+            await fetchDepartmentsAddress(setDepartments, setModalIsOpenLoadning);
         }
 
         loadData();
@@ -44,7 +44,7 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
     const handleAddDepartment = async (values: DepartmentAddress, { resetForm }: any) => {
         setModalIsOpenLoadning(true);
         try {
-           postDepartment(values, setDepartments, setAddedDepartmentName, setModalIsOpenLoadning)
+            postDepartment(values, setDepartments, setAddedDepartmentName, setModalIsOpenLoadning)
 
             setModalIsOpenLoadning(false);
             setIsAddModalOpen(true);

@@ -10,7 +10,7 @@ import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
-import { formatTimeToHHMM, fetchPredefinedShifts, deletePredefineShift, postPredefineShift } from '@/services/predefineShiftService';
+import { formatTimeToHHMM, fetchPredefinedShifts, deletePredefineShift, postPredefineShift, putPredefineShift } from '@/services/predefineShiftService';
 import LoadingSpinner from '@/components/loadingSpinner';
 
 interface PredefinedShiftsProps {
@@ -51,14 +51,8 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
   const handleAddPredefineShift = async (values: any, { resetForm }: any) => {
     setModalIsOpenLoadning(true);
 
-    const formattedValues = {
-      ...values,
-      start: formatTimeToHHMM(values.start),
-      end: formatTimeToHHMM(values.end),
-    };
-
     try {
-      await postPredefineShift(formattedValues, setPredefineShifts);
+      await postPredefineShift(values, setPredefineShifts);
 
       // setAddedPredefineShiftName(dataPost.name);
       setIsAddModalOpen(true);
@@ -66,6 +60,21 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
     } catch (error) {
       console.error('Error adding predefine shift:', error);
       throw error;
+    } finally {
+      setModalIsOpenLoadning(false);
+    }
+  };
+
+  const handleEditPredefineShift = async (values: PredefinedShift, { resetForm }: any) => {
+    setModalIsOpenLoadning(true);
+    try {
+      await putPredefineShift(values, setPredefineShifts);
+
+      setEditingShiftId(null);
+      resetForm();
+    }
+    catch (error) {
+      console.error("Error updating predefine shift:", error);
     } finally {
       setModalIsOpenLoadning(false);
     }
@@ -117,40 +126,7 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
               end: formatTimeToHHMM(shift.end || '00:00'),
             }}
             validationSchema={shiftValidationSchema}
-            onSubmit={async (values, { resetForm },) => {
-              setModalIsOpenLoadning(true);
-              const formattedValues = {
-                ...values,
-                start: formatTimeToHHMM(values.start),
-                end: formatTimeToHHMM(values.end),
-              };
-              try {
-                const tokenXSRF = await fetchCsrfToken();
-
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${shift.id}`, {
-                  method: 'PUT',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                  },
-                  credentials: 'include',
-                  body: JSON.stringify(formattedValues),
-                });
-                if (!response.ok) {
-                  console.error('Failed to edit predefine shifts: ', response.statusText);
-                  throw new Error('Failed to edit predefine shifts');
-                }
-                setModalIsOpenLoadning(false);
-                const putData: PredefinedShift = await response.json();
-                setPredefineShifts(predefineShifts.map(s => (s.id === putData.id ? putData : s)));
-                setEditingShiftId(null);
-                resetForm();
-              } catch (error) {
-                console.error('Error updating shift:', error);
-                setError('Błąd podczas edycji predefiniowalnej zmiany');
-              }
-            }}
+            onSubmit={handleEditPredefineShift}
           >
             {({ handleSubmit, handleChange, values, errors, touched, resetForm }) => (
               <Form onSubmit={handleSubmit}>

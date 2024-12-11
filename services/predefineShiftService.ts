@@ -34,27 +34,64 @@ export const postPredefineShift = async (
     values: any,
     setPredefineShifts: (shifts: PredefinedShift[]) => void): Promise<void> => {
 
+    const formattedValues = {
+        ...values,
+        start: formatTimeToHHMM(values.start),
+        end: formatTimeToHHMM(values.end),
+    };
     try {
         const tokenXSRF = await fetchCsrfToken();
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-          body: JSON.stringify(values),
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+            body: JSON.stringify(formattedValues),
         });
         if (!response.ok) {
-          console.error('Failed to add shift:', response.statusText);
-          throw new Error('Failed to add shift');
+            console.error('Failed to add shift:', response.statusText);
+            throw new Error('Failed to add shift');
         }
         const data = await response.json();
         await fetchPredefinedShifts(setPredefineShifts);
     } catch (error) {
         console.error(`Error while generate`, error);
+    }
+};
+
+export const putPredefineShift = async (
+    values: any,
+    setPredefineShifts: (shifts: PredefinedShift[]) => void): Promise<void> => {
+
+    const formattedValues = {
+        ...values,
+        start: formatTimeToHHMM(values.start),
+        end: formatTimeToHHMM(values.end),
+    };
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${values.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+            body: JSON.stringify(formattedValues),
+        });
+        if (!response.ok) {
+            console.error('Failed to edit predefine shifts: ', response.statusText);
+            throw new Error('Failed to edit predefine shifts');
+        }
+        await fetchPredefinedShifts(setPredefineShifts);
+    } catch (error) {
+        console.error(`Error while editing predefine shift`, error);
     }
 };
 

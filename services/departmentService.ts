@@ -100,7 +100,7 @@ export const putDepartment = async (
         }
         await fetchDepartmentsAddress(setDepartments, setLoading);
     } catch (error) {
-        console.error(`Error while generate`, error);
+        console.error(`Error while updating department`, error);
     }
 };
 
