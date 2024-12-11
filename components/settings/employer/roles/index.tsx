@@ -7,7 +7,7 @@ import AddNotification from '../popUps/addNotification';
 import DeleteConfirmation from '../popUps/deleteConfirmation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { ProgressSpinner } from 'primereact/progressspinner';
-import { deleteRole, fetchRoles, postRole } from "@/services/roleService"
+import { deleteRole, fetchRoles, postRole, putRole } from "@/services/roleService"
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
@@ -59,34 +59,16 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
     }
   };
 
-  const handleSaveEdit = async (values: { editedRoleName: string; editedRoleColor: string }, { resetForm }: any) => {
+  const handleEditRole = async (values: { id: number, editedRoleName: string; editedRoleColor: string }, { resetForm }: any) => {
     if (editingRoleId !== null) {
       setModalIsOpenLoadning(true);
       try {
-        const tokenXSRF = await fetchCsrfToken();
+        await putRole(values, setRoles, setModalIsOpenLoadning);
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/${editingRoleId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-          body: JSON.stringify({ name: values.editedRoleName, color: values.editedRoleColor }),
-        });
-        if (!response.ok) {
-          console.error('Failed to edit role:', response.statusText);
-          throw new Error('Failed to edit role');
-        }
-        setModalIsOpenLoadning(false);
-        await response.json();
-        await fetchRoles(setRoles, setModalIsOpenLoadning);
         setEditingRoleId(null);
         resetForm();
       } catch (error) {
         console.error('Error updating role:', error);
-        setError('Błąd podczas dodawania roli');
       } finally {
         setModalIsOpenLoadning(false);
       }
@@ -128,9 +110,9 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
         {roles.map(role => (
           <Formik
             key={role.id + role.name + role.color}
-            initialValues={{ editedRoleName: role.name, editedRoleColor: role.color || '#ffb6c1' }}
+            initialValues={{ id: role.id, editedRoleName: role.name, editedRoleColor: role.color || '#ffb6c1' }}
             validationSchema={editRoleValidationSchema}
-            onSubmit={handleSaveEdit}
+            onSubmit={handleEditRole}
           >
             {({ handleSubmit, handleChange, values, errors, touched, resetForm }) => (
               <Form onSubmit={handleSubmit}>
