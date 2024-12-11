@@ -72,14 +72,6 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
         };
     }, [userId]);
 
-    const handleBellClick = () => {
-        setShowNotifications(!showNotifications);
-    };
-
-    const closeNotifications = () => {
-        setShowNotifications(false);
-    };
-
     const markAsRead = async (id: number) => {
         setNotifications(notifications.map(notification =>
             notification.id === id ? { ...notification, read: true } : notification
@@ -111,7 +103,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
             </div>
             <div className={styles.rightSection}>
                 <div className={styles.notificationIconWrapper}>
-                    <p onClick={handleBellClick} className={styles.notificationIcon}>
+                    <p onClick={() => setShowNotifications(true)} className={styles.notificationIcon}>
                         <FontAwesomeIcon icon={faBell} className={styles.icon} />
                         {unreadCount > 0 && (
                             <span className={styles.unreadCount}>{unreadCount}</span>
@@ -128,7 +120,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
             {showNotifications && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
-                        <Notifications notifications={notifications} onClose={closeNotifications} markAsRead={markAsRead} />
+                        <Notifications notifications={notifications} onClose={() => setShowNotifications(false)} markAsRead={markAsRead} />
                     </div>
 
                     {modalIsOpenLoadning && (
