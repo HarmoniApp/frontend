@@ -96,7 +96,6 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
       setModalNewPassword(true);
     } catch (error) {
       console.error('Błąd podczas resetowania hasła: ', error);
-      setError('Błąd podczas resetowania hasła');
     }
   };
 

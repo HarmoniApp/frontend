@@ -99,6 +99,32 @@ export const postUser = async (
     }
 };
 
+export const patchUser = async (
+    values: any): Promise<void> => {
+
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${values.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+          body: JSON.stringify(values),
+        });
+
+        if (!response.ok) {
+          console.error('Error updating user');
+          throw new Error('Error updating user');
+        }
+    } catch (error) {
+        console.error(`Error while generate`, error);
+    }
+};
+
 export const deleteUser = async (
     userId: number): Promise<void> => {
 
