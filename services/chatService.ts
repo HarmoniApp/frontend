@@ -52,6 +52,130 @@ export const fetchUserSearch = async (
     }
 };
 
+export const fetchUserDetails = async (
+    partnerId: number): Promise<ChatPartner> => {
+
+    const userId = sessionStorage.getItem('userId');
+
+    try {
+        const userDetailsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/${partnerId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            }
+        });
+        if (!userDetailsResponse.ok) throw new Error(`Błąd podczas pobierania danych użytkownika o ID ${partnerId}`);
+        const userDetails = await userDetailsResponse.json();
+
+        const lastMessageResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/last?userId1=${userId}&userId2=${partnerId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            }
+        });
+        if (!lastMessageResponse.ok) throw new Error(`Error while fetching last message`);
+        const lastMessageData = lastMessageResponse.ok ? await lastMessageResponse.text() : 'Brak wiadomości';
+
+        return {
+            id: partnerId,
+            name: userDetails.firstname + " " + userDetails.surname,
+            photo: userDetails.photo,
+            lastMessage: lastMessageData,
+            type: 'user'
+        };
+    } catch (error) {
+        console.error('Error fetching user details:', error);
+        return {
+            id: partnerId,
+            name: '',
+            photo: '',
+            lastMessage: '',
+            type: 'user'
+        };
+    }
+};
+
+const fetchGroupDetails = async (
+    partnerId: number): Promise<ChatPartner> => {
+
+    try {
+        const groupDetailsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/details/${partnerId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            }
+        });
+        if (!groupDetailsResponse.ok) throw new Error(`Error fetching group details`);
+        const groupDetails = await groupDetailsResponse.json();
+
+        const lastMessageResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/last?groupId=${partnerId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            }
+        });
+        if (!lastMessageResponse.ok) throw new Error(`Error while fetching last messages`);
+        const lastMessageData = lastMessageResponse.ok ? await lastMessageResponse.text() : 'Brak wiadomości';
+
+        return {
+            id: partnerId,
+            name: groupDetails.name,
+            lastMessage: lastMessageData,
+            type: 'group'
+        };
+    } catch (error) {
+        console.error('Error fetching group details:', error);
+        return {
+            id: partnerId,
+            name: '',
+            lastMessage: '',
+            type: 'group'
+        };
+    }
+};
+
+export const fetchAllChatPartners = async (
+    setChatType: (type: 'user' | 'group') => void,
+    setChatPartners: (partners: ChatPartner[]) => void): Promise<ChatPartner | undefined> => {
+    try {
+
+        const userId = sessionStorage.getItem('userId');
+
+        const chatPartnersResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/all-chat-partners?userId=${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            }
+        });
+        if (!chatPartnersResponse.ok) throw new Error('Błąd podczas pobierania partnerów chatu');
+        const data = await chatPartnersResponse.json();
+        const partners = await Promise.all(
+            data.map((partner: { partnerId: number; partnerType: string }) => {
+                if (partner.partnerType === "USER") {
+                    return fetchUserDetails(partner.partnerId);
+                } else {
+                    return fetchGroupDetails(partner.partnerId);
+                }
+            })
+        );
+        setChatPartners(partners);
+
+        const newestChatPartner = partners[0];
+        if (newestChatPartner.type == 'group') {
+            setChatType('group')
+        }
+        return newestChatPartner;
+    } catch (error) {
+        console.error('Error fetching chat partners:', error);
+        return undefined;
+    }
+};
+
 export const fetchMessagesChatHistory = async (
     userId: number,
     partner: ChatPartner,
