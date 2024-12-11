@@ -1,7 +1,7 @@
 @import '@/styles/main.scss';
 
 .photoChangeContainerMain {
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center);
     width: 100%;
     max-width: 400px;
     margin: 0 auto;
@@ -9,7 +9,7 @@
     border-radius: 10px;
   
     .header {
-      @include displayDFJA(flex, null, space-between, center);
+      @include displayDFJAG(flex, null, space-between, center);
       width: 100%;
   
       .title {
@@ -32,12 +32,12 @@
     }
   
     .form {
-      @include displayDFJA(flex, column, null, null);
+      @include displayDFJAG(flex, column, null, null);
       width: 100%;
       margin-top: 20px;
   
       .uploadLabel {
-        @include displayDFJA(flex, null, center, center);
+        @include displayDFJAG(flex, null, center, center);
         padding: 10px;
         background-color: $main-colour;
         color: $font-dark-colour;

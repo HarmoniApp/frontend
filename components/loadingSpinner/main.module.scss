@@ -1,7 +1,7 @@
 @import '@/styles/main.scss';
 
 .loadingModalOverlay {
-    @include displayDFJA(flex, null, center, center);
+    @include displayDFJAG(flex, null, center, center);
     position: fixed;
     top: 0;
     left: 0;
@@ -12,12 +12,12 @@
 }
 
 .loadingModalContent {
-    @include displayDFJA(flex, column, null, null);
+    @include displayDFJAG(flex, column, null, null);
     text-align: center;
 }
 
 .spinnerContainer {
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center);
     position: absolute;
     top: 50%;
     left: 50%;

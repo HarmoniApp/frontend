@@ -1,8 +1,9 @@
-@mixin displayDFJA($display:flex , $direction: column, $justify: center, $align: center) {
+@mixin displayDFJAG($display:flex , $direction: column, $justify: center, $align: center, $gap: 0px) {
     display: flex;
     flex-direction: $direction;
     justify-content: $justify;
     align-items: $align;
+    gap: $gap;
 }
 
 @mixin gridQG($quantity: 3, $gap: 20px) {

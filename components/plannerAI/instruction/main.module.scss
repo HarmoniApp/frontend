@@ -6,7 +6,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    @include displayDFJA(flex, null, center, flex-end);
+    @include displayDFJAG(flex, null, center, flex-end);
     background-color: $black-transparency-05;
     transition: opacity 0.3s ease-in-out;
   

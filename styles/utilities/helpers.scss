@@ -2,7 +2,7 @@
 @import '../abstracts/mixins.scss';
 
 // .loadingModalOverlay {
-//     @include displayDFJA(flex, null, center, center);
+//     @include displayDFJAG(flex, null, center, center);
 //     position: fixed;
 //     top: 0;
 //     left: 0;
@@ -13,7 +13,7 @@
 // }
 
 // .loadingModalContent {
-//     @include displayDFJA(flex, column, null, null);
+//     @include displayDFJAG(flex, column, null, null);
 //     text-align: center;
 // }
 
@@ -48,7 +48,7 @@
 }
 
 .spinnerContainer {
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -64,12 +64,12 @@
     right: 0;
     bottom: 0;
     background: $black-transparency-05;
-    @include displayDFJA(flex, null, center, center);
+    @include displayDFJAG(flex, null, center, center);
     z-index: 1000;
 }
 
 .modalContent {
-    @include displayDFJA(flex, column, null, null);
+    @include displayDFJAG(flex, column, null, null, 20px);
     border: 2px solid $main-colour;
     border-radius: 8px;
     background-color: $gray;
@@ -77,7 +77,7 @@
     width: auto;
     max-height: 80vh;
     overflow-y: auto;
-    gap: 20px;
+    // gap: 20px;
     padding: 20px;
     color: $white;
 

@@ -12,7 +12,7 @@
   }
 
   .today {
-    @include displayDFJA(flex, null, center, center);
+    @include displayDFJAG(flex, null, center, center);
     padding: 12px;
     width: 14px;
     height: 14px;
@@ -23,7 +23,7 @@
   }
 
   .calendarCell {
-    @include displayDFJA(flex, column, null, null);
+    @include displayDFJAG(flex, column, null, null);
     background-color: $white;
     border: 2px solid $main-colour;
     height: 100%; 
@@ -33,7 +33,7 @@
 
     .shiftOrAbsenceContainer{
       flex-grow: 1;
-      @include displayDFJA(flex, column, flex-end, null);
+      @include displayDFJAG(flex, column, flex-end, null);
     }
   }
 }

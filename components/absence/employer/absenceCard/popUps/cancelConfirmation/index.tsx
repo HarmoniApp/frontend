@@ -20,7 +20,7 @@ const CancelConfirmation: React.FC<CancelConfirmationProps> = ({ onCancel, onClo
     absenceStartAndEnd = absenceStartAndEnd.replace(/\//g, '.');
 
     return (
-        <div className={styles.CancelContainerMain}>
+        <div className={styles.cancelContainerMain}>
             <div className={styles.headerContainer}>
                 <label className={styles.headerLabel}>Czy na pewno chcesz anulować ten wniosek o urlop:</label>
                 <label className={styles.highlight}>{absenceType}</label>

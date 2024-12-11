@@ -1,14 +1,14 @@
 @import '@/styles/main.scss';
 
 .planerAiContainer {
-    @include displayDFJA(flex, column-reverse, null, null);
+    @include displayDFJAG(flex, column-reverse, null, null, 20px);
     width: 90%;
     margin: 20px auto;
-    gap: 20px;
+    // gap: 20px;
 }
 
 .buttonContainer {
-    @include displayDFJA(flex, row, space-between, center);
+    @include displayDFJAG(flex, row, space-between, center);
     flex: 1;
     padding: 20px;
     border-radius: 10px;
@@ -22,7 +22,7 @@
 .deleteGenerateShiftsButton,
 .infoButton,
 .deleteDayButton {
-    @include displayDFJA(flex, null, center, center);
+    @include displayDFJAG(flex, null, center, center, 10px);
     background-color: $main-colour;
     color: $font-dark-colour;
     padding: 10px 20px;
@@ -30,7 +30,7 @@
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    gap: 10px;
+    // gap: 10px;
 
     &:hover {
         background-color: $main-colour-hover;
@@ -50,8 +50,8 @@
 }
 
 .planerAiForm {
-    @include displayDFJA(flex, column, null, null);
-    gap: 20px;
+    @include displayDFJAG(flex, column, null, null, 20px);
+    // gap: 20px;
     padding: 20px;
     border-radius: 10px;
     background-color: $white;
@@ -59,8 +59,8 @@
 }
 
 .dateContainer {
-    @include displayDFJA(flex, null, null, center);
-    gap: 10px;
+    @include displayDFJAG(flex, null, null, center, 10px);
+    // gap: 10px;
 }
 
 .dateLabel {
@@ -90,9 +90,9 @@
 
 .predefineShiftLabel,
 .roleLabel {
-    @include displayDFJA(flex, row, space-between, center);
+    @include displayDFJAG(flex, row, space-between, center, 10px);
     text-align: center;
-    gap: 10px;
+    // gap: 10px;
     background-color: $white-4;
     border-radius: 5px;
     box-shadow: 0px 2px 5px $black-transparency-01;
@@ -131,9 +131,9 @@
     }
 
     .editingShiftIdParagraph {
-        @include displayDFJA(flex, null, flex-start, null);
+        @include displayDFJAG(flex, null, flex-start, null, 10px);
         font-weight: bold;
-        gap: 10px;
+        // gap: 10px;
 
         .setRolesForPredefineShiftHighlight {
             border-bottom: 2px solid $main-colour;

@@ -7,7 +7,7 @@
 //   width: 100%;
 //   height: 100%;
 //   background-color: $black-transparency-05;
-//   @include displayDFJA(flex, null, center, center);
+//   @include displayDFJAG(flex, null, center, center);
 //   z-index: 1000;
 // }
 
@@ -17,7 +17,7 @@
 //   padding: 20px;
 //   width: 90%;
 //   max-width: 500px;
-//   @include displayDFJA(flex, column, null, null);
+//   @include displayDFJAG(flex, column, null, null);
 //   gap: 20px;
 //   position: relative;
 // }
@@ -30,14 +30,14 @@
 }
 
 .selectedUsers {
-  @include displayDFJA(flex, null, null, null);
+  @include displayDFJAG(flex, null, null, null, 10px);
   flex-wrap: wrap;
-  gap: 10px;
+  // gap: 10px;
   margin-top: 10px;
 
   .selectedUser {
-    @include displayDFJA(flex, null, null, center);
-    gap: 10px;
+    @include displayDFJAG(flex, null, null, center, 10px);
+    // gap: 10px;
     padding: 5px;
     border: 2px solid $main-colour;
     border-radius: 5px;
@@ -72,7 +72,7 @@
 }
 
 .groupActions {
-  @include displayDFJA(flex, null, flex-end, null);
+  @include displayDFJAG(flex, null, flex-end, null);
   margin-top: 10px;
 
   .deleteIcon {

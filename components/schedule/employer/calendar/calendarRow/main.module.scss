@@ -1,17 +1,17 @@
 @import '@/styles/main.scss';
 
 .calendarRowContainerMain {
-  @include displayDFJA(flex, null, null, center);
-  gap: 30px;
+  @include displayDFJAG(flex, null, null, center, 30px);
+  // gap: 30px;
   margin: 0 0 15px 0;
 
   @include respond-to-md {
-    @include displayDFJA(flex, column, null, null);
-    gap: 15px;
+    @include displayDFJAG(flex, column, null, null, 15px);
+    // gap: 15px;
   }
 
   .employeeItemContainer {
-    @include displayDFJA(flex, null, null, center);
+    @include displayDFJAG(flex, null, null, center);
     flex: 1;
     cursor: pointer;
 
@@ -22,13 +22,13 @@
 
   .shiftItemContainer {
     flex: 4;
-    @include displayDFJA(flex, null, null, null);
-    gap: 15px;
+    @include displayDFJAG(flex, null, null, null, 15px);
+    // gap: 15px;
 
     @include respond-to-md {
-      @include displayDFJA(flex, row, null, null);
+      @include displayDFJAG(flex, row, null, null, 10px);
       width: 100%;
-      gap: 10px;
+      // gap: 10px;
     }
 
     .shiftsItems {

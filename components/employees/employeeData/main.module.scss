@@ -7,12 +7,12 @@
 //     right: 0;
 //     bottom: 0;
 //     background: $black-transparency-05;
-//     @include displayDFJA(flex, null, center, center);
+//     @include displayDFJAG(flex, null, center, center);
 //     z-index: 1000;
 // }
 
 // .modalContentOfDeleteEmployee, .modalContentOfNewPassword {
-//     @include displayDFJA(flex, column, null, null);
+//     @include displayDFJAG(flex, column, null, null);
 //     border: 2px solid $main-colour;
 //     border-radius: 8px;
 //     background-color: $gray;
@@ -30,19 +30,19 @@
 // }
 
 .employeeDataContainerMain {
-    @include displayDFJA(flex, column, center, center);
-    gap: 20px;
+    @include displayDFJAG(flex, column, center, center, 20px);
+    // gap: 20px;
     width: 100%;
     margin: 20px 0;
 }
 
 .rowButtonContainer {
-    @include displayDFJA(flex, row, space-evenly, center);
+    @include displayDFJAG(flex, row, space-evenly, center, 20px);
     width: 90%;
-    gap: 20px;
+    // gap: 20px;
 
     @include respond-to-lg {
-        @include displayDFJA(flex, column, null, null);
+        @include displayDFJAG(flex, column, null, null);
 
         .buttonContainer {
             width: 100%;
@@ -50,7 +50,7 @@
     }
 
     .buttonContainer {
-        @include displayDFJA(flex, row, space-evenly, center);
+        @include displayDFJAG(flex, row, space-evenly, center);
         flex: 1;
         padding: 20px;
 
@@ -64,7 +64,7 @@
         .resetPasswordButton,
         .editButton,
         .deleteButton {
-            @include displayDFJA(flex, null, null, center);
+            @include displayDFJAG(flex, null, null, center, 10px);
             background-color: $main-colour;
             color: $font-dark-colour;
             padding: 10px 20px;
@@ -72,7 +72,7 @@
             border-radius: 10px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            gap: 10px;
+            // gap: 10px;
 
             &:hover {
                 background-color: $main-colour-hover;
@@ -94,13 +94,13 @@
 }
 
 .fullNameAndIdContainer {
-    @include displayDFJA(flex, row, center, stretch);
+    @include displayDFJAG(flex, row, center, stretch, 20px);
     width: 90%;
-    gap: 20px;
+    // gap: 20px;
 
     @include respond-to-lg {
-        @include displayDFJA(flex, column, null, null);
-        gap: 20px;
+        @include displayDFJAG(flex, column, null, null, 20px);
+        // gap: 20px;
 
         .fullNameColumnContainer,
         .employeeIdContainer {
@@ -110,7 +110,7 @@
     }
 
     .fullNameColumnContainer {
-        @include displayDFJA(flex, row, space-around, center);
+        @include displayDFJAG(flex, row, space-around, center);
         flex: 1;
         width: 100%;
         height: auto;
@@ -121,9 +121,9 @@
 
         .firstNameContainer,
         .surnameContainer {
-            @include displayDFJA(flex, row, center, center);
+            @include displayDFJAG(flex, row, center, center, 10px);
             height: auto;
-            gap: 10px;
+            // gap: 10px;
 
             .firstNameParagraph {
                 font-size: 20px;
@@ -161,10 +161,10 @@
     }
 
     .employeeIdContainer {
-        @include displayDFJA(flex, row, center, center);
+        @include displayDFJAG(flex, row, center, center, 2%);
         flex: 1;
         width: 100%;
-        gap: 2%;
+        // gap: 2%;
         height: auto;
 
         @include respond-to-lg {
@@ -198,13 +198,13 @@
 }
 
 .emplyeeDataContainer {
-    @include displayDFJA(flex, null, null, null);
+    @include displayDFJAG(flex, null, null, null, 20px);
     flex-wrap: wrap;
-    gap: 20px;
+    // gap: 20px;
     width: 90%;
 
     @include respond-to-lg {
-        @include displayDFJA(flex, column, null, null);
+        @include displayDFJAG(flex, column, null, null);
 
         .columnContainer {
             width: 100%;
@@ -212,13 +212,13 @@
     }
 
     @include respond-to-md {
-        @include displayDFJA(flex, column, null, null);
-        gap: 10px;
+        @include displayDFJAG(flex, column, null, null, 10px);
+        // gap: 10px;
     }
 }
 
 .columnContainer {
-    @include displayDFJA(flex, column, null, null);
+    @include displayDFJAG(flex, column, null, null);
     flex: 1;
     padding: 20px;
     background-color: $white;
@@ -234,7 +234,7 @@
     .endContractDateLables,
     .contractTypeLabel,
     .departmentLabel {
-        @include displayDFJA(flex, null, space-between, center);
+        @include displayDFJAG(flex, null, space-between, center);
         padding: 0 10px;
         color: $font-dark-colour;
         border-bottom: 2px solid $main-colour;
@@ -255,13 +255,13 @@
 }
 
 .roleAndLanguagesContainer {
-    @include displayDFJA(flex, row, space-evenly, center);
-    gap: 20px;
+    @include displayDFJAG(flex, row, space-evenly, center, 20px);
+    // gap: 20px;
     width: 90%;
 
 
     @include respond-to-lg {
-        @include displayDFJA(flex, column, null, null);
+        @include displayDFJAG(flex, column, null, null);
 
         .columnContainer {
             width: 100%;
@@ -269,12 +269,12 @@
     }
 
     @include respond-to-md {
-        @include displayDFJA(flex, column, null, null);
-        gap: 10px;
+        @include displayDFJAG(flex, column, null, null, 10px);
+        // gap: 10px;
     }
 
     .columnContainer {
-        @include displayDFJA(flex, column, center, center);
+        @include displayDFJAG(flex, column, center, center);
         max-height: 45vh;
         border-radius: 10px;
         background-color: $white;
@@ -315,9 +315,9 @@
             }
 
             .roleLabel {
-                @include displayDFJA(flex, row, space-between, center);
+                @include displayDFJAG(flex, row, space-between, center, 10px);
                 text-align: center;
-                gap: 10px;
+                // gap: 10px;
                 background-color: $white-4;
                 border-radius: 5px;
                 box-shadow: 0px 2px 5px $black-transparency-01;
@@ -354,9 +354,9 @@
             }
 
             .languageLabel {
-                @include displayDFJA(flex, row, space-between, center);
+                @include displayDFJAG(flex, row, space-between, center, 10px);
                 text-align: center;
-                gap: 10px;
+                // gap: 10px;
                 background-color: $white-4;
                 border-radius: 5px;
                 box-shadow: 0px 2px 5px $black-transparency-01;

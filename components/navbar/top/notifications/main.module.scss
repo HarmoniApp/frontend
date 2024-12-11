@@ -1,7 +1,7 @@
 @import '@/styles/main.scss';
 
 .popupHeader {
-    @include displayDFJA(flex, row, space-between, center);
+    @include displayDFJAG(flex, row, space-between, center);
     padding: 10px;
     font-weight: bold;
     text-transform: uppercase;
@@ -47,7 +47,7 @@
 }
 
 .notificationItem strong {
-    @include displayDFJA(block, null, null, null);
+    @include displayDFJAG(block, null, null, null);
     font-size: 16px;
     margin-bottom: 5px;
     color: $font-dark-colour;

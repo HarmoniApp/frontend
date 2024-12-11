@@ -3,14 +3,14 @@
 .chatWindow {
     flex-grow: 1;
     width: 80%;
-    @include displayDFJA(flex, column, null, null);
+    @include displayDFJAG(flex, column, null, null);
     background-color: $gray;
     margin-left: 20px;
     margin: 0 auto;
 }
 
 .groupChatHeader {
-    @include displayDFJA(flex, row, space-between, center);
+    @include displayDFJAG(flex, row, space-between, center);
     padding: 20px;
     border-bottom: 1px solid $gray-powder;
 
@@ -24,7 +24,7 @@
 
 
 .userChatHeader{
-    @include displayDFJA(flex, row, null, center);
+    @include displayDFJAG(flex, row, null, center);
     padding: 20px;
     border-bottom: 1px solid $gray-powder;
 
@@ -47,14 +47,14 @@
 }
 
 .message {
-    @include displayDFJA(flex, null, null, flex-start);
+    @include displayDFJAG(flex, null, null, flex-start);
     margin: 0 0 10px 0;
 
     &.selfMessage {
-        @include displayDFJA(flex, null, flex-end, null);
+        @include displayDFJAG(flex, null, flex-end, null);
 
         .avatarAndNameContainer{
-            @include displayDFJA(none, null, nul, null);
+            @include displayDFJAG(none, null, nul, null);
         }
 
         .messageContent {
@@ -64,7 +64,7 @@
     }
 
     &.otherMessage {
-        @include displayDFJA(flex, null, flex-start, null);
+        @include displayDFJAG(flex, null, flex-start, null);
 
         .messageContent {
             background-color: $gray-powder;
@@ -74,7 +74,7 @@
 }
 
 .avatarAndNameContainer {
-    @include displayDFJA(flex, column-reverse, center, center);
+    @include displayDFJAG(flex, column-reverse, center, center);
     margin-right: 10px;
 
     .imageContainer {
@@ -94,8 +94,8 @@
 }
 
 .messageContentContainer {
-    @include displayDFJA(flex, column, null, null);
-    gap: 8px;
+    @include displayDFJAG(flex, column, null, null, 8px);
+    // gap: 8px;
 
     .messageContent {
         padding: 10px;
@@ -108,7 +108,7 @@
     }
 
     .timeAndReadMessagesContainer {
-        @include displayDFJA(flex, null, space-between, center);
+        @include displayDFJAG(flex, null, space-between, center);
 
         .timestamp {
             font-size: 0.8em;

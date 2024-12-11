@@ -1,19 +1,19 @@
 @import '@/styles/main.scss';
 
 .aproveConfirmationContainerMain {
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center, 20px);
     background-color: $gray;
     width: 100%;
     padding: 10px 40px;
     box-sizing: border-box;
-    gap: 20px;
+    // gap: 20px;
 }
 
 .headerContainer {
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center, 5px);
     width: 100%;
     margin: 0;
-    gap: 5px;
+    // gap: 5px;
 
     .headerLabel {
         text-align: center;
@@ -30,11 +30,11 @@
 }
 
 .butonContainter {
-    @include displayDFJA(flex, row, space-evenly, center);
+    @include displayDFJAG(flex, row, space-evenly, center);
     width: 100%;
 
     .aproveButton {
-        @include displayDFJA(flex, null, null, center);
+        @include displayDFJAG(flex, null, null, center);
         background-color: $green;
         color: $font-light-colour;
         padding: 10px 20px;
@@ -60,7 +60,7 @@
     }
 
     .closeButton {
-        @include displayDFJA(flex, null, null, center);
+        @include displayDFJAG(flex, null, null, center);
         background-color: $main-colour;
         color: $font-dark-colour;
         padding: 10px 20px;

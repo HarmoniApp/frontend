@@ -1,7 +1,7 @@
 @import '@/styles/main.scss';
 
 .deleteContainerMain {
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center);
     background-color: $gray;
     width: 100%;
     padding: 10px;
@@ -10,7 +10,7 @@
 }
 
 .headerContainer {
-    @include displayDFJA(flex, row, center, center);
+    @include displayDFJAG(flex, row, center, center);
     width: 100%;
     margin: 0;
     gap: 5px;
@@ -30,11 +30,11 @@
 }
 
 .butonContainter {
-    @include displayDFJA(flex, row, space-evenly, null);
+    @include displayDFJAG(flex, row, space-evenly, null);
     width: 100%;
 
     .deleteButton {
-        @include displayDFJA(flex, null, null, center);
+        @include displayDFJAG(flex, null, null, center);
         background-color: $red;
         color: $font-light-colour;
         padding: 10px 20px;
@@ -60,7 +60,7 @@
     }
 
     .closeButton {
-        @include displayDFJA(flex, null, null, center);
+        @include displayDFJAG(flex, null, null, center);
         background-color: $main-colour;
         color: $font-dark-colour;
         padding: 10px 20px;

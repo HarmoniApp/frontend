@@ -7,12 +7,12 @@
 //     right: 0;
 //     bottom: 0;
 //     background: $black-transparency-05;
-//     @include displayDFJA(flex, null, center, center);
+//     @include displayDFJAG(flex, null, center, center);
 //     z-index: 1000;
 // }
 
 // .modalContentOfChangePhoto {
-//     @include displayDFJA(flex, column, null, null);
+//     @include displayDFJAG(flex, column, null, null);
 //     border: 2px solid $main-colour;
 //     border-radius: 8px;
 //     background-color: $gray;
@@ -39,7 +39,7 @@
     color: $font-dark-colour;
     transition: right 0.3s ease-in-out;
     z-index: 1000;
-    @include displayDFJA(flex, column, space-between, null);
+    @include displayDFJAG(flex, column, space-between, null);
     box-shadow: -2px 0 5px $black-transparency-05;
 }
 
@@ -56,7 +56,7 @@
 .header {
     background-color: $gray;
     color: $main-colour;
-    @include displayDFJA(flex, row, center, center);
+    @include displayDFJAG(flex, row, center, center);
     padding: 20px;
 }
 
@@ -65,21 +65,21 @@
 }
 
 .adminContent {
-    @include displayDFJA(flex, column, space-between, center);
+    @include displayDFJAG(flex, column, space-between, center);
     padding: 20px;
     flex-grow: 1;
     margin-top:20px;
 }
 
 .userContent {
-    @include displayDFJA(flex, column, flex-start, center);
+    @include displayDFJAG(flex, column, flex-start, center);
     padding: 20px;
     flex-grow: 1;
     margin-top:20px;
 }
 
 .item {
-    @include displayDFJA(flex, null, null, center);
+    @include displayDFJAG(flex, null, null, center);
     margin-bottom: 20px;
     cursor: pointer;
 }
@@ -96,12 +96,12 @@
 .footer {
     padding: 20px;
     background-color: $gray;
-    @include displayDFJA(flex, row, space-around, center);
+    @include displayDFJAG(flex, row, space-around, center);
     bottom: 0;
 }
 
 .logout {
-    @include displayDFJA(flex, null, center, center);
+    @include displayDFJAG(flex, null, center, center);
     color: $white;
     cursor: pointer;
 }
@@ -112,11 +112,11 @@
 }
 
 .languages {
-    @include displayDFJA(flex, row, null, center);
+    @include displayDFJAG(flex, row, null, center);
 }
 
 .languages .flags {
-    @include displayDFJA(flex, null, null, null);
+    @include displayDFJAG(flex, null, null, null);
     margin-top: 10px;
 }
 

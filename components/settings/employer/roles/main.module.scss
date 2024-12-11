@@ -7,12 +7,12 @@
 //     right: 0;
 //     bottom: 0;
 //     background: $black-transparency-05;
-//     @include displayDFJA(flex, null, center, center);
+//     @include displayDFJAG(flex, null, center, center);
 //     z-index: 1000;
 // }
 
 // .modalContentOfAdd, .modalContentOfDelete {
-//     @include displayDFJA(flex, column, null, null);
+//     @include displayDFJAG(flex, column, null, null);
 //     border: 2px solid $main-colour;
 //     border-radius: 8px;
 //     background-color: $gray;
@@ -30,14 +30,14 @@
 // }
 
 .roleContainerMain {
-    @include displayDFJA(flex, column, null, null);
+    @include displayDFJAG(flex, column, null, null, 15px);
     background-color: $gray;
     color: $font-light-colour;
     padding: 20px 0 0 0;
     border-radius: 10px;
     width: 100%;
     height: 100%;
-    gap: 15px;
+    // gap: 15px;
 }
 
 .showRoleMapConteiner {
@@ -46,25 +46,25 @@
     grid-auto-rows: 1fr;
 
     .showRoleConteinerMain {
-        @include displayDFJA(flex, column, null, center);
+        @include displayDFJAG(flex, column, null, center, 10px);
         height: 100%;
         padding: 10px;
         background-color: $white-3;
         border-radius: 5px;
-        gap: 10px;
+        // gap: 10px;
 
         .showRoleConteiner {
-            @include displayDFJA(flex, null, space-between, center);
+            @include displayDFJAG(flex, null, space-between, center, 10px);
             height: 100%;
-            gap: 10px;
+            // gap: 10px;
 
             .roleInfoContainer {
-                @include displayDFJA(flex, column, null, null);
-                gap: 5px;
+                @include displayDFJAG(flex, column, null, null, 5px);
+                // gap: 5px;
             }
 
             .roleNameParagraph {
-                @include displayDFJA(flex, null, null, left);
+                @include displayDFJAG(flex, null, null, left);
                 margin: 0;
                 color: $font-dark-colour;
                 font-weight: bold;
@@ -72,8 +72,8 @@
             }
 
             .editAndRemoveButtonContainer {
-                @include displayDFJA(flex, row, null, null);
-                gap: 10px;
+                @include displayDFJAG(flex, row, null, null, 10px);
+                // gap: 10px;
             }
         }
     }
@@ -136,9 +136,9 @@
 }
 
 .addContainer {
-    @include displayDFJA(flex, row, null, stretch);
+    @include displayDFJAG(flex, row, null, stretch, 10px);
     height: 100%;
-    gap: 10px;
+    // gap: 10px;
 
     .colorPicker {
         width: 40px;
@@ -187,7 +187,7 @@
 }
 
 .errorMessage {
-    @include displayDFJA(flex, null, null, center);
+    @include displayDFJAG(flex, null, null, center);
     color: $red;
     font-size: 16px;
     font-weight: bold;

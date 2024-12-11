@@ -2,18 +2,18 @@
 
 .addAbsenceNotificationContainerMain {
     background-color: $gray;
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center, 20px);
     width: 100%;
     padding: 10px 40px;
     box-sizing: border-box;
-    gap: 20px;
+    // gap: 20px;
 }
 
 .headerContainer {
-    @include displayDFJA(flex, row, center, center);
+    @include displayDFJAG(flex, row, center, center, 5px);
     width: 100%;
     margin: 0;
-    gap: 5px;
+    // gap: 5px;
 
     .headerLabel {
         text-align: center;
@@ -30,24 +30,24 @@
 }
 
 .counterContainter {
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center, 5px);
     width: 100%;
     margin: 0;
-    gap: 5px;
+    // gap: 5px;
 
     .counterParagraph {
-        @include displayDFJA(flex, null, null, center);
+        @include displayDFJAG(flex, null, null, center);
         text-align: center;
         color: $font-light-colour;
         margin: 0;
     }
 
     .counterTimerContainer {
-        @include displayDFJA(flex, null, center, center);
+        @include displayDFJAG(flex, null, center, center, 3px);
         text-align: center;
         color: $font-light-colour;
         margin: 0;
-        gap: 3px;
+        // gap: 3px;
 
         .highlightTimeLabel {
             color: $main-colour;
@@ -56,7 +56,7 @@
         }
 
         .counterTimerLabel {
-            @include displayDFJA(flex, null, null, center);
+            @include displayDFJAG(flex, null, null, center);
             text-align: center;
             color: $font-light-colour;
         }
@@ -64,7 +64,7 @@
 }
 
 .buttonConianer {
-    @include displayDFJA(flex, row, space-evenly, center);
+    @include displayDFJAG(flex, row, space-evenly, center);
     width: 100%;
 
     .employeeInfo {
@@ -83,7 +83,7 @@
     }
 
     .closeButton {
-        @include displayDFJA(flex, null, null, center);
+        @include displayDFJAG(flex, null, null, center);
         background-color: $main-colour;
         color: $font-dark-colour;
         padding: 10px 20px;
@@ -110,11 +110,11 @@
 }
 
 .absenceForm {
-    @include displayDFJA(flex, column, null, null);
+    @include displayDFJAG(flex, column, null, null);
     flex: 1;
 
     .formTitle {
-        @include displayDFJA(flex, column, center, center);
+        @include displayDFJAG(flex, column, center, center);
         width: 100%;
 
         .title {
@@ -128,17 +128,17 @@
     }
 
     .dataLabel {
-        @include displayDFJA(flex, null, space-between, center);
+        @include displayDFJAG(flex, null, space-between, center, 20px);
         font-size: 16px;
         font-weight: bold;
         color: $font-light-colour;
         margin: 10px 0;
-        gap: 20px;
+        // gap: 20px;
         transition: color 0.3s ease;
     }
 
     .quantityOfDaysLabel{
-        @include displayDFJA(flex, null, flex-start, null);
+        @include displayDFJAG(flex, null, flex-start, null);
         font-size: 16px;
         font-weight: bold;
         color: $white;
@@ -208,12 +208,12 @@
 }
 
 .buttonContainer {
-    @include displayDFJA(flex, row, space-between, center);
+    @include displayDFJAG(flex, row, space-between, center);
     width: 100%;
     margin: 20px 0 0 0;
 
     .backButton {
-        @include displayDFJA(flex, null, null, center);
+        @include displayDFJAG(flex, null, null, center);
         background-color: $main-colour;
         color: $font-dark-colour;
         padding: 10px 20px;
@@ -239,7 +239,7 @@
     }
 
     .addButton {
-        @include displayDFJA(flex, null, null, center);
+        @include displayDFJAG(flex, null, null, center);
         background-color: $green;
         color: $font-light-colour;
         padding: 10px 20px;

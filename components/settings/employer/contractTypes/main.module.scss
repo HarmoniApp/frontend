@@ -7,12 +7,12 @@
 //     right: 0;
 //     bottom: 0;
 //     background: $black-transparency-05;
-//     @include displayDFJA(flex, null, center, center);
+//     @include displayDFJAG(flex, null, center, center);
 //     z-index: 1000;
 // }
 
 // .modalContentOfAdd, .modalContentOfDelete {
-//     @include displayDFJA(flex, column, null, null);
+//     @include displayDFJAG(flex, column, null, null);
 //     border: 2px solid $main-colour;
 //     border-radius: 8px;
 //     background-color: $gray;
@@ -34,10 +34,10 @@
     color: $font-light-colour;
     padding: 20px 0 0 0;
     border-radius: 10px;
-    @include displayDFJA(flex, column, null, null);
+    @include displayDFJAG(flex, column, null, null, 15px);
     width: 100%;
     height: 100%;
-    gap: 15px;
+    // gap: 15px;
 }
 
 .showContractMapContainer {
@@ -47,28 +47,28 @@
 
 
     .showContractContainerMain {
-        @include displayDFJA(flex, column, null, null);
+        @include displayDFJAG(flex, column, null, null, 15px);
         height: 100%;
         padding: 10px;
         background-color: $white-3;
         border-radius: 5px;
-        gap: 15px;
+        // gap: 15px;
 
         .showContractContainer {
-            @include displayDFJA(flex, null, space-between, center);
+            @include displayDFJAG(flex, null, space-between, center, 15px);
             height: 100%;
-            gap: 15px;
+            // gap: 15px;
 
             .contractInfoContainer {
-                @include displayDFJA(flex, row, space-between, center);
+                @include displayDFJAG(flex, row, space-between, center, 10px);
                 text-align: center;
                 padding: 0;
                 width: 100%;
-                gap: 10px;
+                // gap: 10px;
 
                 .contractNameParagraph,
                 .contractDaysParagraph {
-                    @include displayDFJA(flex, null, null, left);
+                    @include displayDFJAG(flex, null, null, left);
                     margin: 0;
                     color: $font-dark-colour;
                     font-weight: bold;
@@ -88,8 +88,8 @@
             }
 
             .editAndRemoveButtonContainer {
-                @include displayDFJA(flex, row, null, null);
-                gap: 10px;
+                @include displayDFJAG(flex, row, null, null, 10px);
+                // gap: 10px;
 
                 .contractDaysInput {
                     border: 2px solid $font-dark-colour;
@@ -149,8 +149,8 @@
 }
 
 .addContainer {
-    @include displayDFJA(flex, row, null, center);
-    gap: 10px;
+    @include displayDFJAG(flex, row, null, center, 10px);
+    // gap: 10px;
     margin: 10px 0 0 0;
 
     .addContractDaysInput {

@@ -1,7 +1,7 @@
 @import '@/styles/main.scss';
 
 .absenceInfo {
-  @include displayDFJA(flex, column, center, center);
+  @include displayDFJAG(flex, column, center, center);
   width: 100%;
   height: auto;
   padding: 5px;

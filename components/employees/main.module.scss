@@ -1,14 +1,14 @@
 @import '@/styles/main.scss';
 
 .employeesContainerMain{
-  @include displayDFJA(flex, column, null, null);
+  @include displayDFJAG(flex, column, null, null);
   margin: 30px;
 }
 
 .employeesFilterAndListContainer{
-  @include displayDFJA(flex, row, null, null);
+  @include displayDFJAG(flex, row, null, null, 30px);
   margin: 30px;
-  gap: 30px;
+  // gap: 30px;
 }
 
 .emplyeesFilterContainer {
@@ -16,7 +16,7 @@
 }
 
 .employeesListcontainer { 
-  @include displayDFJA(grid, null, null, center);
+  @include displayDFJAG(grid, null, null, center);
   width: 100%;
   height: fit-content;
   position: relative;

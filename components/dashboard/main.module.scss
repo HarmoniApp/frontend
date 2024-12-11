@@ -3,16 +3,16 @@
 .mainContainer {
     margin: 0 auto;
     padding-top: 10%;
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center);
     width: 80%;
 
     .firstRow {
-        @include displayDFJA(flex, null, center, center);
+        @include displayDFJAG(flex, null, center, center);
         width: 100%;
         margin-bottom: 10px;
 
         &>div {
-            @include displayDFJA(flex, null, center, center);
+            @include displayDFJAG(flex, null, center, center);
             width: 100%;
             background-color: $main-colour;
             color: $font-dark-colour;
@@ -42,7 +42,7 @@
         width: 100%;
 
         &>div {
-            @include displayDFJA(flex, null, center, center);
+            @include displayDFJAG(flex, null, center, center);
             background-color: $main-colour;
             color: $font-dark-colour;
             font-weight: bold;

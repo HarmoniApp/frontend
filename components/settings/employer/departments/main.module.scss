@@ -7,12 +7,12 @@
 //     right: 0;
 //     bottom: 0;
 //     background: $black-transparency-05;
-//     @include displayDFJA(flex, null, center, center);
+//     @include displayDFJAG(flex, null, center, center);
 //     z-index: 1000;
 // }
 
 // .modalContentOfAdd, .modalContentOfDelete {
-//     @include displayDFJA(flex, column, null, null);
+//     @include displayDFJAG(flex, column, null, null);
 //     border: 2px solid $main-colour;
 //     border-radius: 8px;
 //     background-color: $gray;
@@ -34,10 +34,10 @@
     color: $font-light-colour;
     padding: 20px 0 0 0;
     border-radius: 10px;
-    @include displayDFJA(flex, column, null, null);
+    @include displayDFJAG(flex, column, null, null, 15px);
     width: 100%;
     height: 100%;
-    gap: 15px;
+    // gap: 15px;
 }
 
 .showDepartmentsMapContainer {
@@ -48,7 +48,7 @@
     .departmentForm {
 
         .showDepartmentContainer {
-            @include displayDFJA(flex, column, space-between, null);
+            @include displayDFJAG(flex, column, space-between, null);
             background-color: $white-3;
             height: 100%;
             border-radius: 5px;
@@ -56,12 +56,12 @@
             padding: 10px;
 
             .departmentInfoContainer {
-                @include displayDFJA(flex, column, null, null);
+                @include displayDFJAG(flex, column, null, null);
                 margin: 0;
                 padding: 0;
 
                 .inputLabel {
-                    @include displayDFJA(flex, row, space-between, center);
+                    @include displayDFJAG(flex, row, space-between, center);
                     font-weight: bold;
                     color: $font-dark-colour;
                 }
@@ -80,13 +80,13 @@
                 }
 
                 .departmentInfoRowContainer {
-                    @include displayDFJA(flex, column, center, center);
+                    @include displayDFJAG(flex, column, center, center);
                     margin: 0 0 10px 0;
                     width: 100%;
 
                     .departmentDataContainer {
-                        @include displayDFJA(flex, row, center, center);
-                        gap: 5px;
+                        @include displayDFJAG(flex, row, center, center, 5px);
+                        // gap: 5px;
 
                         .comma::after {
                             content: ',';
@@ -102,7 +102,7 @@
                         }
 
                         .buildingNumbersContainer {
-                            @include displayDFJA(flex, row, null, null);
+                            @include displayDFJAG(flex, row, null, null);
 
                             .slash::after {
                                 content: '/';
@@ -117,15 +117,14 @@
 
                 @include respond-to-md {
                     .departmentInfoRowContainer {
-                        @include displayDFJA(flex, column, null, flex-start);
+                        @include displayDFJAG(flex, column, null, flex-start);
                     }
                 }
             }
 
             .editAndRemoveButtonContainer {
-                @include displayDFJA(flex, row, flex-end, center);
-                gap: 10px;
-
+                @include displayDFJAG(flex, row, flex-end, center, 10px);
+                // gap: 10px;
                 margin: 10px 0 0 0;
 
                 .removeButton,
@@ -165,11 +164,11 @@
     margin: 10px 0 0 0;
 
     .addItemContainer {
-        @include displayDFJA(flex, column, null, null);
+        @include displayDFJAG(flex, column, null, null);
     }
 
     .inputLabel {
-        @include displayDFJA(flex, row, space-between, center);
+        @include displayDFJAG(flex, row, space-between, center);
         font-weight: bold;
         color: $font-light-colour;
         margin-bottom: 5px;
@@ -181,7 +180,7 @@
     margin: 20px 0 0 0;
 
     .addButton {
-        @include displayDFJA(flex, row, center, center);
+        @include displayDFJAG(flex, row, center, center);
         gap:20px;
         background-color: $main-colour;
         border: none;

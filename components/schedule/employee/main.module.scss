@@ -1,9 +1,9 @@
 @import '@/styles/main.scss';
 
 .scheduleEmployee {
-  @include displayDFJA(flex, column, center, center);
+  @include displayDFJAG(flex, column, center, center, 20px);
   width: 90%;
-  gap: 20px;
+  // gap: 20px;
   padding: 20px;
   margin: 0 auto;
 

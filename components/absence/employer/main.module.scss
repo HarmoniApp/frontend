@@ -2,19 +2,19 @@
 
 
 .absenceEmployerContainerMain {
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center);
     width: 100%;
 
     .absenceEmployerContainer {
-        @include displayDFJA(flex, column, null, null);
+        @include displayDFJAG(flex, column, null, null, 20px);
         width: 90%;
-        gap: 20px;
+        // gap: 20px;
         margin: 20px 0;
     }
 }
 
 .buttonContainer {
-    @include displayDFJA(flex, null, space-between, null);
+    @include displayDFJAG(flex, null, space-between, null);
     margin: 0;
 
     .roleSelect {
@@ -55,13 +55,13 @@
     }
 
     .viewContainer {
-        @include displayDFJA(flex, null, null, null);
-        gap: 15px;
+        @include displayDFJAG(flex, null, null, null, 15px);
+        // gap: 15px;
         margin: 0 10px;
 
         .listViewButton,
         .tilesViewButton {
-            @include displayDFJA(inline-flex, null, center, center);
+            @include displayDFJAG(inline-flex, null, center, center);
             background: none;
             border: none;
             padding: 0;
@@ -71,7 +71,7 @@
         }
 
         .active {
-            @include displayDFJA(inline-flex, null, center, center);
+            @include displayDFJAG(inline-flex, null, center, center);
             background: none;
             border: none;
             padding: 0;
@@ -83,8 +83,8 @@
 }
 
 .selectContainer {
-    @include displayDFJA(flex, row, null, null);
-    gap: 20px;
+    @include displayDFJAG(flex, row, null, null, 20px);
+    // gap: 20px;
 }
 
 .searchInput {

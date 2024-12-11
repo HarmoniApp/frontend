@@ -1,15 +1,15 @@
 @import '@/styles/main.scss';
 
 .searchPrivUserContaner {
-    @include displayDFJA(flex, column, null, null);
+    @include displayDFJAG(flex, column, null, null);
     width: 100%;
     max-width: 750px;
     margin: 0 auto;
     padding: 16px;
 
     .searchUserInputContainer {
-        @include displayDFJA(flex, null, null, center);
-        gap: 8px;
+        @include displayDFJAG(flex, null, null, center, 8px);
+        // gap: 8px;
         margin-bottom: 16px;
 
         .searchInput {
@@ -31,7 +31,7 @@
         @include gridQG(3, 10px);
 
         .searchUserResultItem {
-            @include displayDFJA(flex, row, space-between, center);
+            @include displayDFJAG(flex, row, space-between, center);
             background-color: $main-colour;
             border: 1px solid $font-dark-colour;
             box-shadow: 0px 4px 6px $black-transparency-01;
@@ -67,15 +67,15 @@
 }
 
 .searchGroupUserContaner {
-    @include displayDFJA(flex, column, null, null);
+    @include displayDFJAG(flex, column, null, null);
     width: 100%;
     max-width: 750px;
     margin: 0 auto;
     padding: 16px;
 
     .searchUserInputContainer {
-        @include displayDFJA(flex, null, null, center);
-        gap: 8px;
+        @include displayDFJAG(flex, null, null, center, 8px);
+        // gap: 8px;
         margin-bottom: 16px;
 
         .searchInput {
@@ -97,7 +97,7 @@
         @include gridQG(3, 10px);
 
         .searchUserResultItem {
-            @include displayDFJA(flex, row, space-between, center);
+            @include displayDFJAG(flex, row, space-between, center);
             background-color: $main-colour;
             border: 1px solid $font-dark-colour;
             box-shadow: 0px 4px 6px $black-transparency-01;

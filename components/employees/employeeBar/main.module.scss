@@ -15,27 +15,27 @@
 // }
 
 .employeeBarContainerMain {
-    @include displayDFJA(flex, null, space-between, center);
+    @include displayDFJAG(flex, null, space-between, center);
     padding: 10px 20px;
 }
 
 .actionContainer {
-    @include displayDFJA(flex, null, null, null);
-    gap: 15px;
+    @include displayDFJAG(flex, null, null, null, 15px);
+    // gap: 15px;
     margin: 0 10px;
 }
 
 .addEmployeeButton,
 .importEmployeeButton,
 .editRoles {
-    @include displayDFJA(flex, null, null, center);
+    @include displayDFJAG(flex, null, null, center, 10px);
     padding: 10px;
     background-color: $white;
     color: $font-dark-colour;
     border: 2px solid $main-colour;
     border-radius: 5px;
     font-size: 14px;
-    gap: 10px;
+    // gap: 10px;
     font-weight: bold;
     text-transform: uppercase;
     cursor: pointer;
@@ -51,13 +51,13 @@
 }
 
 .viewContainer {
-    @include displayDFJA(flex, null, null, null);
-    gap: 15px;
+    @include displayDFJAG(flex, null, null, null, 15px);
+    // gap: 15px;
     margin: 0 10px;
 
     .listViewButton,
     .tilesViewButton {
-        @include displayDFJA(inline-flex, null, center, center);
+        @include displayDFJAG(inline-flex, null, center, center);
         background: none;
         border: none;
         padding: 0;
@@ -66,7 +66,7 @@
     }
 
     .active {
-        @include displayDFJA(inline-flex, null, center, center);
+        @include displayDFJAG(inline-flex, null, center, center);
         background: none;
         border: none;
         padding: 0;
@@ -78,7 +78,7 @@
 
 .exportDropdownContainer {
     position: relative;
-    @include displayDFJA(inline-block, null, null, null);
+    @include displayDFJAG(inline-block, null, null, null);
 
     .exportDropdownMenu {
         position: absolute;
@@ -88,7 +88,7 @@
         z-index: 1000;
 
         button {
-            @include displayDFJA(flex, row, space-between, center);
+            @include displayDFJAG(flex, row, space-between, center);
             text-align: center;
             background-color: $white-4;
             padding: 10px;

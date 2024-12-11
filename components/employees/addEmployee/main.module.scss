@@ -7,12 +7,12 @@
 //     right: 0;
 //     bottom: 0;
 //     background: $black-transparency-05;
-//     @include displayDFJA(flex, null, center, center);
+//     @include displayDFJAG(flex, null, center, center);
 //     z-index: 1000;
 //   }
 
 //   .modalContentOfAddEmployee {
-//     @include displayDFJA(flex, column, null, null);
+//     @include displayDFJAG(flex, column, null, null);
 //     border: 2px solid $main-colour;
 //     border-radius: 8px;
 //     background-color: $gray;
@@ -30,7 +30,7 @@
 //   }
 
 .addEmployeeContainerMain {
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center);
 
     @include respond-to-md {
         gap: 15px;
@@ -39,19 +39,19 @@
 }
 
 .formCotainer{
-    @include displayDFJA(flex, column, null, null);
-    gap: 20px;
+    @include displayDFJAG(flex, column, null, null, 20px);
+    // gap: 20px;
     margin:20px 0;
 }
 
 .rowContainerTop {
-    @include displayDFJA(flex, null, null, null);
+    @include displayDFJAG(flex, null, null, null, 20px);
     flex-wrap: wrap;
-    gap: 20px;
+    // gap: 20px;
     width: 100%;
 
     @include respond-to-lg {
-        @include displayDFJA(flex, column, null, null);
+        @include displayDFJAG(flex, column, null, null);
         
         .columnContainer {
             width: 100%;
@@ -59,13 +59,13 @@
     }
 
     @include respond-to-md {
-        @include displayDFJA(flex, column, null, null);
-        gap: 10px;
+        @include displayDFJAG(flex, column, null, null, 10px);
+        // gap: 10px;
     }
 }
 
 .columnContainer {
-    @include displayDFJA(flex, column, null, null);
+    @include displayDFJAG(flex, column, null, null);
     flex: 1;
     padding: 20px;
     background-color: $white;
@@ -83,7 +83,7 @@
         color: $font-dark-colour;
         margin: 10px 0;
         transition: color 0.3s ease;
-        @include displayDFJA(flex, null, space-between, center);
+        @include displayDFJAG(flex, null, space-between, center);
     }
 
     .errorMessage {
@@ -149,13 +149,13 @@
 }
 
 .rowContainerMiddle {
-    @include displayDFJA(flex, row, space-evenly, center);
+    @include displayDFJAG(flex, row, space-evenly, center, 20px);
     width: 100%;
     height: auto;
-    gap: 20px;
+    // gap: 20px;
 
     @include respond-to-lg {
-        @include displayDFJA(flex, column, null, null);
+        @include displayDFJAG(flex, column, null, null);
 
         .columnContainerMiddle {
             width: 100%;
@@ -163,12 +163,12 @@
     }
 
     @include respond-to-md {
-        @include displayDFJA(flex, column, null, null);
-        gap: 10px;
+        @include displayDFJAG(flex, column, null, null, 10px);
+        // gap: 10px;
     }
 
     .columnContainerMiddle {
-        @include displayDFJA(flex, column, center, center);
+        @include displayDFJAG(flex, column, center, center);
         max-height: 45vh;
         border-radius: 10px;
         background-color: $white;
@@ -209,9 +209,9 @@
             }
 
             .roleLabel {
-                @include displayDFJA(flex, row, space-between, center);
+                @include displayDFJAG(flex, row, space-between, center, 10px);
                 text-align: center;
-                gap: 10px;
+                // gap: 10px;
                 background-color: $white-4;
                 border-radius: 5px;
                 box-shadow: 0px 2px 5px $black-transparency-01;
@@ -254,9 +254,9 @@
             }
 
             .languageLabel {
-                @include displayDFJA(flex, row, space-between, center);
+                @include displayDFJAG(flex, row, space-between, center, 10px);
                 text-align: center;
-                gap: 10px;
+                // gap: 10px;
                 background-color: $white-4;
                 border-radius: 5px;
                 box-shadow: 0px 2px 5px $black-transparency-01;
@@ -289,27 +289,27 @@
 }
 
 .rowContainerBottom {
-    @include displayDFJA(flex, row, space-evenly, center);
+    @include displayDFJAG(flex, row, space-evenly, center);
     width: 100%;
     height: auto;
 
     @include respond-to-md {
-        @include displayDFJA(flex, column, null, null);
-        gap: 10px;
+        @include displayDFJAG(flex, column, null, null, 10px);
+        // gap: 10px;
     }
 
     .buttonContainer {
-        @include displayDFJA(flex, row, flex-end, center);
+        @include displayDFJAG(flex, row, flex-end, center, 20px);
         width: 100%;
-        gap: 20px;
+        // gap: 20px;
 
         @include respond-to-md {
-            @include displayDFJA(flex, row, center, center);
+            @include displayDFJAG(flex, row, center, center);
         }
 
         .backButton,
         .addButton {
-            @include displayDFJA(flex, null, null, center);
+            @include displayDFJAG(flex, null, null, center);
             background-color: $main-colour;
             color: $font-dark-colour;
             padding: 10px 20px;

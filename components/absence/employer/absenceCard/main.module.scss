@@ -35,12 +35,12 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px $black-transparency-01;
     padding: 0 20px;
-    @include displayDFJA(flex, column, null, null);
-    gap: 20px;
+    @include displayDFJAG(flex, column, null, null, 20px);
+    // gap: 20px;
 }
 
 .headerCardContainer {
-    @include displayDFJA(flex, null, space-between, center);
+    @include displayDFJAG(flex, null, space-between, center);
     border-bottom: 2px solid $main-colour;
 
     .absenceTypeNameParagraph {
@@ -57,12 +57,12 @@
 }
 
 .absenceDataContainer {
-    @include displayDFJA(flex, row, null, null);
-    gap: 20px;
+    @include displayDFJAG(flex, row, null, null, 20px);
+    // gap: 20px;
     margin: 0 0 10px 0;
 
     .columnContainer {
-        @include displayDFJA(flex, column, null, null);
+        @include displayDFJAG(flex, column, null, null);
         flex: 1;
 
         .idLabel,
@@ -73,8 +73,8 @@
         .endDateLabel,
         .quantityDaysLabel,
         .statusNameLabel {
-            @include displayDFJA(flex, row, space-between, center);
-            gap: 5px;
+            @include displayDFJAG(flex, row, space-between, center, 5px);
+            // gap: 5px;
         }
 
         .idParagraph,
@@ -108,20 +108,20 @@
 }
 
 .buttonContainer {
-    @include displayDFJA(flex, null, center, null);
-    gap: 20px;
+    @include displayDFJAG(flex, null, center, null, 20px);
+    // gap: 20px;
     margin: 0 0 10px 0;
 
     .acceptButton,
     .declineButton {
-        @include displayDFJA(flex, null, null, center);
+        @include displayDFJAG(flex, null, null, center, 5px);
         padding: 10px 20px;
         font-size: 16px;
         color: $font-light-colour;
         border: none;
         border-radius: 5px;
         cursor: pointer;
-        gap: 5px;
+        // gap: 5px;
     }
 
     .acceptButton {

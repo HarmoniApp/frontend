@@ -1,9 +1,9 @@
 @import '@/styles/main.scss';
 
 .calendarHeader {
-  @include displayDFJA(flex, row, center, center);
+  @include displayDFJAG(flex, row, center, center, 20px);
   padding: 10px;
-  gap: 20px;
+  // gap: 20px;
   width: 100%;
 
   .dateRange {

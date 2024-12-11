@@ -2,14 +2,14 @@
 
 .newPasswordConfirmationContainerMain {
     background-color: $gray;
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center);
     width: 100%;
     padding: 0px 40px;
     box-sizing: border-box;
 }
 
 .headerContainer {
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center);
     text-align: center;
     width: 100%;
     margin: 0;
@@ -31,12 +31,12 @@
 }
 
 .passwordContainter {
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center);
     width: 100%;
     margin: 0;
 
     .passwordParagraph {
-        @include displayDFJA(flex, null, null, center);
+        @include displayDFJAG(flex, null, null, center);
         text-align: center;
         color: $font-light-colour;
         margin: 0;
@@ -59,11 +59,11 @@
 }
 
 .buttonConianer {
-    @include displayDFJA(flex, row, center, center);
+    @include displayDFJAG(flex, row, center, center);
     width: 100%;
 
     .closeButton {
-        @include displayDFJA(flex, null, null, center);
+        @include displayDFJAG(flex, null, null, center);
         background-color: $main-colour;
         color: $font-dark-colour;
         padding: 10px 20px;

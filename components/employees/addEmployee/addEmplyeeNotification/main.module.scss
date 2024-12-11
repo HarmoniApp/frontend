@@ -2,7 +2,7 @@
 
 .addEmplyeeConfirmationContainerMain {
     background-color: $gray;
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center);
     width: 100%;
     padding:20px 40px;
     box-sizing: border-box;
@@ -10,7 +10,7 @@
 }
 
 .headerContainer{
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center);
     text-align: center;
     width: 100%;
     margin: 0;
@@ -31,24 +31,24 @@
 }
 
 .counterContainter {
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center, 5px);
     width: 100%;
     margin: 0;
-    gap: 5px;
+    // gap: 5px;
 
     .counterParagraph {
-        @include displayDFJA(flex, null, null, center);
+        @include displayDFJAG(flex, null, null, center);
         text-align: center;
         color: $font-light-colour;
         margin: 0;
     }
 
     .counterTimerContainer {
-        @include displayDFJA(flex, null, center, center);
+        @include displayDFJAG(flex, null, center, center, 3px);
         text-align: center;
         color: $font-light-colour;
         margin: 0;
-        gap: 3px;
+        // gap: 3px;
 
         .highlightTimeLabel {
             color: $main-colour;
@@ -57,7 +57,7 @@
         }
 
         .counterTimerLabel {
-            @include displayDFJA(flex, null, null, center);
+            @include displayDFJAG(flex, null, null, center);
             text-align: center;
             color: $font-light-colour;
         }
@@ -65,9 +65,9 @@
 }
 
 .buttonConianer{
-    @include displayDFJA(flex, row, space-evenly, center);
+    @include displayDFJAG(flex, row, space-evenly, center, 20px);
     width: 100%;
-    gap: 20px;
+    // gap: 20px;
 
     .employeeInfo {
         text-align: center;
@@ -85,7 +85,7 @@
     }
 
     .closeButton {
-        @include displayDFJA(flex, null, null, center);
+        @include displayDFJAG(flex, null, null, center);
         background-color: $main-colour;
         color: $font-dark-colour;
         padding: 10px 20px;
@@ -111,7 +111,7 @@
     }
 
     .detailsButton {
-        @include displayDFJA(flex, null, null, center);
+        @include displayDFJAG(flex, null, null, center);
         background-color: $green;
         color: $font-light-colour;
         padding: 10px 20px;

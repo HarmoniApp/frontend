@@ -7,12 +7,12 @@
 //     right: 0;
 //     bottom: 0;
 //     background: $black-transparency-05;
-//     @include displayDFJA(flex, null, center, center);
+//     @include displayDFJAG(flex, null, center, center);
 //     z-index: 1000;
 // }
 
 // .modalContentOfNotification {
-//     @include displayDFJA(flex, column, null, null);
+//     @include displayDFJAG(flex, column, null, null);
 //     border: 2px solid $main-colour;
 //     border-radius: 8px;
 //     background-color: $gray;
@@ -30,7 +30,7 @@
 // }
 
 .navbar {
-    @include displayDFJA(flex, null, space-between, center);
+    @include displayDFJAG(flex, null, space-between, center);
     background-color: $gray;
     color: $font-light-colour;
     padding: 10px;
@@ -38,7 +38,7 @@
 
 .leftSection,
 .rightSection {
-    @include displayDFJA(flex, null, null, center);
+    @include displayDFJAG(flex, null, null, center);
 }
 
 .leftSection .logo {
@@ -71,7 +71,7 @@
 .rightSection p,
 .leftSection p {
     margin: 0 10px;
-    @include displayDFJA(flex, null, null, center);
+    @include displayDFJAG(flex, null, null, center);
 }
 
 .rightSection p {

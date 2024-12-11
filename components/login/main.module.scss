@@ -7,12 +7,12 @@
 //     right: 0;
 //     bottom: 0;
 //     background: $black-transparency-05;
-//     @include displayDFJA(flex, null, center, center);
+//     @include displayDFJAG(flex, null, center, center);
 //     z-index: 1000;
 //   }
 //  
 //   .passwordChangeModalContent {
-//     @include displayDFJA(flex, column, null, null);
+//     @include displayDFJAG(flex, column, null, null);
 //     border: 2px solid $main-colour;
 //     border-radius: 8px;
 //     background-color: $gray;
@@ -44,7 +44,7 @@
 }
 
 .form {
-    @include displayDFJA(flex, column, null, stretch);
+    @include displayDFJAG(flex, column, null, stretch);
     width: 100%;
 }
 

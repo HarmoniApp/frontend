@@ -1,7 +1,7 @@
 @import '@/styles/main.scss';
 
 .shiftItemContainerMain {
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center);
     width: 100%;
     height: 7vh;
     color: $font-dark-colour;
@@ -30,8 +30,8 @@
     }
 
     .absence {
-        @include displayDFJA(flex, row, center, center);
-        gap: 0.5rem;
+        @include displayDFJAG(flex, row, center, center, 0.5rem);
+        // gap: 0.5rem;
         height: 7vh;
         width: 100%;
         text-align: center;
@@ -57,7 +57,7 @@
     }
 
     .shiftDetails {
-        @include displayDFJA(flex, column, null, center);
+        @include displayDFJAG(flex, column, null, center);
         font-weight: bold;
         color: $font-dark-colour;
 

@@ -1,7 +1,7 @@
 @import '@/styles/main.scss';
 
 .scheduleContainerMain {
-    @include displayDFJA(flex, column, center, center);
+    @include displayDFJAG(flex, column, center, center);
     width: 90%;
     margin: 0 auto;
 }
