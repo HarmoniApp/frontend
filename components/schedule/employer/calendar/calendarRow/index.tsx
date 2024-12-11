@@ -78,27 +78,11 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
 
       const newAbortController = new AbortController();
       setAbortController(newAbortController);
+
       const fetchSchedules = async () => {
         try {
-          const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
-          const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
-          const tokenJWT = sessionStorage.getItem('tokenJWT');
-
           const schedulePromises = users.map(user =>
-            fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${user.id}/week?startDate=${startDate}&endDate=${endDate}`, {
-              signal: newAbortController.signal,
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${tokenJWT}`,
-              }
-            })
-              .then(response => {
-                if (!response.ok) {
-                  throw new Error('Network response was not ok');
-                }
-                return response.json();
-              })
+            fetchUserScheduleWithAbsences(user.id, currentWeek)
               .then(data => {
                 return { userId: user.id, data: data };
               })
@@ -213,7 +197,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
         }));
       } catch (error) {
         console.error('Error publishing shift:', error);
-        setError('Błąd podczas publikacji');
       } finally {
         setModalIsOpenLoadning(false);
       }
