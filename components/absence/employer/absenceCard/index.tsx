@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import Absence from '@/components/types/absence';
 import AbsenceType from '@/components/types/absenceType';
 import SimpleUser from "@/components/types/simpleUser";
@@ -9,9 +8,8 @@ import CancelConfirmation from './popUps/cancelConfirmation';
 import AproveConfirmation from './popUps/aproveConfirmation';
 import styles from './main.module.scss';
 import { Message } from 'primereact/message';
-import { fetchCsrfToken } from '@/services/csrfService';
 import { fetchSimpleUser } from '@/services/userService';
-import { fetchAbsenceType } from '@/services/absenceService';
+import { fetchAbsenceType, patchAbsence } from '@/services/absenceService';
 import LoadingSpinner from '@/components/loadingSpinner';
 
 interface AbsenceCardProps {
@@ -31,8 +29,8 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
         const fetchData = async () => {
             await fetchSimpleUser(absence, undefined, setUser, undefined, setModalIsOpenLoadning);
             await fetchAbsenceType(absence.absence_type_id, setAbsenceType);
-          };
-          fetchData();
+        };
+        fetchData();
 
     }, [absence.absence_type_id, absence.user_id]);
 
@@ -44,36 +42,17 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     const updateAbsenceStatus = async (absenceId: number, statusId: number) => {
         setModalIsOpenLoadning(true);
         try {
-            const tokenXSRF = await fetchCsrfToken();
-
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v2/absence/${absenceId}/status/${statusId}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                        'X-XSRF-TOKEN': tokenXSRF,
-                    },
-                    credentials: 'include',
-                });
-
-                if (!response.ok) {
-                    console.error('Error updating absence status, response not OK');
-                    throw new Error('Error updating absence status');
-                }
-
-                setModalIsOpenLoadning(false);
-                // const responseData = await response.json();
-                // console.log('Updated absence status response data:', responseData);
+            await patchAbsence(absenceId, statusId)
         } catch (error) {
             console.error('Error updating absence status:', error);
-            setError('Error updating absence status');
+        } finally {
+            setModalIsOpenLoadning(false);
         }
     };
 
     const handleDeclineClick = async () => {
         try {
             await updateAbsenceStatus(absence.id, 4);
-            console.log('Absence rejected');
             onStatusUpdate();
         } catch (error) {
             console.error('Error rejecting absence:', error);
@@ -83,7 +62,6 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     const handleAcceptClick = async () => {
         try {
             await updateAbsenceStatus(absence.id, 2);
-            console.log('Absence approved');
             onStatusUpdate();
         } catch (error) {
             console.error('Error approving absence:', error);
