@@ -90,7 +90,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
 
     } catch (error) {
       console.error('Error while filter:', error);
-      setError('Błąd podczas filtrowania');
     } finally {
       setLoadingUsers(false);
     }

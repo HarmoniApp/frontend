@@ -25,6 +25,35 @@ export const fetchGroupMembers = async (
     }
 };
 
+export const fetchUserSearch = async (
+    query: string,
+    setSearchResults: (users: ChatPartner[]) => void): Promise<void> => {
+    if (query.trim().length > 2) {
+        try {
+            const tokenJWT = sessionStorage.getItem('tokenJWT');
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/search?q=${query}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${tokenJWT}`,
+                }
+            });
+            const data = await response.json();
+            const results = data.map((user: any) => ({
+                id: user.id,
+                name: user.firstname + " " + user.surname,
+                photo: user.photo,
+                type: 'user'
+            }));
+            setSearchResults(results);
+        } catch (error) {
+            console.error('Error handle search:', error);
+        }
+    } else {
+        setSearchResults([]);
+    }
+};
+
 export const posChattMessage = async (
     messageData: any,
     setMessages: (messages: Message[]) => void,
@@ -61,18 +90,18 @@ export const patchMarkMessagesAsReadInIndividualChat = async (
     try {
         const tokenXSRF = await fetchCsrfToken();
 
-        const response =  await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/mark-all-read?userId1=${userId}&userId2=${partnerId}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/mark-all-read?userId1=${userId}&userId2=${partnerId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
         });
         if (!response.ok) {
-          console.error('Failed to mark messages as read:', response.statusText);
-          throw new Error('Failed to mark messages as read');
+            console.error('Failed to mark messages as read:', response.statusText);
+            throw new Error('Failed to mark messages as read');
         }
     } catch (error) {
         console.error(`Error marking messages as read`, error);

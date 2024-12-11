@@ -4,6 +4,7 @@ import styles from './main.module.scss';
 import '@/styles/main.css';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import UserImage from '@/components/userImage';
+import { fetchUserSearch } from '@/services/chatService';
 
 interface SearchUserProps {
   handleSelectUser: (user: ChatPartner) => void;
@@ -22,31 +23,7 @@ const SearchUser: React.FC<SearchUserProps> = ({ handleSelectUser, groupChat, se
   const handleSearch = async (query: string) => {
     setLoading(true);
     setSearchQuery(query);
-    if (query.trim().length > 2) {
-      try {
-        const tokenJWT = sessionStorage.getItem('tokenJWT');
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/search?q=${query}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${tokenJWT}`,
-          }
-        });
-        const data = await response.json();
-        const results = data.map((user: any) => ({
-          id: user.id,
-          name: user.firstname + " " + user.surname,
-          photo: user.photo,
-          type: 'user'
-        }));
-        setSearchResults(results);
-      } catch (error) {
-        console.error('Error handle search:', error);
-        setError('Error handle search');
-      }
-    } else {
-      setSearchResults([]);
-    }
+    await fetchUserSearch(query, setSearchResults)
     setLoading(false);
   };
 
