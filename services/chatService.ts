@@ -55,6 +55,27 @@ export const patchMarkMessagesAsReadInIndividualChat = async (
     }
 };
 
+export const patchAddUserToGroup = async (
+    selectedChatId: number,
+    userId: number): Promise<void> => {
+
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChatId}/user/${userId}/add`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+        });
+    } catch (error) {
+        console.error(`Error sending message`, error);
+    }
+};
+
 export const deleteGroup = async (
     id: number,
     setLoading: (loading: boolean) => void): Promise<void> => {

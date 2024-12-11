@@ -6,7 +6,7 @@ import { faUserMinus, faXmark, faTrash } from '@fortawesome/free-solid-svg-icons
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
 import UserImage from '@/components/userImage';
-import { deleteGroup } from '@/services/chatService';
+import { deleteGroup, patchAddUserToGroup } from '@/services/chatService';
 
 interface EditGroupProps {
     editGroupModal: (open: boolean) => void;
@@ -116,7 +116,6 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
             alert("User is already in the group.");
             return;
         }
-
         loading(true);
 
         try {
@@ -124,26 +123,10 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                 console.error("Error: No group to edit.");
                 return;
             }
-            const tokenXSRF = await fetchCsrfToken();
-
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}/user/${user.id}/add`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-            });
-
-            if (response.ok) {
-                setSelectedUsers([...selectedUsers, user]);
-            } else {
-                console.error('Błąd podczas dodawania użytkownika do grupy');
-            }
+            await patchAddUserToGroup(selectedChat.id, user.id)
+            setSelectedUsers([...selectedUsers, user]);
         } catch (error) {
             console.error('Error while adding user to group:', error);
-            setError('Error while adding user to group');
         } finally {
             loading(false);
         }
