@@ -68,7 +68,6 @@ const PhotoChange: React.FC<PhotoChangeProps> = ({ onClose }) => {
             }
         } catch (error) {
             console.error('Error uploading photo: ', error);
-            setError('Error uploading photo');
         } finally {
             setLoading(false);
             onClose();

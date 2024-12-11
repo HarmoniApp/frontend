@@ -6,7 +6,7 @@ import { faUserMinus, faXmark, faTrash } from '@fortawesome/free-solid-svg-icons
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
 import UserImage from '@/components/userImage';
-import { deleteGroup, patchAddUserToGroup } from '@/services/chatService';
+import { deleteGroup, patchAddUserToGroup, patchRemoveUserFromGroup } from '@/services/chatService';
 
 interface EditGroupProps {
     editGroupModal: (open: boolean) => void;
@@ -63,7 +63,6 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         if (!window.confirm("Are you sure to remove this user?")) {
             return;
         }
-
         loading(true);
 
         try {
@@ -71,29 +70,13 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                 console.error("Error: No group to edit.");
                 return;
             }
-            const tokenXSRF = await fetchCsrfToken();
-
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}/user/${userId}/remove`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-            });
-
-            if (response.ok) {
+            await patchRemoveUserFromGroup(selectedChat.id, userId)
                 setSelectedUsers(selectedUsers.filter((user: ChatPartner) => user.id !== userId));
                 if (userId === parseInt(sessionStorage.getItem('userId') || '0')) {
                     window.location.reload();
                 }
-            } else {
-                console.error('Błąd podczas usuwania użytkownika z grupy');
-            }
         } catch (error) {
             console.error('Błąd podczas usuwania członka grupy:', error);
-            setError('Błąd podczas usuwania członka grupy');
         } finally {
             loading(false);
         }
