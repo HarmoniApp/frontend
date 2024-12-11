@@ -13,7 +13,7 @@ import SockJS from 'sockjs-client';
 import '@/styles/main.css';
 import { fetchCsrfToken } from "@/services/csrfService";
 import UserImage from "@/components/userImage";
-import { fetchNotifications } from "@/services/notificationService";
+import { fetchNotifications, patchMarkNotificationAsRead } from "@/services/notificationService";
 import LoadingSpinner from "@/components/loadingSpinner";
 interface NavbarTopProps {
     onAccountIconClick: () => void;
@@ -72,14 +72,6 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
         };
     }, [userId]);
 
-    const handleBellClick = () => {
-        setShowNotifications(!showNotifications);
-    };
-
-    const closeNotifications = () => {
-        setShowNotifications(false);
-    };
-
     const markAsRead = async (id: number) => {
         setNotifications(notifications.map(notification =>
             notification.id === id ? { ...notification, read: true } : notification
@@ -87,25 +79,11 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
         setUnreadCount(notifications.filter(notification => !notification.read && notification.id !== id).length);
         setModalIsOpenLoadning(true);
         try {
-            const tokenXSRF = await fetchCsrfToken();
-
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notification/${id}/read`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-            });
-            if (!response.ok) {
-                console.error("Failed to mark notification as read: ", response.statusText);
-                throw new Error(`Failed to mark notification as read: ${id}`);
-            }
-            setModalIsOpenLoadning(false);
+            await patchMarkNotificationAsRead(id);
         } catch (error) {
             console.error(`Error marking notification ${id} as read:`, error);
-            setError('Błąd podczas czytania powiadomień');
+        } finally {
+            setModalIsOpenLoadning(false);
         }
     };
 
@@ -125,7 +103,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
             </div>
             <div className={styles.rightSection}>
                 <div className={styles.notificationIconWrapper}>
-                    <p onClick={handleBellClick} className={styles.notificationIcon}>
+                    <p onClick={() => setShowNotifications(true)} className={styles.notificationIcon}>
                         <FontAwesomeIcon icon={faBell} className={styles.icon} />
                         {unreadCount > 0 && (
                             <span className={styles.unreadCount}>{unreadCount}</span>
@@ -142,7 +120,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
             {showNotifications && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
-                        <Notifications notifications={notifications} onClose={closeNotifications} markAsRead={markAsRead} />
+                        <Notifications notifications={notifications} onClose={() => setShowNotifications(false)} markAsRead={markAsRead} />
                     </div>
 
                     {modalIsOpenLoadning && (

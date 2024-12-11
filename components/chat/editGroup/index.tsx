@@ -6,7 +6,7 @@ import { faUserMinus, faXmark, faTrash } from '@fortawesome/free-solid-svg-icons
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
 import UserImage from '@/components/userImage';
-import { deleteGroup } from '@/services/chatService';
+import { deleteGroup, fetchGroupMembers, patchAddUserToGroup, patchRemoveUserFromGroup } from '@/services/chatService';
 
 interface EditGroupProps {
     editGroupModal: (open: boolean) => void;
@@ -23,39 +23,13 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         handleEditGroup();
     }, []);
 
-    const loadGroupMembers = async () => {
+    const handleEditGroup = async () => {
         loading(true);
-
-        try {
-            if (!selectedChat) {
-                console.error("Error: No group to edit.");
-                return;
-            }
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}/members`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenJWT}`,
-                }
-            });
-            const members = await response.json();
-            const membersWithNames = members.map((user: any) => ({
-                ...user,
-                name: `${user.firstname} ${user.surname}`
-            }));
-            setSelectedUsers(membersWithNames);
-        } catch (error) {
-            console.error('Błąd podczas pobierania członków grupy:', error);
-            setError('Błąd podczas pobierania członków grupy');
-        } finally {
-            loading(false);
+        if (!selectedChat) {
+            console.error("Error: No group to edit.");
+            return;
         }
-    };
-
-    const handleEditGroup = () => {
-        loading(true);
-        loadGroupMembers();
+        await fetchGroupMembers(selectedChat.id, setSelectedUsers)
         loading(false);
     };
 
@@ -63,7 +37,6 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         if (!window.confirm("Are you sure to remove this user?")) {
             return;
         }
-
         loading(true);
 
         try {
@@ -71,29 +44,13 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                 console.error("Error: No group to edit.");
                 return;
             }
-            const tokenXSRF = await fetchCsrfToken();
-
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}/user/${userId}/remove`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-            });
-
-            if (response.ok) {
-                setSelectedUsers(selectedUsers.filter((user: ChatPartner) => user.id !== userId));
-                if (userId === parseInt(sessionStorage.getItem('userId') || '0')) {
-                    window.location.reload();
-                }
-            } else {
-                console.error('Błąd podczas usuwania użytkownika z grupy');
+            await patchRemoveUserFromGroup(selectedChat.id, userId)
+            setSelectedUsers(selectedUsers.filter((user: ChatPartner) => user.id !== userId));
+            if (userId === parseInt(sessionStorage.getItem('userId') || '0')) {
+                window.location.reload();
             }
         } catch (error) {
-            console.error('Błąd podczas usuwania członka grupy:', error);
-            setError('Błąd podczas usuwania członka grupy');
+            console.error('Error while removing user from group:', error);
         } finally {
             loading(false);
         }
@@ -116,7 +73,6 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
             alert("User is already in the group.");
             return;
         }
-
         loading(true);
 
         try {
@@ -124,26 +80,10 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
                 console.error("Error: No group to edit.");
                 return;
             }
-            const tokenXSRF = await fetchCsrfToken();
-
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}/user/${user.id}/add`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-            });
-
-            if (response.ok) {
-                setSelectedUsers([...selectedUsers, user]);
-            } else {
-                console.error('Błąd podczas dodawania użytkownika do grupy');
-            }
+            await patchAddUserToGroup(selectedChat.id, user.id)
+            setSelectedUsers([...selectedUsers, user]);
         } catch (error) {
             console.error('Error while adding user to group:', error);
-            setError('Error while adding user to group');
         } finally {
             loading(false);
         }
@@ -153,7 +93,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
                 <h3 className={styles.title}>Edit group</h3>
-                    <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true} setError={setError} />
+                <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true} setError={setError} />
                 <div className={styles.selectedUsers}>
                     {selectedUsers.map((user) => (
                         <div key={user.id} className={styles.selectedUser}>

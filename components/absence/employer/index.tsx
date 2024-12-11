@@ -12,11 +12,15 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
 import { fetchAbsences, fetchAbsencesByStatus, fetchAbsencesStatus } from '@/services/absenceService';
+<<<<<<< HEAD
 import LoadingSpinner from '@/components/loadingSpinner';
+=======
+import { fetchSimpleUsersWithPagination } from '@/services/userService';
+>>>>>>> 4c2c13ea82f9f7fc3399d8a4d39ac63137b40b69
 
 const AbsenceEmployer: React.FC = () => {
   const [absences, setAbsences] = useState<Absence[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<SimpleUser[]>([]);
   const [absencesStatus, setAbsencesStatus] = useState<AbsenceStatus[]>([]);
   const [viewMode, setViewMode] = useState('tiles');
   const [selectedStatus, setSelectedStatus] = useState<number | undefined>(undefined);
@@ -24,42 +28,13 @@ const AbsenceEmployer: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchUsers = async () => {
-    setLoading(true);
-    let pageNumber = 0;
-    let totalPages = 1;
-    const allUsers = [];
-
-    try {
-      while (pageNumber < totalPages) {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=10`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-          },
-        });
-        const data = await response.json();
-
-        allUsers.push(...data.content);
-        totalPages = data.totalPages;
-        pageNumber += 1;
-      }
-
-      setUsers(allUsers);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      setError('Błąd podczas pobierania użytkowników');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     const loadData = async () => {
       await fetchAbsences(setAbsences, setError, setLoading);
       await fetchAbsencesStatus(setAbsencesStatus);
-      fetchUsers();
+      setLoading(true)
+      await fetchSimpleUsersWithPagination(setUsers);
+      setLoading(false)
     };
     loadData();
   }, []);
@@ -79,7 +54,6 @@ const AbsenceEmployer: React.FC = () => {
       }
     } catch (error) {
       console.error('Error fetching absences by status:', error);
-      setError('Error fetching absences by status');
     } finally {
       setLoading(false);
     }

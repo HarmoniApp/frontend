@@ -214,6 +214,32 @@ export const postAbsence = async (
     }
 };
 
+export const patchAbsence = async (
+    absenceId: number,
+    statusId: number): Promise<void> => {
+
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/${absenceId}/status/${statusId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            console.error('Error updating absence status, response not OK');
+            throw new Error('Error updating absence status');
+        }
+    } catch (error) {
+        console.error(`Error while adding asbence`, error);
+    }
+};
+
 export const deleteAbsence = async (
     absenceId: number,
     userId: number,

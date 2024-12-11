@@ -11,7 +11,7 @@ import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
-import { deleteContractType, fetchContracts } from '@/services/contractService';
+import { deleteContractType, fetchContracts, postContractType, putContractType } from '@/services/contractService';
 import LoadingSpinner from '@/components/loadingSpinner';
 
 interface ContractTypesProps {
@@ -38,6 +38,35 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
 
   const handleDeleteContractType = async (contractId: number) => {
     await deleteContractType(contractId, setContracts, setModalIsOpenLoadning)
+  };
+
+  const handleAddContractType = async (values: any, { resetForm }: any) => {
+    setModalIsOpenLoadning(true);
+    try {
+      await postContractType(values, setContracts, setModalIsOpenLoadning, setAddedContractName);
+
+      setIsAddModalOpen(true);
+      resetForm();
+    } catch (error) {
+      console.error('Error adding contract type:', error);
+      throw error;
+    } finally {
+      setModalIsOpenLoadning(false);
+    }
+  };
+
+  const handleEditContractType = async (values: any, { resetForm }: any) => {
+    setModalIsOpenLoadning(true);
+    try {
+      await putContractType(values, setContracts, setModalIsOpenLoadning);
+
+      setEditingContractId(null);
+      resetForm();
+    } catch (error) {
+      console.error('Error editing shift:', error);
+    } finally {
+      setModalIsOpenLoadning(false);
+    }
   };
 
   const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
@@ -68,38 +97,10 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
         {contracts.map((contract) => (
           <Formik
             key={contract.id}
-            initialValues={{ name: contract.name, absence_days: contract.absence_days }}
+            initialValues={{ id: contract.id, name: contract.name, absence_days: contract.absence_days }}
             validationSchema={contractValidationSchema}
             enableReinitialize={true}
-            onSubmit={async (values, { resetForm }) => {
-              setModalIsOpenLoadning(true);
-              try {
-                const tokenXSRF = await fetchCsrfToken();
-
-                  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type/${contract.id}`, {
-                    method: 'PUT',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                      'X-XSRF-TOKEN': tokenXSRF,
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify(values),
-                  });
-                  if (!response.ok) {
-                    console.error('Failed to edit contract type:', response.statusText);
-                    throw new Error('Failed to edit contract type');
-                  }
-                  setModalIsOpenLoadning(false);
-                  const putData: Contract = await response.json();
-                  setContracts(contracts.map(c => (c.id === putData.id ? putData : c)));
-                  setEditingContractId(null);
-                  resetForm();
-              } catch (error) {
-                console.error('Error updating contract type:', error);
-                throw error;
-              }
-            }}
+            onSubmit={handleEditContractType}
           >
             {({ handleSubmit, handleChange, values, errors, touched, resetForm }) => (
               <Form onSubmit={handleSubmit}>
@@ -188,39 +189,7 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
       <Formik
         initialValues={{ name: '', absence_days: 0 }}
         validationSchema={contractValidationSchema}
-        onSubmit={async (values, { resetForm }) => {
-          setModalIsOpenLoadning(true);
-          try {
-            const tokenXSRF = await fetchCsrfToken();
-
-              const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                  'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-                body: JSON.stringify(values),
-              });
-
-              if (!response.ok) {
-                console.error('Failed to add contract type:', response.statusText);
-                throw new Error('Failed to add contract type');
-              }
-              setModalIsOpenLoadning(false);
-              const postData: Contract = await response.json();
-              setAddedContractName(postData.name);
-              setIsAddModalOpen(true);
-              setContracts([...contracts, postData]);
-              resetForm();
-          } catch (error) {
-            console.error('Error adding contract type:', error);
-            setError('Błąd podczas dodawania typu umowy');
-          } finally {
-            setModalIsOpenLoadning(false);
-          }
-        }}
+        onSubmit={handleAddContractType}
       >
         {({ handleSubmit, handleChange, values, errors, touched }) => (
           <Form className={styles.addContainer} onSubmit={handleSubmit}>

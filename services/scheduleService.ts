@@ -2,6 +2,7 @@ import WeekSchedule from "@/components/types/weekSchedule";
 import { fetchCsrfToken } from "./csrfService";
 import Shift from "@/components/types/shift";
 import AbsenceShort from "@/components/types/absenceShort";
+import User from "@/components/types/user";
 
 export const fetchUserPublishedSchedule = async (
     currentMonth: Date,
@@ -34,18 +35,17 @@ export const fetchUserPublishedSchedule = async (
     }
 };
 
-export const fetchUserSchedule = async (
+export const fetchUserScheduleWithAbsences = async (
     userId: number,
     currentWeek: Date[]): Promise<{ shifts: Shift[], absences: AbsenceShort[] }> => {
     try {
         const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
         const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
-        const tokenJWT = sessionStorage.getItem('tokenJWT');
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${tokenJWT}`,
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
             },
         });
 
@@ -60,11 +60,132 @@ export const fetchUserSchedule = async (
     }
 };
 
+export const fetchFilterUsersInSchedule = async (
+    filters: { query?: string } = {},
+    setUsers: (users: User[]) => void,
+    setTotalPages: (pages: number) => void,
+    pageNumber: number,
+    pageSize: number): Promise<void> => {
+    try {
+        let url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+
+        if (filters.query && filters.query.trim() !== '') {
+            url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/search?q=${filters.query}`;
+        }
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            },
+        });
+
+        if (!response.ok) {
+            console.error('Failed to fetch filter schedule:', response.statusText);
+            throw new Error('Failed to fetch filter schedule');
+        }
+        const responseData = await response.json();
+        const usersData = responseData.content || responseData;
+        setUsers(usersData);
+        setTotalPages(responseData.totalPages * pageSize);
+    } catch (error) {
+        console.error(`Error fetching schedule:`, error);
+        throw error;
+    }
+};
+
+export const postShift = async (
+    shiftData: { start: string; end: string; userId: number; roleName: string; }): Promise<void> => {
+
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                start: shiftData.start,
+                end: shiftData.end,
+                published: false,
+                user_id: shiftData.userId,
+                role_name: shiftData.roleName,
+            }),
+        });
+
+        if (!response.ok) {
+            console.error('Failed to add add shift:', response.statusText);
+            throw new Error('Failed to add add shift');
+        }
+    } catch (error) {
+        console.error(`Error while generate`, error);
+    }
+};
+
+export const putShift = async (
+    shiftData: { id: number; start: string; end: string; userId: number; roleName: string; }): Promise<void> => {
+
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftData.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                start: shiftData.start,
+                end: shiftData.end,
+                published: false,
+                user_id: shiftData.userId,
+                role_name: shiftData.roleName,
+            }),
+        });
+        if (!response.ok) {
+            console.error('Failed to edit shift');
+            throw new Error('Failed to edit shift');
+        }
+    } catch (error) {
+        console.error(`Error while edit shift`, error);
+    }
+};
+
+export const patchPublishShifts = async (
+    shiftId: number): Promise<void> => {
+
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+        });
+        if (!response.ok) {
+          console.error(`Failed to publish shift`);
+          throw new Error(`Failed to publish shift`);
+        }
+    } catch (error) {
+        console.error(`Error while edit shift`, error);
+    }
+};
 
 export const deleteShift = async (
     shiftId: number,
     userId: number,
-    fetchUsersSchedule: (userId: number) => void,
+    fetchUserSchedule: (userId: number) => void,
     setLoading: (loading: boolean) => void): Promise<void> => {
 
     setLoading(true);
@@ -85,7 +206,7 @@ export const deleteShift = async (
             throw new Error('Failed to delete shift');
         }
         setLoading(false);
-        fetchUsersSchedule(userId);
+        fetchUserSchedule(userId);
     } catch (error) {
         console.error('Error deleting shift:', error);
     } finally {

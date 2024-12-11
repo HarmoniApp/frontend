@@ -13,9 +13,8 @@ import SockJS from 'sockjs-client';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Message as PrimeMessage } from 'primereact/message';
 import { fetchLanguages } from "@/services/languageService";
-import { fetchCsrfToken } from '@/services/csrfService';
-import { group } from 'console';
 import LoadingSpinner from '../loadingSpinner';
+import { fetchAllChatPartners, fetchMessagesChatHistory, patchMarkMessagesAsReadInIndividualChat } from '@/services/chatService';
 
 const Chat = () => {
   const [chatPartners, setChatPartners] = useState<ChatPartner[]>([]);
@@ -149,47 +148,23 @@ const Chat = () => {
   }, [userId, selectedChat]);
 
   const loadChatPartners = async (selectFirstPartner = false) => {
-  setLoading(true);
+    setLoading(true);
 
-  try {
-    const tokenJWT = sessionStorage.getItem('tokenJWT');
+    try {
+      const newestChatPartner = await fetchAllChatPartners(setChatType, setChatPartners)
 
-    const chatPartnersResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/all-chat-partners?userId=${userId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${tokenJWT}`,
-      }
-    });
-    if (!chatPartnersResponse.ok) throw new Error('Błąd podczas pobierania partnerów chatu');
-    const data = await chatPartnersResponse.json();
-    const partners = await Promise.all(
-      data.map((partner: { partnerId: number; partnerType: string }) => {
-        if (partner.partnerType === "USER") {
-          return fetchUserDetails(partner.partnerId);
-        } else {
-          return fetchGroupDetails(partner.partnerId);
+      if (selectFirstPartner) {
+        if (newestChatPartner != undefined) {
+          setSelectedChat(newestChatPartner);
+          await fetchChatHistory(newestChatPartner, selectedLanguage);
         }
-      })
-    );
-
-    setChatPartners(partners);
-
-    if (selectFirstPartner && partners.length > 0) {
-      const newestChatPartner = partners[0];
-      if(newestChatPartner.type == 'group'){
-        setChatType('group')
       }
-      setSelectedChat(newestChatPartner);
-      await fetchChatHistory(newestChatPartner, selectedLanguage);
+    } catch (error) {
+      console.error('Error loading chat partners:', error);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error('Error loading chat partners:', error);
-    setError('Error loading chat partners');
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -208,172 +183,11 @@ const Chat = () => {
     setIsEditGroupModalOpen(false);
   }, [selectedChat]);
 
-  const fetchUserDetails = async (partnerId: number): Promise<ChatPartner> => {
-    setLoading(true);
-
-    try {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const userDetailsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/${partnerId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        }
-      });
-      if (!userDetailsResponse.ok) throw new Error(`Błąd podczas pobierania danych użytkownika o ID ${partnerId}`);
-      const userDetails = await userDetailsResponse.json();
-
-      const lastMessageResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/last?userId1=${userId}&userId2=${partnerId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        }
-      });
-      if (!lastMessageResponse.ok) throw new Error(`Błąd podczas pobierania ostatnich wiadomości`);
-      const lastMessageData = lastMessageResponse.ok ? await lastMessageResponse.text() : 'Brak wiadomości';
-
-      // setLoading(false);
-
-      return {
-        id: partnerId,
-        name: userDetails.firstname + " " + userDetails.surname,
-        photo: userDetails.photo,
-        lastMessage: lastMessageData,
-        type: 'user'
-      };
-    } catch (error) {
-      console.error('Error fetching user details:', error);
-      setError('Error fetching user details');
-      return {
-        id: partnerId,
-        name: '',
-        photo: '',
-        lastMessage: '',
-        type: 'user'
-      };
-    }
-  };
-
-  const fetchGroupDetails = async (partnerId: number): Promise<ChatPartner> => {
-    setLoading(true);
-
-    try {
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const groupDetailsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/details/${partnerId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        }
-      });
-      if (!groupDetailsResponse.ok) throw new Error(`Błąd podczas pobierania danych grupy o ID ${partnerId}`);
-      const groupDetails = await groupDetailsResponse.json();
-
-      const lastMessageResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/last?groupId=${partnerId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        }
-      });
-      if (!lastMessageResponse.ok) throw new Error(`Błąd podczas pobierania ostatnich wiadomości`);
-      const lastMessageData = lastMessageResponse.ok ? await lastMessageResponse.text() : 'Brak wiadomości';
-
-      return {
-        id: partnerId,
-        name: groupDetails.name,
-        lastMessage: lastMessageData,
-        type: 'group'
-      };
-    } catch (error) {
-      console.error('Error fetching group details:', error);
-      setError('Error fetching group details');
-      return {
-        id: partnerId,
-        name: '',
-        lastMessage: '',
-        type: 'group'
-      };
-    }
-    //setLoading(false);
-  };
-
   const fetchChatHistory = async (partner: ChatPartner, language: string = '') => {
     setLoading(true);
     setNewChat(false);
-    const translate = language !== '';
-    const targetLanguageParam = translate ? `&targetLanguage=${language}` : '';
 
-    try {
-      if (partner.type == 'user') {
-        const tokenJWT = sessionStorage.getItem('tokenJWT');
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/history?userId1=${userId}&userId2=${partner.id}&translate=${translate}${targetLanguageParam}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${tokenJWT}`,
-          }
-        });
-        if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
-        const data = await response.json();
-        setMessages(data);
-
-        try {
-          const tokenXSRF = await fetchCsrfToken();
-
-          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/mark-all-read?userId1=${userId}&userId2=${partner.id}`, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-              'X-XSRF-TOKEN': tokenXSRF,
-            },
-            credentials: 'include',
-          });
-          if (!response.ok) {
-            console.error('Failed to fetch chat history:', response.statusText);
-            throw new Error('Failed to fetch chat history');
-          }
-        } catch (error) {
-          console.error("Error:", error);
-          setError('Błąd podczas pobierania histori czatu');
-        }
-      } else {
-        const tokenJWT = sessionStorage.getItem('tokenJWT');
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/history?userId1=${userId}&groupId=${partner.id}&translate=${translate}${targetLanguageParam}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${tokenJWT}`,
-          }
-        });
-        if (!response.ok) throw new Error('Błąd podczas pobierania historii czatu');
-        const data = await response.json();
-
-        const groupChatDetails = await Promise.all(
-          data.map(async (message: Message) => {
-            const senderResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/${message.sender_id}`, {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${tokenJWT}`,
-              }
-            });
-            const senderData = await senderResponse.json();
-            return {
-              ...message,
-              groupSenderName: `${senderData.firstname} ${senderData.surname}`,
-              groupSenderPhoto: senderData.photo,
-            };
-          })
-        );
-        setMessages(groupChatDetails);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setError('Error fetching chat hisotry');
-    }
+    await fetchMessagesChatHistory(userId, partner, language, setMessages)
 
     setMessages((prevMessages) =>
       prevMessages.map((msg) =>
@@ -402,13 +216,13 @@ const Chat = () => {
               chatPartners={chatPartners}
               loading={setLoading}
               fetchChatHistory={fetchChatHistory}
-              setError={setError} 
+              setError={setError}
               userId={userId}
               setChatPartners={setChatPartners}
-              fetchChatHistoryForm = {fetchChatHistory}
+              fetchChatHistoryForm={fetchChatHistory}
               loadChatPartners={loadChatPartners}
               handleSelectUser={handleSelectUser}
-              />
+            />
           </div>
           <div className={styles.chatWindow}>
             {selectedChat && (

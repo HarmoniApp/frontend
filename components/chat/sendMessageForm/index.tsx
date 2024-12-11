@@ -6,7 +6,7 @@ import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import styles from './main.module.scss';
-import { fetchCsrfToken } from '@/services/csrfService';
+import { posChattMessage } from '@/services/chatService';
 
 interface SendMessageFormProps {
     selectedChat: ChatPartner | null;
@@ -45,30 +45,12 @@ const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSele
             }
 
             try {
-                const tokenXSRF = await fetchCsrfToken();
+                await posChattMessage(messageData, setMessages, messages);
 
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/send`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                        'X-XSRF-TOKEN': tokenXSRF,
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify(messageData),
-                });
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(`Błąd podczas wysyłania wiadomości: ${errorData.message || 'Nieznany błąd'}`);
-                }
-
-                const data = await response.json();
-                setMessages([...messages, data]);
                 loadChatPartners(true);
                 setSelectedChat(selectedChat);
             } catch (error) {
                 console.error("Error:", error);
-                setError('Błąd podczas wysyłania wiadomości');
             } finally {
                 loading(false);
             }

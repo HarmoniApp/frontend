@@ -17,7 +17,7 @@ import 'primereact/resources/themes/saga-blue/theme.css';
 import '@/styles/components/pagination.css';
 import { fetchCsrfToken } from '@/services/csrfService';
 import LoadingSpinner from '@/components/loadingSpinner';
-import { deleteShift, fetchUserSchedule } from '@/services/scheduleService';
+import { deleteShift, fetchFilterUsersInSchedule, fetchUserScheduleWithAbsences, patchPublishShifts, postShift, putShift } from '@/services/scheduleService';
 
 interface CalendarRowProps {
   currentWeek: Date[];
@@ -56,41 +56,10 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const fetchFilteredUsers = async (filters: { query?: string } = {}, pageNumber: number = 1, pageSize: number = 20) => {
     setLoadingUsers(true);
 
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId?pageNumber=${pageNumber}&pageSize=${pageSize}`;
-
-    if (filters.query && filters.query.trim() !== '') {
-      url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/search?q=${filters.query}`;
-    }
-
-    const tokenJWT = sessionStorage.getItem('tokenJWT');
-
     try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const responseData = await response.json();
-      const usersData = responseData.content || responseData;
-
-      if (Array.isArray(usersData)) {
-        setUsers(usersData);
-      } else {
-        console.error('Unexpected response format, expected an array but got:', usersData);
-        setUsers([]);
-      }
-      setTotalPages(responseData.totalPages * pageSize);
-
+      await fetchFilterUsersInSchedule(filters, setUsers, setTotalPages, pageNumber, pageSize)
     } catch (error) {
       console.error('Error while filter:', error);
-      setError('Błąd podczas filtrowania');
     } finally {
       setLoadingUsers(false);
     }
@@ -109,27 +78,11 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
 
       const newAbortController = new AbortController();
       setAbortController(newAbortController);
+
       const fetchSchedules = async () => {
         try {
-          const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
-          const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
-          const tokenJWT = sessionStorage.getItem('tokenJWT');
-
           const schedulePromises = users.map(user =>
-            fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${user.id}/week?startDate=${startDate}&endDate=${endDate}`, {
-              signal: newAbortController.signal,
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${tokenJWT}`,
-              }
-            })
-              .then(response => {
-                if (!response.ok) {
-                  throw new Error('Network response was not ok');
-                }
-                return response.json();
-              })
+            fetchUserScheduleWithAbsences(user.id, currentWeek)
               .then(data => {
                 return { userId: user.id, data: data };
               })
@@ -137,7 +90,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
                 if (error.name === 'AbortError') {
                 } else {
                   console.error(`Error fetching schedule for user ${user.id}:`, error);
-                  setError('Błąd podczas pobierania kalendarza');
                 }
                 return { userId: user.id, data: { shifts: [], absences: [] } };
               })
@@ -156,7 +108,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
           setSchedules(schedulesMap);
         } catch (error) {
           console.error('Error fetching schedules:', error);
-          setError('Błąd podczas pobierania kalendarza');
         } finally {
           setLoadingSchedules(false);
         }
@@ -180,34 +131,10 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const handleAddShift = async (shiftData: { start: string; end: string; userId: number; roleName: string; }) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken();
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            start: shiftData.start,
-            end: shiftData.end,
-            published: false,
-            user_id: shiftData.userId,
-            role_name: shiftData.roleName,
-          }),
-        });
-
-        if (!response.ok) {
-          console.error('Failed to add add shift:', response.statusText);
-          throw new Error('Failed to add add shift');
-        }
-        setModalIsOpenLoadning(false);
-        fetchUsersSchedule(shiftData.userId);
+      await postShift(shiftData)
+      fetchUserSchedule(shiftData.userId);
     } catch (error) {
-      console.error('Error adding add shift:', error);
-      setError('Błąd podczas dodawania zmiany');
+      console.error('Error editing shift:', error);
     } finally {
       setModalIsOpenLoadning(false);
     }
@@ -216,40 +143,17 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const handleEditShift = async (shiftData: { id: number; start: string; end: string; userId: number; roleName: string; }) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken();
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftData.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            start: shiftData.start,
-            end: shiftData.end,
-            published: false,
-            user_id: shiftData.userId,
-            role_name: shiftData.roleName,
-          }),
-        });
-        if (!response.ok) {
-          console.error('Failed to edit shift');
-          throw new Error('Failed to edit shift');
-        }
-        setModalIsOpenLoadning(false);
-        fetchUsersSchedule(shiftData.userId);
+      await putShift(shiftData);
+      fetchUserSchedule(shiftData.userId);
     } catch (error) {
       console.error('Error editing shift:', error);
-      setError('Błąd podczas edycji zmiany');
     } finally {
       setModalIsOpenLoadning(false);
     }
   };
 
   const handleDeleteShift = async (shiftId: number, userId: number) => {
-    await deleteShift(shiftId, userId, fetchUsersSchedule, setModalIsOpenLoadning);
+    await deleteShift(shiftId, userId, fetchUserSchedule, setModalIsOpenLoadning);
   };
 
   const handlePublishAll = async () => {
@@ -266,34 +170,18 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     shiftsToPublish.forEach(async (shift) => {
       setModalIsOpenLoadning(true);
       try {
-        const tokenXSRF = await fetchCsrfToken();
-
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shift.id}`, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-              'X-XSRF-TOKEN': tokenXSRF,
-            },
-            credentials: 'include',
-          });
-          if (!response.ok) {
-            console.error(`Failed to publish shift ${shift.id}`);
-            throw new Error(`Failed to publish shift ${shift.id}`);
-          }
-          setModalIsOpenLoadning(false);
-          setSchedules(prevSchedules => ({
-            ...prevSchedules,
-            [shift.user_id]: {
-              ...prevSchedules[shift.user_id],
-              shifts: prevSchedules[shift.user_id].shifts.map(s =>
-                s.id === shift.id ? { ...s, published: true } : s
-              ),
-            },
-          }));
+        await patchPublishShifts(shift.id)
+        setSchedules(prevSchedules => ({
+          ...prevSchedules,
+          [shift.user_id]: {
+            ...prevSchedules[shift.user_id],
+            shifts: prevSchedules[shift.user_id].shifts.map(s =>
+              s.id === shift.id ? { ...s, published: true } : s
+            ),
+          },
+        }));
       } catch (error) {
         console.error('Error publishing shift:', error);
-        setError('Błąd podczas publikacji');
       } finally {
         setModalIsOpenLoadning(false);
       }
@@ -304,9 +192,9 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     publishAll: handlePublishAll,
   }));
 
-  const fetchUsersSchedule = async (userId: number) => {
+  const fetchUserSchedule = async (userId: number) => {
     try {
-      const data = await fetchUserSchedule(userId, currentWeek);
+      const data = await fetchUserScheduleWithAbsences(userId, currentWeek);
 
       setSchedules(prevSchedules => ({
         ...prevSchedules,
@@ -317,7 +205,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
       }));
     } catch (error) {
       console.error(`Error fetching schedule for user ${userId}:`, error);
-      setError('Błąd podczas pobierania grafiku dla użytkownika');
     }
   };
 

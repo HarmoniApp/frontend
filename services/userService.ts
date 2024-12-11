@@ -1,18 +1,17 @@
-import Absence from "@/components/types/absence";
 import EmployeeData from "@/components/types/employeeData";
 import SimpleUser from "@/components/types/simpleUser";
 import Supervisor from "@/components/types/supervisor";
 import { fetchCsrfToken } from "./csrfService";
+import PersonTile from "@/components/types/personTile";
 
 export const fetchSimpleUser = async (
-    absence?: Absence,
-    supervisorId?: number,
+    id: number,
     setUser?: (users: SimpleUser) => void,
     setSupervisorData?: (supervisor: Supervisor) => void,
     setLoading?: (loading: boolean) => void): Promise<void> => {
     setLoading?.(true);
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/${absence?.user_id || supervisorId}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -29,10 +28,38 @@ export const fetchSimpleUser = async (
     }
 };
 
+export const fetchSimpleUsersWithPagination = async (
+    setUsers: (users: SimpleUser[]) => void): Promise<void> => {
+
+    let pageNumber = 0;
+    let totalPages = 1;
+    const allUsers = [];
+    try {
+        while (pageNumber < totalPages) {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=10`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                },
+            });
+            const data = await response.json();
+
+            allUsers.push(...data.content);
+            totalPages = data.totalPages;
+            pageNumber += 1;
+        }
+        setUsers(allUsers);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+    }
+};
+
 export const fetchUserData = async (
     id: string | number,
     setEmployee: (users: EmployeeData | null) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
+    setLoading: (loading: boolean) => void,
+    setSupervisorData?: (supervisor: Supervisor | null) => void): Promise<void> => {
     setLoading(true);
 
     try {
@@ -46,10 +73,67 @@ export const fetchUserData = async (
         if (!response.ok) throw new Error('Failed to fetch employee data');
         const data = await response.json();
         setEmployee(data);
+        if (setSupervisorData != undefined) {
+            if (data.supervisor_id) {
+                fetchSimpleUser(data.supervisor_id, setSupervisorData);
+            }
+        }
     } catch (error) {
         console.error('Error fetching roles:', error);
     } finally {
         setLoading(false);
+    }
+};
+
+export const fetchFilterUsers = async (
+    filters: { roles?: number[]; languages?: number[]; order?: string; query?: string } = {},
+    pageNumber: number,
+    pageSize: number,
+    setData: (users: PersonTile[]) => void,
+    setTotalRecords: (records: number) => void): Promise<void> => {
+
+    try {
+        let url = '';
+        if (filters.query && filters.query.trim() !== '') {
+            url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/search?q=${filters.query}`;
+        } else {
+            url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+
+            const params = new URLSearchParams();
+
+            if (filters.roles && filters.roles.length) {
+                filters.roles.forEach(role => params.append('role', role.toString()));
+            }
+            if (filters.languages && filters.languages.length) {
+                filters.languages.forEach(language => params.append('language', language.toString()));
+            }
+            if (filters.order) params.append('order', filters.order);
+
+            if (params.toString()) {
+                url += `&${params.toString()}`;
+            }
+        }
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            }
+
+        });
+        const responseData = await response.json();
+        if (responseData && responseData.content) {
+            setData(responseData.content);
+            setTotalRecords(responseData.pageSize * responseData.totalPages);
+        } else if (responseData && responseData.length > 0) {
+            setData(responseData);
+        } else {
+            setData([]);
+            setTotalRecords(0);
+        }
+    } catch (error) {
+        console.error('Error while filter users:', error);
     }
 };
 
@@ -67,6 +151,61 @@ export const fetchSupervisors = async (
         setSupervisors(data.content);
     } catch (error) {
         console.error('Error fetching supervisors:', error);
+    }
+};
+
+export const postUser = async (
+    values: any,
+    setEmployeeLink: (employeeId: number) => void): Promise<void> => {
+
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+            body: JSON.stringify(values),
+        });
+
+        if (!response.ok) {
+            console.error('Failed to add employee:', response.statusText);
+            throw new Error('Failed to add employee');
+        }
+        const postData = await response.json();
+        setEmployeeLink(postData.id);
+    } catch (error) {
+        console.error(`Error while generate`, error);
+    }
+};
+
+export const patchUser = async (
+    values: any): Promise<void> => {
+
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${values.id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+            body: JSON.stringify(values),
+        });
+
+        if (!response.ok) {
+            console.error('Error updating user');
+            throw new Error('Error updating user');
+        }
+    } catch (error) {
+        console.error(`Error while generate`, error);
     }
 };
 
