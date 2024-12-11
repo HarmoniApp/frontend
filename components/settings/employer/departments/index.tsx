@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPen, faCheck, faXmark, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { ProgressSpinner } from 'primereact/progressspinner';
 import AddNotification from '../popUps/addNotification';
 import DeleteConfirmation from '../popUps/deleteConfirmation';
 import * as Yup from "yup";
@@ -12,7 +11,7 @@ import classNames from "classnames";
 import DepartmentAddress from "@/components/types/departmentAddress";
 import styles from "./main.module.scss";
 import { fetchCsrfToken } from "@/services/csrfService";
-import { deleteDepartment, fetchDepartmentsAddress, postDepartment } from "@/services/departmentService";
+import { deleteDepartment, fetchDepartmentsAddress, postDepartment, putDepartment } from "@/services/departmentService";
 import LoadingSpinner from "@/components/loadingSpinner";
 
 interface DepartmentsProps {
@@ -58,36 +57,15 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
         }
     };
 
-    const handleSaveEdit = async (values: DepartmentAddress) => {
+    const handleEditDepartment = async (values: DepartmentAddress) => {
         if (editingDepartmentId !== null) {
             setModalIsOpenLoadning(true);
             try {
-                const tokenXSRF = await fetchCsrfToken();
-
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${editingDepartmentId}`, {
-                    method: 'PUT',
-                    headers: {
-                        "Content-Type": "application/json",
-                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                        'X-XSRF-TOKEN': tokenXSRF,
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify(values),
-                });
-                if (!response.ok) {
-                    console.error("Failed to update department: ", response.statusText);
-                    throw new Error('Error updating department');
-                }
-                setModalIsOpenLoadning(false);
-                const updatedDepartment = await response.json();
-                setDepartments((prevDepartments) =>
-                    prevDepartments.map((dept) => (dept.id === updatedDepartment.id ? updatedDepartment : dept))
-                );
+                await putDepartment(values, setDepartments, setModalIsOpenLoadning);
                 setEditingDepartmentId(null);
             }
             catch (error) {
                 console.error("Error updating department:", error);
-                setError('Błąd podczas dodawania oddziałów');
             } finally {
                 setModalIsOpenLoadning(false);
             }
@@ -176,7 +154,7 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
                         }}
                         validationSchema={departmentValidationSchema}
                         onSubmit={(values, { resetForm, setSubmitting }) => {
-                            handleSaveEdit(values);
+                            handleEditDepartment(values);
                             resetForm();
                             setSubmitting(false);
                         }}
