@@ -6,7 +6,6 @@ import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import styles from './main.module.scss';
-import { fetchCsrfToken } from '@/services/csrfService';
 import { posChattMessage } from '@/services/chatService';
 
 interface SendMessageFormProps {

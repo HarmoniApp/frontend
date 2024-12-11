@@ -17,7 +17,7 @@ import 'primereact/resources/themes/saga-blue/theme.css';
 import '@/styles/components/pagination.css';
 import { fetchCsrfToken } from '@/services/csrfService';
 import LoadingSpinner from '@/components/loadingSpinner';
-import { deleteShift, fetchUserSchedule, postShift } from '@/services/scheduleService';
+import { deleteShift, fetchUserScheduleWithAbsences, postShift, putShift } from '@/services/scheduleService';
 
 interface CalendarRowProps {
   currentWeek: Date[];
@@ -181,7 +181,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     setModalIsOpenLoadning(true);
     try {
       await postShift(shiftData)
-      fetchUsersSchedule(shiftData.userId);
+      fetchUserSchedule(shiftData.userId);
     } catch (error) {
       console.error('Error editing shift:', error);
     } finally {
@@ -192,40 +192,17 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const handleEditShift = async (shiftData: { id: number; start: string; end: string; userId: number; roleName: string; }) => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken();
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftData.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-          'X-XSRF-TOKEN': tokenXSRF,
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          start: shiftData.start,
-          end: shiftData.end,
-          published: false,
-          user_id: shiftData.userId,
-          role_name: shiftData.roleName,
-        }),
-      });
-      if (!response.ok) {
-        console.error('Failed to edit shift');
-        throw new Error('Failed to edit shift');
-      }
-      setModalIsOpenLoadning(false);
-      fetchUsersSchedule(shiftData.userId);
+      await putShift(shiftData);
+      fetchUserSchedule(shiftData.userId);
     } catch (error) {
       console.error('Error editing shift:', error);
-      setError('Błąd podczas edycji zmiany');
     } finally {
       setModalIsOpenLoadning(false);
     }
   };
 
   const handleDeleteShift = async (shiftId: number, userId: number) => {
-    await deleteShift(shiftId, userId, fetchUsersSchedule, setModalIsOpenLoadning);
+    await deleteShift(shiftId, userId, fetchUserSchedule, setModalIsOpenLoadning);
   };
 
   const handlePublishAll = async () => {
@@ -280,9 +257,9 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     publishAll: handlePublishAll,
   }));
 
-  const fetchUsersSchedule = async (userId: number) => {
+  const fetchUserSchedule = async (userId: number) => {
     try {
-      const data = await fetchUserSchedule(userId, currentWeek);
+      const data = await fetchUserScheduleWithAbsences(userId, currentWeek);
 
       setSchedules(prevSchedules => ({
         ...prevSchedules,
@@ -293,7 +270,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
       }));
     } catch (error) {
       console.error(`Error fetching schedule for user ${userId}:`, error);
-      setError('Błąd podczas pobierania grafiku dla użytkownika');
     }
   };
 
