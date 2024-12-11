@@ -198,8 +198,8 @@
   }
 
   .closeButton {
-    @include displayDFJAG(flex, row, center, center);
-    gap: 10px;
+    @include displayDFJAG(flex, row, center, center, 10px);
+    // gap: 10px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -224,8 +224,8 @@
   }
 
   .deleteShiftButton {
-    @include displayDFJAG(flex, row, center, center);
-    gap: 10px;
+    @include displayDFJAG(flex, row, center, center, 10px);
+    // gap: 10px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -294,8 +294,8 @@
   font-weight: bold;
   color: $font-dark-colour;
   transition: color 0.3s ease;
-  @include displayDFJAG(flex, null, space-between, center);
-  gap: 10px;
+  @include displayDFJAG(flex, null, space-between, center, 10px);
+  // gap: 10px;
 }
 
 .errorMessage {

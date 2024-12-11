@@ -63,7 +63,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
     }
   }, [userId]);
 
-  if (!employee) return <div className={styles.spinnerContainer}><ProgressSpinner /></div>;
+  if (!employee) return <LoadingSpinner wholeModal={false}/>;
 
   const department = departments.find(dept => dept.id === employee.work_address.id);
 
@@ -150,7 +150,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
           </label>
           <label className={styles.supervisorLabel}>
             <p className={styles.supervisorParagraph}>Przełożony</p>
-            <p className={styles.supervisorDataParagraph}>{supervisorData ? `${supervisorData.firstname} ${supervisorData.surname}` : 'Loading...'}</p>
+            <p className={styles.supervisorDataParagraph}>{supervisorData ? `${supervisorData.firstname} ${supervisorData.surname}` : <LoadingSpinner wholeModal={false}/>}</p>
           </label>
           <label className={styles.phoneNumberLabel}>
             <p className={styles.phoneNumberParagraph}>Nr telefonu</p>

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import Employer from './employer';
 import styles from './main.module.scss';
+import LoadingSpinner from '../loadingSpinner';
 
 const Settings = () => {
     const [isAdmin, setIsAdmin] = useState(false);
@@ -25,7 +26,8 @@ const Settings = () => {
             {userId !== 0 ? (
                 isAdmin ? <Employer /> : <></>
             ) : (
-                <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+                // <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+                <LoadingSpinner wholeModal={false}/>
             )}
         </div>
     )

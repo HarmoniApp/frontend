@@ -13,6 +13,7 @@ import { Message } from 'primereact/message';
 import { Message as PrimeMessage } from 'primereact/message';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import 'primereact/resources/themes/saga-blue/theme.css';
+import LoadingSpinner from '../loadingSpinner';
 
 const EmployeesComponent: React.FC = () => {
   const [activeView, setActiveView] = useState<'tiles' | 'list'>('tiles');
@@ -96,7 +97,7 @@ const EmployeesComponent: React.FC = () => {
           <EmployeeFilter onApplyFilters={(filters) => fetchFilteredData(filters, 1, rows)} setError={setError} />
         </div>
         <div className={`${styles.employeesListcontainer} ${activeView === 'tiles' ? styles.tilesView : styles.listView}`}>
-          {loading && <div className={styles.spinnerContainer}><ProgressSpinner /></div>}
+          {loading && <LoadingSpinner wholeModal={false}/>}
           {!loading && error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessage} />}
           {!loading && !error && data.length === 0 && <Card title="No Data" className={styles.noDataCard}><p>There is no data available at the moment.</p></Card>}
           {!loading && !error && data.length > 0 && data.map((person, index) => (

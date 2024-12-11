@@ -12,6 +12,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
 import { fetchAbsences, fetchAbsencesByStatus, fetchAbsencesStatus } from '@/services/absenceService';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 const AbsenceEmployer: React.FC = () => {
   const [absences, setAbsences] = useState<Absence[]>([]);
@@ -153,7 +154,7 @@ const AbsenceEmployer: React.FC = () => {
           </div>
         </div>
 
-        {loading && <div className={styles.spinnerContainer}><ProgressSpinner /></div>}
+        {loading && <LoadingSpinner wholeModal={false}/>}
         {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
         {!loading && !error && filteredAbsences.length === 0 && (
           <Card title="No Data" className={styles.noDataCard}><p>There is no data available at the moment.</p></Card>

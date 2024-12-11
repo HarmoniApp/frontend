@@ -6,6 +6,7 @@ import Navbar from "@/components/navbar";
 import EditEmployeeDataPopUp from '@/components/employees/employeeData/editEmployeeData';
 import EmployeeData from '@/components/types/employeeData';
 import styles from '@/styles/components/pages.module.scss';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 const EditEmployeePage: React.FC = () => {
   const router = useRouter();
@@ -33,9 +34,9 @@ const EditEmployeePage: React.FC = () => {
     loadData();
 }, [id]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <LoadingSpinner wholeModal={false}/>;
   if (error) return <div>Error: {error}</div>;
-  if (!employee) return <div>No employee data found</div>;
+  if (!employee) return <div>Nie znaleziono danych pracownika</div>;
 
   return (
     <div className={styles.pageContainer}>

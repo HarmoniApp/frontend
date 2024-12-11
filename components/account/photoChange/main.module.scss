@@ -37,14 +37,14 @@
       margin-top: 20px;
   
       .uploadLabel {
-        @include displayDFJAG(flex, null, center, center);
+        @include displayDFJAG(flex, null, center, center, 10px);
         padding: 10px;
         background-color: $main-colour;
         color: $font-dark-colour;
         border-radius: 5px;
         cursor: pointer;
         transition: background-color 0.3s;
-        gap: 10px;
+        // gap: 10px;
   
         .uploadInput {
           display: none;

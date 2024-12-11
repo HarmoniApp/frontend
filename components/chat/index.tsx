@@ -438,9 +438,7 @@ const Chat = () => {
           </div>
         </>
       ) : (
-        <div className={styles.spinnerContainer}>
-          <ProgressSpinner />
-        </div>
+        <LoadingSpinner wholeModal={false}/>
       )}
       {isEditGroupModalOpen && (
         <EditGroup

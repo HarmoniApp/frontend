@@ -6,6 +6,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import styles from './main.module.scss';
 import { downloadUsersPDF } from '@/services/pdfService';
 import { downloadUsersXLSX } from '@/services/xlsxService';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 interface EmployeeBarProps {
   setActiveView: (view: 'tiles' | 'list') => void;
@@ -79,11 +80,7 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
         </button>
       </div>
       {loading && (
-        <div className={styles.spinnerOverlay}>
-          <div className={styles.spinnerContainer}>
-            <ProgressSpinner />
-          </div>
-        </div>
+        <LoadingSpinner/>
       )}
     </div>
   );

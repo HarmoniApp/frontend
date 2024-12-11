@@ -381,10 +381,11 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   return (
     <div>
       {loadingUsers || loadingRoles || loadingSchedules ? (
-        <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+        // <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+        <LoadingSpinner wholeModal={false}/>
       ) : !users || users.length === 0 ? (
         <Card title="No Data" className={styles.noDataCard}>
-          <p>There is no data available at the moment.</p>
+            <p>Brak dostępnych danych w tej chwili.</p>
         </Card>
       ) : (
         <>
