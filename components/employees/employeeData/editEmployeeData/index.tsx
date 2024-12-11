@@ -253,7 +253,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   //   return changes;
   // };
 
-  const handleSubmit = async (values: typeof initialValues) => {
+  const handleEditUser = async (values: typeof initialValues) => {
     setModalIsOpenLoadning(true);
     try {
       await patchUser(values);
@@ -296,7 +296,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={handleSubmit}
+        onSubmit={handleEditUser}
         validateOnBlur={true}
         validateOnChange={false}
         validateOnMount={false}
