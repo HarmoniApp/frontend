@@ -1,5 +1,29 @@
 import Message from "@/components/types/message";
 import { fetchCsrfToken } from "./csrfService";
+import ChatPartner from "@/components/types/chatPartner";
+
+export const fetchGroupMembers = async (
+    id: number,
+    setSelectedUsers: (selectedUsers: ChatPartner[]) => void): Promise<void> => {
+    try {
+        const tokenJWT = sessionStorage.getItem('tokenJWT');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${id}/members`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${tokenJWT}`,
+            }
+        });
+        const members = await response.json();
+        const membersWithNames = members.map((user: any) => ({
+            ...user,
+            name: `${user.firstname} ${user.surname}`
+        }));
+        setSelectedUsers(membersWithNames);
+    } catch (error) {
+        console.error('Error fetching group members:', error);
+    }
+};
 
 export const posChattMessage = async (
     messageData: any,

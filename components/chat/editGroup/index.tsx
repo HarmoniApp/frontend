@@ -6,7 +6,7 @@ import { faUserMinus, faXmark, faTrash } from '@fortawesome/free-solid-svg-icons
 import styles from './main.module.scss';
 import { fetchCsrfToken } from '@/services/csrfService';
 import UserImage from '@/components/userImage';
-import { deleteGroup, patchAddUserToGroup, patchRemoveUserFromGroup } from '@/services/chatService';
+import { deleteGroup, fetchGroupMembers, patchAddUserToGroup, patchRemoveUserFromGroup } from '@/services/chatService';
 
 interface EditGroupProps {
     editGroupModal: (open: boolean) => void;
@@ -23,39 +23,13 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         handleEditGroup();
     }, []);
 
-    const loadGroupMembers = async () => {
+    const handleEditGroup = async () => {
         loading(true);
-
-        try {
-            if (!selectedChat) {
-                console.error("Error: No group to edit.");
-                return;
-            }
-            const tokenJWT = sessionStorage.getItem('tokenJWT');
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group/${selectedChat.id}/members`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenJWT}`,
-                }
-            });
-            const members = await response.json();
-            const membersWithNames = members.map((user: any) => ({
-                ...user,
-                name: `${user.firstname} ${user.surname}`
-            }));
-            setSelectedUsers(membersWithNames);
-        } catch (error) {
-            console.error('Błąd podczas pobierania członków grupy:', error);
-            setError('Błąd podczas pobierania członków grupy');
-        } finally {
-            loading(false);
+        if (!selectedChat) {
+            console.error("Error: No group to edit.");
+            return;
         }
-    };
-
-    const handleEditGroup = () => {
-        loading(true);
-        loadGroupMembers();
+        await fetchGroupMembers(selectedChat.id, setSelectedUsers)
         loading(false);
     };
 
