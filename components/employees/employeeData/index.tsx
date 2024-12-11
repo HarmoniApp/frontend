@@ -11,11 +11,11 @@ import Flag from 'react-flagkit';
 import styles from './main.module.scss';
 import NewPassword from './newPassword';
 import { Message } from 'primereact/message';
-import { fetchCsrfToken } from '@/services/csrfService';
 import { fetchDepartments } from '@/services/departmentService';
 import Supervisor from '@/components/types/supervisor';
 import { fetchSimpleUser } from '@/services/userService';
 import LoadingSpinner from '@/components/loadingSpinner';
+import { patchResetPassword } from '@/services/passwordService';
 
 const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   const [employee, setEmployee] = useState<EmployeeData>();
@@ -50,7 +50,6 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
           }
         } catch (error) {
           console.error('Error fetching employee data:', error);
-          setError('Błąd podczas pobierania pracownika');
         }
       };
 
@@ -74,28 +73,13 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   const handlePasswordResetSubmit = async () => {
     setModalIsOpenLoadning(true);
     try {
-      const tokenXSRF = await fetchCsrfToken();
+      await patchResetPassword(userId, setNewPassword);
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${employee.id}/generatePassword`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-          'X-XSRF-TOKEN': tokenXSRF,
-        },
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        console.error('Error reseting password, response not OK');
-        throw new Error('Error reseting password');
-      }
-      const result = await response.text();
-      setNewPassword(result);
-      setModalIsOpenLoadning(false);
       setModalNewPassword(true);
     } catch (error) {
-      console.error('Błąd podczas resetowania hasła: ', error);
+      console.error('Error while reseting password: ', error);
+    } finally {
+      setModalIsOpenLoadning(false);
     }
   };
 
