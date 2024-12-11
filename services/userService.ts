@@ -2,6 +2,7 @@ import EmployeeData from "@/components/types/employeeData";
 import SimpleUser from "@/components/types/simpleUser";
 import Supervisor from "@/components/types/supervisor";
 import { fetchCsrfToken } from "./csrfService";
+import PersonTile from "@/components/types/personTile";
 
 export const fetchSimpleUser = async (
     id: number,
@@ -81,6 +82,58 @@ export const fetchUserData = async (
         console.error('Error fetching roles:', error);
     } finally {
         setLoading(false);
+    }
+};
+
+export const fetchFilterUsers = async (
+    filters: { roles?: number[]; languages?: number[]; order?: string; query?: string } = {},
+    pageNumber: number,
+    pageSize: number,
+    setData: (users: PersonTile[]) => void,
+    setTotalRecords: (records: number) => void): Promise<void> => {
+
+    try {
+        let url = '';
+        if (filters.query && filters.query.trim() !== '') {
+            url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/search?q=${filters.query}`;
+        } else {
+            url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+
+            const params = new URLSearchParams();
+
+            if (filters.roles && filters.roles.length) {
+                filters.roles.forEach(role => params.append('role', role.toString()));
+            }
+            if (filters.languages && filters.languages.length) {
+                filters.languages.forEach(language => params.append('language', language.toString()));
+            }
+            if (filters.order) params.append('order', filters.order);
+
+            if (params.toString()) {
+                url += `&${params.toString()}`;
+            }
+        }
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            }
+
+        });
+        const responseData = await response.json();
+        if (responseData && responseData.content) {
+            setData(responseData.content);
+            setTotalRecords(responseData.pageSize * responseData.totalPages);
+        } else if (responseData && responseData.length > 0) {
+            setData(responseData);
+        } else {
+            setData([]);
+            setTotalRecords(0);
+        }
+    } catch (error) {
+        console.error('Error while filter users:', error);
     }
 };
 

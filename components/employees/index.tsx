@@ -13,6 +13,7 @@ import { Message } from 'primereact/message';
 import { Message as PrimeMessage } from 'primereact/message';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import 'primereact/resources/themes/saga-blue/theme.css';
+import { fetchFilterUsers } from '@/services/userService';
 
 const EmployeesComponent: React.FC = () => {
   const [activeView, setActiveView] = useState<'tiles' | 'list'>('tiles');
@@ -26,51 +27,12 @@ const EmployeesComponent: React.FC = () => {
   const fetchFilteredData = async (filters: { roles?: number[]; languages?: number[]; order?: string; query?: string } = {}, pageNumber: number = 1, pageSize: number = 21) => {
     setLoading(true);
 
-    let url = '';
-
-    if (filters.query && filters.query.trim() !== '') {
-      url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/search?q=${filters.query}`;
-    } else {
-      url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=${pageSize}`;
-
-      const params = new URLSearchParams();
-
-      if (filters.roles && filters.roles.length) {
-        filters.roles.forEach(role => params.append('role', role.toString()));
-      }
-      if (filters.languages && filters.languages.length) {
-        filters.languages.forEach(language => params.append('language', language.toString()));
-      }
-      if (filters.order) params.append('order', filters.order);
-
-      if (params.toString()) {
-        url += `&${params.toString()}`;
-      }
-    }
-
     try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        }
-
-      });
-      const responseData = await response.json();
-      if (responseData && responseData.content) {
-        setData(responseData.content);
-        setTotalRecords(responseData.pageSize * responseData.totalPages);
-      } else if (responseData && responseData.length > 0) {
-        setData(responseData);
-      } else {
-        setData([]);
-        setTotalRecords(0);
-      }
-      setLoading(false);
+      await fetchFilterUsers(filters, pageNumber, pageSize, setData, setTotalRecords)
     } catch (error) {
       console.error('Error fetching data:', error);
-      setError('Błąd podczas filtrowania danychTets');
+      setLoading(false);
+    } finally {
       setLoading(false);
     }
   };
