@@ -30,6 +30,34 @@ export const fetchPredefinedShifts = async (
     }
 };
 
+export const postPredefineShift = async (
+    values: any,
+    setPredefineShifts: (shifts: PredefinedShift[]) => void): Promise<void> => {
+
+    try {
+        const tokenXSRF = await fetchCsrfToken();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+            'X-XSRF-TOKEN': tokenXSRF,
+          },
+          credentials: 'include',
+          body: JSON.stringify(values),
+        });
+        if (!response.ok) {
+          console.error('Failed to add shift:', response.statusText);
+          throw new Error('Failed to add shift');
+        }
+        const data = await response.json();
+        await fetchPredefinedShifts(setPredefineShifts);
+    } catch (error) {
+        console.error(`Error while generate`, error);
+    }
+};
+
 export const deletePredefineShift = async (
     shiftId: number,
     setPredefineShifts: (shifts: PredefinedShift[]) => void,
