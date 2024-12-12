@@ -34,7 +34,6 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
         setLoading(true);
         const language = event.target.value;
         setSelectedLanguage(language);
-
         if (selectedChat) {
             await fetchChatHistory(selectedChat, language);
         }
@@ -102,7 +101,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                             setSelectedChat={setSelectedChat}
                             fetchChatHistory={fetchChatHistoryForm}
                             loadChatPartners={loadChatPartners}
-                            loading={setLoading}
+                            setLoading={setLoading}
                             handleSelectUser={handleSelectUser}
                         />
                         <FontAwesomeIcon icon={faXmark} onClick={() => { setNewChat(false) }} />

@@ -15,13 +15,13 @@ interface CreateGroupChatFormProps {
   setSelectedChat: (chatPartner: ChatPartner) => void;
   fetchChatHistory: (partner: ChatPartner) => void;
   loadChatPartners: (selectFirstPartner: boolean) => void;
-  loading: (loading: boolean) => void;
+  setLoading: (loading: boolean) => void;
 }
 
-const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartners, loading }) => {
+const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartners, setLoading }) => {
 
   const handleCreateGroup = async (values: { groupName: string }) => {
-    loading(true);
+    setLoading(true);
 
     const groupData = {
       name: values.groupName,
@@ -41,7 +41,7 @@ const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setCh
     } catch (error) {
       console.error('Error while creating group:', error);
     } finally {
-      loading(false);
+      setLoading(false);
     }
   };
 

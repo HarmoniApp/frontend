@@ -13,10 +13,10 @@ interface NewConversationFormProps {
     setSelectedChat: (chatPartner: ChatPartner) => void;
     fetchChatHistory: (partner: ChatPartner) => void;
     loadChatPartners: (selectFirstPartner: boolean) => void;
-    loading: (loading: boolean) => void;
+    setLoading: (loading: boolean) => void;
     handleSelectUser: (user: ChatPartner) => void;
 }
-const NewConversationForm: React.FC<NewConversationFormProps> = ({ userId, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartners, loading, handleSelectUser }) => {
+const NewConversationForm: React.FC<NewConversationFormProps> = ({ userId, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartners, setLoading, handleSelectUser }) => {
 
     return (
         <div className={styles.newConversationForm}>
@@ -35,7 +35,7 @@ const NewConversationForm: React.FC<NewConversationFormProps> = ({ userId, setCh
                     setSelectedChat={setSelectedChat}
                     fetchChatHistory={fetchChatHistory}
                     loadChatPartners={loadChatPartners}
-                    loading={loading}
+                    setLoading={setLoading}
                 />
             </div>
         </div>

@@ -24,19 +24,19 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
     const [loading, setLoading] = useState(false);
     const [availableAbsenceDays, setAvailableAbsenceDays] = useState<number | string>('Ładowanie...');
 
-    useEffect(() => {
-        fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences);
-    }, []);
-
     const handleCancelAbsence = async () => {
         if (selectedAbsenceId === null) return;
-
-        await deleteAbsence(selectedAbsenceId, userId, setAbsenceTypeNames, setAbsences)
+        setLoading(true);
+        await deleteAbsence(selectedAbsenceId, userId, setAbsenceTypeNames, setAbsences);
+        setLoading(false);
     };
 
     useEffect(() => {
         const fetchData = async () => {
-            await fetchAvailableAbsenceDays(userId, setAvailableAbsenceDays)
+            setLoading(true);
+            await fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences);
+            await fetchAvailableAbsenceDays(userId, setAvailableAbsenceDays);
+            setLoading(false);
         };
 
         fetchData();
@@ -47,7 +47,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
             <div className={styles.absenceHeaderContainer}>
                 <label className={styles.title}>Twoje urlopy</label>
                 <label className={styles.subtitle}>Ilość dostepnych dni urlopowych: {availableAbsenceDays}</label>
-                <CustomButton icon="calendarPlus" writing="Złóż wniosek o urlop" action={() => {setModalIsOpenAbsenceRequest(true)}}/>
+                <CustomButton icon="calendarPlus" writing="Złóż wniosek o urlop" action={() => { setModalIsOpenAbsenceRequest(true) }} />
             </div>
             <div className={styles.tableContainer}>
                 <table className={styles.absenceTable}>
@@ -81,12 +81,12 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                                 </td>
                                 <td className={`${styles.absenceDataBodyHeadElement} ${styles.absenceDataBodyHeadElementButton}`}>
                                     <CustomButton icon="calendarMinus" writing="Anuluj" action={() => {
-                                            setSelectedAbsenceId(absence.id);
-                                            setSelectedAbsenceType(absenceTypeNames[absence.absence_type_id]);
-                                            setSelectedAbsenceStart(new Date(absence.start).toLocaleDateString());
-                                            setSelectedAbsenceEnd(new Date(absence.end).toLocaleDateString());
-                                            setModalIsOpenCancelAbsence(true);
-                                        }}/>
+                                        setSelectedAbsenceId(absence.id);
+                                        setSelectedAbsenceType(absenceTypeNames[absence.absence_type_id]);
+                                        setSelectedAbsenceStart(new Date(absence.start).toLocaleDateString());
+                                        setSelectedAbsenceEnd(new Date(absence.end).toLocaleDateString());
+                                        setModalIsOpenCancelAbsence(true);
+                                    }} />
                                 </td>
                             </tr>
                         ))}

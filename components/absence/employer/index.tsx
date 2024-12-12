@@ -8,7 +8,6 @@ import SimpleUser from '@/components/types/simpleUser';
 import AbsenceStatus from '@/components/types/absenceStatus';
 import styles from './main.module.scss';
 import { Card } from 'primereact/card';
-import { Message } from 'primereact/message';
 import { fetchAbsences, fetchAbsencesByStatus, fetchAbsencesStatus } from '@/services/absenceService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { fetchSimpleUsersWithPagination } from '@/services/userService';
@@ -24,9 +23,9 @@ const AbsenceEmployer: React.FC = () => {
 
   useEffect(() => {
     const loadData = async () => {
+      setLoading(true)
       await fetchAbsences(setAbsences);
       await fetchAbsencesStatus(setAbsencesStatus);
-      setLoading(true)
       await fetchSimpleUsersWithPagination(setUsers);
       setLoading(false)
     };
@@ -123,7 +122,7 @@ const AbsenceEmployer: React.FC = () => {
 
         {loading && <LoadingSpinner wholeModal={false}/>}
         {!loading  && filteredAbsences.length === 0 && (
-          <Card title="No Data" className={styles.noDataCard}><p>There is no data available at the moment.</p></Card>
+          <Card title="Brak danych" className={styles.noDataCard}><p>Nie znaleziono urlopów.</p></Card>
         )}
         {!loading && filteredAbsences.length > 0 && (
           <div className={

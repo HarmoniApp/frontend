@@ -10,6 +10,7 @@ import styles from './main.module.scss';
 import { fetchSimpleUser } from '@/services/userService';
 import { fetchAbsenceType, patchAbsence } from '@/services/absenceService';
 import LoadingSpinner from '@/components/loadingSpinner';
+import { tree } from 'next/dist/build/templates/app-page';
 
 interface AbsenceCardProps {
     absence: Absence;
@@ -24,11 +25,13 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        const fetchData = async () => {
-            await fetchSimpleUser(absence.id, setUser, undefined);
+        const loadData = async () => {
+            setLoading(true);
+            await fetchSimpleUser(absence.user_id, setUser, undefined);
             await fetchAbsenceType(absence.absence_type_id, setAbsenceType);
+            setLoading(false);
         };
-        fetchData();
+        loadData();
 
     }, [absence.absence_type_id, absence.user_id]);
 
