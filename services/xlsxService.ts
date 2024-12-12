@@ -1,7 +1,5 @@
 export const downloadScheduleXLSX = async (
-    currentWeek: Date[],
-    setLoading: (loading: boolean) => void): Promise<void> => {
-    setLoading(true);
+    currentWeek: Date[]): Promise<void> => {
     try {
         const startOfWeek = currentWeek[0].toISOString().split('T')[0];
         const endOfWeek = currentWeek[6].toISOString().split('T')[0];
@@ -29,14 +27,10 @@ export const downloadScheduleXLSX = async (
         link.remove();
     } catch (error) {
         console.error('Error:', error);
-    } finally {
-        setLoading(false);
     }
 };
 
-export const downloadUsersXLSX = async (
-    setLoading: (loading: boolean) => void): Promise<void> => {
-    setLoading(true);
+export const downloadUsersXLSX = async (): Promise<void> => {
     try {
         const responseXLSX = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/excel/users/export-excel`, {
             method: 'GET',
@@ -48,7 +42,6 @@ export const downloadUsersXLSX = async (
 
         if (!responseXLSX.ok) {
             console.error('Error downloading XLSX');
-            setLoading(false);
             return;
         }
         const blob = await responseXLSX.blob();
@@ -62,7 +55,5 @@ export const downloadUsersXLSX = async (
         link.remove();
     } catch (error) {
         console.error('Error:', error);
-    } finally {
-        setLoading(false);
     }
 };

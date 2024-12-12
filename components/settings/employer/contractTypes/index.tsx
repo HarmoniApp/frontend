@@ -33,17 +33,17 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
   };
 
   useEffect(() => {
-    fetchContracts(setContracts, setModalIsOpenLoadning);
+    fetchContracts(setContracts);
   }, []);
 
   const handleDeleteContractType = async (contractId: number) => {
-    await deleteContractType(contractId, setContracts, setModalIsOpenLoadning)
+    await deleteContractType(contractId, setContracts)
   };
 
   const handleAddContractType = async (values: any, { resetForm }: any) => {
     setModalIsOpenLoadning(true);
     try {
-      await postContractType(values, setContracts, setModalIsOpenLoadning, setAddedContractName);
+      await postContractType(values, setContracts, setAddedContractName);
 
       setIsAddModalOpen(true);
       resetForm();
@@ -58,7 +58,7 @@ const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
   const handleEditContractType = async (values: any, { resetForm }: any) => {
     setModalIsOpenLoadning(true);
     try {
-      await putContractType(values, setContracts, setModalIsOpenLoadning);
+      await putContractType(values, setContracts);
 
       setEditingContractId(null);
       resetForm();

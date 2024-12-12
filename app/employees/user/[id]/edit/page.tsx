@@ -19,14 +19,12 @@ const EditEmployeePage: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
         if (!id) {
-            setError('No userId provided');
             setLoading(false);
             return;
         }
         if (typeof id === 'string') {
-            await fetchUserData(id, setEmployee, setLoading);
+            await fetchUserData(id, setEmployee);
         } else {
-            setError('Invalid userId format');
             setLoading(false);
         }
     };

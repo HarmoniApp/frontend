@@ -3,9 +3,7 @@ import DepartmentAddress from "@/components/types/departmentAddress";
 import { fetchCsrfToken } from "./csrfService";
 
 export const fetchDepartments = async (
-    setDepartments: (departments: Department[]) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
-    setLoading(true);
+    setDepartments: (departments: Department[]) => void): Promise<void> => {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/departments/name`, {
             method: 'GET',
@@ -19,15 +17,11 @@ export const fetchDepartments = async (
         setDepartments(data);
     } catch (error) {
         console.error('Error fetching departments:', error);
-    } finally {
-        setLoading(false);
     }
 };
 
 export const fetchDepartmentsAddress = async (
-    setDepartments: (departmentsAdress: DepartmentAddress[]) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
-    setLoading(true);
+    setDepartments: (departmentsAdress: DepartmentAddress[]) => void): Promise<void> => {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/departments`, {
             method: 'GET',
@@ -40,16 +34,13 @@ export const fetchDepartmentsAddress = async (
         setDepartments(data);
     } catch (error) {
         console.error("Error fetching departments:", error);
-    } finally {
-        setLoading(false)
     }
 }
 
 export const postDepartment = async (
     values: DepartmentAddress,
     setDepartments: (departments: DepartmentAddress[]) => void,
-    setAddedDepartmentName: (name: string) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
+    setAddedDepartmentName: (name: string) => void): Promise<void> => {
 
     try {
         const tokenXSRF = await fetchCsrfToken();
@@ -70,7 +61,7 @@ export const postDepartment = async (
         }
         const addedDepartment = await response.json();
         setAddedDepartmentName(addedDepartment.department_name);
-        await fetchDepartmentsAddress(setDepartments, setLoading);
+        await fetchDepartmentsAddress(setDepartments);
     } catch (error) {
         console.error(`Error while generate`, error);
     }
@@ -78,8 +69,7 @@ export const postDepartment = async (
 
 export const putDepartment = async (
     values: DepartmentAddress,
-    setDepartments: (departments: DepartmentAddress[]) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
+    setDepartments: (departments: DepartmentAddress[]) => void): Promise<void> => {
 
     try {
         const tokenXSRF = await fetchCsrfToken();
@@ -98,7 +88,7 @@ export const putDepartment = async (
             console.error("Failed to update department: ", response.statusText);
             throw new Error('Error updating department');
         }
-        await fetchDepartmentsAddress(setDepartments, setLoading);
+        await fetchDepartmentsAddress(setDepartments);
     } catch (error) {
         console.error(`Error while updating department`, error);
     }
@@ -106,9 +96,7 @@ export const putDepartment = async (
 
 export const deleteDepartment = async (
     departmentId: number,
-    setDepartments: (departmentsAdress: DepartmentAddress[]) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
-    setLoading(true);
+    setDepartments: (departmentsAdress: DepartmentAddress[]) => void): Promise<void> => {
     try {
         const tokenXSRF = await fetchCsrfToken();
 
@@ -125,12 +113,9 @@ export const deleteDepartment = async (
             console.error("Failed to delete department: ", response.statusText);
             throw new Error('Error delete department');
         }
-        setLoading(false);
-        await fetchDepartmentsAddress(setDepartments, setLoading);
+        await fetchDepartmentsAddress(setDepartments);
     }
     catch (error) {
         console.error("Error deleting department:", error);
-    } finally {
-        setLoading(false);
     }
 }

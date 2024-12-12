@@ -2,9 +2,7 @@ import Contract from "@/components/types/contract";
 import { fetchCsrfToken } from "./csrfService";
 
 export const fetchContracts = async (
-    setContracts: (contracts: Contract[]) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
-    setLoading(true);
+    setContracts: (contracts: Contract[]) => void): Promise<void> => {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type`, {
             method: 'GET',
@@ -18,15 +16,12 @@ export const fetchContracts = async (
         setContracts(data);
     } catch (error) {
         console.error('Error fetching contract types:', error);
-    } finally {
-        setLoading(false)
     }
 };
 
 export const postContractType = async (
     values: any,
     setContracts: (contracts: Contract[]) => void,
-    setLoading: (loading: boolean) => void,
     setAddedContractName: (name: string) => void): Promise<void> => {
 
     try {
@@ -49,7 +44,7 @@ export const postContractType = async (
         }
         const postData = await response.json();
         setAddedContractName(postData.name);
-        await fetchContracts(setContracts, setLoading);
+        await fetchContracts(setContracts);
     } catch (error) {
         console.error(`Error while adding contract type`, error);
     }
@@ -57,8 +52,7 @@ export const postContractType = async (
 
 export const putContractType = async (
     values: any,
-    setContracts: (contracts: Contract[]) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
+    setContracts: (contracts: Contract[]) => void): Promise<void> => {
 
     try {
         const tokenXSRF = await fetchCsrfToken();
@@ -77,7 +71,7 @@ export const putContractType = async (
             console.error('Failed to edit contract type:', response.statusText);
             throw new Error('Failed to edit contract type');
         }
-        await fetchContracts(setContracts, setLoading);
+        await fetchContracts(setContracts);
     } catch (error) {
         console.error(`Error while updating contract type`, error);
     }
@@ -86,10 +80,8 @@ export const putContractType = async (
 
 export const deleteContractType = async (
     contractId: number,
-    setContracts: (contracts: Contract[]) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
+    setContracts: (contracts: Contract[]) => void): Promise<void> => {
 
-    setLoading(true);
     try {
         const tokenXSRF = await fetchCsrfToken();
 
@@ -106,11 +98,8 @@ export const deleteContractType = async (
             console.error('Failed to delete department: ', response.statusText);
             throw new Error('Failed to delete department');
         }
-        setLoading(false);
-        await fetchContracts(setContracts, setLoading);
+        await fetchContracts(setContracts);
     } catch (error) {
         console.error('Error deleting contract type:', error);
-    } finally {
-        setLoading(false);
     }
 };

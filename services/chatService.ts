@@ -364,9 +364,7 @@ export const patchRemoveUserFromGroup = async (
 };
 
 export const deleteGroup = async (
-    id: number,
-    setLoading: (loading: boolean) => void): Promise<void> => {
-    setLoading(true);
+    id: number): Promise<void> => {
 
     try {
         const tokenXSRF = await fetchCsrfToken();
@@ -388,8 +386,6 @@ export const deleteGroup = async (
         window.location.reload();
     } catch (error) {
         console.error("Error deleting group:", error);
-    } finally {
-        setLoading(false);
     }
 };
 
