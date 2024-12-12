@@ -48,25 +48,33 @@
 'use client';
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserPlus, faCloudArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faUserPlus, faCloudArrowDown, faCloudArrowUp,faCalendar, faUser, faComments, faPlane, faRobot } from '@fortawesome/free-solid-svg-icons';
 import styles from "./main.module.scss";
 
 const Icons = {
     userPlus: faUserPlus,
     cloudArrowDown: faCloudArrowDown,
+    cloudArrowUp: faCloudArrowUp,
+    calendar: faCalendar,
+    user: faUser,
+    comments: faComments,
+    plane: faPlane,
+    robot: faRobot,
 };
 
 interface CustomButtonProps {
     icon: keyof typeof Icons;
     writing: string;
     action: () => void;
+    isDashboard?: boolean;
 }
 
-const CustomButton: React.FC<CustomButtonProps> = ({ icon, writing, action }) => {
+const CustomButton: React.FC<CustomButtonProps> = ({ icon, writing, action, isDashboard }) => {
     const IconComponent = Icons[icon];
+    const buttonClass = isDashboard ? styles.atDashboard : styles.atOthers;
 
     return (
-        <button className={styles.customButton} onClick={action}>
+        <button className={`${styles.customButton} ${buttonClass}`} onClick={action}>
             <FontAwesomeIcon icon={IconComponent} /> {writing}
         </button>
     );

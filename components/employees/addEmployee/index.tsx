@@ -3,23 +3,23 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { fetchLanguages } from "@/services/languageService";
+import { fetchRoles } from "@/services/roleService"
+import { fetchContracts } from '@/services/contractService';
+import { fetchDepartments } from '@/services/departmentService';
+import { fetchSupervisors, postUser } from '@/services/userService';
 import Flag from 'react-flagkit';
-import AddEmployeeNotificationPopUp from '@/components/employees/addEmployee/addEmplyeeNotification';
 import Role from '@/components/types/role';
 import Contract from '@/components/types/contract';
 import Language from '@/components/types/language';
 import Supervisor from '@/components/types/supervisor';
 import Department from '@/components/types/department';
-import { fetchLanguages } from "@/services/languageService";
-import { fetchRoles } from "@/services/roleService"
-import styles from './main.module.scss';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
 import classNames from 'classnames';
-import { fetchContracts } from '@/services/contractService';
-import { fetchDepartments } from '@/services/departmentService';
-import { fetchSupervisors, postUser } from '@/services/userService';
+import * as Yup from 'yup';
+import AddEmployeeNotificationPopUp from '@/components/employees/addEmployee/addEmplyeeNotification';
 import LoadingSpinner from '@/components/loadingSpinner';
+import styles from './main.module.scss';
 
 const AddEmployee: React.FC = () => {
   const router = useRouter();
@@ -41,11 +41,13 @@ const AddEmployee: React.FC = () => {
 
   useEffect(() => {
     const loadData = async () => {
+      setLoading(true);
       await fetchRoles(setRoles);
       await fetchContracts(setContracts);
       await fetchLanguages(setLanguages);
       await fetchSupervisors(setSupervisors);
       await fetchDepartments(setDepartments);
+      setLoading(false);
     };
 
     loadData();
@@ -194,20 +196,20 @@ const AddEmployee: React.FC = () => {
   const handleSubmit = async (values: typeof initialValues, { resetForm }: { resetForm: () => void }) => {
     setLoading(true);
     try {
-        await postUser(values, setEmployeeLink);
-        
-        setIsModalOpen(true);
-        resetForm();
+      await postUser(values, setEmployeeLink);
 
-        const countdownInterval = setInterval(() => {
-          setModalCountdown((prev) => {
-            if (prev === 1) {
-              clearInterval(countdownInterval);
-              setIsModalOpen(false);
-            }
-            return prev - 1;
-          });
-        }, 1000);
+      setIsModalOpen(true);
+      resetForm();
+
+      const countdownInterval = setInterval(() => {
+        setModalCountdown((prev) => {
+          if (prev === 1) {
+            clearInterval(countdownInterval);
+            setIsModalOpen(false);
+          }
+          return prev - 1;
+        });
+      }, 1000);
     } catch (error) {
       console.error('Error adding employee:', error);
       throw error;
@@ -538,18 +540,12 @@ const AddEmployee: React.FC = () => {
                   />
                 </div>
               </div>
-            )}
-            {loading && (
-              // <div className={styles.loadingModalOverlay}>
-              //   <div className={styles.loadingModalContent}>
-              //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-              //   </div>
-              // </div>
-              <LoadingSpinner />
+              /* zielony popUp */
             )}
           </Form>
         )}
       </Formik>
+      {loading && <LoadingSpinner />}
     </div>
   );
 };

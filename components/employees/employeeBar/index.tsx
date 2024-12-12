@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRectangleList, faGrip} from '@fortawesome/free-solid-svg-icons';
-import styles from './main.module.scss';
 import { downloadUsersPDF } from '@/services/pdfService';
 import { downloadUsersXLSX } from '@/services/xlsxService';
-import LoadingSpinner from '@/components/loadingSpinner';
 import CustomButton from '@/components/customButton';
-
+import styles from './main.module.scss';
 interface EmployeeBarProps {
   setActiveView: (view: 'tiles' | 'list') => void;
   activeView: 'tiles' | 'list';
@@ -15,11 +13,13 @@ interface EmployeeBarProps {
 
 const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const onAddEmployee = () => {
     router.push('/employees/user/add');
+  };
+
+  const importEmployee = () => {
   };
 
   const toggleDropdown = () => {
@@ -47,18 +47,9 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
   return (
     <div className={styles.employeeBarContainerMain}>
       <div className={styles.actionContainer}>
-        {/* <button className={styles.addEmployeeButton} onClick={onAddEmployee} >
-          <FontAwesomeIcon icon={faUserPlus} /> dodaj pracownika
-        </button> */}
         <CustomButton icon="userPlus" writing="dodaj pracownika" action={onAddEmployee} />
-        {/* <button className={styles.importEmployeeButton} >
-          <FontAwesomeIcon icon={faCloudArrowUp} /> importuj
-        </button> */}
-
+        <CustomButton icon="cloudArrowUp" writing="importuj" action={importEmployee} />
         <div className={styles.exportDropdownContainer}>
-          {/* <button className={styles.importEmployeeButton} onClick={toggleDropdown} >
-            <FontAwesomeIcon icon={faCloudArrowDown} /> exportuj
-          </button> */}
           <CustomButton icon="cloudArrowDown" writing="exportuj" action={toggleDropdown} />
           {dropdownVisible && (
             <div className={styles.exportDropdownMenu}>
@@ -68,7 +59,6 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
           )}
         </div>
       </div>
-
       <div className={styles.viewContainer}>
         <button
           className={`${styles.listViewButton} ${activeView === 'list' ? styles.active : ''}`}
@@ -81,9 +71,6 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
           <FontAwesomeIcon icon={faGrip} />
         </button>
       </div>
-      {loading && (
-        <LoadingSpinner/>
-      )}
     </div>
   );
 };
