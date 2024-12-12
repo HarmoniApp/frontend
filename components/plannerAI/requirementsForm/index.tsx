@@ -25,8 +25,10 @@ const RequirementsForm: React.FC = () => {
 
     useEffect(() => {
         const loadData = async () => {
+            setLoading(true);
             await fetchPredefinedShifts(setPredefineShifts);
             await fetchRoles(setRoles);
+            setLoading(false);
         }
 
         loadData();
@@ -43,6 +45,7 @@ const RequirementsForm: React.FC = () => {
         try {
             await revokeScheduleAi();
             alert('Usunięto pomyślnie.');
+            // zielony panel?
             setLoading(false);
         } catch (error) {
             console.error('Failed to send data:', error);
@@ -85,6 +88,7 @@ const RequirementsForm: React.FC = () => {
 
         if (payload.some((form) => !form.date || form.shifts.length === 0)) {
             console.error('Payload contains invalid data. Please check your inputs.');
+            setLoading(false);
             return;
         }
 
@@ -109,13 +113,11 @@ const RequirementsForm: React.FC = () => {
                     initialValues={form}
                     validationSchema={validationSchema}
                     onSubmit={async (values) => {
-                        console.log('Form values before update:', JSON.stringify(values, null, 2));
                         const updatedForms = [...forms];
                         const formIndex = updatedForms.findIndex((f) => f.id === form.id);
                         if (formIndex !== -1) {
                             updatedForms[formIndex] = { ...updatedForms[formIndex], ...values };
                             setForms(updatedForms);
-                            console.log('Updated forms state:', JSON.stringify(updatedForms, null, 2));
                         } else {
                             console.error('Form not found in forms array!');
                         }
@@ -164,7 +166,6 @@ const RequirementsForm: React.FC = () => {
                                                         f.id === form.id ? { ...f, shifts: updatedShifts } : f
                                                     );
                                                     setForms(updatedForms);
-                                                    console.log("Updated forms state:", JSON.stringify(updatedForms, null, 2));
                                                 }}
                                             />
                                             <span className={styles.predefinedShiftCheckboxLabel}>{shift.name} ({shift.start.slice(0, 5)} - {shift.end.slice(0, 5)})</span>
@@ -245,14 +246,7 @@ const RequirementsForm: React.FC = () => {
                                 <FontAwesomeIcon className={styles.buttonIcon} icon={faTrashCan} />
                                 <p className={styles.buttonParagraph}>Usuń dzień</p>
                             </button>
-                            {loading && (
-                                // <div className={styles.loadingModalOverlay}>
-                                //     <div className={styles.loadingModalContent}>
-                                //         <ProgressSpinner />
-                                //     </div>
-                                // </div>
-                                <LoadingSpinner />
-                            )}
+                            {loading && <LoadingSpinner />}
                         </Form>
                     )}
                 </Formik>

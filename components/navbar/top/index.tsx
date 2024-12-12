@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faL } from '@fortawesome/free-solid-svg-icons';
 import styles from "./main.module.scss";
 import Notifications from "./notifications";
 import Notification from '@/components/types/notification';
@@ -27,7 +27,9 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
 
     useEffect(() => {
         const loadData = async () => {
+            setLoading(true);
             await fetchNotifications(setNotifications, setUnreadCount, userId);
+            setLoading(false);
         }
 
         loadData();
@@ -69,11 +71,11 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
     }, [userId]);
 
     const markAsRead = async (id: number) => {
+        setLoading(true);
         setNotifications(notifications.map(notification =>
             notification.id === id ? { ...notification, read: true } : notification
         ));
         setUnreadCount(notifications.filter(notification => !notification.read && notification.id !== id).length);
-        setLoading(true);
         try {
             await patchMarkNotificationAsRead(id);
         } catch (error) {
@@ -110,21 +112,13 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
                     <UserImage userId={userId} />
                 </div>
             </div>
-
             {showNotifications && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
                         <Notifications notifications={notifications} onClose={() => setShowNotifications(false)} markAsRead={markAsRead} />
                     </div>
 
-                    {loading && (
-                        // <div className={styles.loadingModalOverlay}>
-                        //     <div className={styles.loadingModalContent}>
-                        //         <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                        //     </div>
-                        // </div>
-                        <LoadingSpinner />
-                    )}
+                    {loading && <LoadingSpinner />}
                 </div>
             )}
         </nav>

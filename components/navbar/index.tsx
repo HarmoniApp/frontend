@@ -1,11 +1,10 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import NavbarBottom from "./bottom";
 import Account from "@/components/account";
 import NavbarTop from "./top";
 import styles from './main.module.scss';
-import LoadingSpinner from '../loadingSpinner';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 export default function Navbar() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
