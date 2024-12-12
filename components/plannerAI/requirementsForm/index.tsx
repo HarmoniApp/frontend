@@ -12,6 +12,7 @@ import { fetchRoles } from '@/services/roleService';
 import { fetchPredefinedShifts } from '@/services/predefineShiftService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { generateScheduleAi, revokeScheduleAi } from '@/services/planerAiService';
+import CustomButton from '@/components/customButton';
 
 const RequirementsForm: React.FC = () => {
     const [forms, setForms] = useState<IRequirementsForm[]>([
@@ -242,38 +243,23 @@ const RequirementsForm: React.FC = () => {
                                     </>
                                 ))}
                             </div>
-                            <button type="button" onClick={() => handleRemoveForm(form.id)} className={styles.deleteDayButton}>
-                                <FontAwesomeIcon className={styles.buttonIcon} icon={faTrashCan} />
-                                <p className={styles.buttonParagraph}>Usuń dzień</p>
-                            </button>
-                            {loading && <LoadingSpinner />}
+                            <CustomButton icon="trashCan" writing="Usuń dzień" action={() => handleRemoveForm(form.id)} />
                         </Form>
                     )}
                 </Formik>
             ))}
             <div className={styles.buttonContainer}>
-                <button type="button" onClick={handleSubmit} className={styles.generateButton}>
-                    <FontAwesomeIcon className={styles.buttonIcon} icon={faChartSimple} />
-                    <p className={styles.buttonParagraph}>Generuj</p>
-                </button>
-                <button type="button" onClick={handleAddForm} className={styles.addNewDayButton}>
-                    <FontAwesomeIcon className={styles.buttonIcon} icon={faPlus} />
-                    <p className={styles.buttonParagraph}>Dodaj kolejny dzień</p>
-                </button>
-                <button type="button" onClick={handleRevoke} className={styles.deleteGenerateShiftsButton}>
-                    <FontAwesomeIcon className={styles.buttonIcon} icon={faEraser} />
-                    <p className={styles.buttonParagraph}>Usuń wszystkie zmiany ostatnio wprowadzone przez PlanerAi</p>
-                </button>
-                <button type="button" onClick={() => setIsInstructionOpen(true)} className={styles.infoButton}>
-                    <FontAwesomeIcon className={styles.buttonIcon} icon={faCircleInfo} />
-                </button>
+                <CustomButton icon="chartSimple" writing="Generuj" action={handleSubmit} />
+                <CustomButton icon="plus" writing="Dodaj kolejny dzień" action={handleAddForm} />
+                <CustomButton icon="eraser" writing="Usuń wszystkie zmiany ostatnio wprowadzone przez PlanerAi" action={handleRevoke} />
+                <CustomButton icon="circleInfo" writing="" action={() => setIsInstructionOpen(true)} />
                 <Instruction
                     isOpen={isInstructionOpen}
                     onClose={() => setIsInstructionOpen(false)}
                 />
             </div>
+            {loading && <LoadingSpinner />}
         </div>
     );
 };
-
 export default RequirementsForm;

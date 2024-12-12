@@ -7,6 +7,7 @@ import { faXmark, faPlus, faLanguage } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import NewConversationForm from '../newConversationForm';
 import UserImage from '@/components/userImage';
+import CustomButton from '@/components/customButton';
 
 interface SidebarProps {
     selectedLanguage: string;
@@ -43,13 +44,14 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
     return (
         <>
             <div className={styles.sidebarHeader}>
-                <div
+                {/* <div
                     className={styles.newChatContainer}
                     onClick={() => { setNewChat(true); }}
                 >
                     <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon} />
                     <label className={styles.newChatLabel}>Dodaj chat/grupę</label>
-                </div>
+                </div> */}
+                <CustomButton icon="plus" writing="Dodaj chat/grupę" action={() => { setNewChat(true); }} additionalClass='atChat'/>
             </div>
             <ul className={styles.chatList}>
                 {chatPartners.map((partner) => (

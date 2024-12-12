@@ -6,6 +6,7 @@ import styles from './main.module.scss';
 import { downloadSchedulePdf } from '@/services/pdfService';
 import { downloadScheduleXLSX } from '@/services/xlsxService';
 import LoadingSpinner from '@/components/loadingSpinner';
+import CustomButton from '@/components/customButton';
 
 interface ScheduleBarProps {
   currentWeek: Date[];
@@ -50,18 +51,9 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
   return (
     <div className={styles.scheduleBarContainerMain}>
       <div className={styles.buttonContainer}>
-        <button className={styles.publishButton} onClick={() => setModalIsOpenPublish(true)}>
-          <FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarCheck} />Opublikuj
-        </button>
-
+        <CustomButton icon="calendarCheck" writing="Opublikuj" action={() => setModalIsOpenPublish(true)}/>
         <div className={styles.exportDropdownContainer}>
-          <button
-            className={styles.exportButton}
-            onClick={() => setDropdownVisible(prev => !prev)}
-          >
-            <FontAwesomeIcon className={styles.buttonIcon} icon={faCloudArrowDown} />Exportuj
-          </button>
-
+          <CustomButton icon="cloudArrowDown" writing="Exportuj" action={() => setDropdownVisible(prev => !prev)}/>
           {dropdownVisible && (
             <div className={styles.exportDropdownMenu}>
               <button onClick={() => handleExport('pdf')}>Eksportuj do PDF</button>
@@ -71,9 +63,7 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
         </div>
       </div>
       <div className={styles.weekSwitcher}>
-        <button className={styles.changeWeekButton} onClick={onPreviousWeek}>
-          <FontAwesomeIcon className={styles.buttonIcon} icon={faChevronLeft} />
-        </button>
+        <CustomButton icon="chevronLeft" writing="" action={onPreviousWeek}/>
         <div className={styles.dateRange}>
           <p className={styles.dateRangeParagraph}>
             {currentWeek[0].toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' })}
@@ -83,11 +73,8 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
             {currentWeek[6].toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' })}
           </p>
         </div>
-        <button className={styles.changeWeekButton} onClick={onNextWeek}>
-          <FontAwesomeIcon className={styles.buttonIcon} icon={faChevronRight} />
-        </button>
+        <CustomButton icon="chevronRight" writing="" action={onNextWeek}/>
       </div>
-
       {modalIsOpenPublish && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
@@ -99,12 +86,8 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
           </div>
         </div>
       )}
-
-      {loading && (
-        <LoadingSpinner />
-      )}
+      {loading && <LoadingSpinner />}
     </div>
   );
 };
-
 export default ScheduleBar;

@@ -1,94 +1,26 @@
 @import '@/styles/main.scss';
 
-// .publishModalOverlay {
-//     position: fixed;
-//     top: 0;
-//     left: 0;
-//     right: 0;
-//     bottom: 0;
-//     background: $black-transparency-05;
-//     @include displayDFJAG(flex, null, center, center);
-//     z-index: 1000;
-// }
-
-// .publishModalContent {
-//     @include displayDFJAG(flex, column, null, null);
-//     border: 2px solid $main-colour;
-//     border-radius: 8px;
-//     background-color: $gray;
-//     text-align: center;
-//     width: auto;
-//     max-height: 80vh;
-//     overflow-y: auto;
-//     gap: 20px;
-//     padding: 20px;
-// }
-
 .scheduleBarContainerMain {
     @include displayDFJAG(flex, row, center, space-between);
 
     @include respond-to-md {
         @include displayDFJAG(flex, column, null, null, 10px);
-        // gap: 10px;
     }
 
     .buttonContainer {
         @include displayDFJAG(flex, null, null, null, 15px);
         flex: 1;
-        // gap: 15px;
         margin: 0 30px 0 0;
 
         @include respond-to-md {
             @include displayDFJAG(flex, row, center, null, 10px);
-            // gap: 10px;
             margin: 0;
-        }
-
-        .exportButton,
-        .publishButton {
-            @include displayDFJAG(flex, null, null, center, 10px);
-            padding: 10px;
-            background-color: $white;
-            color: $font-dark-colour;
-            border: 2px solid $main-colour;
-            border-radius: 5px;
-            font-size: 14px;
-            // gap: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-
-            &:hover {
-                background-color: $main-colour-hover;
-                color: $font-light-colour;
-                border-color: $main-colour-hover;
-            }
-
         }
     }
 
     .weekSwitcher {
         @include displayDFJAG(flex, row, center, center, 30px);
-        // gap: 30px;
         flex: 4;
-
-        .changeWeekButton {
-            padding: 10px;
-            background-color: $white;
-            color: $font-dark-colour;
-            border: 2px solid $main-colour;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-
-            &:hover {
-                background-color: $main-colour-hover;
-                color: $font-light-colour;
-                border-color: $main-colour-hover;
-            }
-
-        }
 
         .dateRange {
             @include displayDFJAG(flex, row, center, center, 10px);
@@ -97,7 +29,7 @@
             color: $font-dark-colour;
             border: 2px solid $main-colour;
             border-radius: 5px;
-            // gap: 10px;
+            height: 40px;
 
             .dateRangeParagraph {
                 margin: 0;
@@ -107,11 +39,6 @@
             }
         }
     }
-}
-
-.buttonIcon {
-    height: 20px;
-    width: 20px;
 }
 
 .exportDropdownContainer {
@@ -134,7 +61,6 @@
             cursor: pointer;
             width: 100%;
             margin: 5px 0;
-
 
             &:hover {
                 background-color: $main-colour-hover;

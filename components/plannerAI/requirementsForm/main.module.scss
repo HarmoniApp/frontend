@@ -4,7 +4,6 @@
     @include displayDFJAG(flex, column-reverse, null, null, 20px);
     width: 90%;
     margin: 20px auto;
-    // gap: 20px;
 }
 
 .buttonContainer {
@@ -17,41 +16,8 @@
 
 }
 
-.addNewDayButton,
-.generateButton,
-.deleteGenerateShiftsButton,
-.infoButton,
-.deleteDayButton {
-    @include displayDFJAG(flex, null, center, center, 10px);
-    background-color: $main-colour;
-    color: $font-dark-colour;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    // gap: 10px;
-
-    &:hover {
-        background-color: $main-colour-hover;
-    }
-
-    .buttonIcon {
-        height: 26px;
-        width: 26px;
-        margin: 0;
-    }
-
-    .buttonParagraph {
-        text-align: center;
-        font-size: 20px;
-        margin: 0;
-    }
-}
-
 .planerAiForm {
     @include displayDFJAG(flex, column, null, null, 20px);
-    // gap: 20px;
     padding: 20px;
     border-radius: 10px;
     background-color: $white;
@@ -60,7 +26,6 @@
 
 .dateContainer {
     @include displayDFJAG(flex, null, null, center, 10px);
-    // gap: 10px;
 }
 
 .dateLabel {
@@ -92,7 +57,6 @@
 .roleLabel {
     @include displayDFJAG(flex, row, space-between, center, 10px);
     text-align: center;
-    // gap: 10px;
     background-color: $white-4;
     border-radius: 5px;
     box-shadow: 0px 2px 5px $black-transparency-01;
@@ -133,7 +97,6 @@
     .editingShiftIdParagraph {
         @include displayDFJAG(flex, null, flex-start, null, 10px);
         font-weight: bold;
-        // gap: 10px;
 
         .setRolesForPredefineShiftHighlight {
             border-bottom: 2px solid $main-colour;
