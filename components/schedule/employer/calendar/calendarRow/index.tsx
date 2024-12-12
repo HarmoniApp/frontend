@@ -14,6 +14,7 @@ import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import '@/styles/components/pagination.css';
 import LoadingSpinner from '@/components/loadingSpinner';
+import ActionStatusPopUp from '@/components/actionStatusPopUp';
 import { deleteShift, fetchFilterUsersInSchedule, fetchUserScheduleWithAbsences, patchPublishShifts, postShift, putShift } from '@/services/scheduleService';
 
 interface CalendarRowProps {
@@ -41,6 +42,17 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [totalPages, setTotalPages] = useState(0);
+
+  const [actionStatus, setActionStatus] = useState<{ type: "success" | "error"; msg: string } | null>(null);
+  const [isPopUpVisible, setPopUpVisible] = useState(false);
+
+  const showPopUp = (type: "success" | "error", msg: string) => {
+    setActionStatus({ type, msg });
+    setPopUpVisible(true);
+    setTimeout(() => setPopUpVisible(false), 5000);
+  };
+
+  
 
   useEffect(() => {
     const loadData = async () => {
@@ -269,10 +281,10 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   return (
     <div>
       {loadingUsers || loadingRoles || loadingSchedules ? (
-        <LoadingSpinner wholeModal={false}/>
+        <LoadingSpinner wholeModal={false} />
       ) : !users || users.length === 0 ? (
         <Card title="Brak danych" className={styles.noDataCard}>
-            <p>Brak dostępnych danych w tej chwili.</p>
+          <p>Brak dostępnych danych w tej chwili.</p>
         </Card>
       ) : (
         <>
@@ -295,7 +307,10 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
         <AddShift
           isOpen={isAddModalOpen}
           onClose={() => setIsAddModalOpen(false)}
-          onAddShift={handleAddShift}
+          onAddShift={(shiftData) => {
+            handleAddShift(shiftData);
+            showPopUp("success", "Zmiana została dodana pomyślnie!");
+          }}
           user={selectedUser}
           day={selectedDay}
         />
@@ -304,14 +319,25 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
         <EditShift
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
-          onEditShift={handleEditShift}
-          onDeleteShift={handleDeleteShift}
+          onEditShift={(shiftData) => {
+            handleEditShift(shiftData);
+            showPopUp("success", "Zmiana została zaktualizowana pomyślnie!");
+          }}
+          onDeleteShift={(shiftId, userId) => {
+            handleDeleteShift(shiftId, userId);
+            showPopUp("success", "Zmiana została usunięta pomyślnie!");
+          }}
           shift={selectedShift}
           firstName={users.find(user => user.id === selectedShift.user_id)?.firstname || 'Imie'}
           surname={users.find(user => user.id === selectedShift.user_id)?.surname || 'Nazwisko'}
           setLoading={setLoading}
         />
       )}
+      <ActionStatusPopUp
+        type={actionStatus?.type || "success"}
+        msg={actionStatus?.msg || ""}
+        isVisible={isPopUpVisible}
+      />
     </div>
   );
 });

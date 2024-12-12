@@ -540,7 +540,6 @@ const AddEmployee: React.FC = () => {
                   />
                 </div>
               </div>
-              /* zielony popUp */
             )}
           </Form>
         )}

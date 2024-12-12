@@ -7,6 +7,7 @@ import { downloadSchedulePdf } from '@/services/pdfService';
 import { downloadScheduleXLSX } from '@/services/xlsxService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import CustomButton from '@/components/customButton';
+import ActionStatusPopUp from '@/components/actionStatusPopUp';
 
 interface ScheduleBarProps {
   currentWeek: Date[];
@@ -19,6 +20,14 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
   const [modalIsOpenPublish, setModalIsOpenPublish] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [actionStatus, setActionStatus] = useState<{ type: "success" | "error"; msg: string } | null>(null);
+  const [isPopUpVisible, setPopUpVisible] = useState(false);
+
+  const showPopUp = (type: "success" | "error", msg: string) => {
+    setActionStatus({ type, msg });
+    setPopUpVisible(true);
+    setTimeout(() => setPopUpVisible(false), 5000);
+  };
 
   const formatDate = (date: Date) => {
     const [year, month, day] = date.toISOString().split('T')[0].split('-');
@@ -36,6 +45,7 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
     setDropdownVisible(false);
     const weekRange = getThisWeek();
     const confirmDownload = window.confirm(`Czy na pewno chcesz pobrać plik w formacie ${format.toUpperCase()} na ten tydzień: ${weekRange}?`);
+    showPopUp("success", "Pomyślnie pobrano plik!");
 
     if (!confirmDownload) {
       return;
@@ -79,7 +89,10 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
             <PublishConfirmation
-              onPublish={onPublishAll}
+              onPublish={() => {
+                onPublishAll();
+                showPopUp("success", "Opublikowanie grafiku zakończone sukcesem!");
+              }}
               onClose={() => setModalIsOpenPublish(false)}
               week={getThisWeek()}
             />
@@ -87,6 +100,11 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
         </div>
       )}
       {loading && <LoadingSpinner />}
+      <ActionStatusPopUp
+        type={actionStatus?.type || "success"}
+        msg={actionStatus?.msg || ""}
+        isVisible={isPopUpVisible}
+      />
     </div>
   );
 };

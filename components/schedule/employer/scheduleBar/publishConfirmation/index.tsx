@@ -26,7 +26,7 @@ const ArchiveConfirmation: React.FC<PublishConfirmationProps> = ({ onPublish, on
                     <FontAwesomeIcon className={styles.buttonIcon} icon={faArrowTurnUp} style={{ transform: 'rotate(-90deg)' }} />
                     <p className={styles.buttonParagraph}>Cofnij</p>
                 </button>
-                <button className={styles.archiveButton} onClick={handlePublish}>
+                <button className={styles.publicButton} onClick={handlePublish}>
                     <FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarWeek} />
                     <p className={styles.buttonParagraph}>Opublikuj</p>
                 </button>

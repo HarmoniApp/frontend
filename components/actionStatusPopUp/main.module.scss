@@ -17,7 +17,6 @@
         transform: translateX(0);
         opacity: 1;
     }
-
     to {
         transform: translateX(100%);
         opacity: 0;
@@ -25,51 +24,46 @@
 }
 
 .actionStatusPopUpContainer {
+    @include displayDFJAG(flex, null, center, center);
     position: fixed;
     top: 20px;
     right: 20px;
-    background-color: $white;
     border-radius: 8px;
     padding: 15px 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     z-index: 1000;
 
-    animation: slideInRight 0.5s ease-out forwards;
+    animation: slideInRight 0.7s ease-out forwards;
+
+    &.fadeOut {
+        animation: slideOutRight 0.5s ease-out forwards;
+    }
 
     &.success {
         border-left: 5px solid $green;
-        background-color: lighten($green, 40%);
+        background-color: $green-hover;
+        color: $font-light-colour;
     }
 
     &.error {
-        border-left: 5px solid $red;
-        background-color: lighten($red, 40%);
-    }
-
-    .icon {
-        font-size: 24px;
-        margin-right: 10px;
-        color: inherit;
+        border-left: 5px solid $red-dark;
+        background-color: $red;
+        color: $font-light-colour;
     }
 
     .content {
-        flex: 1;
+        @include displayDFJAG(flex, row, space-evenly, center, 20px);
 
-        .title {
-            font-weight: bold;
-            font-size: 16px;
-            margin: 0;
-            color: $font-dark-colour;
+        .icon {
+            font-size: 20px;
+            color: inherit;
         }
 
         .message {
             margin: 5px 0 0;
             font-size: 14px;
-            color: $font-dark-colour;
+            color: $font-light-colour;
         }
     }
 

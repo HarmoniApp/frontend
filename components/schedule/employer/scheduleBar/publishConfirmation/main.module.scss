@@ -33,9 +33,9 @@
     @include displayDFJAG(flex, row, space-evenly, center);
     width: 100%;
 
-    .archiveButton {
+    .publicButton {
         @include displayDFJAG(flex, null, null, center);
-        background-color: $red;
+        background-color: $green;
         color: $font-light-colour;
         padding: 10px 20px;
         border: none;
@@ -44,7 +44,7 @@
         transition: background-colour 0.3s ease;
 
         &:hover {
-            background-color: $red-dark;
+            background-color: $green-hover;
         }
 
         .buttonParagraph {

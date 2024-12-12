@@ -13,6 +13,7 @@ import { fetchPredefinedShifts } from '@/services/predefineShiftService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { generateScheduleAi, revokeScheduleAi } from '@/services/planerAiService';
 import CustomButton from '@/components/customButton';
+import ActionStatusPopUp from '@/components/actionStatusPopUp';
 
 const RequirementsForm: React.FC = () => {
     const [forms, setForms] = useState<IRequirementsForm[]>([
@@ -23,6 +24,14 @@ const RequirementsForm: React.FC = () => {
     const [formCounter, setFormCounter] = useState(1);
     const [loading, setLoading] = useState(false);
     const [isInstructionOpen, setIsInstructionOpen] = useState(false);
+    const [actionStatus, setActionStatus] = useState<{ type: "success" | "error"; msg: string } | null>(null);
+    const [isPopUpVisible, setPopUpVisible] = useState(false);
+
+    const showPopUp = (type: "success" | "error", msg: string) => {
+        setActionStatus({ type, msg });
+        setPopUpVisible(true);
+        setTimeout(() => setPopUpVisible(false), 5000);
+    };
 
     useEffect(() => {
         const loadData = async () => {
@@ -45,8 +54,7 @@ const RequirementsForm: React.FC = () => {
 
         try {
             await revokeScheduleAi();
-            alert('Usunięto pomyślnie.');
-            // zielony panel?
+            showPopUp("success", "Zmiany usunięto pomyślnie.");
             setLoading(false);
         } catch (error) {
             console.error('Failed to send data:', error);
@@ -71,7 +79,7 @@ const RequirementsForm: React.FC = () => {
         const invalidForms = forms.filter((form) => !form.date || form.shifts.length === 0 || form.shifts.some((shift) => shift.roles.length === 0));
         if (invalidForms.length > 0) {
             console.error('Invalid forms detected:', invalidForms);
-            alert('Upewnij się, że wszystkie formularze mają poprawną datę, zmiany i role.');
+            showPopUp("error", "Upewnij się, że wszystkie formularze mają poprawną datę, zmiany i role.");
             setLoading(false);
             return;
         }
@@ -95,7 +103,7 @@ const RequirementsForm: React.FC = () => {
 
         try {
             await generateScheduleAi(payload);
-            alert('Wygenerowano pomyślnie.');
+            showPopUp("success", "Wygenerowano zmiany pomyślnie.");
             setLoading(false);
         } catch (error) {
             console.error('Failed to send data:', error);
@@ -259,6 +267,11 @@ const RequirementsForm: React.FC = () => {
                 />
             </div>
             {loading && <LoadingSpinner />}
+            <ActionStatusPopUp
+                type={actionStatus?.type || "success"}
+                msg={actionStatus?.msg || ""}
+                isVisible={isPopUpVisible}
+            />
         </div>
     );
 };
