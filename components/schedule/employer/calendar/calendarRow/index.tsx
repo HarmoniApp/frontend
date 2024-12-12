@@ -6,16 +6,13 @@ import EditShift from '../editShift';
 import WeekSchedule from '@/components/types/weekSchedule';
 import User from '@/components/types/user';
 import Shift from '@/components/types/shift';
-import { Message } from 'primereact/message';
 import Role from '@/components/types/role';
 import styles from './main.module.scss';
 import { fetchRoles } from "@/services/roleService"
-import { ProgressSpinner } from 'primereact/progressspinner';
 import { Card } from 'primereact/card';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import '@/styles/components/pagination.css';
-import { fetchCsrfToken } from '@/services/csrfService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { deleteShift, fetchFilterUsersInSchedule, fetchUserScheduleWithAbsences, patchPublishShifts, postShift, putShift } from '@/services/scheduleService';
 
@@ -27,9 +24,6 @@ interface CalendarRowProps {
 const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, ref) => {
   const [users, setUsers] = useState<User[]>([]);
   const [schedules, setSchedules] = useState<Record<number, WeekSchedule>>({});
-  const [loadingRoles, setLoadingRoles] = useState<boolean>(true);
-  const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
-  const [loadingSchedules, setLoadingSchedules] = useState<boolean>(true);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
@@ -38,6 +32,10 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [abortController, setAbortController] = useState<AbortController | null>(null);
   const [roles, setRoles] = useState<Role[]>([]);
+
+  const [loadingRoles, setLoadingRoles] = useState<boolean>(true);
+  const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
+  const [loadingSchedules, setLoadingSchedules] = useState<boolean>(true);
   const [loading, setLoading] = useState(false);
 
   const [pageNumber, setPageNumber] = useState(1);
@@ -46,7 +44,9 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
 
   useEffect(() => {
     const loadData = async () => {
+      setLoadingRoles(true);
       await fetchRoles(setRoles);
+      setLoadingRoles(false);
     };
 
     loadData();
@@ -152,7 +152,9 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   };
 
   const handleDeleteShift = async (shiftId: number, userId: number) => {
+    setLoading(true);
     await deleteShift(shiftId, userId, fetchUserSchedule);
+    setLoading(false);
   };
 
   const handlePublishAll = async () => {
@@ -267,7 +269,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   return (
     <div>
       {loadingUsers || loadingRoles || loadingSchedules ? (
-        // <div className={styles.spinnerContainer}><ProgressSpinner /></div>
         <LoadingSpinner wholeModal={false}/>
       ) : !users || users.length === 0 ? (
         <Card title="No Data" className={styles.noDataCard}>
@@ -286,14 +287,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
               setPageSize(event.rows);
             }}
           />
-          {loading && (
-            // <div className={styles.loadingModalOverlay}>
-            //   <div className={styles.loadingModalContent}>
-            //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-            //   </div>
-            // </div>
-            <LoadingSpinner />
-          )}
+          {loading && <LoadingSpinner />}
         </>
       )}
 
@@ -313,8 +307,9 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
           onEditShift={handleEditShift}
           onDeleteShift={handleDeleteShift}
           shift={selectedShift}
-          firstName={users.find(user => user.id === selectedShift.user_id)?.firstname || 'test'}
-          surname={users.find(user => user.id === selectedShift.user_id)?.surname || 'test'}
+          firstName={users.find(user => user.id === selectedShift.user_id)?.firstname || 'Imie'}
+          surname={users.find(user => user.id === selectedShift.user_id)?.surname || 'Nazwisko'}
+          setLoading={setLoading}
         />
       )}
     </div>

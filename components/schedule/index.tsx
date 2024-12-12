@@ -27,7 +27,6 @@ const Schedule = () => {
       {userId !== 0 ? (
         isAdmin ? <Employer /> : <Employee userId={userId} />
       ) : (
-        // <div className={styles.spinnerContainer}><ProgressSpinner /></div>
         <LoadingSpinner wholeModal={false}/>
       )}
     </div>
