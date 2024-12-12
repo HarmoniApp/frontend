@@ -3,7 +3,7 @@ import React from 'react';
 import ChatPartner from '@/components/types/chatPartner';
 import Language from '@/components/types/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark, faPlus, faLanguage } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faLanguage } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import NewConversationForm from '../newConversationForm';
 import UserImage from '@/components/userImage';
@@ -20,7 +20,7 @@ interface SidebarProps {
     chatType: 'user' | 'group';
     setChatType: (chatType: 'user' | 'group') => void;
     chatPartners: ChatPartner[];
-    loading: (loading: boolean) => void;
+    setLoading: (loading: boolean) => void;
     fetchChatHistory: (selectedChat: ChatPartner, language: string) => void;
     userId: number;
     setChatPartners: (chatPartners: ChatPartner[]) => void;
@@ -29,28 +29,21 @@ interface SidebarProps {
     handleSelectUser: (user: ChatPartner) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, newChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, userId, setChatPartners, fetchChatHistoryForm, loadChatPartners, handleSelectUser }) => {
-    const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        loading(true);
+const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, newChat, setNewChat, chatType, setChatType, chatPartners, setLoading, fetchChatHistory, userId, setChatPartners, fetchChatHistoryForm, loadChatPartners, handleSelectUser }) => {
+    const handleLanguageChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setLoading(true);
         const language = event.target.value;
         setSelectedLanguage(language);
 
         if (selectedChat) {
-            fetchChatHistory(selectedChat, language);
+            await fetchChatHistory(selectedChat, language);
         }
-        loading(false);
+        setLoading(false);
     };
 
     return (
         <>
             <div className={styles.sidebarHeader}>
-                {/* <div
-                    className={styles.newChatContainer}
-                    onClick={() => { setNewChat(true); }}
-                >
-                    <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon} />
-                    <label className={styles.newChatLabel}>Dodaj chat/grupę</label>
-                </div> */}
                 <CustomButton icon="plus" writing="Dodaj chat/grupę" action={() => { setNewChat(true); }} additionalClass='atChat'/>
             </div>
             <ul className={styles.chatList}>
@@ -109,7 +102,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                             setSelectedChat={setSelectedChat}
                             fetchChatHistory={fetchChatHistoryForm}
                             loadChatPartners={loadChatPartners}
-                            loading={loading}
+                            loading={setLoading}
                             handleSelectUser={handleSelectUser}
                         />
                         <FontAwesomeIcon icon={faXmark} onClick={() => { setNewChat(false) }} />

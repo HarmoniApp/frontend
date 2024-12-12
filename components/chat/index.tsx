@@ -45,7 +45,7 @@ const Chat = () => {
     }
     fetchChatHistory(user);
     setLoading(false);
-  };;
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -56,7 +56,6 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
-    // setLoading(true);
     const tokenJWT = sessionStorage.getItem('tokenJWT');
     const socket = new SockJS(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/ws`);
     const stompClient = new Client({
@@ -137,7 +136,6 @@ const Chat = () => {
     });
 
     stompClient.activate();
-    // setLoading(false);
 
     return () => {
       stompClient.deactivate();
@@ -164,8 +162,6 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    setLoading(true);
-
     setIsEditGroupModalOpen(false);
     setNewChat(false);
     const loadPartners = async () => {
@@ -173,7 +169,6 @@ const Chat = () => {
     };
 
     loadPartners();
-    setLoading(false);
   }, [userId]);
 
   useEffect(() => {
@@ -211,7 +206,7 @@ const Chat = () => {
               chatType={chatType}
               setChatType={setChatType}
               chatPartners={chatPartners}
-              loading={setLoading}
+              setLoading={setLoading}
               fetchChatHistory={fetchChatHistory}
               userId={userId}
               setChatPartners={setChatPartners}
@@ -230,7 +225,6 @@ const Chat = () => {
                   selectedChat={selectedChat}
                   setIsEditGroupModalOpen={setIsEditGroupModalOpen}
                 />
-
                 <SendMessageForm
                   selectedChat={selectedChat}
                   setSelectedChat={setSelectedChat}
@@ -254,17 +248,10 @@ const Chat = () => {
           selectedUsers={selectedUsers}
           setSelectedUsers={setSelectedUsers}
           selectedChat={selectedChat}
-          loading={setLoading}
+          setLoading={setLoading}
          />
       )}
-      {loading && (
-        // <div className={styles.loadingModalOverlay}>
-        //   <div className={styles.loadingModalContent}>
-        //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-        //   </div>
-        // </div>
-        <LoadingSpinner />
-      )}
+      {loading &&  <LoadingSpinner />}
     </div>
   );
 };

@@ -21,11 +21,11 @@ const NewConversationForm: React.FC<NewConversationFormProps> = ({ userId, setCh
     return (
         <div className={styles.newConversationForm}>
             <div className={styles.userNewConversation}>
-                <label className={styles.newConversationLabel}>New Individual Chat</label>
+                <label className={styles.newConversationLabel}>Nowy indywidualny czat</label>
                 <SearchUser handleSelectUser={handleSelectUser} groupChat={false} setChatType={setChatType} />
             </div>
             <div className={styles.groupNewConversation}>
-                <label className={styles.newConversationLabel}>New Group Chat</label>
+                <label className={styles.newConversationLabel}>Nowy czat grupowy</label>
                 <CreateGroupChatForm
                     userId={userId}
                     setChatType={setChatType}

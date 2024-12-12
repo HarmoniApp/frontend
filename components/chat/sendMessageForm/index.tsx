@@ -45,7 +45,6 @@ const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSele
 
             try {
                 await posChattMessage(messageData, setMessages, messages);
-
                 loadChatPartners(true);
                 setSelectedChat(selectedChat);
             } catch (error) {

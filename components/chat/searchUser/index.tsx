@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import ChatPartner from '@/components/types/chatPartner';
 import styles from './main.module.scss';
 import '@/styles/main.css';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import UserImage from '@/components/userImage';
 import { fetchUserSearch } from '@/services/chatService';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 interface SearchUserProps {
   handleSelectUser: (user: ChatPartner) => void;
@@ -51,7 +51,7 @@ const SearchUser: React.FC<SearchUserProps> = ({ handleSelectUser, groupChat, se
           </div>
         ))}
       </div>
-      {loading && <ProgressSpinner className="spinnerChatImage" />}
+      {loading && <LoadingSpinner />}
     </div>
   );
 };

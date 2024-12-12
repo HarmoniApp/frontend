@@ -12,30 +12,30 @@ interface EditGroupProps {
     selectedUsers: ChatPartner[];
     setSelectedUsers: (selectedUsers: ChatPartner[]) => void;
     selectedChat: ChatPartner | null;
-    loading: (loading: boolean) => void;
+    setLoading: (loading: boolean) => void;
 }
 
-const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, setSelectedUsers, selectedChat, loading }) => {
+const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, setSelectedUsers, selectedChat, setLoading }) => {
 
     useEffect(() => {
         handleEditGroup();
     }, []);
 
     const handleEditGroup = async () => {
-        loading(true);
+        setLoading(true);
         if (!selectedChat) {
             console.error("Error: No group to edit.");
             return;
         }
         await fetchGroupMembers(selectedChat.id, setSelectedUsers)
-        loading(false);
+        setLoading(false);
     };
 
     const handleRemoveUserFromGroup = async (userId: number): Promise<void> => {
-        if (!window.confirm("Are you sure to remove this user?")) {
+        if (!window.confirm("Czy na pewno chcesz usunąć tego użytkownika?")) {
             return;
         }
-        loading(true);
+        setLoading(true);
 
         try {
             if (!selectedChat) {
@@ -50,7 +50,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         } catch (error) {
             console.error('Error while removing user from group:', error);
         } finally {
-            loading(false);
+            setLoading(false);
         }
     };
 
@@ -71,7 +71,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
             alert("User is already in the group.");
             return;
         }
-        loading(true);
+        setLoading(true);
 
         try {
             if (!selectedChat) {
@@ -83,7 +83,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         } catch (error) {
             console.error('Error while adding user to group:', error);
         } finally {
-            loading(false);
+            setLoading(false);
         }
     };
 
