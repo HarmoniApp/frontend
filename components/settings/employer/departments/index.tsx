@@ -29,7 +29,9 @@ const Departments= () => {
 
     useEffect(() => {
         const loadData = async () => {
+            setLoading(true);
             await fetchDepartmentsAddress(setDepartments);
+            setLoading(false);
         }
 
         loadData();
@@ -39,7 +41,6 @@ const Departments= () => {
         setLoading(true);
         try {
             postDepartment(values, setDepartments, setAddedDepartmentName)
-
             setIsAddModalOpen(true);
             resetForm();
         }
@@ -66,7 +67,9 @@ const Departments= () => {
     };
 
     const handleDeleteDepartment = async (departmentId: number) => {
+        setLoading(true);
         await deleteDepartment(departmentId, setDepartments);
+        setLoading(false);
     };
 
     const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
@@ -435,17 +438,11 @@ const Departments= () => {
                                     <AddNotification
                                         onClose={() => setIsAddModalOpen(false)}
                                         info={addedDepartmentName} />
+                                        {/* zielony modal */}
                                 </div>
                             </div>
                         )}
-                        {loading && (
-                            // <div className={styles.loadingModalOverlay}>
-                            //     <div className={styles.loadingModalContent}>
-                            //         <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                            //     </div>
-                            // </div>
-                            <LoadingSpinner />
-                        )}
+                        {loading && <LoadingSpinner />}
                     </Form>
                 )}
             </Formik>

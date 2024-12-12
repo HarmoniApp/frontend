@@ -27,18 +27,25 @@ const ContractTypes = () => {
   };
 
   useEffect(() => {
-    fetchContracts(setContracts);
+    const loadData = async () => {
+      setLoading(true);
+      fetchContracts(setContracts);
+      setLoading(false);
+    }
+
+    loadData();
   }, []);
 
   const handleDeleteContractType = async (contractId: number) => {
-    await deleteContractType(contractId, setContracts)
+    setLoading(true);
+    await deleteContractType(contractId, setContracts);
+    setLoading(false);
   };
 
   const handleAddContractType = async (values: any, { resetForm }: any) => {
     setLoading(true);
     try {
       await postContractType(values, setContracts, setAddedContractName);
-
       setIsAddModalOpen(true);
       resetForm();
     } catch (error) {
@@ -53,7 +60,6 @@ const ContractTypes = () => {
     setLoading(true);
     try {
       await putContractType(values, setContracts);
-
       setEditingContractId(null);
       resetForm();
     } catch (error) {
@@ -219,15 +225,7 @@ const ContractTypes = () => {
                 </div>
               </div>
             )}
-
-            {loading && (
-              // <div className={styles.loadingModalOverlay}>
-              //   <div className={styles.loadingModalContent}>
-              //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-              //   </div>
-              // </div>
-              <LoadingSpinner />
-            )}
+            {loading && <LoadingSpinner />}
           </Form>
         )}
       </Formik>

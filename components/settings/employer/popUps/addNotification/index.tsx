@@ -8,7 +8,7 @@ interface AddNotificationProps {
     onClose: () => void;
     info: string;
 }
-
+// zielony modal
 const AddNotification: React.FC<AddNotificationProps> = ({ onClose, info }) => {
     const [modalCountdown, setModalCountdown] = useState(10);
 
