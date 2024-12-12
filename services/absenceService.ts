@@ -4,10 +4,7 @@ import AbsenceType from "@/components/types/absenceType";
 import { fetchCsrfToken } from "./csrfService";
 
 export const fetchAbsences = async (
-    setAbsences: (absences: Absence[]) => void,
-    setError: (errorMessage: string | null) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
-    setLoading(true);
+    setAbsences: (absences: Absence[]) => void): Promise<void> => {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence`, {
             method: 'GET',
@@ -20,9 +17,6 @@ export const fetchAbsences = async (
         setAbsences(data.content);
     } catch (error) {
         console.error('Error fetching absences:', error);
-        setError('Błąd podczas pobierania urlopów');
-    } finally {
-        setLoading(false);
     }
 };
 
@@ -83,8 +77,7 @@ export const fetchAbsenceType = async (
 export const fetchUserAbsences = async (
     userId: number,
     setAbsenceTypeNames: (types: { [key: number]: string }) => void,
-    setAbsences: (absences: Absence[]) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
+    setAbsences: (absences: Absence[]) => void): Promise<void> => {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/user/${userId}`, {
             method: 'GET',
@@ -110,8 +103,6 @@ export const fetchUserAbsences = async (
         setAbsenceTypeNames(typeNames);
     } catch (error) {
         console.error('Error fetching user absences:', error);
-    } finally {
-        setLoading(false);
     }
 }
 
@@ -135,10 +126,7 @@ export const fetchAbsenceTypeName = async (
 };
 
 export const fetchAbsenceTypes = async (
-    setAbsenceTypes: (absences: AbsenceType[]) => void,
-    setError: (errorMessage: string | null) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
-    setLoading(true);
+    setAbsenceTypes: (absences: AbsenceType[]) => void): Promise<void> => {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence-type`, {
             headers: {
@@ -150,19 +138,13 @@ export const fetchAbsenceTypes = async (
         const data = await response.json();
         setAbsenceTypes(data);
     } catch (error) {
-        setError('Error fetching absence types');
-        console.error('Błąd podczas pobierania typów urlopów:', error);
-    } finally {
-        setLoading(false);
+        console.error('Error fetching absence types:', error);
     }
 };
 
 export const fetchAvailableAbsenceDays = async (
     userId: number,
-    setAvailableAbsenceDays: (availableAbsenceDays: number | string) => void,
-    setError: (errorMessage: string | null) => void,
-    setLoading: (loading: boolean) => void): Promise<string | void> => {
-    setLoading(true);
+    setAvailableAbsenceDays: (availableAbsenceDays: number | string) => void): Promise<string | void> => {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}/availableAbsenceDays`, {
             method: 'GET',
@@ -176,10 +158,7 @@ export const fetchAvailableAbsenceDays = async (
         setAvailableAbsenceDays(data)
     } catch (error) {
         console.error(`Error fetching absence available days`, error);
-        setError('Błąd podczas pobierania dostępnych dni urlopu');
         setAvailableAbsenceDays('Nieznane');
-    } finally {
-        setLoading(false);
     }
 };
 
@@ -244,10 +223,8 @@ export const deleteAbsence = async (
     absenceId: number,
     userId: number,
     setAbsenceTypeNames: (types: { [key: number]: string }) => void,
-    setAbsences: (absences: Absence[]) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
+    setAbsences: (absences: Absence[]) => void): Promise<void> => {
 
-    setLoading(true);
     try {
         const tokenXSRF = await fetchCsrfToken();
 
@@ -264,11 +241,8 @@ export const deleteAbsence = async (
             console.error('Failed to cancel absence: ', response.statusText);
             throw new Error(`Failed to cancel absence`);
         }
-        setLoading(false);
-        fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences, setLoading)
+        fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences)
     } catch (error) {
         console.error(`Error canceling absence`, error);
-    } finally {
-        setLoading(false);
     }
 };

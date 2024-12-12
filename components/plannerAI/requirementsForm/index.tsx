@@ -26,7 +26,7 @@ const RequirementsForm: React.FC = () => {
     useEffect(() => {
         const loadData = async () => {
             await fetchPredefinedShifts(setPredefineShifts);
-            await fetchRoles(setRoles, setModalIsOpenLoadning);
+            await fetchRoles(setRoles);
         }
 
         loadData();

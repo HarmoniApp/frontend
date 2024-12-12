@@ -29,18 +29,18 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
     const [availableAbsenceDays, setAvailableAbsenceDays] = useState<number | string>('Ładowanie...');
 
     useEffect(() => {
-        fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences, setLoading);
+        fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences);
     }, []);
 
     const handleCancelAbsence = async () => {
         if (selectedAbsenceId === null) return;
 
-        await deleteAbsence(selectedAbsenceId, userId, setAbsenceTypeNames, setAbsences, setLoading)
+        await deleteAbsence(selectedAbsenceId, userId, setAbsenceTypeNames, setAbsences)
     };
 
     useEffect(() => {
         const fetchData = async () => {
-            await fetchAvailableAbsenceDays(userId, setAvailableAbsenceDays, setError, setLoading)
+            await fetchAvailableAbsenceDays(userId, setAvailableAbsenceDays)
         };
 
         fetchData();
@@ -105,7 +105,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
             {modalIsOpenAbsenceRequest && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
-                        <AbsenceRequest onSend={userId} onClose={() => setModalIsOpenAbsenceRequest(false)} onRefresh={() => fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences, setLoading)} />
+                        <AbsenceRequest onSend={userId} onClose={() => setModalIsOpenAbsenceRequest(false)} onRefresh={() => fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences)} />
                     </div>
                 </div>
             )}
