@@ -185,10 +185,8 @@ export const patchPublishShifts = async (
 export const deleteShift = async (
     shiftId: number,
     userId: number,
-    fetchUserSchedule: (userId: number) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
+    fetchUserSchedule: (userId: number) => void): Promise<void> => {
 
-    setLoading(true);
     try {
         const tokenXSRF = await fetchCsrfToken();
 
@@ -205,11 +203,8 @@ export const deleteShift = async (
             console.error('Failed to delete shift: ', response.statusText);
             throw new Error('Failed to delete shift');
         }
-        setLoading(false);
         fetchUserSchedule(userId);
     } catch (error) {
         console.error('Error deleting shift:', error);
-    } finally {
-        setLoading(false);
     }
 };

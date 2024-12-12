@@ -43,9 +43,9 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
     }
 
     if (format === 'pdf') {
-      await downloadSchedulePdf(currentWeek, setLoading);
+      await downloadSchedulePdf(currentWeek);
     } else if (format === 'xlsx') {
-      await downloadScheduleXLSX(currentWeek, setLoading);
+      await downloadScheduleXLSX(currentWeek);
     }
   };
 

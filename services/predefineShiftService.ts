@@ -97,9 +97,7 @@ export const putPredefineShift = async (
 
 export const deletePredefineShift = async (
     shiftId: number,
-    setPredefineShifts: (shifts: PredefinedShift[]) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
-    setLoading(true);
+    setPredefineShifts: (shifts: PredefinedShift[]) => void): Promise<void> => {
     try {
         const tokenXSRF = await fetchCsrfToken();
 
@@ -116,11 +114,8 @@ export const deletePredefineShift = async (
             console.error('Failed to delete shift:', response.statusText);
             throw new Error('Failed to delete shift');
         }
-        setLoading(false);
         await fetchPredefinedShifts(setPredefineShifts)
     } catch (error) {
         console.error('Error deleting shift:', error);
-    } finally {
-        setLoading(false);
     }
 };

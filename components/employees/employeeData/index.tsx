@@ -35,8 +35,8 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   useEffect(() => {
     if (userId) {
       const loadData = async () => {
-        await fetchDepartments(setDepartments, setModalIsOpenLoadning);
-        await fetchUserData(userId, setEmployee, setModalIsOpenLoadning, setSupervisorData)
+        await fetchDepartments(setDepartments);
+        await fetchUserData(userId, setEmployee, setSupervisorData)
       }
 
       loadData();

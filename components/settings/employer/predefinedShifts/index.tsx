@@ -81,7 +81,7 @@ const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
   };
 
   const handleDeletePredefineShift = async (shiftId: number) => {
-    await deletePredefineShift(shiftId, setPredefineShifts, setModalIsOpenLoadning)
+    await deletePredefineShift(shiftId, setPredefineShifts)
   };
 
   const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {

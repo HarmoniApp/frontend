@@ -4,7 +4,6 @@ import SearchUser from '@/components/chat/searchUser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserMinus, faXmark, faTrash } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
-import { fetchCsrfToken } from '@/services/csrfService';
 import UserImage from '@/components/userImage';
 import { deleteGroup, fetchGroupMembers, patchAddUserToGroup, patchRemoveUserFromGroup } from '@/services/chatService';
 
@@ -65,7 +64,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         if (!window.confirm(`Czy na pewno usunąć grupę "${selectedChat.name}"? Tej akcji nie da się cofnąć!`)) {
             return;
         }
-        await deleteGroup(selectedChat.id, loading)
+        await deleteGroup(selectedChat.id)
     };
 
     const handleAddUserToGroup = async (user: ChatPartner): Promise<void> => {

@@ -60,11 +60,11 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
 
   useEffect(() => {
     const loadData = async () => {
-      await fetchContracts(setContracts, setModalIsOpenLoadning);
-      await fetchDepartments(setDepartments, setModalIsOpenLoadning);
+      await fetchContracts(setContracts);
+      await fetchDepartments(setDepartments);
       await fetchAllSupervisors();
-      await fetchRoles(setRoles, setModalIsOpenLoadning);
-      await fetchLanguages(setLanguages, setError, setModalIsOpenLoadning);
+      await fetchRoles(setRoles);
+      await fetchLanguages(setLanguages);
     };
 
     loadData();

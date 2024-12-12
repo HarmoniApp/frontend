@@ -1,7 +1,5 @@
 export const downloadSchedulePdf = async (
-    currentWeek: Date[],
-    setLoading: (loading: boolean) => void): Promise<void> => {
-    setLoading(true);
+    currentWeek: Date[]): Promise<void> => {
     try {
         const startOfWeek = currentWeek[0].toISOString().split('T')[0];
         const endOfWeek = currentWeek[6].toISOString().split('T')[0];
@@ -16,7 +14,6 @@ export const downloadSchedulePdf = async (
 
         if (!responsePDF.ok) {
             console.error('Error downloading PDF');
-            setLoading(false);
             return;
         }
         const blob = await responsePDF.blob();
@@ -30,14 +27,10 @@ export const downloadSchedulePdf = async (
         link.remove();
     } catch (error) {
         console.error('Error:', error);
-    } finally {
-        setLoading(false);
     }
 };
 
-export const downloadUsersPDF = async (
-    setLoading: (loading: boolean) => void): Promise<void> => {
-    setLoading(true);
+export const downloadUsersPDF = async (): Promise<void> => {
     try {
         const responsePDF = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/pdf/generate-pdf-all-employees`, {
             method: 'GET',
@@ -49,7 +42,6 @@ export const downloadUsersPDF = async (
 
         if (!responsePDF.ok) {
             console.error('Error downloading PDF');
-            setLoading(false);
             return;
         }
         const blob = await responsePDF.blob();
@@ -63,7 +55,5 @@ export const downloadUsersPDF = async (
         link.remove();
     } catch (error) {
         console.error('Error:', error);
-    } finally {
-        setLoading(false);
     }
 };

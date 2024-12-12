@@ -25,7 +25,7 @@ const AbsenceEmployer: React.FC = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      await fetchAbsences(setAbsences, setError, setLoading);
+      await fetchAbsences(setAbsences);
       await fetchAbsencesStatus(setAbsencesStatus);
       setLoading(true)
       await fetchSimpleUsersWithPagination(setUsers);
@@ -45,7 +45,7 @@ const AbsenceEmployer: React.FC = () => {
       if(statusId !== undefined){
         await fetchAbsencesByStatus(setAbsences, statusId)
       } else {
-        await fetchAbsences(setAbsences, setError, setLoading);
+        await fetchAbsences(setAbsences);
       }
     } catch (error) {
       console.error('Error fetching absences by status:', error);
@@ -135,7 +135,7 @@ const AbsenceEmployer: React.FC = () => {
               : styles.cardsViewContainerList
           }>
             {filteredAbsences.map(absence => (
-              <AbsenceCard key={absence.id} absence={absence} onStatusUpdate={() => fetchAbsences(setAbsences, setError, setLoading)} />
+              <AbsenceCard key={absence.id} absence={absence} onStatusUpdate={() => fetchAbsences(setAbsences)} />
             ))}
           </div>
         )}

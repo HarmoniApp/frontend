@@ -27,7 +27,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
 
     useEffect(() => {
         const fetchData = async () => {
-            await fetchAbsenceTypes(setAbsenceTypes, setError, setModalIsOpenLoading);
+            await fetchAbsenceTypes(setAbsenceTypes);
         };
         fetchData();
     }, []);

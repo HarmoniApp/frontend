@@ -52,7 +52,7 @@ const Chat = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      await fetchLanguages(setLanguages, setError, setLoading);
+      await fetchLanguages(setLanguages);
     };
 
     loadData();

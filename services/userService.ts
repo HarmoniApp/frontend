@@ -7,9 +7,7 @@ import PersonTile from "@/components/types/personTile";
 export const fetchSimpleUser = async (
     id: number,
     setUser?: (users: SimpleUser) => void,
-    setSupervisorData?: (supervisor: Supervisor) => void,
-    setLoading?: (loading: boolean) => void): Promise<void> => {
-    setLoading?.(true);
+    setSupervisorData?: (supervisor: Supervisor) => void): Promise<void> => {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/${id}`, {
             method: 'GET',
@@ -23,8 +21,6 @@ export const fetchSimpleUser = async (
         setSupervisorData?.(data);
     } catch (error) {
         console.error('Error fetching users:', error);
-    } finally {
-        setLoading?.(false);
     }
 };
 
@@ -58,9 +54,7 @@ export const fetchSimpleUsersWithPagination = async (
 export const fetchUserData = async (
     id: string | number,
     setEmployee: (users: EmployeeData | null) => void,
-    setLoading: (loading: boolean) => void,
     setSupervisorData?: (supervisor: Supervisor | null) => void): Promise<void> => {
-    setLoading(true);
 
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${id}`, {
@@ -80,8 +74,6 @@ export const fetchUserData = async (
         }
     } catch (error) {
         console.error('Error fetching roles:', error);
-    } finally {
-        setLoading(false);
     }
 };
 

@@ -2,9 +2,7 @@ import Role from "@/components/types/role";
 import { fetchCsrfToken } from "./csrfService";
 
 export const fetchRoles = async (
-    setRoles: (roles: Role[]) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
-    setLoading(true)
+    setRoles: (roles: Role[]) => void): Promise<void> => {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
             method: 'GET',
@@ -18,8 +16,6 @@ export const fetchRoles = async (
         setRoles(data);
     } catch (error) {
         console.error('Error fetching roles:', error);
-    } finally {
-        setLoading(false);
     }
 };
 
@@ -45,8 +41,7 @@ export const fetchUserRoles = async (
 export const postRole = async (
     values: { newRoleName: string; newRoleColor: string },
     setAddedRoleName: (name: string) => void,
-    setRoles: (roles: Role[]) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
+    setRoles: (roles: Role[]) => void): Promise<void> => {
 
     try {
         const tokenXSRF = await fetchCsrfToken();
@@ -67,7 +62,7 @@ export const postRole = async (
         }
         const newRole = await response.json();
         setAddedRoleName(newRole.name);
-        await fetchRoles(setRoles, setLoading);
+        await fetchRoles(setRoles);
     } catch (error) {
         console.error(`Error while generate`, error);
     }
@@ -75,8 +70,7 @@ export const postRole = async (
 
 export const putRole = async (
     values: { id: number, editedRoleName: string; editedRoleColor: string },
-    setRoles: (roles: Role[]) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
+    setRoles: (roles: Role[]) => void): Promise<void> => {
 
     try {
         const tokenXSRF = await fetchCsrfToken();
@@ -95,7 +89,7 @@ export const putRole = async (
             console.error('Failed to edit role:', response.statusText);
             throw new Error('Failed to edit role');
         }
-        await fetchRoles(setRoles, setLoading);
+        await fetchRoles(setRoles);
     } catch (error) {
         console.error(`Error while editing role`, error);
     }
@@ -103,10 +97,8 @@ export const putRole = async (
 
 export const deleteRole = async (
     roleId: number,
-    setRoles: (roles: Role[]) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
+    setRoles: (roles: Role[]) => void): Promise<void> => {
 
-    setLoading(true);
     try {
         const tokenXSRF = await fetchCsrfToken();
 
@@ -123,11 +115,8 @@ export const deleteRole = async (
             console.error('Failed to delete role:', response.statusText);
             throw new Error('Failed to delete role');
         }
-        setLoading(false);
-        await fetchRoles(setRoles, setLoading);
+        await fetchRoles(setRoles);
     } catch (error) {
         console.error('Error deleting role:', error);
-    } finally {
-        setLoading(false);
     }
 };

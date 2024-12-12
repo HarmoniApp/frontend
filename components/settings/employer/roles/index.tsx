@@ -34,20 +34,20 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
 
   useEffect(() => {
     const loadData = async () => {
-      await fetchRoles(setRoles, setModalIsOpenLoadning);
+      await fetchRoles(setRoles);
     };
 
     loadData();
   }, []);
 
   const handleDeleteRole = async (roleId: number) => {
-    await deleteRole(roleId, setRoles, setModalIsOpenLoadning)
+    await deleteRole(roleId, setRoles)
   };
 
   const handleAddRole = async (values: { newRoleName: string; newRoleColor: string }, { resetForm }: any) => {
     setModalIsOpenLoadning(true);
     try {
-      await postRole(values, setAddedRoleName, setRoles, setModalIsOpenLoadning)
+      await postRole(values, setAddedRoleName, setRoles)
 
       setModalIsOpenLoadning(false);
       setIsAddModalOpen(true);
@@ -63,7 +63,7 @@ const Roles: React.FC<RolesProps> = ({ setError }) => {
     if (editingRoleId !== null) {
       setModalIsOpenLoadning(true);
       try {
-        await putRole(values, setRoles, setModalIsOpenLoadning);
+        await putRole(values, setRoles);
 
         setEditingRoleId(null);
         resetForm();

@@ -35,7 +35,7 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
 
     useEffect(() => {
         const loadData = async () => {
-            await fetchDepartmentsAddress(setDepartments, setModalIsOpenLoadning);
+            await fetchDepartmentsAddress(setDepartments);
         }
 
         loadData();
@@ -44,9 +44,8 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
     const handleAddDepartment = async (values: DepartmentAddress, { resetForm }: any) => {
         setModalIsOpenLoadning(true);
         try {
-            postDepartment(values, setDepartments, setAddedDepartmentName, setModalIsOpenLoadning)
+            postDepartment(values, setDepartments, setAddedDepartmentName)
 
-            setModalIsOpenLoadning(false);
             setIsAddModalOpen(true);
             resetForm();
         }
@@ -61,7 +60,7 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
         if (editingDepartmentId !== null) {
             setModalIsOpenLoadning(true);
             try {
-                await putDepartment(values, setDepartments, setModalIsOpenLoadning);
+                await putDepartment(values, setDepartments);
                 setEditingDepartmentId(null);
             }
             catch (error) {
@@ -73,7 +72,7 @@ const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
     };
 
     const handleDeleteDepartment = async (departmentId: number) => {
-        await deleteDepartment(departmentId, setDepartments, setModalIsOpenLoadning);
+        await deleteDepartment(departmentId, setDepartments);
     };
 
     const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {

@@ -39,9 +39,9 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
     }
 
     if (format === 'pdf') {
-      await downloadUsersPDF(setLoading);
+      await downloadUsersPDF();
     } else if (format === 'xlsx') {
-      await downloadUsersXLSX(setLoading);
+      await downloadUsersXLSX();
     }
   };
 
