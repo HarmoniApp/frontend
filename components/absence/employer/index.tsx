@@ -6,17 +6,12 @@ import AbsenceCard from '@/components/absence/employer/absenceCard';
 import Absence from '@/components/types/absence';
 import SimpleUser from '@/components/types/simpleUser';
 import AbsenceStatus from '@/components/types/absenceStatus';
-import User from '@/components/types/user';
 import styles from './main.module.scss';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
 import { fetchAbsences, fetchAbsencesByStatus, fetchAbsencesStatus } from '@/services/absenceService';
-<<<<<<< HEAD
 import LoadingSpinner from '@/components/loadingSpinner';
-=======
 import { fetchSimpleUsersWithPagination } from '@/services/userService';
->>>>>>> 4c2c13ea82f9f7fc3399d8a4d39ac63137b40b69
 
 const AbsenceEmployer: React.FC = () => {
   const [absences, setAbsences] = useState<Absence[]>([]);

@@ -6,18 +6,13 @@ import EmployeeBar from '@/components/employees/employeeBar';
 import PersonTile from '@/components/types/personTile';
 import styles from './main.module.scss';
 import '@/styles/components/pagination.css';
-
-import { ProgressSpinner } from 'primereact/progressspinner';
 import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
 import { Message as PrimeMessage } from 'primereact/message';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import 'primereact/resources/themes/saga-blue/theme.css';
-<<<<<<< HEAD
 import LoadingSpinner from '../loadingSpinner';
-=======
 import { fetchFilterUsers } from '@/services/userService';
->>>>>>> 4c2c13ea82f9f7fc3399d8a4d39ac63137b40b69
 
 const EmployeesComponent: React.FC = () => {
   const [activeView, setActiveView] = useState<'tiles' | 'list'>('tiles');

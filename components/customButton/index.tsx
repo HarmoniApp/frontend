@@ -53,7 +53,7 @@ import styles from "./main.module.scss";
 
 const Icons = {
     userPlus: faUserPlus,
-    cloudArrowDown: faCloudArrowDown
+    cloudArrowDown: faCloudArrowDown,
 };
 
 interface CustomButtonProps {
