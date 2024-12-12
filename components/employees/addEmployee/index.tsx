@@ -35,7 +35,7 @@ const AddEmployee: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalCountdown, setModalCountdown] = useState(10);
   const [employeeLink, setEmployeeLink] = useState<number | null>(null);
-  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   if (modalCountdown === 0) onBack();
 
@@ -192,7 +192,7 @@ const AddEmployee: React.FC = () => {
   });
 
   const handleSubmit = async (values: typeof initialValues, { resetForm }: { resetForm: () => void }) => {
-    setModalIsOpenLoadning(true);
+    setLoading(true);
     try {
         await postUser(values, setEmployeeLink);
         
@@ -212,7 +212,7 @@ const AddEmployee: React.FC = () => {
       console.error('Error adding employee:', error);
       throw error;
     } finally {
-      setModalIsOpenLoadning(false);
+      setLoading(false);
     }
   };
 
@@ -539,7 +539,7 @@ const AddEmployee: React.FC = () => {
                 </div>
               </div>
             )}
-            {modalIsOpenLoadning && (
+            {loading && (
               // <div className={styles.loadingModalOverlay}>
               //   <div className={styles.loadingModalContent}>
               //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>

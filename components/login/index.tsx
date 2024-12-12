@@ -16,7 +16,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
-  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [passwordPath, setPasswordPath] = useState<string>('');
   const router = useRouter();
 
@@ -56,7 +56,7 @@ const Login = () => {
   });
 
   const handleSubmit = async (values: any) => {
-    setModalIsOpenLoadning(true);
+    setLoading(true);
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/login`, {
         method: 'POST',
@@ -71,7 +71,7 @@ const Login = () => {
 
       if (response.ok) {
         setLoginError(null);
-        setModalIsOpenLoadning(false);
+        setLoading(false);
         const data = await response.json();
         const tokenJWT = data.jwtToken;
         setPasswordPath(data.path);
@@ -108,7 +108,7 @@ const Login = () => {
   };
 
   const handlePasswordChangeSubmit = async (values: any) => {
-    setModalIsOpenLoadning(true);
+    setLoading(true);
     try {
       await patchChangePassword(values, passwordPath)
 
@@ -116,7 +116,7 @@ const Login = () => {
     } catch (error) {
       console.error("An error occurred while changing password:", error);
     } finally {
-      setModalIsOpenLoadning(false);
+      setLoading(false);
     }
   };
 
@@ -182,7 +182,7 @@ const Login = () => {
 
                   <button type="submit" className={styles.button}>Zapisz</button>
 
-                  {modalIsOpenLoadning && (
+                  {loading && (
                     // <div className={styles.loadingModalOverlay}>
                     //   <div className={styles.loadingModalContent}>
                     //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>

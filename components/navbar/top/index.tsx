@@ -22,7 +22,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [showNotifications, setShowNotifications] = useState(false);
-    const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -73,13 +73,13 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
             notification.id === id ? { ...notification, read: true } : notification
         ));
         setUnreadCount(notifications.filter(notification => !notification.read && notification.id !== id).length);
-        setModalIsOpenLoadning(true);
+        setLoading(true);
         try {
             await patchMarkNotificationAsRead(id);
         } catch (error) {
             console.error(`Error marking notification ${id} as read:`, error);
         } finally {
-            setModalIsOpenLoadning(false);
+            setLoading(false);
         }
     };
 
@@ -117,7 +117,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
                         <Notifications notifications={notifications} onClose={() => setShowNotifications(false)} markAsRead={markAsRead} />
                     </div>
 
-                    {modalIsOpenLoadning && (
+                    {loading && (
                         // <div className={styles.loadingModalOverlay}>
                         //     <div className={styles.loadingModalContent}>
                         //         <div className={styles.spinnerContainer}><ProgressSpinner /></div>

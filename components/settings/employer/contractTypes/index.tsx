@@ -19,7 +19,7 @@ const ContractTypes = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [addedContractName, setAddedContractName] = useState<string>('');
   const [deleteContractId, setDeleteContractId] = useState<number | null>(null);
-  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const openDeleteModal = (contractId: number) => {
     setDeleteContractId(contractId);
@@ -35,7 +35,7 @@ const ContractTypes = () => {
   };
 
   const handleAddContractType = async (values: any, { resetForm }: any) => {
-    setModalIsOpenLoadning(true);
+    setLoading(true);
     try {
       await postContractType(values, setContracts, setAddedContractName);
 
@@ -45,12 +45,12 @@ const ContractTypes = () => {
       console.error('Error adding contract type:', error);
       throw error;
     } finally {
-      setModalIsOpenLoadning(false);
+      setLoading(false);
     }
   };
 
   const handleEditContractType = async (values: any, { resetForm }: any) => {
-    setModalIsOpenLoadning(true);
+    setLoading(true);
     try {
       await putContractType(values, setContracts);
 
@@ -59,7 +59,7 @@ const ContractTypes = () => {
     } catch (error) {
       console.error('Error editing shift:', error);
     } finally {
-      setModalIsOpenLoadning(false);
+      setLoading(false);
     }
   };
 
@@ -220,7 +220,7 @@ const ContractTypes = () => {
               </div>
             )}
 
-            {modalIsOpenLoadning && (
+            {loading && (
               // <div className={styles.loadingModalOverlay}>
               //   <div className={styles.loadingModalContent}>
               //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>

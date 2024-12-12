@@ -20,7 +20,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [supervisorData, setSupervisorData] = useState<Supervisor | null>(null);
   const [modalIsOpenDeleteEmployee, setModalDeleteEmployee] = useState(false);
-  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [modalNewPassword, setModalNewPassword] = useState(false);
   const router = useRouter();
@@ -48,7 +48,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   };
 
   const handlePasswordResetSubmit = async () => {
-    setModalIsOpenLoadning(true);
+    setLoading(true);
     try {
       await patchResetPassword(userId, setNewPassword);
 
@@ -56,7 +56,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
     } catch (error) {
       console.error('Error while reseting password: ', error);
     } finally {
-      setModalIsOpenLoadning(false);
+      setLoading(false);
     }
   };
 
@@ -190,7 +190,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
         </div>
       )}
 
-      {modalIsOpenLoadning && (
+      {loading && (
         // <div className={styles.loadingModalOverlay}>
         //   <div className={styles.loadingModalContent}>
         //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>

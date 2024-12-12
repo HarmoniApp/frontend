@@ -20,7 +20,7 @@ const Departments= () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [addedDepartmentName, setAddedDepartmentName] = useState<string>('');
     const [deleteDepartmentId, setDeleteDepartmentId] = useState<number | null>(null);
-    const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const openDeleteModal = (departmentId: number) => {
         setDeleteDepartmentId(departmentId);
@@ -36,7 +36,7 @@ const Departments= () => {
     }, []);
 
     const handleAddDepartment = async (values: DepartmentAddress, { resetForm }: any) => {
-        setModalIsOpenLoadning(true);
+        setLoading(true);
         try {
             postDepartment(values, setDepartments, setAddedDepartmentName)
 
@@ -46,13 +46,13 @@ const Departments= () => {
         catch (error) {
             console.error("Error adding department:", error);
         } finally {
-            setModalIsOpenLoadning(false);
+            setLoading(false);
         }
     };
 
     const handleEditDepartment = async (values: DepartmentAddress) => {
         if (editingDepartmentId !== null) {
-            setModalIsOpenLoadning(true);
+            setLoading(true);
             try {
                 await putDepartment(values, setDepartments);
                 setEditingDepartmentId(null);
@@ -60,7 +60,7 @@ const Departments= () => {
             catch (error) {
                 console.error("Error updating department:", error);
             } finally {
-                setModalIsOpenLoadning(false);
+                setLoading(false);
             }
         }
     };
@@ -438,7 +438,7 @@ const Departments= () => {
                                 </div>
                             </div>
                         )}
-                        {modalIsOpenLoadning && (
+                        {loading && (
                             // <div className={styles.loadingModalOverlay}>
                             //     <div className={styles.loadingModalContent}>
                             //         <div className={styles.spinnerContainer}><ProgressSpinner /></div>

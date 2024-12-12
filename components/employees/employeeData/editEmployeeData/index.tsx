@@ -40,7 +40,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   const [languages, setLanguages] = useState<Language[]>([]);
   // const [isModalOpen, setIsModalOpen] = useState(false);
   // const [changedData, setChangedData] = useState<ChangedData>({});
-  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const fetchAllSupervisors = async () => {
     try {
@@ -252,7 +252,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   // };
 
   const handleEditUser = async (values: typeof initialValues) => {
-    setModalIsOpenLoadning(true);
+    setLoading(true);
     try {
       await patchUser(values);
         // const changedData = getChangedData(values);
@@ -262,7 +262,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     } catch (error) {
       console.error('Error while editing user:', error);
     } finally {
-      setModalIsOpenLoadning(false);
+      setLoading(false);
     }
   };
 
@@ -592,7 +592,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
                 </div>
               </div>
             )} */}
-            {modalIsOpenLoadning && (
+            {loading && (
 
               <LoadingSpinner />
             )}

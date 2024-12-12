@@ -20,7 +20,7 @@ const RequirementsForm: React.FC = () => {
     const [predefineShifts, setPredefineShifts] = useState<PredefinedShift[]>([]);
     const [roles, setRoles] = useState<Role[]>([]);
     const [formCounter, setFormCounter] = useState(1);
-    const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [isInstructionOpen, setIsInstructionOpen] = useState(false);
 
     useEffect(() => {
@@ -33,17 +33,17 @@ const RequirementsForm: React.FC = () => {
     }, []);
 
     const handleRevoke = async () => {
-        setModalIsOpenLoadning(true);
+        setLoading(true);
 
         if (!window.confirm('Czy na pewno chcesz usunąć wszystkie ostatnio wygenerowane przez PlanerAi zmiany?')) {
-            setModalIsOpenLoadning(false);
+            setLoading(false);
             return;
         }
 
         try {
             await revokeScheduleAi();
             alert('Usunięto pomyślnie.');
-            setModalIsOpenLoadning(false);
+            setLoading(false);
         } catch (error) {
             console.error('Failed to send data:', error);
         }
@@ -62,13 +62,13 @@ const RequirementsForm: React.FC = () => {
     };
 
     const handleSubmit = async () => {
-        setModalIsOpenLoadning(true);
+        setLoading(true);
 
         const invalidForms = forms.filter((form) => !form.date || form.shifts.length === 0 || form.shifts.some((shift) => shift.roles.length === 0));
         if (invalidForms.length > 0) {
             console.error('Invalid forms detected:', invalidForms);
             alert('Upewnij się, że wszystkie formularze mają poprawną datę, zmiany i role.');
-            setModalIsOpenLoadning(false);
+            setLoading(false);
             return;
         }
 
@@ -91,7 +91,7 @@ const RequirementsForm: React.FC = () => {
         try {
             await generateScheduleAi(payload);
             alert('Wygenerowano pomyślnie.');
-            setModalIsOpenLoadning(false);
+            setLoading(false);
         } catch (error) {
             console.error('Failed to send data:', error);
         }
@@ -245,7 +245,7 @@ const RequirementsForm: React.FC = () => {
                                 <FontAwesomeIcon className={styles.buttonIcon} icon={faTrashCan} />
                                 <p className={styles.buttonParagraph}>Usuń dzień</p>
                             </button>
-                            {modalIsOpenLoadning && (
+                            {loading && (
                                 // <div className={styles.loadingModalOverlay}>
                                 //     <div className={styles.loadingModalContent}>
                                 //         <ProgressSpinner />

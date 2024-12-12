@@ -21,7 +21,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     const [user, setUser] = useState<SimpleUser | null>(null);
     const [modalIsOpenCancelAbsence, setModalIsOpenCancelAbsence] = useState(false);
     const [modalIsOpenAproveAbsence, setModalIsOpenAproveAbsence] = useState(false);
-    const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -38,13 +38,13 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     const workingDays = () => absence.working_days ?? 0;
 
     const updateAbsenceStatus = async (absenceId: number, statusId: number) => {
-        setModalIsOpenLoadning(true);
+        setLoading(true);
         try {
             await patchAbsence(absenceId, statusId)
         } catch (error) {
             console.error('Error updating absence status:', error);
         } finally {
-            setModalIsOpenLoadning(false);
+            setLoading(false);
         }
     };
 
@@ -173,7 +173,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                     </div>
                 </div>
             )}
-            {modalIsOpenLoadning && (
+            {loading && (
                 // <div className={styles.loadingModalOverlay}>
                 //     <div className={styles.loadingModalContent}>
                 //         <div className={styles.spinnerContainer}><ProgressSpinner /></div>

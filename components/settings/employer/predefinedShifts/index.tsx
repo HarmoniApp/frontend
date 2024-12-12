@@ -19,7 +19,7 @@ const PredefinedShifts = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [addedPredefineShiftName, setAddedPredefineShiftName] = useState<string>('');
   const [deleteShiftId, setDeleteShiftId] = useState<number | null>(null);
-  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const openDeleteModal = (shiftId: number) => {
     setDeleteShiftId(shiftId);
@@ -37,46 +37,47 @@ const PredefinedShifts = () => {
 
   useEffect(() => {
     const loadData = async () => {
+      setLoading(true);
       await fetchPredefinedShifts(setPredefineShifts);
+      setLoading(false);
     }
 
     loadData();
   }, []);
 
   const handleAddPredefineShift = async (values: any, { resetForm }: any) => {
-    setModalIsOpenLoadning(true);
+    setLoading(true);
 
     try {
       await postPredefineShift(values, setPredefineShifts);
-
-      // setAddedPredefineShiftName(dataPost.name);
       setIsAddModalOpen(true);
       resetForm();
     } catch (error) {
       console.error('Error adding predefine shift:', error);
       throw error;
     } finally {
-      setModalIsOpenLoadning(false);
+      setLoading(false);
     }
   };
 
   const handleEditPredefineShift = async (values: PredefinedShift, { resetForm }: any) => {
-    setModalIsOpenLoadning(true);
+    setLoading(true);
     try {
       await putPredefineShift(values, setPredefineShifts);
-
       setEditingShiftId(null);
       resetForm();
     }
     catch (error) {
       console.error("Error updating predefine shift:", error);
     } finally {
-      setModalIsOpenLoadning(false);
+      setLoading(false);
     }
   };
 
   const handleDeletePredefineShift = async (shiftId: number) => {
-    await deletePredefineShift(shiftId, setPredefineShifts)
+    setLoading(true);
+    await deletePredefineShift(shiftId, setPredefineShifts);
+    setLoading(false);
   };
 
   const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
@@ -147,7 +148,6 @@ const PredefinedShifts = () => {
                         <>
                           <p className={styles.shiftNameParagraph}>{shift.name}</p>
                           <p className={styles.shiftTimeParagraph}>{shift.start ? shift.start.slice(0, 5) : 'Brak godziny'} - {shift.end ? shift.end.slice(0, 5) : 'Brak godziny'}</p>
-
                         </>
                       )}
                     </div>
@@ -286,21 +286,14 @@ const PredefinedShifts = () => {
               <div className={styles.modalOverlay}>
                 <div className={styles.modalContent}>
                   <AddNotification onClose={() => setIsAddModalOpen(false)} info={addedPredefineShiftName} />
+                  {/* zielony panel */}
                 </div>
               </div>
-            )}
-
-            {modalIsOpenLoadning && (
-              // <div className={styles.loadingModalOverlay}>
-              //   <div className={styles.loadingModalContent}>
-              //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-              //   </div>
-              // </div>
-              <LoadingSpinner />
             )}
           </Form>
         )}
       </Formik>
+      {loading && <LoadingSpinner />}
     </div>
   );
 };

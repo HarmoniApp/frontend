@@ -38,7 +38,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [abortController, setAbortController] = useState<AbortController | null>(null);
   const [roles, setRoles] = useState<Role[]>([]);
-  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(20);
@@ -128,26 +128,26 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   };
 
   const handleAddShift = async (shiftData: { start: string; end: string; userId: number; roleName: string; }) => {
-    setModalIsOpenLoadning(true);
+    setLoading(true);
     try {
       await postShift(shiftData)
       fetchUserSchedule(shiftData.userId);
     } catch (error) {
       console.error('Error editing shift:', error);
     } finally {
-      setModalIsOpenLoadning(false);
+      setLoading(false);
     }
   };
 
   const handleEditShift = async (shiftData: { id: number; start: string; end: string; userId: number; roleName: string; }) => {
-    setModalIsOpenLoadning(true);
+    setLoading(true);
     try {
       await putShift(shiftData);
       fetchUserSchedule(shiftData.userId);
     } catch (error) {
       console.error('Error editing shift:', error);
     } finally {
-      setModalIsOpenLoadning(false);
+      setLoading(false);
     }
   };
 
@@ -167,7 +167,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     });
 
     shiftsToPublish.forEach(async (shift) => {
-      setModalIsOpenLoadning(true);
+      setLoading(true);
       try {
         await patchPublishShifts(shift.id)
         setSchedules(prevSchedules => ({
@@ -182,7 +182,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
       } catch (error) {
         console.error('Error publishing shift:', error);
       } finally {
-        setModalIsOpenLoadning(false);
+        setLoading(false);
       }
     });
   };
@@ -286,7 +286,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
               setPageSize(event.rows);
             }}
           />
-          {modalIsOpenLoadning && (
+          {loading && (
             // <div className={styles.loadingModalOverlay}>
             //   <div className={styles.loadingModalContent}>
             //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>

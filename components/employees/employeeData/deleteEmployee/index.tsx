@@ -20,7 +20,7 @@ interface DeleteEmployeeProps {
 const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surname, onClose }) => {
   const [modalStage, setModalStage] = useState<'confirm' | 'delete'>('confirm');
   const [modalCountdown, setModalCountdown] = useState(10);
-  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -31,10 +31,10 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
   }, [modalStage, modalCountdown, router, onClose]);
 
   const handleDeleteEmployee = async () => {
-    setModalIsOpenLoadning(true);
+    setLoading(true);
     try {
       await deleteUser(userId);
-        setModalIsOpenLoadning(false);
+        setLoading(false);
         setModalStage('delete');
         const countdownInterval = setInterval(() => {
           setModalCountdown(prev => {
@@ -47,7 +47,7 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
         }, 1000);
     } catch (error) {
       console.error('Error deleting employee:', error)
-      setModalIsOpenLoadning(false);
+      setLoading(false);
     }
   };
 
@@ -75,7 +75,7 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
           modalCountdown={modalCountdown}
         />
       )}
-      {modalIsOpenLoadning && (
+      {loading && (
         // <div className={styles.loadingModalOverlay}>
         //   <div className={styles.loadingModalContent}>
         //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
