@@ -6,6 +6,7 @@ import GroupDefaultPhoto from '@/assets/photo/groupPhoto.png';
 
 import styles from './main.module.scss';
 import { fetchImage } from '@/services/imageService';
+import LoadingSpinner from '../loadingSpinner';
 
 interface UserImageProps {
   userId: number;
@@ -32,7 +33,7 @@ const UserImage: React.FC<UserImageProps> = ({ userId, type }) => {
   return userPhoto ? (
     <img src={userPhoto} alt="User photo" className={styles.customImage} />
   ) : (
-    <ProgressSpinner className={styles.spinnerChatImage} />
+    <LoadingSpinner wholeModal={false}/>
   );
 };
 export default UserImage;

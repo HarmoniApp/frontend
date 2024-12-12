@@ -12,7 +12,6 @@ import classNames from 'classnames';
 import styles from './main.module.scss';
 import LoadingSpinner from '@/components/loadingSpinner';
 
-
 const Roles = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -20,7 +19,7 @@ const Roles = () => {
   const [editingRoleId, setEditingRoleId] = useState<number | null>(null);
   const [addedRoleName, setAddedRoleName] = useState<string>('');
   const [deleteRoleId, setDeleteRoleId] = useState<number | null>(null);
-  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const openDeleteModal = (roleId: number) => {
     setDeleteRoleId(roleId);
@@ -29,43 +28,44 @@ const Roles = () => {
 
   useEffect(() => {
     const loadData = async () => {
+      setLoading(true);
       await fetchRoles(setRoles);
+      setLoading(false);
     };
 
     loadData();
   }, []);
 
   const handleDeleteRole = async (roleId: number) => {
-    await deleteRole(roleId, setRoles)
+    setLoading(true);
+    await deleteRole(roleId, setRoles);
+    setLoading(false);
   };
 
   const handleAddRole = async (values: { newRoleName: string; newRoleColor: string }, { resetForm }: any) => {
-    setModalIsOpenLoadning(true);
+    setLoading(true);
     try {
-      await postRole(values, setAddedRoleName, setRoles)
-
-      setModalIsOpenLoadning(false);
+      await postRole(values, setAddedRoleName, setRoles);
       setIsAddModalOpen(true);
       resetForm();
     } catch (error) {
       console.error('Error adding role:', error);
     } finally {
-      setModalIsOpenLoadning(false);
+      setLoading(false);
     }
   };
 
   const handleEditRole = async (values: { id: number, editedRoleName: string; editedRoleColor: string }, { resetForm }: any) => {
     if (editingRoleId !== null) {
-      setModalIsOpenLoadning(true);
+      setLoading(true);
       try {
         await putRole(values, setRoles);
-
         setEditingRoleId(null);
         resetForm();
       } catch (error) {
         console.error('Error updating role:', error);
       } finally {
-        setModalIsOpenLoadning(false);
+        setLoading(false);
       }
     }
   };
@@ -232,18 +232,12 @@ const Roles = () => {
               <div className={styles.modalOverlay}>
                 <div className={styles.modalContent}>
                   <AddNotification onClose={() => setIsAddModalOpen(false)} info={addedRoleName} />
+                  {/* odnosi sie do potwierdzenia, trzeba zamienic na zielony panel */}
                 </div>
               </div>
             )}
 
-            {modalIsOpenLoadning && (
-              // <div className={styles.loadingModalOverlay}>
-              //   <div className={styles.loadingModalContent}>
-              //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-              //   </div>
-              // </div>
-              <LoadingSpinner />
-            )}
+            {loading && <LoadingSpinner />}
           </Form>
         )}
       </Formik>
