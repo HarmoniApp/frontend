@@ -6,6 +6,7 @@ import CalendarCells from './calendarCells';
 import WeekSchedule from '@/components/types/weekSchedule';
 import styles from './main.module.scss';
 import { fetchUserPublishedSchedule } from '@/services/scheduleService';
+import LoadingSpinner from '@/components/loadingSpinner';
 interface ScheduleEmployeeProps {
     userId: number;
 }
@@ -13,22 +14,23 @@ interface ScheduleEmployeeProps {
 const ScheduleEmployee: React.FC<ScheduleEmployeeProps> = ({ userId }) => {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [weekSchedule, setWeekSchedule] = useState<WeekSchedule | null>(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const loadData = async () => {
+            setLoading(true);
             await fetchUserPublishedSchedule(currentMonth, userId, setWeekSchedule);
+            setLoading(false);
         }
         loadData();
     }, [currentMonth]);
 
     const handlePrevMonth = () => {
         setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
-        fetchUserPublishedSchedule(currentMonth, userId, setWeekSchedule);
     };
 
     const handleNextMonth = () => {
         setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
-        fetchUserPublishedSchedule(currentMonth, userId, setWeekSchedule);
     };
 
     return (
@@ -42,6 +44,7 @@ const ScheduleEmployee: React.FC<ScheduleEmployeeProps> = ({ userId }) => {
                     absences={weekSchedule.absences || []}
                 />
             )}
+            {loading && <LoadingSpinner />}
         </div>
     );
 };
