@@ -200,10 +200,10 @@ const PredefinedShifts = () => {
                         </>
                       ) : (
                         <>
-                          <button className={styles.editButton} onClick={() => setEditingShiftId(shift.id)}>
+                          <button type='button' className={styles.editButton} onClick={() => setEditingShiftId(shift.id)}>
                             <FontAwesomeIcon icon={faPen} />
                           </button>
-                          <button className={styles.removeButton} onClick={() => openDeleteModal(shift.id)}>
+                          <button type='button' className={styles.removeButton} onClick={() => openDeleteModal(shift.id)}>
                             <FontAwesomeIcon icon={faMinus} />
                           </button>
                         </>

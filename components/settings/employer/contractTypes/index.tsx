@@ -157,10 +157,10 @@ const ContractTypes = () => {
                         </>
                       ) : (
                         <>
-                          <button className={styles.editButton} onClick={() => setEditingContractId(contract.id)}>
+                          <button type='button' className={styles.editButton} onClick={() => setEditingContractId(contract.id)}>
                             <FontAwesomeIcon icon={faPen} />
                           </button>
-                          <button className={styles.removeButton} onClick={() => openDeleteModal(contract.id)}>
+                          <button type='button' className={styles.removeButton} onClick={() => openDeleteModal(contract.id)}>
                             <FontAwesomeIcon icon={faMinus} />
                           </button>
                         </>
@@ -225,10 +225,10 @@ const ContractTypes = () => {
                 </div>
               </div>
             )}
-            {loading && <LoadingSpinner />}
           </Form>
         )}
       </Formik>
+      {loading && <LoadingSpinner />}
     </div>
   );
 };

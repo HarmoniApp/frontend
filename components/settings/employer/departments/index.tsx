@@ -12,7 +12,7 @@ import styles from "./main.module.scss";
 import { deleteDepartment, fetchDepartmentsAddress, postDepartment, putDepartment } from "@/services/departmentService";
 import LoadingSpinner from "@/components/loadingSpinner";
 
-const Departments= () => {
+const Departments = () => {
     const [departments, setDepartments] = useState<DepartmentAddress[]>([]);
     const [editingDepartmentId, setEditingDepartmentId] = useState<number | null>(null);
     const [noChangesError, setNoChangesError] = useState<string | null>(null);
@@ -299,10 +299,10 @@ const Departments= () => {
                                             </>
                                         ) : (
                                             <>
-                                                <button className={styles.editButton} onClick={() => setEditingDepartmentId(department.id)}>
+                                                <button type='button' className={styles.editButton} onClick={() => setEditingDepartmentId(department.id)}>
                                                     <FontAwesomeIcon icon={faPen} />
                                                 </button>
-                                                <button className={styles.removeButton} onClick={() => openDeleteModal(department.id)}>
+                                                <button type='button' className={styles.removeButton} onClick={() => openDeleteModal(department.id)}>
                                                     <FontAwesomeIcon icon={faMinus} />
                                                 </button>
                                             </>
@@ -438,14 +438,14 @@ const Departments= () => {
                                     <AddNotification
                                         onClose={() => setIsAddModalOpen(false)}
                                         info={addedDepartmentName} />
-                                        {/* zielony modal */}
+                                    {/* zielony modal */}
                                 </div>
                             </div>
                         )}
-                        {loading && <LoadingSpinner />}
                     </Form>
                 )}
             </Formik>
+            {loading && <LoadingSpinner />}
         </div>
     );
 };

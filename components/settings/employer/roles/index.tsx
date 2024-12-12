@@ -168,10 +168,10 @@ const Roles = () => {
                             style={{ backgroundColor: role.color, cursor: 'default' }}
                             disabled
                           />
-                          <button className={styles.editButton} onClick={() => setEditingRoleId(role.id)}>
+                          <button type='button' className={styles.editButton} onClick={() => setEditingRoleId(role.id)}>
                             <FontAwesomeIcon icon={faPen} />
                           </button>
-                          <button className={styles.removeButton} onClick={() => openDeleteModal(role.id)}>
+                          <button type='button' className={styles.removeButton} onClick={() => openDeleteModal(role.id)}>
                             <FontAwesomeIcon icon={faMinus} />
                           </button>
                         </>
@@ -236,11 +236,10 @@ const Roles = () => {
                 </div>
               </div>
             )}
-
-            {loading && <LoadingSpinner />}
           </Form>
         )}
       </Formik>
+      {loading && <LoadingSpinner />}
     </div>
   );
 };
