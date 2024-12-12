@@ -23,6 +23,7 @@ const EditEmployeePage: React.FC = () => {
         }
         if (typeof id === 'string') {
             await fetchUserData(id, setEmployee);
+            setLoading(false);
         } else {
             setLoading(false);
         }

@@ -6,7 +6,7 @@ interface LoadingSpinnerProps {
     wholeModal?: boolean;
 }
 
-const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({wholeModal}) => {
+const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ wholeModal }) => {
     return (
         <>
             {wholeModal ? (

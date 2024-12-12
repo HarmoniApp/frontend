@@ -7,8 +7,6 @@ import PersonTile from '@/components/types/personTile';
 import styles from './main.module.scss';
 import '@/styles/components/pagination.css';
 import { Card } from 'primereact/card';
-import { Message } from 'primereact/message';
-import { Message as PrimeMessage } from 'primereact/message';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import LoadingSpinner from '../loadingSpinner';

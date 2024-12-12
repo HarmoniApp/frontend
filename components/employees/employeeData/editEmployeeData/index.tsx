@@ -26,31 +26,18 @@ interface EditEmployeeDataProps {
   onCloseEdit: () => void;
 }
 
-// interface ChangedData {
-//   [key: string]: string | number | undefined | object;
-// }
-
 const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCloseEdit }) => {
 
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [supervisorMap, setSupervisorMap] = useState<{ [key: number]: string }>({});
   const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
   const [languages, setLanguages] = useState<Language[]>([]);
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [changedData, setChangedData] = useState<ChangedData>({});
   const [loading, setLoading] = useState(false);
 
   const fetchAllSupervisors = async () => {
     try {
       await fetchSupervisors(setSupervisors)
-
-      const supervisorMap: { [key: number]: string } = {};
-      supervisors.forEach((supervisor: Supervisor) => {
-        supervisorMap[supervisor.id] = `${supervisor.firstname} ${supervisor.surname}`;
-      });
-      setSupervisorMap(supervisorMap);
     } catch (error) {
       console.error('Error fetching supervisors:', error);
     }
@@ -58,11 +45,13 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
 
   useEffect(() => {
     const loadData = async () => {
+      setLoading(true);
       await fetchContracts(setContracts);
       await fetchDepartments(setDepartments);
       await fetchAllSupervisors();
       await fetchRoles(setRoles);
       await fetchLanguages(setLanguages);
+      setLoading(false);
     };
 
     loadData();
@@ -208,57 +197,10 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     languages: Yup.array().min(1, 'Przynajmniej jeden język jest wymagany'),
   });
 
-  // const getChangedData = (values: typeof initialValues): ChangedData => {
-  //   const changes: ChangedData = {};
-
-  //   if (values.firstname !== employee.firstname) changes.firstname = values.firstname;
-  //   if (values.surname !== employee.surname) changes.surname = values.surname;
-  //   if (values.email !== employee.email) changes.email = values.email;
-  //   if (values.phone_number !== employee.phone_number) changes.phone_number = values.phone_number;
-  //   if (values.employee_id !== employee.employee_id) changes.employee_id = values.employee_id;
-  //   if (values.contract_signature !== employee.contract_signature) changes.contract_signature = values.contract_signature;
-  //   if (values.contract_expiration !== employee.contract_expiration) changes.contract_expiration = values.contract_expiration;
-
-  //   if (values.work_address.id !== employee.work_address.id) {
-  //     const departmentName = departments[values.work_address.id];
-  //     changes.work_address = departmentName ? departmentName : 'Unknown Department';
-  //   }
-
-  //   if (parseInt(values.supervisor_id) !== employee.supervisor_id) {
-  //     const selectedSupervisor = supervisorMap[parseInt(values.supervisor_id)];
-  //     changes.supervisor = selectedSupervisor ? selectedSupervisor : 'Unknown Supervisor';
-  //   }
-
-  //   if (values.residence.street !== employee.residence.street) changes.residenceStreet = values.residence.street;
-  //   if (values.residence.building_number !== employee.residence.building_number) changes.residenceBuildingNumber = values.residence.building_number;
-  //   if (values.residence.apartment !== employee.residence.apartment) changes.residenceApartment = values.residence.apartment;
-  //   if (values.residence.city !== employee.residence.city) changes.residenceCity = values.residence.city;
-  //   if (values.residence.zip_code !== employee.residence.zip_code) changes.residenceZipCode = values.residence.zip_code;
-
-  //   if (values.contract_type.id !== employee.contract_type.id) {
-  //     const selectedContractType = contracts.find(contract => contract.id === values.contract_type.id);
-  //     changes.contract_type = selectedContractType ? selectedContractType.name : 'Unknown Contract Type';
-  //   }
-
-  //   if (JSON.stringify(values.roles.map(role => role.id)) !== JSON.stringify(employee.roles.map(role => role.id))) {
-  //     changes.roles = values.roles.map(role => roles.find(r => r.id === role.id)?.name).filter(name => name).join(', ');
-  //   }
-
-  //   if (JSON.stringify(values.languages.map(lang => lang.id)) !== JSON.stringify(employee.languages.map(lang => lang.id))) {
-  //     changes.languages = values.languages.map(lang => languages.find(l => l.id === lang.id)?.name).filter(name => name).join(', ');
-  //   }
-
-  //   return changes;
-  // };
-
   const handleEditUser = async (values: typeof initialValues) => {
     setLoading(true);
     try {
       await patchUser(values);
-        // const changedData = getChangedData(values);
-        // setChangedData(changedData);
-
-        // setIsModalOpen(true);
     } catch (error) {
       console.error('Error while editing user:', error);
     } finally {
@@ -586,19 +528,15 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
                       setIsModalOpen(false);
                       onCloseEdit();
                     }}
-                    changedData={changedData}
                     onCloseEditData={onCloseEdit}
                   />
                 </div>
               </div>
             )} */}
-            {loading && (
-
-              <LoadingSpinner />
-            )}
           </Form>
         )}
       </Formik>
+      {loading && <LoadingSpinner />}
     </div>
   );
 };

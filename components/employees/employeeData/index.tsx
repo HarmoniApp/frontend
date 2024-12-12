@@ -25,9 +25,6 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   const [modalNewPassword, setModalNewPassword] = useState(false);
   const router = useRouter();
 
-  const openModalDeleteEmployee = () => setModalDeleteEmployee(true);
-  const closeModalDeleteEmployee = () => setModalDeleteEmployee(false);
-
   useEffect(() => {
     if (userId) {
       const loadData = async () => {
@@ -78,7 +75,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
             <FontAwesomeIcon className={styles.buttonIcon} icon={faUserPen} />
             <p className={styles.buttonParagraph}>Edytuj</p>
           </button>
-          <button className={styles.deleteButton} onClick={openModalDeleteEmployee}>
+          <button className={styles.deleteButton} onClick={() => setModalDeleteEmployee(true)}>
             <FontAwesomeIcon className={styles.buttonIcon} icon={faUserMinus} />
             <p className={styles.buttonParagraph}>Usuń</p>
           </button>
@@ -172,7 +169,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
               userId={employee.id}
               firstName={employee.firstname}
               surname={employee.surname}
-              onClose={closeModalDeleteEmployee}
+              onClose={() => setModalDeleteEmployee(false)}
             />
           </div>
         </div>

@@ -2,11 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserSlash, faArrowTurnUp } from '@fortawesome/free-solid-svg-icons';
-import { ProgressSpinner } from 'primereact/progressspinner';
-import { Message } from 'primereact/message';
 import DeleteEmployeeNotificationPopUp from './deleteEmployeeNotification';
 import styles from './main.module.scss';
-import { fetchCsrfToken } from '@/services/csrfService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { deleteUser } from '@/services/userService';
 
@@ -34,7 +31,6 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
     setLoading(true);
     try {
       await deleteUser(userId);
-        setLoading(false);
         setModalStage('delete');
         const countdownInterval = setInterval(() => {
           setModalCountdown(prev => {
@@ -47,6 +43,7 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
         }, 1000);
     } catch (error) {
       console.error('Error deleting employee:', error)
+    } finally {
       setLoading(false);
     }
   };
@@ -75,14 +72,7 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
           modalCountdown={modalCountdown}
         />
       )}
-      {loading && (
-        // <div className={styles.loadingModalOverlay}>
-        //   <div className={styles.loadingModalContent}>
-        //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-        //   </div>
-        // </div>
-        <LoadingSpinner />
-      )}
+      {loading && <LoadingSpinner />}
     </div>
   );
 };

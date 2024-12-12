@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import NavbarBottom from "./bottom";
 import Account from "@/components/account";
 import NavbarTop from "./top";
-import styles from './main.module.scss';
 import LoadingSpinner from '@/components/loadingSpinner';
 
 export default function Navbar() {
@@ -27,10 +26,10 @@ export default function Navbar() {
         setIsSidebarOpen(!isSidebarOpen);
     };
     return (
-        <div>
+        <>
             {userId !== 0 ? <NavbarTop onAccountIconClick={toggleSidebar} userId={userId} isThisAdmin={isAdmin}/> : <LoadingSpinner wholeModal={false}/>}
             <Account isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
             <NavbarBottom isThisAdmin={isAdmin}/>
-        </div>
+        </>
     )
 }

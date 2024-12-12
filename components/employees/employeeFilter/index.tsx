@@ -18,7 +18,6 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
   const [selectedLanguages, setSelectedLanguages] = useState<number[]>([]);
   const [order, setOrder] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const [isPositionOpen, setIsPositionOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);

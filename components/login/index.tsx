@@ -1,10 +1,9 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { Message } from 'primereact/message';
 import * as Yup from 'yup';
 import styles from './main.module.scss';
 import { jwtDecode } from "jwt-decode";
@@ -71,7 +70,6 @@ const Login = () => {
 
       if (response.ok) {
         setLoginError(null);
-        setLoading(false);
         const data = await response.json();
         const tokenJWT = data.jwtToken;
         setPasswordPath(data.path);
@@ -104,6 +102,8 @@ const Login = () => {
     } catch (error) {
       console.error("An error occurred:", error);
       setLoginError("Wystąpił błąd podczas logowania.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -182,14 +182,7 @@ const Login = () => {
 
                   <button type="submit" className={styles.button}>Zapisz</button>
 
-                  {loading && (
-                    // <div className={styles.loadingModalOverlay}>
-                    //   <div className={styles.loadingModalContent}>
-                    //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                    //   </div>
-                    // </div>
-                    <LoadingSpinner />
-                  )}
+                  {loading && <LoadingSpinner />}
                 </Form>
               )}
             </Formik>
