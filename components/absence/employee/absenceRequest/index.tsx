@@ -2,13 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck, faArrowTurnUp, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import * as Yup from 'yup';
 import AbsenceType from '@/components/types/absenceType';
 import classNames from 'classnames';
 import styles from './main.module.scss';
-import { Message } from 'primereact/message';
-import { fetchCsrfToken } from '@/services/csrfService';
 import { fetchAbsenceTypes, postAbsence } from '@/services/absenceService';
 import LoadingSpinner from '@/components/loadingSpinner';
 
@@ -22,7 +19,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
     const [absenceTypes, setAbsenceTypes] = useState<AbsenceType[]>([]);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [modalCountdown, setModalCountdown] = useState(10);
-    const [modalIsOpenLoading, setModalIsOpenLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,7 +29,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
     }, []);
 
     const handleAddAbsence = async (values: any) => {
-        setModalIsOpenLoading(true);
+        setLoading(true);
         try {
             await postAbsence(values, onSend)
 
@@ -41,7 +38,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
         } catch (error) {
             console.error('Error adding absence:', error);
         } finally {
-            setModalIsOpenLoading(false);
+            setLoading(false);
         }
     };
 
@@ -188,21 +185,12 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                                         <p className={styles.buttonParagraph}>Złóż wniosek</p>
                                     </button>
                                 </div>
-
-                                {modalIsOpenLoading && (
-                                    // <div className={styles.loadingModalOverlay}>
-                                    //     <div className={styles.loadingModalContent}>
-                                    //         <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                                    //     </div>
-                                    // </div>
-                                    <LoadingSpinner />
-
-                                )}
                             </Form>
                         );
                     }}
                 </Formik>
             )}
+            {loading && <LoadingSpinner />}
         </div>
     );
 };

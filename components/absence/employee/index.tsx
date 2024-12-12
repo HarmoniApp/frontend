@@ -6,6 +6,7 @@ import CancelConfirmation from './cancelConfirmation';
 import styles from './main.module.scss';
 import { deleteAbsence, fetchAvailableAbsenceDays, fetchUserAbsences } from '@/services/absenceService';
 import LoadingSpinner from '@/components/loadingSpinner';
+import CustomButton from '@/components/customButton';
 
 interface AbsenceEmployeesProps {
     userId: number;
@@ -46,7 +47,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
             <div className={styles.absenceHeaderContainer}>
                 <label className={styles.title}>Twoje urlopy</label>
                 <label className={styles.subtitle}>Ilość dostepnych dni urlopowych: {availableAbsenceDays}</label>
-                <button className={styles.newAbsenceButton} onClick={() => setModalIsOpenAbsenceRequest(true)}>Złóż wniosek o urlop</button>
+                <CustomButton icon="calendarPlus" writing="Złóż wniosek o urlop" action={() => {setModalIsOpenAbsenceRequest(true)}}/>
             </div>
             <div className={styles.tableContainer}>
                 <table className={styles.absenceTable}>
@@ -79,18 +80,13 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                                     {absence.status.name}
                                 </td>
                                 <td className={`${styles.absenceDataBodyHeadElement} ${styles.absenceDataBodyHeadElementButton}`}>
-                                    <button
-                                        className={styles.cancelButton}
-                                        onClick={() => {
+                                    <CustomButton icon="calendarMinus" writing="Anuluj" action={() => {
                                             setSelectedAbsenceId(absence.id);
                                             setSelectedAbsenceType(absenceTypeNames[absence.absence_type_id]);
                                             setSelectedAbsenceStart(new Date(absence.start).toLocaleDateString());
                                             setSelectedAbsenceEnd(new Date(absence.end).toLocaleDateString());
                                             setModalIsOpenCancelAbsence(true);
-                                        }}
-                                    >
-                                        Anuluj
-                                    </button>
+                                        }}/>
                                 </td>
                             </tr>
                         ))}
@@ -116,14 +112,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                     </div>
                 </div>
             )}
-            {loading && ( 
-                <LoadingSpinner />
-                // <div className={styles.loadingModalOverlay}>
-                //     <div className={styles.loadingModalContent}>
-                //         <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                //     </div>
-                // </div>
-            )}
+            {loading && <LoadingSpinner />}
         </div>
     );
 };

@@ -1,8 +1,6 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import CustomButton from '@/components/customButton';
 import styles from './main.module.scss';
-
 interface CalendarHeaderProps {
     currentMonth: Date;
     onPrevMonth: () => void;
@@ -14,9 +12,9 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({ currentMonth, onPrevMon
 
     return (
         <div className={styles.calendarHeader}>
-            <button className={styles.changeMonthButton} onClick={onPrevMonth}><FontAwesomeIcon className={styles.buttonIcon} icon={faChevronLeft} /></button>
+            <CustomButton icon="chevronLeft" writing="" action={onPrevMonth}/>
             <h2 className={styles.dateRange}>{monthYear}</h2>
-            <button className={styles.changeMonthButton} onClick={onNextMonth}><FontAwesomeIcon className={styles.buttonIcon} icon={faChevronRight} /></button>
+            <CustomButton icon="chevronRight" writing="" action={onNextMonth}/>
         </div>
     );
 };

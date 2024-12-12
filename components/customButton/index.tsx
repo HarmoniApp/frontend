@@ -1,7 +1,7 @@
 'use client';
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserPlus, faCloudArrowDown, faCloudArrowUp,faCalendar, faUser, faComments, faPlane, faRobot, faCalendarCheck, faChevronLeft, faChevronRight, faChartSimple, faPlus, faEraser, faCircleInfo, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faUserPlus, faCloudArrowDown, faCloudArrowUp,faCalendar, faUser, faComments, faPlane, faRobot, faCalendarCheck, faChevronLeft, faChevronRight, faChartSimple, faPlus, faEraser, faCircleInfo, faTrashCan, faCalendarMinus, faCalendarPlus } from '@fortawesome/free-solid-svg-icons';
 import styles from "./main.module.scss";
 
 const Icons = {
@@ -19,6 +19,8 @@ const Icons = {
     trashCan: faTrashCan,
     chartSimple: faChartSimple,
     plus: faPlus,
+    calendarMinus: faCalendarMinus,
+    calendarPlus: faCalendarPlus,
     eraser: faEraser,
     circleInfo: faCircleInfo,
 };
