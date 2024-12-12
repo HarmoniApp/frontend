@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRectangleList, faGrip, faUserPlus, faCloudArrowDown, faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
-import { ProgressSpinner } from 'primereact/progressspinner';
+import { faRectangleList, faGrip} from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import { downloadUsersPDF } from '@/services/pdfService';
 import { downloadUsersXLSX } from '@/services/xlsxService';

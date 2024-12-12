@@ -7,7 +7,6 @@ import SimpleUser from "@/components/types/simpleUser";
 import CancelConfirmation from './popUps/cancelConfirmation';
 import AproveConfirmation from './popUps/aproveConfirmation';
 import styles from './main.module.scss';
-import { Message } from 'primereact/message';
 import { fetchSimpleUser } from '@/services/userService';
 import { fetchAbsenceType, patchAbsence } from '@/services/absenceService';
 import LoadingSpinner from '@/components/loadingSpinner';
@@ -23,11 +22,10 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     const [modalIsOpenCancelAbsence, setModalIsOpenCancelAbsence] = useState(false);
     const [modalIsOpenAproveAbsence, setModalIsOpenAproveAbsence] = useState(false);
     const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
-            await fetchSimpleUser(absence.id, setUser, undefined, setModalIsOpenLoadning);
+            await fetchSimpleUser(absence.id, setUser, undefined);
             await fetchAbsenceType(absence.absence_type_id, setAbsenceType);
         };
         fetchData();
@@ -175,8 +173,6 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                     </div>
                 </div>
             )}
-            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
-
             {modalIsOpenLoadning && (
                 // <div className={styles.loadingModalOverlay}>
                 //     <div className={styles.loadingModalContent}>

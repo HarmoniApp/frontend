@@ -6,19 +6,14 @@ import Role from '@/components/types/role';
 import AddNotification from '../popUps/addNotification';
 import DeleteConfirmation from '../popUps/deleteConfirmation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import { deleteRole, fetchRoles, postRole, putRole } from "@/services/roleService"
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
-import { fetchCsrfToken } from '@/services/csrfService';
 import LoadingSpinner from '@/components/loadingSpinner';
 
-interface RolesProps {
-  setError: (errorMessage: string | null) => void;
-}
 
-const Roles: React.FC<RolesProps> = ({ setError }) => {
+const Roles = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [roles, setRoles] = useState<Role[]>([]);

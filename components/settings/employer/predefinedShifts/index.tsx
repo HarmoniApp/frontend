@@ -9,15 +9,10 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
-import { fetchCsrfToken } from '@/services/csrfService';
 import { formatTimeToHHMM, fetchPredefinedShifts, deletePredefineShift, postPredefineShift, putPredefineShift } from '@/services/predefineShiftService';
 import LoadingSpinner from '@/components/loadingSpinner';
 
-interface PredefinedShiftsProps {
-  setError: (errorMessage: string | null) => void;
-}
-
-const PredefinedShifts: React.FC<PredefinedShiftsProps> = ({ setError }) => {
+const PredefinedShifts = () => {
   const [predefineShifts, setPredefineShifts] = useState<PredefinedShift[]>([]);
   const [editingShiftId, setEditingShiftId] = useState<number | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);

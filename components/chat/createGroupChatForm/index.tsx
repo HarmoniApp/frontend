@@ -16,10 +16,9 @@ interface CreateGroupChatFormProps {
   fetchChatHistory: (partner: ChatPartner) => void;
   loadChatPartners: (selectFirstPartner: boolean) => void;
   loading: (loading: boolean) => void;
-  setError: (errorMessage: string | null) => void;
 }
 
-const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartners, loading, setError }) => {
+const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartners, loading }) => {
 
   const handleCreateGroup = async (values: { groupName: string }) => {
     loading(true);

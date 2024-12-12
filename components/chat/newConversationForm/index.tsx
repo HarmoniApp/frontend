@@ -14,16 +14,15 @@ interface NewConversationFormProps {
     fetchChatHistory: (partner: ChatPartner) => void;
     loadChatPartners: (selectFirstPartner: boolean) => void;
     loading: (loading: boolean) => void;
-    setError: (errorMessage: string | null) => void;
     handleSelectUser: (user: ChatPartner) => void;
 }
-const NewConversationForm: React.FC<NewConversationFormProps> = ({ userId, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartners, loading, setError, handleSelectUser }) => {
+const NewConversationForm: React.FC<NewConversationFormProps> = ({ userId, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartners, loading, handleSelectUser }) => {
 
     return (
         <div className={styles.newConversationForm}>
             <div className={styles.userNewConversation}>
                 <label className={styles.newConversationLabel}>New Individual Chat</label>
-                <SearchUser handleSelectUser={handleSelectUser} groupChat={false} setChatType={setChatType} setError={setError} />
+                <SearchUser handleSelectUser={handleSelectUser} groupChat={false} setChatType={setChatType} />
             </div>
             <div className={styles.groupNewConversation}>
                 <label className={styles.newConversationLabel}>New Group Chat</label>
@@ -37,7 +36,6 @@ const NewConversationForm: React.FC<NewConversationFormProps> = ({ userId, setCh
                     fetchChatHistory={fetchChatHistory}
                     loadChatPartners={loadChatPartners}
                     loading={loading}
-                    setError={setError}
                 />
             </div>
         </div>

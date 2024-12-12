@@ -6,19 +6,13 @@ import Contract from '@/components/types/contract';
 import AddNotification from '../popUps/addNotification';
 import DeleteConfirmation from '../popUps/deleteConfirmation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
-import { fetchCsrfToken } from '@/services/csrfService';
 import { deleteContractType, fetchContracts, postContractType, putContractType } from '@/services/contractService';
 import LoadingSpinner from '@/components/loadingSpinner';
 
-interface ContractTypesProps {
-  setError: (errorMessage: string | null) => void;
-}
-
-const ContractTypes: React.FC<ContractTypesProps> = ({ setError }) => {
+const ContractTypes = () => {
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [editingContractId, setEditingContractId] = useState<number | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faCloudArrowDown, faCalendarCheck } from '@fortawesome/free-solid-svg-icons';
 import PublishConfirmation from './publishConfirmation';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import styles from './main.module.scss';
 import { downloadSchedulePdf } from '@/services/pdfService';
 import { downloadScheduleXLSX } from '@/services/xlsxService';
@@ -13,10 +12,9 @@ interface ScheduleBarProps {
   onNextWeek: () => void;
   onPreviousWeek: () => void;
   onPublishAll: () => void;
-  setError: (errorMessage: string | null) => void;
 }
 
-const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPreviousWeek, onPublishAll, setError }) => {
+const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPreviousWeek, onPublishAll }) => {
   const [modalIsOpenPublish, setModalIsOpenPublish] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -103,11 +101,6 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
       )}
 
       {loading && (
-        // <div className={styles.loadingModalOverlay}>
-        //   <div className={styles.loadingModalContent}>
-        //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-        //   </div>
-        // </div>
         <LoadingSpinner />
       )}
     </div>

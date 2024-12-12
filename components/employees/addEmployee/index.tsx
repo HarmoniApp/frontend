@@ -35,7 +35,6 @@ const AddEmployee: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalCountdown, setModalCountdown] = useState(10);
   const [employeeLink, setEmployeeLink] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
 
   if (modalCountdown === 0) onBack();

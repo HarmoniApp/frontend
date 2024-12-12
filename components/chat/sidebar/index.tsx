@@ -21,7 +21,6 @@ interface SidebarProps {
     chatPartners: ChatPartner[];
     loading: (loading: boolean) => void;
     fetchChatHistory: (selectedChat: ChatPartner, language: string) => void;
-    setError: (errorMessage: string | null) => void;
     userId: number;
     setChatPartners: (chatPartners: ChatPartner[]) => void;
     fetchChatHistoryForm: (partner: ChatPartner) => void;
@@ -29,7 +28,7 @@ interface SidebarProps {
     handleSelectUser: (user: ChatPartner) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, newChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, setError, userId, setChatPartners, fetchChatHistoryForm, loadChatPartners, handleSelectUser }) => {
+const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, newChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, userId, setChatPartners, fetchChatHistoryForm, loadChatPartners, handleSelectUser }) => {
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         loading(true);
         const language = event.target.value;
@@ -109,7 +108,6 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                             fetchChatHistory={fetchChatHistoryForm}
                             loadChatPartners={loadChatPartners}
                             loading={loading}
-                            setError={setError}
                             handleSelectUser={handleSelectUser}
                         />
                         <FontAwesomeIcon icon={faXmark} onClick={() => { setNewChat(false) }} />

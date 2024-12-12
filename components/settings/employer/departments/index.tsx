@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPen, faCheck, faXmark, faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -10,15 +9,10 @@ import * as Yup from "yup";
 import classNames from "classnames";
 import DepartmentAddress from "@/components/types/departmentAddress";
 import styles from "./main.module.scss";
-import { fetchCsrfToken } from "@/services/csrfService";
 import { deleteDepartment, fetchDepartmentsAddress, postDepartment, putDepartment } from "@/services/departmentService";
 import LoadingSpinner from "@/components/loadingSpinner";
 
-interface DepartmentsProps {
-    setError: (errorMessage: string | null) => void;
-}
-
-const Departments: React.FC<DepartmentsProps> = ({ setError }) => {
+const Departments= () => {
     const [departments, setDepartments] = useState<DepartmentAddress[]>([]);
     const [editingDepartmentId, setEditingDepartmentId] = useState<number | null>(null);
     const [noChangesError, setNoChangesError] = useState<string | null>(null);

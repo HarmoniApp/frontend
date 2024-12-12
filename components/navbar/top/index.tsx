@@ -3,15 +3,12 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
-import { ProgressSpinner } from 'primereact/progressspinner';
-import { Message } from 'primereact/message';
 import styles from "./main.module.scss";
 import Notifications from "./notifications";
 import Notification from '@/components/types/notification';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import '@/styles/main.css';
-import { fetchCsrfToken } from "@/services/csrfService";
 import UserImage from "@/components/userImage";
 import { fetchNotifications, patchMarkNotificationAsRead } from "@/services/notificationService";
 import LoadingSpinner from "@/components/loadingSpinner";
@@ -26,7 +23,6 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
     const [unreadCount, setUnreadCount] = useState(0);
     const [showNotifications, setShowNotifications] = useState(false);
     const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -114,8 +110,6 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
                     <UserImage userId={userId} />
                 </div>
             </div>
-
-            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
 
             {showNotifications && (
                 <div className={styles.modalOverlay}>

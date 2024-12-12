@@ -39,7 +39,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const [abortController, setAbortController] = useState<AbortController | null>(null);
   const [roles, setRoles] = useState<Role[]>([]);
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(20);
@@ -307,7 +306,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
           day={selectedDay}
         />
       )}
-      {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
       {isEditModalOpen && selectedShift && (
         <EditShift
           isOpen={isEditModalOpen}

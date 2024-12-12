@@ -14,7 +14,6 @@ const EditEmployeePage: React.FC = () => {
 
   const [employee, setEmployee] = useState<EmployeeData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -33,7 +32,6 @@ const EditEmployeePage: React.FC = () => {
 }, [id]);
 
   if (loading) return <LoadingSpinner wholeModal={false}/>;
-  if (error) return <div>Error: {error}</div>;
   if (!employee) return <div>Nie znaleziono danych pracownika</div>;
 
   return (

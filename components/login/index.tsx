@@ -15,7 +15,6 @@ import { patchChangePassword } from '@/services/passwordService';
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
   const [passwordPath, setPasswordPath] = useState<string>('');
@@ -162,7 +161,6 @@ const Login = () => {
           </Form>
         )}
       </Formik>
-      {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
       {isChangePasswordModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>

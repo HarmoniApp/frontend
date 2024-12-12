@@ -13,10 +13,9 @@ interface EditGroupProps {
     setSelectedUsers: (selectedUsers: ChatPartner[]) => void;
     selectedChat: ChatPartner | null;
     loading: (loading: boolean) => void;
-    setError: (errorMessage: string | null) => void;
 }
 
-const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, setSelectedUsers, selectedChat, loading, setError }) => {
+const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, setSelectedUsers, selectedChat, loading }) => {
 
     useEffect(() => {
         handleEditGroup();
@@ -92,7 +91,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
                 <h3 className={styles.title}>Edit group</h3>
-                <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true} setError={setError} />
+                <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true} />
                 <div className={styles.selectedUsers}>
                     {selectedUsers.map((user) => (
                         <div key={user.id} className={styles.selectedUser}>

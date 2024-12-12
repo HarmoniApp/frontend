@@ -10,10 +10,9 @@ interface SearchUserProps {
   handleSelectUser: (user: ChatPartner) => void;
   groupChat: boolean;
   setChatType?: (type: 'user' | 'group') => void
-  setError: (errorMessage: string | null) => void;
 }
 
-const SearchUser: React.FC<SearchUserProps> = ({ handleSelectUser, groupChat, setChatType, setError }) => {
+const SearchUser: React.FC<SearchUserProps> = ({ handleSelectUser, groupChat, setChatType }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<ChatPartner[]>([]);

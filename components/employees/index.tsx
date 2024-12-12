@@ -18,7 +18,6 @@ const EmployeesComponent: React.FC = () => {
   const [activeView, setActiveView] = useState<'tiles' | 'list'>('tiles');
   const [data, setData] = useState<PersonTile[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(21);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -30,7 +29,6 @@ const EmployeesComponent: React.FC = () => {
       await fetchFilterUsers(filters, pageNumber, pageSize, setData, setTotalRecords)
     } catch (error) {
       console.error('Error fetching data:', error);
-      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -54,16 +52,14 @@ const EmployeesComponent: React.FC = () => {
       </div>
       <div className={styles.employeesFilterAndListContainer}>
         <div className={styles.emplyeesFilterContainer}>
-          <EmployeeFilter onApplyFilters={(filters) => fetchFilteredData(filters, 1, rows)} setError={setError} />
+          <EmployeeFilter onApplyFilters={(filters) => fetchFilteredData(filters, 1, rows)} />
         </div>
         <div className={`${styles.employeesListcontainer} ${activeView === 'tiles' ? styles.tilesView : styles.listView}`}>
           {loading && <LoadingSpinner wholeModal={false}/>}
-          {!loading && error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessage} />}
-          {!loading && !error && data.length === 0 && <Card title="No Data" className={styles.noDataCard}><p>There is no data available at the moment.</p></Card>}
-          {!loading && !error && data.length > 0 && data.map((person, index) => (
-            <Tile key={index} person={person} view={activeView} setError={setError} />
+          {!loading && data.length === 0 && <Card title="No Data" className={styles.noDataCard}><p>There is no data available at the moment.</p></Card>}
+          {!loading && data.length > 0 && data.map((person, index) => (
+            <Tile key={index} person={person} view={activeView} />
           ))}
-          {error && <PrimeMessage severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
         </div>
       </div>
 

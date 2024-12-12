@@ -21,7 +21,6 @@ const AbsenceEmployer: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<number | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -38,7 +37,6 @@ const AbsenceEmployer: React.FC = () => {
     const statusId = event.target.value === 'clear' ? undefined : parseInt(event.target.value);
 
     setLoading(true);
-    setError(null);
     setSelectedStatus(statusId);
 
     try {
@@ -124,11 +122,10 @@ const AbsenceEmployer: React.FC = () => {
         </div>
 
         {loading && <LoadingSpinner wholeModal={false}/>}
-        {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
-        {!loading && !error && filteredAbsences.length === 0 && (
+        {!loading  && filteredAbsences.length === 0 && (
           <Card title="No Data" className={styles.noDataCard}><p>There is no data available at the moment.</p></Card>
         )}
-        {!loading && !error && filteredAbsences.length > 0 && (
+        {!loading && filteredAbsences.length > 0 && (
           <div className={
             viewMode === 'tiles'
               ? styles.cardsViewContainerTiles

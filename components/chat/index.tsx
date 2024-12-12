@@ -10,11 +10,9 @@ import Conversation from '@/components/chat/conversation';
 import Sidebar from '@/components/chat/sidebar';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { ProgressSpinner } from 'primereact/progressspinner';
-import { Message as PrimeMessage } from 'primereact/message';
 import { fetchLanguages } from "@/services/languageService";
 import LoadingSpinner from '../loadingSpinner';
-import { fetchAllChatPartners, fetchMessagesChatHistory, patchMarkMessagesAsReadInIndividualChat } from '@/services/chatService';
+import { fetchAllChatPartners, fetchMessagesChatHistory } from '@/services/chatService';
 
 const Chat = () => {
   const [chatPartners, setChatPartners] = useState<ChatPartner[]>([]);
@@ -28,7 +26,6 @@ const Chat = () => {
   const [selectedUsers, setSelectedUsers] = useState<ChatPartner[]>([]);
   const [userId, setUserId] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const storedUserId = sessionStorage.getItem('userId');
@@ -216,7 +213,6 @@ const Chat = () => {
               chatPartners={chatPartners}
               loading={setLoading}
               fetchChatHistory={fetchChatHistory}
-              setError={setError}
               userId={userId}
               setChatPartners={setChatPartners}
               fetchChatHistoryForm={fetchChatHistory}
@@ -233,7 +229,6 @@ const Chat = () => {
                   chatType={chatType}
                   selectedChat={selectedChat}
                   setIsEditGroupModalOpen={setIsEditGroupModalOpen}
-                  setError={setError}
                 />
 
                 <SendMessageForm
@@ -245,7 +240,6 @@ const Chat = () => {
                   loadChatPartners={loadChatPartners}
                   selectedLanguage={selectedLanguage}
                   loading={setLoading}
-                  setError={setError}
                 />
               </>
             )}
@@ -261,9 +255,8 @@ const Chat = () => {
           setSelectedUsers={setSelectedUsers}
           selectedChat={selectedChat}
           loading={setLoading}
-          setError={setError} />
+         />
       )}
-      {error && <PrimeMessage severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
       {loading && (
         // <div className={styles.loadingModalOverlay}>
         //   <div className={styles.loadingModalContent}>

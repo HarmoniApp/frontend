@@ -12,7 +12,6 @@ import Supervisor from '@/components/types/supervisor';
 import Department from '@/components/types/department';
 import { fetchLanguages } from "@/services/languageService";
 import { fetchRoles } from "@/services/roleService"
-import { Message } from 'primereact/message';
 import styles from './main.module.scss';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -42,7 +41,6 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   // const [isModalOpen, setIsModalOpen] = useState(false);
   // const [changedData, setChangedData] = useState<ChangedData>({});
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const fetchAllSupervisors = async () => {
     try {
@@ -594,14 +592,8 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
                 </div>
               </div>
             )} */}
-            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
-
             {modalIsOpenLoadning && (
-              // <div className={styles.loadingModalOverlay}>
-              //   <div className={styles.loadingModalContent}>
-              //     <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-              //   </div>
-              // </div>
+
               <LoadingSpinner />
             )}
           </Form>

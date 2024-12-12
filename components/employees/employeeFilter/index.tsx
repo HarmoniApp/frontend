@@ -10,10 +10,9 @@ import { fetchRoles } from "@/services/roleService"
 
 interface FilterEmployeeProps {
   onApplyFilters: (filters: { roles?: number[]; languages?: number[]; order?: string }) => void;
-  setError: (errorMessage: string | null) => void;
 }
 
-const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters, setError }) => {
+const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [languages, setLanguages] = useState<Language[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);

@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faUserMinus, faUserPen, faUserLock } from '@fortawesome/free-solid-svg-icons';
 import DeleteEmployeePopUp from '@/components/employees/employeeData/deleteEmployee';
@@ -10,10 +9,9 @@ import Department from '@/components/types/department';
 import Flag from 'react-flagkit';
 import styles from './main.module.scss';
 import NewPassword from './newPassword';
-import { Message } from 'primereact/message';
 import { fetchDepartments } from '@/services/departmentService';
 import Supervisor from '@/components/types/supervisor';
-import { fetchSimpleUser, fetchUserData } from '@/services/userService';
+import { fetchUserData } from '@/services/userService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { patchResetPassword } from '@/services/passwordService';
 
@@ -25,8 +23,6 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [modalNewPassword, setModalNewPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
   const router = useRouter();
 
   const openModalDeleteEmployee = () => setModalDeleteEmployee(true);
@@ -193,7 +189,6 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
           </div>
         </div>
       )}
-      {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
 
       {modalIsOpenLoadning && (
         // <div className={styles.loadingModalOverlay}>

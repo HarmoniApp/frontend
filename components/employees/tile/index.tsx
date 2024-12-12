@@ -7,10 +7,9 @@ import styles from './main.module.scss';
 interface LanguageTileProps {
   person: PersonTile;
   view: 'tiles' | 'list';
-  setError: (errorMessage: string | null) => void;
 }
 
-const Tile: React.FC<LanguageTileProps> = ({ person, view, setError }) => {
+const Tile: React.FC<LanguageTileProps> = ({ person, view }) => {
   const router = useRouter()
 
   const handleClick = () => {

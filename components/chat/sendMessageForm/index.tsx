@@ -17,10 +17,9 @@ interface SendMessageFormProps {
     loadChatPartners: (selectFirstPartner: boolean) => void;
     selectedLanguage: string;
     loading: (loading: boolean) => void;
-    setError: (errorMessage: string | null) => void;
 }
 
-const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSelectedChat, messages, setMessages, userId, loadChatPartners, selectedLanguage, loading, setError }) => {
+const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSelectedChat, messages, setMessages, userId, loadChatPartners, selectedLanguage, loading }) => {
 
     const handleSendMessage = async (content: string, language: string = '') => {
         loading(true);

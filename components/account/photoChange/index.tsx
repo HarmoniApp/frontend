@@ -5,7 +5,6 @@ import * as Yup from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faTimes } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
-import { Message } from 'primereact/message';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { patchPhoto } from '@/services/imageService';
 
@@ -16,7 +15,6 @@ interface PhotoChangeProps {
 const PhotoChange: React.FC<PhotoChangeProps> = ({ onClose }) => {
     const [loading, setLoading] = useState(false);
     const [fileName, setFileName] = useState<string | null>(null);
-    const [error, setError] = useState<string | null>(null);
     const initialValues = {
         file: null,
     };
@@ -93,7 +91,6 @@ const PhotoChange: React.FC<PhotoChangeProps> = ({ onClose }) => {
                     </Form>
                 )}
             </Formik>
-            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
             {loading && (
                 // <div className={styles.loadingModalOverlay}>
                 //     <div className={styles.loadingModalContent}>

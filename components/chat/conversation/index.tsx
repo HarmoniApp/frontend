@@ -12,10 +12,9 @@ interface ConversationProps {
     chatType: 'user' | 'group';
     selectedChat: ChatPartner;
     setIsEditGroupModalOpen: (open: boolean) => void;
-    setError: (errorMessage: string | null) => void;
 }
 
-const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType, selectedChat, setIsEditGroupModalOpen, setError }) => {
+const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType, selectedChat, setIsEditGroupModalOpen }) => {
 
     useEffect(() => {
         const chatMessagesContainer = document.querySelector(`.${styles.chatMessages}`);
@@ -23,8 +22,6 @@ const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType,
             chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
         }
     }, [messages]);
-
-
 
     return (
         <>

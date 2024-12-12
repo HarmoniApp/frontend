@@ -23,7 +23,6 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [modalCountdown, setModalCountdown] = useState(10);
     const [modalIsOpenLoading, setModalIsOpenLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -204,7 +203,6 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                     }}
                 </Formik>
             )}
-            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
         </div>
     );
 };

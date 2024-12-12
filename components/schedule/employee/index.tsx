@@ -4,7 +4,6 @@ import CalendarHeader from './calendarHeader';
 import CalendarDays from './calendarDays';
 import CalendarCells from './calendarCells';
 import WeekSchedule from '@/components/types/weekSchedule';
-import { Message } from 'primereact/message';
 import styles from './main.module.scss';
 import { fetchUserPublishedSchedule } from '@/services/scheduleService';
 interface ScheduleEmployeeProps {
@@ -14,7 +13,6 @@ interface ScheduleEmployeeProps {
 const ScheduleEmployee: React.FC<ScheduleEmployeeProps> = ({ userId }) => {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [weekSchedule, setWeekSchedule] = useState<WeekSchedule | null>(null);
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const loadData = async () => {
@@ -44,7 +42,6 @@ const ScheduleEmployee: React.FC<ScheduleEmployeeProps> = ({ userId }) => {
                     absences={weekSchedule.absences || []}
                 />
             )}
-            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
         </div>
     );
 };

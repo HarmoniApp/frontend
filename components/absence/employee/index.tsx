@@ -1,14 +1,10 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import Absence from '@/components/types/absence';
 import AbsenceRequest from '@/components/absence/employee/absenceRequest';
 import CancelConfirmation from './cancelConfirmation';
 import styles from './main.module.scss';
-import { Message } from 'primereact/message';
-import { fetchCsrfToken } from '@/services/csrfService';
 import { deleteAbsence, fetchAvailableAbsenceDays, fetchUserAbsences } from '@/services/absenceService';
-import AbsenceType from '@/components/types/absenceType';
 import LoadingSpinner from '@/components/loadingSpinner';
 
 interface AbsenceEmployeesProps {
@@ -25,7 +21,6 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
     const [selectedAbsenceStart, setSelectedAbsenceStart] = useState<string>('');
     const [selectedAbsenceEnd, setSelectedAbsenceEnd] = useState<string>('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const [availableAbsenceDays, setAvailableAbsenceDays] = useState<number | string>('Ładowanie...');
 
     useEffect(() => {
@@ -109,7 +104,6 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                     </div>
                 </div>
             )}
-            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
             {modalIsOpenCancelAbsence && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
