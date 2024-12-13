@@ -1,37 +1,7 @@
 @import '@/styles/main.scss';
 
-// .modalOverlayDeleteEmployee , .modalOverlayNewPassword {
-//     position: fixed;
-//     top: 0;
-//     left: 0;
-//     right: 0;
-//     bottom: 0;
-//     background: $black-transparency-05;
-//     @include displayDFJAG(flex, null, center, center);
-//     z-index: 1000;
-// }
-
-// .modalContentOfDeleteEmployee, .modalContentOfNewPassword {
-//     @include displayDFJAG(flex, column, null, null);
-//     border: 2px solid $main-colour;
-//     border-radius: 8px;
-//     background-color: $gray;
-//     text-align: center;
-//     width: auto;
-//     max-height: 80vh;
-//     overflow-y: auto;
-//     gap: 20px;
-//     padding: 20px;
-
-//     @include respond-to-md {
-//         width: 90%;
-//         max-height: 70vh;
-//     }
-// }
-
 .employeeDataContainerMain {
     @include displayDFJAG(flex, column, center, center, 20px);
-    // gap: 20px;
     width: 100%;
     margin: 20px 0;
 }
@@ -39,7 +9,6 @@
 .rowButtonContainer {
     @include displayDFJAG(flex, row, space-evenly, center, 20px);
     width: 90%;
-    // gap: 20px;
 
     @include respond-to-lg {
         @include displayDFJAG(flex, column, null, null);
@@ -72,7 +41,6 @@
             border-radius: 10px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            // gap: 10px;
 
             &:hover {
                 background-color: $main-colour-hover;
@@ -96,11 +64,9 @@
 .fullNameAndIdContainer {
     @include displayDFJAG(flex, row, center, stretch, 20px);
     width: 90%;
-    // gap: 20px;
 
     @include respond-to-lg {
         @include displayDFJAG(flex, column, null, null, 20px);
-        // gap: 20px;
 
         .fullNameColumnContainer,
         .employeeIdContainer {
@@ -123,7 +89,6 @@
         .surnameContainer {
             @include displayDFJAG(flex, row, center, center, 10px);
             height: auto;
-            // gap: 10px;
 
             .firstNameParagraph {
                 font-size: 20px;
@@ -164,7 +129,6 @@
         @include displayDFJAG(flex, row, center, center, 2%);
         flex: 1;
         width: 100%;
-        // gap: 2%;
         height: auto;
 
         @include respond-to-lg {
@@ -200,7 +164,6 @@
 .emplyeeDataContainer {
     @include displayDFJAG(flex, null, null, null, 20px);
     flex-wrap: wrap;
-    // gap: 20px;
     width: 90%;
 
     @include respond-to-lg {
@@ -213,7 +176,6 @@
 
     @include respond-to-md {
         @include displayDFJAG(flex, column, null, null, 10px);
-        // gap: 10px;
     }
 }
 
@@ -224,7 +186,6 @@
     background-color: $white;
     border-radius: 10px;
     box-shadow: 0 4px 8px $black-transparency-01;
-
 
     .residenceLabel,
     .supervisorLabel,
@@ -256,9 +217,7 @@
 
 .roleAndLanguagesContainer {
     @include displayDFJAG(flex, row, space-evenly, center, 20px);
-    // gap: 20px;
     width: 90%;
-
 
     @include respond-to-lg {
         @include displayDFJAG(flex, column, null, null);
@@ -270,7 +229,6 @@
 
     @include respond-to-md {
         @include displayDFJAG(flex, column, null, null, 10px);
-        // gap: 10px;
     }
 
     .columnContainer {
@@ -317,7 +275,6 @@
             .roleLabel {
                 @include displayDFJAG(flex, row, space-between, center, 10px);
                 text-align: center;
-                // gap: 10px;
                 background-color: $white-4;
                 border-radius: 5px;
                 box-shadow: 0px 2px 5px $black-transparency-01;
@@ -356,7 +313,6 @@
             .languageLabel {
                 @include displayDFJAG(flex, row, space-between, center, 10px);
                 text-align: center;
-                // gap: 10px;
                 background-color: $white-4;
                 border-radius: 5px;
                 box-shadow: 0px 2px 5px $black-transparency-01;

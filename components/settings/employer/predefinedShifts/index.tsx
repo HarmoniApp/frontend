@@ -108,7 +108,6 @@ const PredefinedShifts = () => {
       }),
   });
 
-
   return (
     <div className={styles.predefinedShiftsContainerMain}>
       <div className={styles.showShiftMapContainer}>
@@ -286,7 +285,6 @@ const PredefinedShifts = () => {
               <div className={styles.modalOverlay}>
                 <div className={styles.modalContent}>
                   <AddNotification onClose={() => setIsAddModalOpen(false)} info={addedPredefineShiftName} />
-                  {/* zielony panel */}
                 </div>
               </div>
             )}

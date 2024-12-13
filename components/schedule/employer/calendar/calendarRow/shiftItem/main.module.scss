@@ -31,7 +31,6 @@
 
     .absence {
         @include displayDFJAG(flex, row, center, center, 0.5rem);
-        // gap: 0.5rem;
         height: 7vh;
         width: 100%;
         text-align: center;

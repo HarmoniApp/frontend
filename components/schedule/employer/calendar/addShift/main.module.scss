@@ -2,7 +2,6 @@
 
 .editShiftForm {
   @include displayDFJAG(flex, column, null, null, 20px);
-  // gap: 20px;
   width: 100%;
 }
 
@@ -40,7 +39,6 @@
     .fullNameParagraphContainer,
     .dayParagraphContainer {
       @include displayDFJAG(flex, null, null, null, 5px);
-      // gap: 5px;
       color: $main-colour;
     }
 
@@ -59,7 +57,6 @@
   .hourInfoContainer {
     @include displayDFJAG(flex, row, space-between, center, 10px);
     width: 100%;
-    // gap: 10px;
 
     .hourInfoLabel {
       font-size: large;
@@ -76,7 +73,6 @@
   .hoursConstainer {
     @include displayDFJAG(flex, row, space-between, flex-start, 10px);
     width: 100%;
-    // gap: 10px;
 
     .startHourLabel,
     .endHourLabel {
@@ -151,7 +147,6 @@
 
   .addShiftButton {
     @include displayDFJAG(flex, row, center, center, 10px);
-    // gap: 10px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -177,7 +172,6 @@
 
   .closeButton {
     @include displayDFJAG(flex, row, center, center, 10px);
-    // gap: 10px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -247,7 +241,6 @@
   color: $font-dark-colour;
   transition: color 0.3s ease;
   @include displayDFJAG(flex, null, space-between, center, 10px);
-  // gap: 10px;
 }
 
 .errorMessage {

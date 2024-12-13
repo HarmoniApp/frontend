@@ -111,5 +111,4 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
         </>
     );
 };
-
 export default Sidebar;

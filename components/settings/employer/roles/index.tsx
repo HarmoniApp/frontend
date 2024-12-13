@@ -232,7 +232,6 @@ const Roles = () => {
               <div className={styles.modalOverlay}>
                 <div className={styles.modalContent}>
                   <AddNotification onClose={() => setIsAddModalOpen(false)} info={addedRoleName} />
-                  {/* odnosi sie do potwierdzenia, trzeba zamienic na zielony panel */}
                 </div>
               </div>
             )}

@@ -11,7 +11,6 @@ import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import LoadingSpinner from '../loadingSpinner';
 import { fetchFilterUsers } from '@/services/userService';
-import ActionStatusPopUp from '../actionStatusPopUp';
 
 const EmployeesComponent: React.FC = () => {
   const [activeView, setActiveView] = useState<'tiles' | 'list'>('tiles');
@@ -20,14 +19,7 @@ const EmployeesComponent: React.FC = () => {
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(21);
   const [totalRecords, setTotalRecords] = useState(0);
-  const [actionStatus, setActionStatus] = useState<{ type: "success" | "error"; msg: string } | null>(null);
-  const [isPopUpVisible, setPopUpVisible] = useState(false);
-
-  const showPopUp = (type: "success" | "error", msg: string) => {
-    setActionStatus({ type, msg });
-    setPopUpVisible(true);
-    setTimeout(() => setPopUpVisible(false), 5000);
-  };
+  
 
   const fetchFilteredData = async (filters: { roles?: number[]; languages?: number[]; order?: string; query?: string } = {}, pageNumber: number = 1, pageSize: number = 21) => {
     setLoading(true);
@@ -55,7 +47,7 @@ const EmployeesComponent: React.FC = () => {
   return (
     <div className={styles.employeesContainerMain}>
       <div className={styles.emplyeesBarContainer}>
-        <EmployeeBar setActiveView={setActiveView} activeView={activeView} showGreenPanel={showPopUp}/>
+        <EmployeeBar setActiveView={setActiveView} activeView={activeView}/>
       </div>
       <div className={styles.employeesFilterAndListContainer}>
         <div className={styles.emplyeesFilterContainer}>
@@ -76,13 +68,8 @@ const EmployeesComponent: React.FC = () => {
         rowsPerPageOptions={[21, 49, 70]}
         onPageChange={onPageChange}
       />
-      <ActionStatusPopUp
-        type={actionStatus?.type || "success"}
-        msg={actionStatus?.msg || ""}
-        isVisible={isPopUpVisible}
-      />
+      
     </div>
   );
 };
-
 export default EmployeesComponent;

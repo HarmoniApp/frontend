@@ -11,28 +11,26 @@ import LoadingSpinner from '@/components/loadingSpinner';
 const EditEmployeePage: React.FC = () => {
   const router = useRouter();
   const { id } = useParams();
-
   const [employee, setEmployee] = useState<EmployeeData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
-        if (!id) {
-            setLoading(false);
-            return;
-        }
-        if (typeof id === 'string') {
-            await fetchUserData(id, setEmployee);
-            setLoading(false);
-        } else {
-            setLoading(false);
-        }
+      if (!id) {
+        setLoading(false);
+        return;
+      }
+      if (typeof id === 'string') {
+        await fetchUserData(id, setEmployee);
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
     };
-
     loadData();
-}, [id]);
+  }, [id]);
 
-  if (loading) return <LoadingSpinner wholeModal={false}/>;
+  if (loading) return <LoadingSpinner wholeModal={false} />;
   if (!employee) return <div>Nie znaleziono danych pracownika</div>;
 
   return (

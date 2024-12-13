@@ -14,7 +14,6 @@ import Supervisor from '@/components/types/supervisor';
 import { fetchUserData } from '@/services/userService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { patchResetPassword } from '@/services/passwordService';
-import ActionStatusPopUp from '@/components/actionStatusPopUp';
 
 const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   const [employee, setEmployee] = useState<EmployeeData | null>();
@@ -25,14 +24,6 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   const [newPassword, setNewPassword] = useState('');
   const [modalNewPassword, setModalNewPassword] = useState(false);
   const router = useRouter();
-  const [actionStatus, setActionStatus] = useState<{ type: "success" | "error"; msg: string } | null>(null);
-  const [isPopUpVisible, setPopUpVisible] = useState(false);
-
-  const showPopUp = (type: "success" | "error", msg: string) => {
-    setActionStatus({ type, msg });
-    setPopUpVisible(true);
-    setTimeout(() => setPopUpVisible(false), 5000);
-  };
 
   useEffect(() => {
     if (userId) {
@@ -58,7 +49,6 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
     try {
       await patchResetPassword(userId, setNewPassword);
       setModalNewPassword(true);
-      showPopUp("success", "Pomyślnie zresetowano hasło!");
     } catch (error) {
       console.error('Error while reseting password: ', error);
     } finally {
@@ -179,7 +169,6 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
               firstName={employee.firstname}
               surname={employee.surname}
               onClose={() => setModalDeleteEmployee(false)}
-              showGreenPanel={showPopUp}
             />
           </div>
         </div>
@@ -197,11 +186,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
         </div>
       )}
       {loading && <LoadingSpinner />}
-      <ActionStatusPopUp
-        type={actionStatus?.type || "success"}
-        msg={actionStatus?.msg || ""}
-        isVisible={isPopUpVisible}
-      />
+      
     </div>
   );
 }

@@ -1,34 +1,5 @@
 @import '@/styles/main.scss';
 
-// .modalOverlayOfAdd, .modalOverlayOfDelete { 
-//     position: fixed;
-//     top: 0;
-//     left: 0;
-//     right: 0;
-//     bottom: 0;
-//     background: $black-transparency-05;
-//     @include displayDFJAG(flex, null, center, center);
-//     z-index: 1000;
-// }
-
-// .modalContentOfAdd, .modalContentOfDelete {
-//     @include displayDFJAG(flex, column, null, null);
-//     border: 2px solid $main-colour;
-//     border-radius: 8px;
-//     background-color: $gray;
-//     text-align: center;
-//     width: auto;
-//     max-height: 80vh;
-//     overflow-y: auto;
-//     gap: 20px;
-//     padding: 20px;
-
-//     @include respond-to-md {
-//         width: 90%;
-//         max-height: 70vh;
-//     }
-// }
-
 .contractTypesContainerMain {
     background-color: $gray;
     color: $font-light-colour;
@@ -37,7 +8,6 @@
     @include displayDFJAG(flex, column, null, null, 15px);
     width: 100%;
     height: 100%;
-    // gap: 15px;
 }
 
 .showContractMapContainer {
@@ -45,26 +15,22 @@
     grid-template-rows: minmax(auto, 1fr);
     grid-auto-rows: 1fr;
 
-
     .showContractContainerMain {
         @include displayDFJAG(flex, column, null, null, 15px);
         height: 100%;
         padding: 10px;
         background-color: $white-3;
         border-radius: 5px;
-        // gap: 15px;
 
         .showContractContainer {
             @include displayDFJAG(flex, null, space-between, center, 15px);
             height: 100%;
-            // gap: 15px;
 
             .contractInfoContainer {
                 @include displayDFJAG(flex, row, space-between, center, 10px);
                 text-align: center;
                 padding: 0;
                 width: 100%;
-                // gap: 10px;
 
                 .contractNameParagraph,
                 .contractDaysParagraph {
@@ -89,7 +55,6 @@
 
             .editAndRemoveButtonContainer {
                 @include displayDFJAG(flex, row, null, null, 10px);
-                // gap: 10px;
 
                 .contractDaysInput {
                     border: 2px solid $font-dark-colour;
@@ -150,7 +115,6 @@
 
 .addContainer {
     @include displayDFJAG(flex, row, null, center, 10px);
-    // gap: 10px;
     margin: 10px 0 0 0;
 
     .addContractDaysInput {

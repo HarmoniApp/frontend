@@ -41,5 +41,4 @@ const CustomButton: React.FC<CustomButtonProps> = ({ icon, writing, action, addi
         </button>
     );
 };
-
 export default CustomButton;

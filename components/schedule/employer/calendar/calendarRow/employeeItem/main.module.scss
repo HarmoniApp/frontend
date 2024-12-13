@@ -13,13 +13,11 @@
 
     @include respond-to-md {
         @include displayDFJAG(flex, row, null, null, 10px);
-        // gap: 10px;
     }
 
     .fullNameContainer {
         @include displayDFJAG(flex, row, center, center, 5px);
         text-align: center;
-        // gap: 5px;
         cursor: pointer;
 
         .employeeItemLabel {

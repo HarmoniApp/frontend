@@ -88,7 +88,6 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
     });
   };
 
-
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       const filters: { roles?: number[]; languages?: number[]; order?: string; query?: string } = {};

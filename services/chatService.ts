@@ -388,4 +388,3 @@ export const deleteGroup = async (
         console.error("Error deleting group:", error);
     }
 };
-

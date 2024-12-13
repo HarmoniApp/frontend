@@ -1,32 +1,7 @@
 @import '@/styles/main.scss';
 
-// .editShiftModalOverlay {
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   right: 0;
-//   bottom: 0;
-//   background: $black-transparency-05;
-//   @include displayDFJAG(flex, null, center, center);
-//   z-index: 1000;
-// }
-
-// .editShiftModalContent {
-//   @include displayDFJAG(flex, column, null, null);
-//   border: 2px solid $main-colour;
-//   border-radius: 8px;
-//   background-color: $gray;
-//   text-align: center;
-//   width: auto;
-//   max-height: 80vh;
-//   overflow-y: auto;
-//   gap: 20px;
-//   padding: 20px;
-// }
-
 .editShiftForm {
   @include displayDFJAG(flex, column, null, null, 20px);
-  // gap: 20px;
   width: 100%;
 }
 
@@ -63,7 +38,6 @@
     .fullNameParagraphContainer,
     .dayParagraphContainer {
       @include displayDFJAG(flex, null, null, null, 5px);
-      // gap: 5px;
       color: $main-colour;
     }
 
@@ -82,7 +56,6 @@
   .hourInfoContainer {
     @include displayDFJAG(flex, row, flex-start, center, 10px);
     width: 100%;
-    // gap: 10px;
 
     .hourInfoLabel {
       font-size: large;
@@ -99,7 +72,6 @@
   .hoursContainer {
     @include displayDFJAG(flex, row, space-between, flex-start, 10px);
     width: 100%;
-    // gap: 10px;
 
     .startHourLabel,
     .endHourLabel {
@@ -169,11 +141,9 @@
 .buttonContainer {
   @include displayDFJAG(flex, null, space-between, center, 15px);
   width: 100%;
-  // gap: 15px;
 
   .addShiftButton {
     @include displayDFJAG(flex, row, center, center, 10px);
-    // gap: 10px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -199,7 +169,6 @@
 
   .closeButton {
     @include displayDFJAG(flex, row, center, center, 10px);
-    // gap: 10px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -225,7 +194,6 @@
 
   .deleteShiftButton {
     @include displayDFJAG(flex, row, center, center, 10px);
-    // gap: 10px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -295,7 +263,6 @@
   color: $font-dark-colour;
   transition: color 0.3s ease;
   @include displayDFJAG(flex, null, space-between, center, 10px);
-  // gap: 10px;
 }
 
 .errorMessage {
@@ -313,18 +280,15 @@
   width: 100%;
   padding: 10px;
   box-sizing: border-box;
-  // gap: 20px;
 }
 
 .headerContainer {
   @include displayDFJAG(flex, column, center, center, 5px);
   width: 100%;
   margin: 0;
-  // gap: 5px;
 
   .infoContainer {
     @include displayDFJAG(flex, row, center, center, 5px);
-    // gap: 5px;
 
     .headerLabel {
       text-align: center;

@@ -10,7 +10,6 @@ interface DeleteConfirmationProps {
 }
 
 const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({ onClose, onDelete, info }) => {
-
     const handleDelete = () => {
         onDelete();
         onClose();

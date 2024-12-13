@@ -14,16 +14,14 @@
     padding: 20px;
     border-bottom: 1px solid $gray-powder;
 
-    .info{
+    .info {
         color: $main-colour;
         font-size: 1.5em;
         cursor: pointer;
     }
 }
 
-
-
-.userChatHeader{
+.userChatHeader {
     @include displayDFJAG(flex, row, null, center);
     padding: 20px;
     border-bottom: 1px solid $gray-powder;
@@ -53,7 +51,7 @@
     &.selfMessage {
         @include displayDFJAG(flex, null, flex-end, null);
 
-        .avatarAndNameContainer{
+        .avatarAndNameContainer {
             @include displayDFJAG(none, null, nul, null);
         }
 
@@ -95,7 +93,6 @@
 
 .messageContentContainer {
     @include displayDFJAG(flex, column, null, null, 8px);
-    // gap: 8px;
 
     .messageContent {
         padding: 10px;
@@ -104,7 +101,6 @@
         white-space: normal;
         word-wrap: break-word;
         overflow-wrap: break-word;
-   
     }
 
     .timeAndReadMessagesContainer {

@@ -38,7 +38,7 @@ const CalendarCells: React.FC<CalendarCellsProps> = ({ currentMonth, shifts, abs
             return <span className={styles.daySpan}>{day}</span>;
         }
     };
-    
+
     for (let i = 0; i < startDay; i++) {
         calendarCells.push(<div className={styles.emptyCell} key={`empty-${i}`} />);
     }
@@ -49,7 +49,7 @@ const CalendarCells: React.FC<CalendarCellsProps> = ({ currentMonth, shifts, abs
     };
 
     for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day +1).toISOString().split('T')[0];
+        const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day + 1).toISOString().split('T')[0];
         const dayShifts = shifts.filter((shift) => shift.start.startsWith(date));
         const dayAbsences = absences.filter((absence) => isDateInRange(date, absence.start, absence.end));
 
@@ -67,7 +67,6 @@ const CalendarCells: React.FC<CalendarCellsProps> = ({ currentMonth, shifts, abs
             </div>
         );
     }
-
     return <div className={styles.calendarCells}>{calendarCells}</div>;
 };
 export default CalendarCells;

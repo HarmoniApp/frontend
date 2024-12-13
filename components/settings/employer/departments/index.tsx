@@ -403,7 +403,6 @@ const Departments = () => {
                             <div className={styles.addItemContainer}>
                                 <label className={styles.inputLabel}>Numer budynku
                                     <ErrorMessage name="building_number" component="div" className={styles.errorMessage} />
-
                                 </label>
                                 <Field
                                     name="building_number"
@@ -438,7 +437,6 @@ const Departments = () => {
                                     <AddNotification
                                         onClose={() => setIsAddModalOpen(false)}
                                         info={addedDepartmentName} />
-                                    {/* zielony modal */}
                                 </div>
                             </div>
                         )}

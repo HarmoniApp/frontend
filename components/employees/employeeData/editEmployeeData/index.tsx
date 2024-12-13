@@ -519,7 +519,6 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
                 </button>
               </div>
             </div>
-
             {/* {isModalOpen && (
               <div className={styles.modalOverlay}>
                 <div className={styles.modalContent}>

@@ -74,5 +74,4 @@ const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType,
         </>
     );
 };
-
 export default Conversation;

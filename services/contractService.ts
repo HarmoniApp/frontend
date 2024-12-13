@@ -77,7 +77,6 @@ export const putContractType = async (
     }
 };
 
-
 export const deleteContractType = async (
     contractId: number,
     setContracts: (contracts: Contract[]) => void): Promise<void> => {

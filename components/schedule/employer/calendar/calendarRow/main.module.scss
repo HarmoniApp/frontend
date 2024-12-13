@@ -2,12 +2,10 @@
 
 .calendarRowContainerMain {
   @include displayDFJAG(flex, null, null, center, 30px);
-  // gap: 30px;
   margin: 0 0 15px 0;
 
   @include respond-to-md {
     @include displayDFJAG(flex, column, null, null, 15px);
-    // gap: 15px;
   }
 
   .employeeItemContainer {
@@ -23,12 +21,10 @@
   .shiftItemContainer {
     flex: 4;
     @include displayDFJAG(flex, null, null, null, 15px);
-    // gap: 15px;
 
     @include respond-to-md {
       @include displayDFJAG(flex, row, null, null, 10px);
       width: 100%;
-      // gap: 10px;
     }
 
     .shiftsItems {

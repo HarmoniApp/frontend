@@ -2,7 +2,6 @@
 
 .chatContainer {
   @include displayDFJAG(flex, row, center, null, 20px);
-  // gap:20px;
   height: 78vh;
   width: 96%;
   text-align: center;
@@ -15,7 +14,6 @@
   background-color: $white;
   border-radius: 10px;
   box-shadow: 0 4px 8px $black-transparency-01;
-  // gap:20px;
   flex:1;
 }
 

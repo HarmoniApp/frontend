@@ -55,5 +55,4 @@ const SearchUser: React.FC<SearchUserProps> = ({ handleSelectUser, groupChat, se
     </div>
   );
 };
-
 export default SearchUser;

@@ -4,20 +4,20 @@
     background-color: $gray;
     @include displayDFJAG(flex, column, center, center);
     width: 100%;
-    padding:20px 40px;
+    padding: 20px 40px;
     box-sizing: border-box;
-    gap:10px;
+    gap: 10px;
 }
 
-.headerContainer{
+.headerContainer {
     @include displayDFJAG(flex, column, center, center);
     text-align: center;
     width: 100%;
     margin: 0;
 
-    .headerParagraph{
+    .headerParagraph {
         text-align: center;
-        gap:2px;
+        gap: 2px;
         color: $font-light-colour;
         margin: 0;
     }
@@ -34,7 +34,6 @@
     @include displayDFJAG(flex, column, center, center, 5px);
     width: 100%;
     margin: 0;
-    // gap: 5px;
 
     .counterParagraph {
         @include displayDFJAG(flex, null, null, center);
@@ -48,7 +47,6 @@
         text-align: center;
         color: $font-light-colour;
         margin: 0;
-        // gap: 3px;
 
         .highlightTimeLabel {
             color: $main-colour;
@@ -64,10 +62,9 @@
     }
 }
 
-.buttonConianer{
+.buttonConianer {
     @include displayDFJAG(flex, row, space-evenly, center, 20px);
     width: 100%;
-    // gap: 20px;
 
     .employeeInfo {
         text-align: center;
@@ -78,7 +75,7 @@
         border-radius: 4px;
         cursor: pointer;
         transition: background-color 0.3s ease;
-        
+
         &:hover {
             background-color: $main-colour-hover;
         }

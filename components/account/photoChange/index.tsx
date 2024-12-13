@@ -36,7 +36,6 @@ const PhotoChange: React.FC<PhotoChangeProps> = ({ onClose }) => {
             ),
     });
 
-
     const handleSubmit = async (values: { file: File | null }) => {
         setLoading(true);
         try {
@@ -92,15 +91,9 @@ const PhotoChange: React.FC<PhotoChangeProps> = ({ onClose }) => {
                 )}
             </Formik>
             {loading && (
-                // <div className={styles.loadingModalOverlay}>
-                //     <div className={styles.loadingModalContent}>
-                //         <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                //     </div>
-                // </div>
                 <LoadingSpinner />
             )}
         </div>
     );
 };
-
 export default PhotoChange;

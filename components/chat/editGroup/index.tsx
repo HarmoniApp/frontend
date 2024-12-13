@@ -115,5 +115,4 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
         </div>
     );
 };
-
 export default EditGroup;

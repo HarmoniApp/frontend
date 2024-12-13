@@ -45,5 +45,4 @@ const AddEmployeeNotification: React.FC<AddEmployeeConfirmationProps> = ({ first
     </div>
   );
 };
-
 export default AddEmployeeNotification;

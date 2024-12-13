@@ -63,9 +63,9 @@ const Chat = () => {
       connectHeaders: {
         Authorization: `Bearer ${tokenJWT}`,
       },
-      debug: (str) => console.log(str),
+      // debug: (str) => console.log(str),
       onConnect: () => {
-        console.log('Connected to STOMP WebSocket');
+        // console.log('Connected to STOMP WebSocket');
 
         if (chatType === 'user') {
           stompClient.subscribe(`/client/messages/${userId}`, (message) => {

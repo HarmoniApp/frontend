@@ -11,7 +11,6 @@ import { Card } from 'primereact/card';
 import { fetchAbsences, fetchAbsencesByStatus, fetchAbsencesStatus } from '@/services/absenceService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { fetchSimpleUsersWithPagination } from '@/services/userService';
-import ActionStatusPopUp from '@/components/actionStatusPopUp';
 
 const AbsenceEmployer: React.FC = () => {
   const [absences, setAbsences] = useState<Absence[]>([]);
@@ -21,14 +20,7 @@ const AbsenceEmployer: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<number | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
-  const [actionStatus, setActionStatus] = useState<{ type: "success" | "error"; msg: string } | null>(null);
-  const [isPopUpVisible, setPopUpVisible] = useState(false);
-
-  const showPopUp = (type: "success" | "error", msg: string) => {
-    setActionStatus({ type, msg });
-    setPopUpVisible(true);
-    setTimeout(() => setPopUpVisible(false), 5000);
-  };
+  
 
   useEffect(() => {
     const loadData = async () => {
@@ -140,19 +132,14 @@ const AbsenceEmployer: React.FC = () => {
               : styles.cardsViewContainerList
           }>
             {filteredAbsences.map(absence => (
-              <AbsenceCard key={absence.id} absence={absence} onStatusUpdate={() => fetchAbsences(setAbsences)} showGreenPanel={showPopUp}/>
+              <AbsenceCard key={absence.id} absence={absence} onStatusUpdate={() => fetchAbsences(setAbsences)}/>
             ))}
           </div>
         )}
       </div>
       {loading && <LoadingSpinner wholeModal={false}/>}
-      <ActionStatusPopUp
-        type={actionStatus?.type || "success"}
-        msg={actionStatus?.msg || ""}
-        isVisible={isPopUpVisible}
-      />
+      
     </div>
   );
 };
-
 export default AbsenceEmployer;

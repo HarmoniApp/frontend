@@ -6,14 +6,12 @@
     width: 100%;
     padding: 10px 40px;
     box-sizing: border-box;
-    // gap: 20px;
 }
 
 .headerContainer {
     @include displayDFJAG(flex, row, center, center, 5px);
     width: 100%;
     margin: 0;
-    // gap: 5px;
 
     .headerLabel {
         text-align: center;
@@ -33,7 +31,6 @@
     @include displayDFJAG(flex, column, center, center, 5px);
     width: 100%;
     margin: 0;
-    // gap: 5px;
 
     .counterParagraph {
         @include displayDFJAG(flex, null, null, center);
@@ -47,7 +44,6 @@
         text-align: center;
         color: $font-light-colour;
         margin: 0;
-        // gap: 3px;
 
         .highlightTimeLabel {
             color: $main-colour;

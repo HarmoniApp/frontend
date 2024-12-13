@@ -14,7 +14,6 @@ import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import '@/styles/components/pagination.css';
 import LoadingSpinner from '@/components/loadingSpinner';
-import ActionStatusPopUp from '@/components/actionStatusPopUp';
 import { deleteShift, fetchFilterUsersInSchedule, fetchUserScheduleWithAbsences, patchPublishShifts, postShift, putShift } from '@/services/scheduleService';
 
 interface CalendarRowProps {
@@ -43,14 +42,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const [pageSize, setPageSize] = useState(20);
   const [totalPages, setTotalPages] = useState(0);
 
-  const [actionStatus, setActionStatus] = useState<{ type: "success" | "error"; msg: string } | null>(null);
-  const [isPopUpVisible, setPopUpVisible] = useState(false);
-
-  const showPopUp = (type: "success" | "error", msg: string) => {
-    setActionStatus({ type, msg });
-    setPopUpVisible(true);
-    setTimeout(() => setPopUpVisible(false), 5000);
-  };
+  
 
   
 
@@ -309,7 +301,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
           onClose={() => setIsAddModalOpen(false)}
           onAddShift={(shiftData) => {
             handleAddShift(shiftData);
-            showPopUp("success", "Zmiana została dodana pomyślnie!");
           }}
           user={selectedUser}
           day={selectedDay}
@@ -321,11 +312,9 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
           onClose={() => setIsEditModalOpen(false)}
           onEditShift={(shiftData) => {
             handleEditShift(shiftData);
-            showPopUp("success", "Zmiana została zaktualizowana pomyślnie!");
           }}
           onDeleteShift={(shiftId, userId) => {
             handleDeleteShift(shiftId, userId);
-            showPopUp("success", "Zmiana została usunięta pomyślnie!");
           }}
           shift={selectedShift}
           firstName={users.find(user => user.id === selectedShift.user_id)?.firstname || 'Imie'}
@@ -333,11 +322,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
           setLoading={setLoading}
         />
       )}
-      <ActionStatusPopUp
-        type={actionStatus?.type || "success"}
-        msg={actionStatus?.msg || ""}
-        isVisible={isPopUpVisible}
-      />
     </div>
   );
 });

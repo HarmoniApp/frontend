@@ -74,5 +74,4 @@ const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setCh
     </Formik>
   );
 };
-
 export default CreateGroupChatForm;

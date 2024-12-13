@@ -2,7 +2,6 @@
 
 .newGroupForm {
     @include displayDFJAG(flex, row, center, center, 20px);
-    // gap: 20px;
     padding: 20px;
 
     .groupNameInput{

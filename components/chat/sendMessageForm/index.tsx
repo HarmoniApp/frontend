@@ -90,5 +90,4 @@ const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSele
         </Formik>
     );
 };
-
 export default SendMessageForm;

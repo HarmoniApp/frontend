@@ -10,15 +10,12 @@ import styles from './main.module.scss';
 import { fetchSimpleUser } from '@/services/userService';
 import { fetchAbsenceType, patchAbsence } from '@/services/absenceService';
 import LoadingSpinner from '@/components/loadingSpinner';
-import { tree } from 'next/dist/build/templates/app-page';
-
 interface AbsenceCardProps {
     absence: Absence;
     onStatusUpdate: () => void;
-    showGreenPanel: (type: "success" | "error", msg: string) => void;
 }
 
-const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpdate, showGreenPanel }) => {
+const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpdate }) => {
     const [absenceType, setAbsenceType] = useState<AbsenceType | null>(null);
     const [user, setUser] = useState<SimpleUser | null>(null);
     const [modalIsOpenCancelAbsence, setModalIsOpenCancelAbsence] = useState(false);
@@ -56,7 +53,6 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
         try {
             await updateAbsenceStatus(absence.id, 4);
             onStatusUpdate();
-            showGreenPanel("success", "Pomyślnie odrzucono wniosek o urlop!");
         } catch (error) {
             console.error('Error rejecting absence:', error);
         }
@@ -66,7 +62,6 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
         try {
             await updateAbsenceStatus(absence.id, 2);
             onStatusUpdate();
-            showGreenPanel("success", "Pomyślnie zaakceptowano wniosek o urlop!");
         } catch (error) {
             console.error('Error approving absence:', error);
         }
@@ -180,15 +175,9 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                 </div>
             )}
             {loading && (
-                // <div className={styles.loadingModalOverlay}>
-                //     <div className={styles.loadingModalContent}>
-                //         <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-                //     </div>
-                // </div>
                 <LoadingSpinner />
             )}
         </div>
     );
 };
-
 export default AbsenceCardEmployer;

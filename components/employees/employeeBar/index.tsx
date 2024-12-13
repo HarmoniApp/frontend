@@ -6,19 +6,19 @@ import { downloadUsersPDF } from '@/services/pdfService';
 import { downloadUsersXLSX } from '@/services/xlsxService';
 import CustomButton from '@/components/customButton';
 import styles from './main.module.scss';
-import ActionStatusPopUp from '@/components/actionStatusPopUp';
+
 interface EmployeeBarProps {
   setActiveView: (view: 'tiles' | 'list') => void;
   activeView: 'tiles' | 'list';
-  showGreenPanel: (type: "success" | "error", msg: string) => void;
 }
 
-const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView, showGreenPanel }) => {
+const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const router = useRouter();
 
   const onAddEmployee = () => {
     router.push('/employees/user/add');
+    //happy path
   };
 
   const importEmployee = () => {
@@ -32,7 +32,6 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView, sh
     setDropdownVisible(false);
 
     const confirmDownload = window.confirm(`Czy na pewno chcesz pobrać plik w formacie ${format.toUpperCase()}?`);
-    showGreenPanel("success", "Pomyślnie pobrano plik!");
 
     if (!confirmDownload) {
       return;
@@ -48,7 +47,7 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView, sh
   return (
     <div className={styles.employeeBarContainerMain}>
       <div className={styles.actionContainer}>
-        <CustomButton icon="userPlus" writing="dodaj pracownika" action={() => {onAddEmployee(), showGreenPanel}} />
+        <CustomButton icon="userPlus" writing="dodaj pracownika" action={onAddEmployee} />
         <CustomButton icon="cloudArrowUp" writing="importuj" action={importEmployee} />
         <div className={styles.exportDropdownContainer}>
           <CustomButton icon="cloudArrowDown" writing="exportuj" action={toggleDropdown} />

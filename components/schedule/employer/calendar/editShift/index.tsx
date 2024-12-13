@@ -245,5 +245,4 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
     </div>
   );
 };
-
 export default EditShift;

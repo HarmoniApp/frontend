@@ -7,11 +7,9 @@
 .calendarHeaderContainerMain {
   @include displayDFJAG(flex, null, null, center, 30px);
   width: 100%;
-  // gap: 30px;
 
   @include respond-to-md {
     @include displayDFJAG(flex, column, null, null, 15px);
-    // gap: 15px;
   }
 
   .searchContainer {
@@ -51,13 +49,11 @@
   .calendarDayContainer {
     flex: 4;
     @include displayDFJAG(flex, null, null, null, 15px);
-    // gap: 15px;
     margin: 0;
 
     @include respond-to-md {
       @include displayDFJAG(flex, row, null, null, 10px);
       width: 100%;
-      // gap: 10px;
     }
 
     .dayContainer {
