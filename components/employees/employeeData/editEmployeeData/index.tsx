@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import Flag from 'react-flagkit';
-import EditEmployeeNotificationPopUp from '@/components/employees/employeeData/editEmployeeData/editEmployeeDataNotification';
 import EmployeeDataWorkAdressOnlyId from '@/components/types/employeeDataWorkAdressOnlyId';
 import Role from '@/components/types/role';
 import Contract from '@/components/types/contract';
@@ -198,13 +197,11 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   });
 
   const handleEditUser = async (values: typeof initialValues) => {
-    setLoading(true);
     try {
+      onCloseEdit();
       await patchUser(values);
     } catch (error) {
       console.error('Error while editing user:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -519,19 +516,6 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
                 </button>
               </div>
             </div>
-            {/* {isModalOpen && (
-              <div className={styles.modalOverlay}>
-                <div className={styles.modalContent}>
-                  <EditEmployeeNotificationPopUp
-                    onClose={() => {
-                      setIsModalOpen(false);
-                      onCloseEdit();
-                    }}
-                    onCloseEditData={onCloseEdit}
-                  />
-                </div>
-              </div>
-            )} */}
           </Form>
         )}
       </Formik>

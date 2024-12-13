@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPen, faCheck, faXmark, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import AddNotification from '../popUps/addNotification';
 import DeleteConfirmation from '../popUps/deleteConfirmation';
 import * as Yup from "yup";
 import classNames from "classnames";
@@ -16,9 +15,7 @@ const Departments = () => {
     const [departments, setDepartments] = useState<DepartmentAddress[]>([]);
     const [editingDepartmentId, setEditingDepartmentId] = useState<number | null>(null);
     const [noChangesError, setNoChangesError] = useState<string | null>(null);
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [addedDepartmentName, setAddedDepartmentName] = useState<string>('');
     const [deleteDepartmentId, setDeleteDepartmentId] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
 
@@ -38,38 +35,29 @@ const Departments = () => {
     }, []);
 
     const handleAddDepartment = async (values: DepartmentAddress, { resetForm }: any) => {
-        setLoading(true);
         try {
-            postDepartment(values, setDepartments, setAddedDepartmentName)
-            setIsAddModalOpen(true);
+            postDepartment(values, setDepartments)
             resetForm();
         }
         catch (error) {
             console.error("Error adding department:", error);
-        } finally {
-            setLoading(false);
-        }
+        } 
     };
 
     const handleEditDepartment = async (values: DepartmentAddress) => {
         if (editingDepartmentId !== null) {
-            setLoading(true);
             try {
-                await putDepartment(values, setDepartments);
                 setEditingDepartmentId(null);
+                await putDepartment(values, setDepartments);
             }
             catch (error) {
                 console.error("Error updating department:", error);
-            } finally {
-                setLoading(false);
-            }
+            } 
         }
     };
 
     const handleDeleteDepartment = async (departmentId: number) => {
-        setLoading(true);
         await deleteDepartment(departmentId, setDepartments);
-        setLoading(false);
     };
 
     const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
@@ -431,15 +419,6 @@ const Departments = () => {
                                 <label className={styles.addButtonLabel}>Dodaj nowy oddział</label>
                             </button>
                         </div>
-                        {isAddModalOpen && (
-                            <div className={styles.modalOverlay}>
-                                <div className={styles.modalContent}>
-                                    <AddNotification
-                                        onClose={() => setIsAddModalOpen(false)}
-                                        info={addedDepartmentName} />
-                                </div>
-                            </div>
-                        )}
                     </Form>
                 )}
             </Formik>

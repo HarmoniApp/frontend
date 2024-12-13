@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 import PredefinedShift from '@/components/types/predefinedShifts';
-import AddNotification from '../popUps/addNotification';
 import DeleteConfirmation from '../popUps/deleteConfirmation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -15,9 +14,7 @@ import LoadingSpinner from '@/components/loadingSpinner';
 const PredefinedShifts = () => {
   const [predefineShifts, setPredefineShifts] = useState<PredefinedShift[]>([]);
   const [editingShiftId, setEditingShiftId] = useState<number | null>(null);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [addedPredefineShiftName, setAddedPredefineShiftName] = useState<string>('');
   const [deleteShiftId, setDeleteShiftId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -37,47 +34,35 @@ const PredefinedShifts = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      setLoading(true);
       await fetchPredefinedShifts(setPredefineShifts);
-      setLoading(false);
     }
 
     loadData();
   }, []);
 
   const handleAddPredefineShift = async (values: any, { resetForm }: any) => {
-    setLoading(true);
-
     try {
       await postPredefineShift(values, setPredefineShifts);
-      setIsAddModalOpen(true);
       resetForm();
     } catch (error) {
       console.error('Error adding predefine shift:', error);
       throw error;
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
   const handleEditPredefineShift = async (values: PredefinedShift, { resetForm }: any) => {
-    setLoading(true);
     try {
-      await putPredefineShift(values, setPredefineShifts);
       setEditingShiftId(null);
+      await putPredefineShift(values, setPredefineShifts);
       resetForm();
     }
     catch (error) {
       console.error("Error updating predefine shift:", error);
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
   const handleDeletePredefineShift = async (shiftId: number) => {
-    setLoading(true);
     await deletePredefineShift(shiftId, setPredefineShifts);
-    setLoading(false);
   };
 
   const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
@@ -280,14 +265,6 @@ const PredefinedShifts = () => {
             <button className={styles.addButton} type="submit">
               <FontAwesomeIcon icon={faPlus} />
             </button>
-
-            {isAddModalOpen && (
-              <div className={styles.modalOverlay}>
-                <div className={styles.modalContent}>
-                  <AddNotification onClose={() => setIsAddModalOpen(false)} info={addedPredefineShiftName} />
-                </div>
-              </div>
-            )}
           </Form>
         )}
       </Formik>

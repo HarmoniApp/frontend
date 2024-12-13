@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 import Contract from '@/components/types/contract';
-import AddNotification from '../popUps/addNotification';
 import DeleteConfirmation from '../popUps/deleteConfirmation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -15,9 +14,7 @@ import LoadingSpinner from '@/components/loadingSpinner';
 const ContractTypes = () => {
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [editingContractId, setEditingContractId] = useState<number | null>(null);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [addedContractName, setAddedContractName] = useState<string>('');
   const [deleteContractId, setDeleteContractId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -37,35 +34,26 @@ const ContractTypes = () => {
   }, []);
 
   const handleDeleteContractType = async (contractId: number) => {
-    setLoading(true);
     await deleteContractType(contractId, setContracts);
-    setLoading(false);
   };
 
   const handleAddContractType = async (values: any, { resetForm }: any) => {
-    setLoading(true);
     try {
-      await postContractType(values, setContracts, setAddedContractName);
-      setIsAddModalOpen(true);
+      await postContractType(values, setContracts);
       resetForm();
     } catch (error) {
       console.error('Error adding contract type:', error);
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleEditContractType = async (values: any, { resetForm }: any) => {
-    setLoading(true);
     try {
-      await putContractType(values, setContracts);
       setEditingContractId(null);
+      await putContractType(values, setContracts);
       resetForm();
     } catch (error) {
       console.error('Error editing shift:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -169,17 +157,15 @@ const ContractTypes = () => {
                   </div>
                 </div>
                 {isDeleteModalOpen && deleteContractId === contract.id && (
-                  <>
-                    <div className={styles.modalOverlay}>
-                      <div className={styles.modalContent}>
-                        <DeleteConfirmation
-                          onClose={() => setIsDeleteModalOpen(false)}
-                          onDelete={() => handleDeleteContractType(contract.id)}
-                          info={contract.name}
-                        />
-                      </div>
+                  <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                      <DeleteConfirmation
+                        onClose={() => setIsDeleteModalOpen(false)}
+                        onDelete={() => handleDeleteContractType(contract.id)}
+                        info={contract.name}
+                      />
                     </div>
-                  </>
+                  </div>
                 )}
               </Form>
             )}
@@ -217,14 +203,6 @@ const ContractTypes = () => {
             <button className={styles.addButton} type="submit">
               <FontAwesomeIcon icon={faPlus} />
             </button>
-
-            {isAddModalOpen && (
-              <div className={styles.modalOverlay}>
-                <div className={styles.modalContent}>
-                  <AddNotification onClose={() => setIsAddModalOpen(false)} info={addedContractName} />
-                </div>
-              </div>
-            )}
           </Form>
         )}
       </Formik>

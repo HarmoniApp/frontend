@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserSlash, faArrowTurnUp } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
-import LoadingSpinner from '@/components/loadingSpinner';
 import { deleteUser } from '@/services/userService';
 interface DeleteEmployeeProps {
   userId: number;
@@ -13,25 +12,20 @@ interface DeleteEmployeeProps {
 }
 
 const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surname, onClose}) => {
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleDeleteEmployee = async () => {
-    setLoading(true);
     try {
+      onClose();
+      router.push("/employees");
       await deleteUser(userId);
     } catch (error) {
       console.error('Error deleting employee:', error)
-    } finally {
-      setLoading(false);
-      onClose();
-      router.push("/employees");
     }
   };
 
   return (
     <div>
-      {/* {modalStage === 'confirm' ? ( */}
         <div className={styles.deleteContainerMain}>
           <label className={styles.questionHeader}>Czy na pewno chcesz usunąć użytkownika:</label>
           <label className={styles.fullNameLabel}>{firstName} {surname}</label>
@@ -46,14 +40,6 @@ const DeletaEmployee: React.FC<DeleteEmployeeProps> = ({ userId, firstName, surn
             </button>
           </div>
         </div>
-      {/* ) : (
-        <DeleteEmployeeNotificationPopUp
-          firstName={firstName}
-          surname={surname}
-          modalCountdown={modalCountdown}
-        />
-      )} */}
-      {loading && <LoadingSpinner />}
     </div>
   );
 };

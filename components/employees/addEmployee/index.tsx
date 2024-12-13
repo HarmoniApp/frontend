@@ -17,7 +17,6 @@ import Supervisor from '@/components/types/supervisor';
 import Department from '@/components/types/department';
 import classNames from 'classnames';
 import * as Yup from 'yup';
-import AddEmployeeNotificationPopUp from '@/components/employees/addEmployee/addEmplyeeNotification';
 import LoadingSpinner from '@/components/loadingSpinner';
 import styles from './main.module.scss';
 
@@ -32,12 +31,7 @@ const AddEmployee: React.FC = () => {
   const [languages, setLanguages] = useState<Language[]>([]);
   const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalCountdown, setModalCountdown] = useState(10);
-  const [employeeLink, setEmployeeLink] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
-
-  if (modalCountdown === 0) onBack();
 
   useEffect(() => {
     const loadData = async () => {
@@ -194,27 +188,13 @@ const AddEmployee: React.FC = () => {
   });
 
   const handleSubmit = async (values: typeof initialValues, { resetForm }: { resetForm: () => void }) => {
-    setLoading(true);
     try {
-      await postUser(values, setEmployeeLink);
-
-      setIsModalOpen(true);
+      onBack();
+      await postUser(values);
       resetForm();
-
-      const countdownInterval = setInterval(() => {
-        setModalCountdown((prev) => {
-          if (prev === 1) {
-            clearInterval(countdownInterval);
-            setIsModalOpen(false);
-          }
-          return prev - 1;
-        });
-      }, 1000);
     } catch (error) {
       console.error('Error adding employee:', error);
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -524,23 +504,6 @@ const AddEmployee: React.FC = () => {
                 </button>
               </div>
             </div>
-
-            {isModalOpen && (
-              <div className={styles.modalOverlay}>
-                <div className={styles.modalContent}>
-                  <AddEmployeeNotificationPopUp
-                    firstname={values.firstname}
-                    surname={values.surname}
-                    employeeId={employeeLink}
-                    modalCountdown={modalCountdown}
-                    onClose={() => {
-                      setIsModalOpen(false);
-                      onBack();
-                    }}
-                  />
-                </div>
-              </div>
-            )}
           </Form>
         )}
       </Formik>

@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { fetchCsrfToken } from "./csrfService";
 
 export const fetchImage = async (
@@ -23,27 +24,37 @@ export const fetchImage = async (
 };
 
 export const patchPhoto = async (
-    formData: FormData): Promise<void> => {
+    formData: FormData
+): Promise<void> => {
+    await toast.promise(
+        (async () => {
+            try {
+                const tokenXSRF = await fetchCsrfToken();
+                const userId = sessionStorage.getItem('userId');
 
-    try {
-        const tokenXSRF = await fetchCsrfToken();
-        const userId = sessionStorage.getItem('userId');
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}/uploadPhoto`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                    body: formData,
+                });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}/uploadPhoto`, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                'X-XSRF-TOKEN': tokenXSRF,
-            },
-            credentials: 'include',
-            body: formData,
-        });
-
-        if (!response.ok) {
-            console.error('Error uploading photo, response not OK');
-            throw new Error('Error uploading photo');
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Nie udało się przesłać zdjęcia.';
+                    throw new Error(errorMessage);
+                }
+            } catch (error) {
+                console.error('Error uploading photo:', error);
+                throw error;
+            }
+        })(),
+        {
+            pending: 'Przesyłanie zdjęcia...',
+            success: 'Zdjęcie zostało przesłane pomyślnie!'
         }
-    } catch (error) {
-        console.error(`Error while editing role`, error);
-    }
+    );
 };

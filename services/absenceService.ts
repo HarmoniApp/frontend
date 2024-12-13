@@ -2,6 +2,7 @@ import Absence from "@/components/types/absence";
 import AbsenceStatus from "@/components/types/absenceStatus";
 import AbsenceType from "@/components/types/absenceType";
 import { fetchCsrfToken } from "./csrfService";
+import { toast } from "react-toastify";
 
 export const fetchAbsences = async (
     setAbsences: (absences: Absence[]) => void): Promise<void> => {
@@ -129,6 +130,7 @@ export const fetchAbsenceTypes = async (
     setAbsenceTypes: (absences: AbsenceType[]) => void): Promise<void> => {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence-type`, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
@@ -164,85 +166,126 @@ export const fetchAvailableAbsenceDays = async (
 
 export const postAbsence = async (
     values: any,
-    onSend: number): Promise<void> => {
+    onSend: number
+): Promise<void> => {
+    await toast.promise(
+        (async () => {
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-    try {
-        const tokenXSRF = await fetchCsrfToken();
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        absence_type_id: values.absence_type_id,
+                        start: values.start,
+                        end: values.end,
+                        user_id: onSend,
+                    }),
+                });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                'X-XSRF-TOKEN': tokenXSRF,
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podaczas dodawania urlopu';
+                    throw new Error(errorMessage);
+                }
+            } catch (error) {
+                console.error('Error adding absence:', error);
+                throw error;
+            }
+        })(),
+        {
+            pending: 'Dodawanie urlopu...',
+            success: 'Urlop został dodany!',
+            error: {
+                render({ data }) {
+                    const errorMessage = data instanceof Error ? data.message : 'Wystąpił błąd podczas dodawania urlopu';
+                    return errorMessage;
+                },
             },
-            credentials: 'include',
-            body: JSON.stringify({
-                absence_type_id: values.absence_type_id,
-                start: values.start,
-                end: values.end,
-                user_id: onSend,
-            }),
-        });
-        if (!response.ok) {
-            console.error('Failed to add absence: ', response.statusText);
-            throw new Error(`Failed to add absence'}`);
         }
-    } catch (error) {
-        console.error(`Error while adding asbence`, error);
-    }
+    );
 };
 
 export const patchAbsence = async (
     absenceId: number,
-    statusId: number): Promise<void> => {
+    statusId: number
+): Promise<void> => {
+    await toast.promise(
+        (async () => {
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-    try {
-        const tokenXSRF = await fetchCsrfToken();
+                const response = await fetch(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/${absenceId}/status/${statusId}`,
+                    {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                            'X-XSRF-TOKEN': tokenXSRF,
+                        },
+                        credentials: 'include',
+                    }
+                );
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/${absenceId}/status/${statusId}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                'X-XSRF-TOKEN': tokenXSRF,
-            },
-            credentials: 'include',
-        });
-
-        if (!response.ok) {
-            console.error('Error updating absence status, response not OK');
-            throw new Error('Error updating absence status');
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas zmiany statusu urlopu.';
+                    throw new Error(errorMessage);
+                }
+            } catch (error) {
+                console.error('Error in patchAbsence:', error);
+                throw error;
+            }
+        })(),
+        {
+            pending: 'Zmiana statusu urlopu...',
+            success: 'Status urlopu został zmieniony!'
         }
-    } catch (error) {
-        console.error(`Error while adding asbence`, error);
-    }
+    );
 };
 
 export const deleteAbsence = async (
     absenceId: number,
     userId: number,
     setAbsenceTypeNames: (types: { [key: number]: string }) => void,
-    setAbsences: (absences: Absence[]) => void): Promise<void> => {
+    setAbsences: (absences: Absence[]) => void
+): Promise<void> => {
+    await toast.promise(
+        (async () => {
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-    try {
-        const tokenXSRF = await fetchCsrfToken();
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/${absenceId}/status/3`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/${absenceId}/status/3`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                'X-XSRF-TOKEN': tokenXSRF,
-            },
-            credentials: 'include',
-        });
-        if (!response.ok) {
-            console.error('Failed to cancel absence: ', response.statusText);
-            throw new Error(`Failed to cancel absence`);
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas anulowania urlopu.';
+                    throw new Error(errorMessage);
+                }
+                await fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences);
+            } catch (error) {
+                console.error('Error in deleteAbsence:', error);
+                throw error;
+            }
+        })(),
+        {
+            pending: 'Anulowanie urlopu...',
+            success: 'Urlop został anulowany!'
         }
-        fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences)
-    } catch (error) {
-        console.error(`Error canceling absence`, error);
-    }
+    );
 };

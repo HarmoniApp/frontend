@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { ProgressSpinner } from 'primereact/progressspinner';
-import Image from "next/image";
+import { fetchImage } from '@/services/imageService';
 import UserDefaultPhoto from '@/assets/photo/default.jpg';
 import GroupDefaultPhoto from '@/assets/photo/groupPhoto.png';
-
-import styles from './main.module.scss';
-import { fetchImage } from '@/services/imageService';
 import LoadingSpinner from '../loadingSpinner';
+import Image from "next/image";
+import styles from './main.module.scss';
 
 interface UserImageProps {
   userId: number;

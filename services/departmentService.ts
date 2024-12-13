@@ -1,6 +1,7 @@
 import Department from "@/components/types/department";
 import DepartmentAddress from "@/components/types/departmentAddress";
 import { fetchCsrfToken } from "./csrfService";
+import { toast } from "react-toastify";
 
 export const fetchDepartments = async (
     setDepartments: (departments: Department[]) => void): Promise<void> => {
@@ -40,82 +41,100 @@ export const fetchDepartmentsAddress = async (
 export const postDepartment = async (
     values: DepartmentAddress,
     setDepartments: (departments: DepartmentAddress[]) => void,
-    setAddedDepartmentName: (name: string) => void): Promise<void> => {
+): Promise<void> => {
+    await toast.promise(
+        (async () => {
+            const tokenXSRF = await fetchCsrfToken();
 
-    try {
-        const tokenXSRF = await fetchCsrfToken();
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
+                },
+                credentials: 'include',
+                body: JSON.stringify(values),
+            });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address`, {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                'X-XSRF-TOKEN': tokenXSRF,
-            },
-            credentials: 'include',
-            body: JSON.stringify(values),
-        });
-        if (!response.ok) {
-            console.error("Failed to add department: ", response.statusText);
-            throw new Error('Error adding department');
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas dodawania działu';
+                throw new Error(errorMessage);
+            }
+
+            await fetchDepartmentsAddress(setDepartments);
+        })(),
+        {
+            pending: 'Dodawanie działu...',
+            success: 'Dział został dodany!'
         }
-        const addedDepartment = await response.json();
-        setAddedDepartmentName(addedDepartment.department_name);
-        await fetchDepartmentsAddress(setDepartments);
-    } catch (error) {
-        console.error(`Error while generate`, error);
-    }
+    );
 };
 
 export const putDepartment = async (
     values: DepartmentAddress,
-    setDepartments: (departments: DepartmentAddress[]) => void): Promise<void> => {
+    setDepartments: (departments: DepartmentAddress[]) => void
+): Promise<void> => {
+    await toast.promise(
+        (async () => {
+            const tokenXSRF = await fetchCsrfToken();
 
-    try {
-        const tokenXSRF = await fetchCsrfToken();
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${values.id}`, {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
+                },
+                credentials: 'include',
+                body: JSON.stringify(values),
+            });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${values.id}`, {
-            method: 'PUT',
-            headers: {
-                "Content-Type": "application/json",
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                'X-XSRF-TOKEN': tokenXSRF,
-            },
-            credentials: 'include',
-            body: JSON.stringify(values),
-        });
-        if (!response.ok) {
-            console.error("Failed to update department: ", response.statusText);
-            throw new Error('Error updating department');
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas aktualizacji działu';
+                throw new Error(errorMessage);
+            }
+
+            await fetchDepartmentsAddress(setDepartments);
+        })(),
+        {
+            pending: 'Aktualizowanie działu...',
+            success: 'Dział został zaktualizowany!'
         }
-        await fetchDepartmentsAddress(setDepartments);
-    } catch (error) {
-        console.error(`Error while updating department`, error);
-    }
+    );
 };
 
 export const deleteDepartment = async (
     departmentId: number,
-    setDepartments: (departmentsAdress: DepartmentAddress[]) => void): Promise<void> => {
-    try {
-        const tokenXSRF = await fetchCsrfToken();
+    setDepartments: (departmentsAdress: DepartmentAddress[]) => void
+): Promise<void> => {
+    await toast.promise(
+        (async () => {
+            const tokenXSRF = await fetchCsrfToken();
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${departmentId}`, {
-            method: 'DELETE',
-            headers: {
-                "Content-Type": "application/json",
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                'X-XSRF-TOKEN': tokenXSRF,
-            },
-            credentials: 'include',
-        });
-        if (!response.ok) {
-            console.error("Failed to delete department: ", response.statusText);
-            throw new Error('Error delete department');
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${departmentId}`, {
+                method: 'DELETE',
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
+                },
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas usuwania działu';
+                throw new Error(errorMessage);
+            }
+
+            await fetchDepartmentsAddress(setDepartments);
+        })(),
+        {
+            pending: 'Usuwanie działu...',
+            success: 'Dział został usunięty!'
         }
-        await fetchDepartmentsAddress(setDepartments);
-    }
-    catch (error) {
-        console.error("Error deleting department:", error);
-    }
-}
+    );
+};

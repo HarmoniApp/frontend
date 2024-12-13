@@ -3,6 +3,7 @@ import SimpleUser from "@/components/types/simpleUser";
 import Supervisor from "@/components/types/supervisor";
 import { fetchCsrfToken } from "./csrfService";
 import PersonTile from "@/components/types/personTile";
+import { toast } from "react-toastify";
 
 export const fetchSimpleUser = async (
     id: number,
@@ -148,79 +149,96 @@ export const fetchSupervisors = async (
 
 export const postUser = async (
     values: any,
-    setEmployeeLink: (employeeId: number) => void): Promise<void> => {
+    // setEmployeeLink: (employeeId: number) => void
+): Promise<void> => {
+    await toast.promise(
+        (async () => {
+            const tokenXSRF = await fetchCsrfToken();
 
-    try {
-        const tokenXSRF = await fetchCsrfToken();
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
+                },
+                credentials: 'include',
+                body: JSON.stringify(values),
+            });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                'X-XSRF-TOKEN': tokenXSRF,
-            },
-            credentials: 'include',
-            body: JSON.stringify(values),
-        });
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas dodawania użytkownika.';
+                throw new Error(errorMessage);
+            }
 
-        if (!response.ok) {
-            console.error('Failed to add employee:', response.statusText);
-            throw new Error('Failed to add employee');
+            const postData = await response.json();
+            // setEmployeeLink(postData.id);
+        })(),
+        {
+            pending: 'Dodawanie użytkownika...',
+            success: 'Użytkownik został dodany!',
         }
-        const postData = await response.json();
-        setEmployeeLink(postData.id);
-    } catch (error) {
-        console.error(`Error while generate`, error);
-    }
+    );
 };
 
 export const patchUser = async (
-    values: any): Promise<void> => {
+    values: any
+): Promise<void> => {
+    await toast.promise(
+        (async () => {
+            const tokenXSRF = await fetchCsrfToken();
 
-    try {
-        const tokenXSRF = await fetchCsrfToken();
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${values.id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
+                },
+                credentials: 'include',
+                body: JSON.stringify(values),
+            });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${values.id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                'X-XSRF-TOKEN': tokenXSRF,
-            },
-            credentials: 'include',
-            body: JSON.stringify(values),
-        });
-
-        if (!response.ok) {
-            console.error('Error updating user');
-            throw new Error('Error updating user');
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas aktualizacji użytkownika.';
+                throw new Error(errorMessage);
+            }
+        })(),
+        {
+            pending: 'Aktualizowanie użytkownika...',
+            success: 'Dane użytkownika zostały zaktualizowane!'
         }
-    } catch (error) {
-        console.error(`Error while generate`, error);
-    }
+    );
 };
 
 export const deleteUser = async (
-    userId: number): Promise<void> => {
+    userId: number
+): Promise<void> => {
+    await toast.promise(
+        (async () => {
+            const tokenXSRF = await fetchCsrfToken();
 
-    try {
-        const tokenXSRF = await fetchCsrfToken();
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                    'X-XSRF-TOKEN': tokenXSRF,
+                },
+                credentials: 'include',
+            });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                'X-XSRF-TOKEN': tokenXSRF,
-            },
-            credentials: 'include',
-        })
-        if (!response.ok) {
-            console.error('Failed to delete employee: ', response.statusText);
-            throw new Error(`Failed to delete employee`);
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas usuwania użytkownika.';
+                throw new Error(errorMessage);
+            }
+        })(),
+        {
+            pending: 'Usuwanie użytkownika...',
+            success: 'Użytkownik został usunięty!'
         }
-    } catch (error) {
-        console.error('Error deleting role:', error);
-    }
+    );
 };
