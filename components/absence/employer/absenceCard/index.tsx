@@ -69,7 +69,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
 
     const renderButtons = () => {
         switch (absence.status.name) {
-            case 'approved':
+            case 'zatwierdzony':
                 return (
                     <div className={styles.buttonContainer}>
                         <button
@@ -81,7 +81,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                         </button>
                     </div>
                 );
-            case 'awaiting':
+            case 'oczekuje':
                 return (
                     <div className={styles.buttonContainer}>
                         <button

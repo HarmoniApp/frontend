@@ -150,35 +150,33 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   };
 
   const handlePublishAll = async () => {
-    const shiftsToPublish: Shift[] = [];
-
-    Object.values(schedules).forEach(schedule => {
-      schedule.shifts.forEach(shift => {
-        if (!shift.published) {
-          shiftsToPublish.push(shift);
-        }
-      });
-    });
-
-    shiftsToPublish.forEach(async (shift) => {
       setLoading(true);
       try {
-        await patchPublishShifts(shift.id)
-        setSchedules(prevSchedules => ({
-          ...prevSchedules,
-          [shift.user_id]: {
-            ...prevSchedules[shift.user_id],
-            shifts: prevSchedules[shift.user_id].shifts.map(s =>
-              s.id === shift.id ? { ...s, published: true } : s
-            ),
-          },
-        }));
+        const formatDate = (date: Date) => {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+        };
+        
+        const start = formatDate(currentWeek[0]);
+        const end = formatDate(currentWeek[currentWeek.length - 1]);
+        await patchPublishShifts(start, end)
+
+        setSchedules(prevSchedules => {
+          const updatedSchedules = { ...prevSchedules };
+          Object.values(updatedSchedules).forEach(schedule => {
+            schedule.shifts = schedule.shifts.map(shift =>
+              !shift.published ? { ...shift, published: true } : shift
+            );
+          });
+          return updatedSchedules;
+        });
       } catch (error) {
         console.error('Error publishing shift:', error);
       } finally {
         setLoading(false);
       }
-    });
   };
 
   useImperativeHandle(ref, () => ({

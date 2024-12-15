@@ -187,14 +187,15 @@ export const putShift = async (
 };
 
 export const patchPublishShifts = async (
-    shiftId: number
+    start: string,
+    end: string
 ): Promise<void> => {
     await toast.promise(
         (async () => {
             try {
                 const tokenXSRF = await fetchCsrfToken();
 
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${start}/${end}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
