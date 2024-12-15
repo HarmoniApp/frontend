@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRectangleList, faGrip, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import AbsenceCard from '@/components/absence/employer/absenceCard';
 import Absence from '@/components/types/absence';
-import SimpleUser from '@/components/types/simpleUser';
+import User from '@/components/types/user';
 import AbsenceStatus from '@/components/types/absenceStatus';
 import styles from './main.module.scss';
 import { Card } from 'primereact/card';
@@ -14,7 +14,7 @@ import { fetchSimpleUsersWithPagination } from '@/services/userService';
 
 const AbsenceEmployer: React.FC = () => {
   const [absences, setAbsences] = useState<Absence[]>([]);
-  const [users, setUsers] = useState<SimpleUser[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [absencesStatus, setAbsencesStatus] = useState<AbsenceStatus[]>([]);
   const [viewMode, setViewMode] = useState('tiles');
   const [selectedStatus, setSelectedStatus] = useState<number | undefined>(undefined);
@@ -52,7 +52,7 @@ const AbsenceEmployer: React.FC = () => {
     }
   };
 
-  const getUserById = (userId: number): SimpleUser | undefined => {
+  const getUserById = (userId: number): User | undefined => {
     return users.find(user => user.id === userId);
   };
 

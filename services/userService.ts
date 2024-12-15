@@ -1,5 +1,5 @@
 import EmployeeData from "@/components/types/employeeData";
-import SimpleUser from "@/components/types/simpleUser";
+import User from "@/components/types/user";
 import Supervisor from "@/components/types/supervisor";
 import { fetchCsrfToken } from "./csrfService";
 import PersonTile from "@/components/types/personTile";
@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 export const fetchSimpleUser = async (
     id: number,
-    setUser?: (users: SimpleUser) => void,
+    setUser?: (users: User) => void,
     setSupervisorData?: (supervisor: Supervisor) => void): Promise<void> => {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/${id}`, {
@@ -26,7 +26,7 @@ export const fetchSimpleUser = async (
 };
 
 export const fetchSimpleUsersWithPagination = async (
-    setUsers: (users: SimpleUser[]) => void): Promise<void> => {
+    setUsers: (users: User[]) => void): Promise<void> => {
 
     let pageNumber = 0;
     let totalPages = 1;

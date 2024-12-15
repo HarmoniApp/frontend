@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import Absence from '@/components/types/absence';
 import AbsenceType from '@/components/types/absenceType';
-import SimpleUser from "@/components/types/simpleUser";
+import User from "@/components/types/user";
 import CancelConfirmation from './popUps/cancelConfirmation';
 import AproveConfirmation from './popUps/aproveConfirmation';
 import styles from './main.module.scss';
@@ -17,7 +17,7 @@ interface AbsenceCardProps {
 
 const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpdate }) => {
     const [absenceType, setAbsenceType] = useState<AbsenceType | null>(null);
-    const [user, setUser] = useState<SimpleUser | null>(null);
+    const [user, setUser] = useState<User | null>(null);
     const [modalIsOpenCancelAbsence, setModalIsOpenCancelAbsence] = useState(false);
     const [modalIsOpenAproveAbsence, setModalIsOpenAproveAbsence] = useState(false);
     const [loading, setLoading] = useState(false);
