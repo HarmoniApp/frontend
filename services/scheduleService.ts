@@ -3,6 +3,7 @@ import { fetchCsrfToken } from "./csrfService";
 import Shift from "@/components/types/shift";
 import AbsenceShort from "@/components/types/absenceShort";
 import User from "@/components/types/user";
+import { toast } from "react-toastify";
 
 export const fetchUserPublishedSchedule = async (
     currentMonth: Date,
@@ -96,115 +97,164 @@ export const fetchFilterUsersInSchedule = async (
 };
 
 export const postShift = async (
-    shiftData: { start: string; end: string; userId: number; roleName: string; }): Promise<void> => {
+    shiftData: { start: string; end: string; userId: number; roleName: string }
+): Promise<void> => {
+    await toast.promise(
+        (async () => {
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-    try {
-        const tokenXSRF = await fetchCsrfToken();
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        start: shiftData.start,
+                        end: shiftData.end,
+                        published: false,
+                        user_id: shiftData.userId,
+                        role_name: shiftData.roleName,
+                    }),
+                });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                'X-XSRF-TOKEN': tokenXSRF,
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas dodawania zmiany.';
+                    throw new Error(errorMessage);
+                }
+            } catch (error) {
+                console.error('Error adding schedule:', error);
+                throw error;
+            }
+        })(),
+        {
+            pending: 'Dodawanie zmiany...',
+            success: 'Zmiana została dodana!',
+            error: {
+                render({ data }) {
+                    const errorMessage = data instanceof Error ? data.message : 'Wystąpił błąd podczas dodawania zmiany.';
+                    return errorMessage;
+                },
             },
-            credentials: 'include',
-            body: JSON.stringify({
-                start: shiftData.start,
-                end: shiftData.end,
-                published: false,
-                user_id: shiftData.userId,
-                role_name: shiftData.roleName,
-            }),
-        });
-
-        if (!response.ok) {
-            console.error('Failed to add add shift:', response.statusText);
-            throw new Error('Failed to add add shift');
         }
-    } catch (error) {
-        console.error(`Error while generate`, error);
-    }
+    );
 };
 
 export const putShift = async (
-    shiftData: { id: number; start: string; end: string; userId: number; roleName: string; }): Promise<void> => {
+    shiftData: { id: number; start: string; end: string; userId: number; roleName: string }
+): Promise<void> => {
+    await toast.promise(
+        (async () => {
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-    try {
-        const tokenXSRF = await fetchCsrfToken();
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftData.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        start: shiftData.start,
+                        end: shiftData.end,
+                        published: false,
+                        user_id: shiftData.userId,
+                        role_name: shiftData.roleName,
+                    }),
+                });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftData.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                'X-XSRF-TOKEN': tokenXSRF,
-            },
-            credentials: 'include',
-            body: JSON.stringify({
-                start: shiftData.start,
-                end: shiftData.end,
-                published: false,
-                user_id: shiftData.userId,
-                role_name: shiftData.roleName,
-            }),
-        });
-        if (!response.ok) {
-            console.error('Failed to edit shift');
-            throw new Error('Failed to edit shift');
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas edytowania zmiany.';
+                    throw new Error(errorMessage);
+                }
+            } catch (error) {
+                console.error('Error updating schedule:', error);
+                throw error;
+            }
+        })(),
+        {
+            pending: 'Aktualizowanie zmiany...',
+            success: 'Zmiana została zaktualizowana!'
         }
-    } catch (error) {
-        console.error(`Error while edit shift`, error);
-    }
+    );
 };
 
 export const patchPublishShifts = async (
-    shiftId: number): Promise<void> => {
+    shiftId: number
+): Promise<void> => {
+    await toast.promise(
+        (async () => {
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-    try {
-        const tokenXSRF = await fetchCsrfToken();
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-        });
-        if (!response.ok) {
-          console.error(`Failed to publish shift`);
-          throw new Error(`Failed to publish shift`);
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas publikowania zmiany.';
+                    throw new Error(errorMessage);
+                }
+            } catch (error) {
+                console.error('Error publishing schedule:', error);
+                throw error;
+            }
+        })(),
+        {
+            pending: 'Publikowanie zmiany...',
+            success: 'Zmiana została opublikowana!'
         }
-    } catch (error) {
-        console.error(`Error while edit shift`, error);
-    }
+    );
 };
 
 export const deleteShift = async (
     shiftId: number,
     userId: number,
-    fetchUserSchedule: (userId: number) => void): Promise<void> => {
+    fetchUserSchedule: (userId: number) => void
+): Promise<void> => {
+    await toast.promise(
+        (async () => {
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-    try {
-        const tokenXSRF = await fetchCsrfToken();
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                'X-XSRF-TOKEN': tokenXSRF,
-            },
-            credentials: 'include',
-        });
-        if (!response.ok) {
-            console.error('Failed to delete shift: ', response.statusText);
-            throw new Error('Failed to delete shift');
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas usuwania zmiany.';
+                    throw new Error(errorMessage);
+                }
+                await fetchUserSchedule(userId);
+            } catch (error) {
+                console.error('Error deleting schedule:', error);
+                throw error;
+            }
+        })(),
+        {
+            pending: 'Usuwanie zmiany...',
+            success: 'Zmiana została usunięta!'
         }
-        fetchUserSchedule(userId);
-    } catch (error) {
-        console.error('Error deleting shift:', error);
-    }
+    );
 };

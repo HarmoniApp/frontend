@@ -26,25 +26,30 @@ export const postContractType = async (
 ): Promise<void> => {
     await toast.promise(
         (async () => {
-            const tokenXSRF = await fetchCsrfToken();
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-                body: JSON.stringify(values),
-            });
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(values),
+                });
 
-            if (!response.ok) {
-                const errorResponse = await response.json();
-                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas dodawania rodzaju umowy.';
-                throw new Error(errorMessage);
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas dodawania rodzaju umowy.';
+                    throw new Error(errorMessage);
+                }
+                await fetchContracts(setContracts);
+            } catch (error) {
+                console.error('Error adding contract type:', error);
+                throw error;
             }
-            await fetchContracts(setContracts);
         })(),
         {
             pending: 'Dodawanie rodzaju umowy...',
@@ -59,25 +64,30 @@ export const putContractType = async (
 ): Promise<void> => {
     await toast.promise(
         (async () => {
-            const tokenXSRF = await fetchCsrfToken();
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type/${values.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-                body: JSON.stringify(values),
-            });
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type/${values.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(values),
+                });
 
-            if (!response.ok) {
-                const errorResponse = await response.json();
-                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas aktualizacji rodzaju umowy.';
-                throw new Error(errorMessage);
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas aktualizacji rodzaju umowy.';
+                    throw new Error(errorMessage);
+                }
+                await fetchContracts(setContracts);
+            } catch (error) {
+                console.error('Error updating contract type:', error);
+                throw error;
             }
-            await fetchContracts(setContracts);
         })(),
         {
             pending: 'Aktualizowanie rodzaju umowy...',
@@ -92,25 +102,29 @@ export const deleteContractType = async (
 ): Promise<void> => {
     await toast.promise(
         (async () => {
-            const tokenXSRF = await fetchCsrfToken();
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type/${contractId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-            });
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contract-type/${contractId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                });
 
-            if (!response.ok) {
-                const errorResponse = await response.json();
-                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas usuwania rodzaju umowy.';
-                throw new Error(errorMessage);
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas usuwania rodzaju umowy.';
+                    throw new Error(errorMessage);
+                }
+                await fetchContracts(setContracts);
+            } catch (error) {
+                console.error('Error deleting contract type:', error);
+                throw error;
             }
-
-            await fetchContracts(setContracts);
         })(),
         {
             pending: 'Usuwanie rodzaju umowy...',

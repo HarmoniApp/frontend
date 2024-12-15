@@ -43,26 +43,30 @@ export const postPredefineShift = async (
 
     await toast.promise(
         (async () => {
-            const tokenXSRF = await fetchCsrfToken();
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-                body: JSON.stringify(formattedValues),
-            });
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(formattedValues),
+                });
 
-            if (!response.ok) {
-                const errorResponse = await response.json();
-                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas dodawania zmiany.';
-                throw new Error(errorMessage);
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas dodawania zmiany.';
+                    throw new Error(errorMessage);
+                }
+                await fetchPredefinedShifts(setPredefineShifts);
+            } catch (error) {
+                console.error('Error adding predefined shift:', error);
+                throw error;
             }
-
-            await fetchPredefinedShifts(setPredefineShifts);
         })(),
         {
             pending: 'Dodawanie zmiany...',
@@ -83,26 +87,30 @@ export const putPredefineShift = async (
 
     await toast.promise(
         (async () => {
-            const tokenXSRF = await fetchCsrfToken();
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${values.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-                body: JSON.stringify(formattedValues),
-            });
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${values.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(formattedValues),
+                });
 
-            if (!response.ok) {
-                const errorResponse = await response.json();
-                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas edytowania zmiany.';
-                throw new Error(errorMessage);
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas edytowania zmiany.';
+                    throw new Error(errorMessage);
+                }
+                await fetchPredefinedShifts(setPredefineShifts);
+            } catch (error) {
+                console.error('Error updating predefined shift:', error);
+                throw error;
             }
-
-            await fetchPredefinedShifts(setPredefineShifts);
         })(),
         {
             pending: 'Aktualizowanie zmiany...',
@@ -117,25 +125,29 @@ export const deletePredefineShift = async (
 ): Promise<void> => {
     await toast.promise(
         (async () => {
-            const tokenXSRF = await fetchCsrfToken();
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${shiftId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-            });
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/predefine-shift/${shiftId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                });
 
-            if (!response.ok) {
-                const errorResponse = await response.json();
-                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas usuwania zmiany.';
-                throw new Error(errorMessage);
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas usuwania zmiany.';
+                    throw new Error(errorMessage);
+                }
+                await fetchPredefinedShifts(setPredefineShifts);
+            } catch (error) {
+                console.error('Error deleting predefined shift:', error);
+                throw error;
             }
-
-            await fetchPredefinedShifts(setPredefineShifts);
         })(),
         {
             pending: 'Usuwanie zmiany...',

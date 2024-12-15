@@ -45,25 +45,30 @@ export const postRole = async (
 ): Promise<void> => {
     await toast.promise(
         (async () => {
-            const tokenXSRF = await fetchCsrfToken();
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-                body: JSON.stringify({ name: values.newRoleName, color: values.newRoleColor }),
-            });
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ name: values.newRoleName, color: values.newRoleColor }),
+                });
 
-            if (!response.ok) {
-                const errorResponse = await response.json();
-                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas dodawania roli.';
-                throw new Error(errorMessage);
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas dodawania roli.';
+                    throw new Error(errorMessage);
+                }
+                await fetchRoles(setRoles);
+            } catch (error) {
+                console.error('Error adding role:', error);
+                throw error;
             }
-            await fetchRoles(setRoles);
         })(),
         {
             pending: 'Dodawanie roli...',
@@ -78,26 +83,30 @@ export const putRole = async (
 ): Promise<void> => {
     await toast.promise(
         (async () => {
-            const tokenXSRF = await fetchCsrfToken();
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/${values.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-                body: JSON.stringify({ name: values.editedRoleName, color: values.editedRoleColor }),
-            });
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/${values.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ name: values.editedRoleName, color: values.editedRoleColor }),
+                });
 
-            if (!response.ok) {
-                const errorResponse = await response.json();
-                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas edytowania roli.';
-                throw new Error(errorMessage);
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas edytowania roli.';
+                    throw new Error(errorMessage);
+                }
+                await fetchRoles(setRoles);
+            } catch (error) {
+                console.error('Error updating role:', error);
+                throw error;
             }
-
-            await fetchRoles(setRoles);
         })(),
         {
             pending: 'Aktualizowanie roli...',
@@ -112,25 +121,29 @@ export const deleteRole = async (
 ): Promise<void> => {
     await toast.promise(
         (async () => {
-            const tokenXSRF = await fetchCsrfToken();
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/${roleId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-            });
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/role/${roleId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                });
 
-            if (!response.ok) {
-                const errorResponse = await response.json();
-                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas usuwania roli.';
-                throw new Error(errorMessage);
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas usuwania roli.';
+                    throw new Error(errorMessage);
+                }
+                await fetchRoles(setRoles);
+            } catch (error) {
+                console.error('Error deleting role:', error);
+                throw error;
             }
-
-            await fetchRoles(setRoles);
         })(),
         {
             pending: 'Usuwanie roli...',

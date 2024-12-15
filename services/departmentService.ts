@@ -44,6 +44,7 @@ export const postDepartment = async (
 ): Promise<void> => {
     await toast.promise(
         (async () => {
+            try {
             const tokenXSRF = await fetchCsrfToken();
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address`, {
@@ -62,8 +63,11 @@ export const postDepartment = async (
                 const errorMessage = errorResponse.message || 'Wystąpił błąd podczas dodawania działu';
                 throw new Error(errorMessage);
             }
-
             await fetchDepartmentsAddress(setDepartments);
+        } catch (error) {
+            console.error('Error adding department:', error);
+            throw error;
+        }
         })(),
         {
             pending: 'Dodawanie działu...',
@@ -78,6 +82,7 @@ export const putDepartment = async (
 ): Promise<void> => {
     await toast.promise(
         (async () => {
+            try {
             const tokenXSRF = await fetchCsrfToken();
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${values.id}`, {
@@ -96,8 +101,11 @@ export const putDepartment = async (
                 const errorMessage = errorResponse.message || 'Wystąpił błąd podczas aktualizacji działu';
                 throw new Error(errorMessage);
             }
-
             await fetchDepartmentsAddress(setDepartments);
+        } catch (error) {
+            console.error('Error updating department:', error);
+            throw error;
+        }
         })(),
         {
             pending: 'Aktualizowanie działu...',
@@ -112,6 +120,7 @@ export const deleteDepartment = async (
 ): Promise<void> => {
     await toast.promise(
         (async () => {
+            try {
             const tokenXSRF = await fetchCsrfToken();
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/${departmentId}`, {
@@ -129,8 +138,11 @@ export const deleteDepartment = async (
                 const errorMessage = errorResponse.message || 'Wystąpił błąd podczas usuwania działu';
                 throw new Error(errorMessage);
             }
-
             await fetchDepartmentsAddress(setDepartments);
+        } catch (error) {
+            console.error('Error deleting department:', error);
+            throw error;
+        }
         })(),
         {
             pending: 'Usuwanie działu...',

@@ -149,35 +149,36 @@ export const fetchSupervisors = async (
 
 export const postUser = async (
     values: any,
-    // setEmployeeLink: (employeeId: number) => void
 ): Promise<void> => {
     await toast.promise(
         (async () => {
-            const tokenXSRF = await fetchCsrfToken();
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-                body: JSON.stringify(values),
-            });
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(values),
+                });
 
-            if (!response.ok) {
-                const errorResponse = await response.json();
-                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas dodawania użytkownika.';
-                throw new Error(errorMessage);
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas dodawania użytkownika.';
+                    throw new Error(errorMessage);
+                }
+            } catch (error) {
+                console.error('Error adding user:', error);
+                throw error;
             }
-
-            const postData = await response.json();
-            // setEmployeeLink(postData.id);
         })(),
         {
             pending: 'Dodawanie użytkownika...',
-            success: 'Użytkownik został dodany!',
+            success: 'Użytkownik został dodany!'
         }
     );
 };
@@ -187,23 +188,28 @@ export const patchUser = async (
 ): Promise<void> => {
     await toast.promise(
         (async () => {
-            const tokenXSRF = await fetchCsrfToken();
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${values.id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-                body: JSON.stringify(values),
-            });
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${values.id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(values),
+                });
 
-            if (!response.ok) {
-                const errorResponse = await response.json();
-                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas aktualizacji użytkownika.';
-                throw new Error(errorMessage);
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas aktualizacji użytkownika.';
+                    throw new Error(errorMessage);
+                }
+            } catch (error) {
+                console.error('Error updating user:', error);
+                throw error;
             }
         })(),
         {
@@ -218,22 +224,27 @@ export const deleteUser = async (
 ): Promise<void> => {
     await toast.promise(
         (async () => {
-            const tokenXSRF = await fetchCsrfToken();
+            try {
+                const tokenXSRF = await fetchCsrfToken();
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                    'X-XSRF-TOKEN': tokenXSRF,
-                },
-                credentials: 'include',
-            });
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                });
 
-            if (!response.ok) {
-                const errorResponse = await response.json();
-                const errorMessage = errorResponse.message || 'Wystąpił błąd podczas usuwania użytkownika.';
-                throw new Error(errorMessage);
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas usuwania użytkownika.';
+                    throw new Error(errorMessage);
+                }
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                throw error;
             }
         })(),
         {

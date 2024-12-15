@@ -42,10 +42,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const [pageSize, setPageSize] = useState(20);
   const [totalPages, setTotalPages] = useState(0);
 
-  
-
-  
-
   useEffect(() => {
     const loadData = async () => {
       setLoadingRoles(true);
@@ -132,33 +128,25 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   };
 
   const handleAddShift = async (shiftData: { start: string; end: string; userId: number; roleName: string; }) => {
-    setLoading(true);
     try {
       await postShift(shiftData)
       fetchUserSchedule(shiftData.userId);
     } catch (error) {
       console.error('Error editing shift:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleEditShift = async (shiftData: { id: number; start: string; end: string; userId: number; roleName: string; }) => {
-    setLoading(true);
     try {
       await putShift(shiftData);
       fetchUserSchedule(shiftData.userId);
     } catch (error) {
       console.error('Error editing shift:', error);
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
   const handleDeleteShift = async (shiftId: number, userId: number) => {
-    setLoading(true);
     await deleteShift(shiftId, userId, fetchUserSchedule);
-    setLoading(false);
   };
 
   const handlePublishAll = async () => {

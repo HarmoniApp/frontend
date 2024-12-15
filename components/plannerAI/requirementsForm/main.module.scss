@@ -25,7 +25,8 @@
 }
 
 .dateContainer {
-    @include displayDFJAG(flex, null, null, center, 10px);
+    @include displayDFJAG(flex, row, space-between, center, 10px);
+    width: 100%;
 }
 
 .dateLabel {
@@ -43,6 +44,7 @@
     box-shadow: 0 2px 4px $black-transparency-01;
     outline: none;
     transition: border-color 0.3s ease;
+    margin: 0 0 0 10px;
 
     &:focus {
         border-color: $main-colour;
@@ -83,6 +85,7 @@
 
 .roleContainer {
     @include gridQG(4, 20px);
+    margin: 10px 0 0 0;
 }
 
 .rolesInfoContainer {
@@ -112,4 +115,22 @@
     background-color: $white;
     color: $font-dark-colour;
     outline: none;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.errorInput {
+    border: 2px solid $red;
+    background-color: $red-powder;
+}
+
+.errorMessage {
+    color: $red;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+    text-align: right;
+    flex-shrink: 0;
 }
