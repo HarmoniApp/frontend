@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faUserMinus, faUserPen, faUserLock } from '@fortawesome/free-solid-svg-icons';
-import DeleteEmployeePopUp from '@/components/employees/employeeData/deleteEmployee';
 import EmployeeData from '@/components/types/employeeData';
 import Department from '@/components/types/department';
 import Flag from 'react-flagkit';
@@ -11,9 +10,10 @@ import styles from './main.module.scss';
 import NewPassword from './newPassword';
 import { fetchDepartments } from '@/services/departmentService';
 import Supervisor from '@/components/types/supervisor';
-import { fetchUserData } from '@/services/userService';
+import { deleteUser, fetchUserData } from '@/services/userService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { patchResetPassword } from '@/services/passwordService';
+import ConfirmationPopUp from '@/components/confirmationPopUp';
 
 const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   const [employee, setEmployee] = useState<EmployeeData | null>();
@@ -43,6 +43,16 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   const handleEditEmployee = () => {
     router.push(`/employees/user/${userId}/edit`);
   };
+
+  const handleDeleteEmployee = async () => {
+      try {
+        setModalDeleteEmployee(false)
+        router.push("/employees");
+        await deleteUser(userId);
+      } catch (error) {
+        console.error('Error deleting employee:', error)
+      }
+    };
 
   const handlePasswordResetSubmit = async () => {
     setLoading(true);
@@ -164,12 +174,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
       {modalIsOpenDeleteEmployee && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <DeleteEmployeePopUp
-              userId={employee.id}
-              firstName={employee.firstname}
-              surname={employee.surname}
-              onClose={() => setModalDeleteEmployee(false)}
-            />
+            <ConfirmationPopUp action={handleDeleteEmployee} onClose={() => setModalDeleteEmployee(false)} description={`Usunąć użytkownika: ${employee.firstname} ${employee.surname}`} />
           </div>
         </div>
       )}

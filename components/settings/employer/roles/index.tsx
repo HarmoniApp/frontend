@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 import Role from '@/components/types/role';
-import DeleteConfirmation from '../popUps/deleteConfirmation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { deleteRole, fetchRoles, postRole, putRole } from "@/services/roleService"
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import LoadingSpinner from '@/components/loadingSpinner';
+import ConfirmationPopUp from '@/components/confirmationPopUp';
 
 const Roles = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -34,6 +34,7 @@ const Roles = () => {
   }, []);
 
   const handleDeleteRole = async (roleId: number) => {
+    setIsDeleteModalOpen(false);
     await deleteRole(roleId, setRoles);
   };
 
@@ -171,11 +172,7 @@ const Roles = () => {
                   <>
                     <div className={styles.modalOverlay}>
                       <div className={styles.modalContent}>
-                        <DeleteConfirmation
-                          onClose={() => setIsDeleteModalOpen(false)}
-                          onDelete={() => handleDeleteRole(role.id)}
-                          info={role.name}
-                        />
+                        <ConfirmationPopUp action={() => handleDeleteRole(role.id)} onClose={() => setIsDeleteModalOpen(false)} description={`Usunąć rolę o nazwie: ${role.name}`} />
                       </div>
                     </div>
                   </>

@@ -74,7 +74,7 @@
     .submitButton {
       margin-top: 10px;
       padding: 10px 15px;
-      background-color: $green;
+      background-color: $green-dark;
       color: $white;
       border: none;
       border-radius: 5px;
@@ -83,7 +83,7 @@
       transition: background-color 0.3s;
 
       &:hover {
-        background-color: $green-hover;
+        background-color: $green;
       }
     }
   }

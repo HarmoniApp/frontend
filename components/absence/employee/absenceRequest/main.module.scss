@@ -130,7 +130,7 @@
 
     .addButton {
         @include displayDFJAG(flex, null, null, center);
-        background-color: $green;
+        background-color: $green-dark;
         color: $font-light-colour;
         padding: 10px 20px;
         border: none;
@@ -139,7 +139,7 @@
         transition: background-color 0.3s ease;
 
         &:hover {
-            background-color: $green-hover;
+            background-color: $green;
         }
 
         .buttonParagraph {

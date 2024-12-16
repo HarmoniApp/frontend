@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import Absence from '@/components/types/absence';
 import AbsenceRequest from '@/components/absence/employee/absenceRequest';
-import CancelConfirmation from './cancelConfirmation';
 import styles from './main.module.scss';
 import { deleteAbsence, fetchAvailableAbsenceDays, fetchUserAbsences } from '@/services/absenceService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import CustomButton from '@/components/customButton';
+import ConfirmationPopUp from '@/components/confirmationPopUp';
 
 interface AbsenceEmployeesProps {
     userId: number;
@@ -27,6 +27,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
     const handleCancelAbsence = async () => {
         if (selectedAbsenceId === null) return;
         await deleteAbsence(selectedAbsenceId, userId, setAbsenceTypeNames, setAbsences);
+        setModalIsOpenCancelAbsence(false);
         await fetchAvailableAbsenceDays(userId, setAvailableAbsenceDays);
     };
 
@@ -109,12 +110,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
             {modalIsOpenCancelAbsence && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
-                        <CancelConfirmation
-                            onCancel={handleCancelAbsence}
-                            onClose={() => setModalIsOpenCancelAbsence(false)}
-                            absenceType={selectedAbsenceType}
-                            absenceStartAndEnd={`${selectedAbsenceStart} - ${selectedAbsenceEnd}`}
-                        />
+                        <ConfirmationPopUp action={handleCancelAbsence} onClose={() => setModalIsOpenCancelAbsence(false)} description={`Anulować ten wniosek o urlop: ${selectedAbsenceType} ${selectedAbsenceStart} - ${selectedAbsenceEnd}`} />
                     </div>
                 </div>
             )}

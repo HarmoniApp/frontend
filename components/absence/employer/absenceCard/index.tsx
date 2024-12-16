@@ -4,12 +4,11 @@ import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import Absence from '@/components/types/absence';
 import AbsenceType from '@/components/types/absenceType';
 import User from "@/components/types/user";
-import CancelConfirmation from './popUps/cancelConfirmation';
-import AproveConfirmation from './popUps/aproveConfirmation';
 import styles from './main.module.scss';
 import { fetchSimpleUser } from '@/services/userService';
 import { fetchAbsenceType, patchAbsence } from '@/services/absenceService';
 import LoadingSpinner from '@/components/loadingSpinner';
+import ConfirmationPopUp from '@/components/confirmationPopUp';
 interface AbsenceCardProps {
     absence: Absence;
     onStatusUpdate: () => void;
@@ -51,6 +50,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     const handleDeclineClick = async () => {
         try {
             await updateAbsenceStatus(absence.id, 4);
+            setModalIsOpenCancelAbsence(false);
             onStatusUpdate();
         } catch (error) {
             console.error('Error rejecting absence:', error);
@@ -60,6 +60,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     const handleAcceptClick = async () => {
         try {
             await updateAbsenceStatus(absence.id, 2);
+            setModalIsOpenAproveAbsence(false);
             onStatusUpdate();
         } catch (error) {
             console.error('Error approving absence:', error);
@@ -144,24 +145,14 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
             {modalIsOpenCancelAbsence && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
-                        <CancelConfirmation
-                            onCancel={handleDeclineClick}
-                            onClose={() => setModalIsOpenCancelAbsence(false)}
-                            absenceType={absenceType?.name ?? 'Unknown'}
-                            absenceStartAndEnd={`${startDate()} - ${endDate()}`}
-                        />
+                        <ConfirmationPopUp action={handleDeclineClick} onClose={() => setModalIsOpenCancelAbsence(false)} description={`Anulować ten wniosek o urlop: ${absenceType?.name ?? 'Nieznany'} ${startDate()} - ${endDate()}`} />
                     </div>
                 </div>
             )}
             {modalIsOpenAproveAbsence && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
-                        <AproveConfirmation
-                            onAprove={handleAcceptClick}
-                            onClose={() => setModalIsOpenAproveAbsence(false)}
-                            absenceType={absenceType?.name ?? 'Unknown'}
-                            absenceStartAndEnd={`${startDate()} - ${endDate()}`}
-                        />
+                        <ConfirmationPopUp action={handleAcceptClick} onClose={() => setModalIsOpenAproveAbsence(false)} description={`Zaakceptować ten wniosek o urlop: ${absenceType?.name ?? 'Nieznany'} ${startDate()} - ${endDate()}`} />
                     </div>
                 </div>
             )}

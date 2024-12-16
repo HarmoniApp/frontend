@@ -3,13 +3,13 @@ import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPen, faCheck, faXmark, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import DeleteConfirmation from '../popUps/deleteConfirmation';
 import * as Yup from "yup";
 import classNames from "classnames";
 import DepartmentAddress from "@/components/types/departmentAddress";
 import styles from "./main.module.scss";
 import { deleteDepartment, fetchDepartmentsAddress, postDepartment, putDepartment } from "@/services/departmentService";
 import LoadingSpinner from "@/components/loadingSpinner";
+import ConfirmationPopUp from "@/components/confirmationPopUp";
 
 const Departments = () => {
     const [departments, setDepartments] = useState<DepartmentAddress[]>([]);
@@ -41,7 +41,7 @@ const Departments = () => {
         }
         catch (error) {
             console.error("Error adding department:", error);
-        } 
+        }
     };
 
     const handleEditDepartment = async (values: DepartmentAddress) => {
@@ -52,11 +52,12 @@ const Departments = () => {
             }
             catch (error) {
                 console.error("Error updating department:", error);
-            } 
+            }
         }
     };
 
     const handleDeleteDepartment = async (departmentId: number) => {
+        setIsDeleteModalOpen(false);
         await deleteDepartment(departmentId, setDepartments);
     };
 
@@ -301,11 +302,7 @@ const Departments = () => {
                                     <>
                                         <div className={styles.modalOverlay}>
                                             <div className={styles.modalContent}>
-                                                <DeleteConfirmation
-                                                    onClose={() => setIsDeleteModalOpen(false)}
-                                                    onDelete={() => handleDeleteDepartment(department.id)}
-                                                    info={department.department_name}
-                                                />
+                                                <ConfirmationPopUp action={() => handleDeleteDepartment(department.id)} onClose={() => setIsDeleteModalOpen(false)} description={`Usunąć oddział o nazwie: ${department.department_name}`} />
                                             </div>
                                         </div>
                                     </>

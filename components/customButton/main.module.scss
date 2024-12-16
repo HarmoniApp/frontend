@@ -42,3 +42,21 @@
     width: 100%;
     text-transform: none;
 }
+
+.atBackPopUp{
+    .icon{
+        transform: rotate(-90deg);
+    }
+}
+
+.atConfirmPopUp {
+    background-color: $main-colour-hover;
+    border: 2px solid $main-colour-hover;
+    color: $font-light-colour;
+
+    &:hover {
+        background-color: $white;
+        color: $font-dark-colour;
+        border: 2px solid $main-colour-hover;
+    }
+}

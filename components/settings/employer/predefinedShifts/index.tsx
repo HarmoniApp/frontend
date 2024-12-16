@@ -3,20 +3,18 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 import PredefinedShift from '@/components/types/predefinedShifts';
-import DeleteConfirmation from '../popUps/deleteConfirmation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import { formatTimeToHHMM, fetchPredefinedShifts, deletePredefineShift, postPredefineShift, putPredefineShift } from '@/services/predefineShiftService';
-import LoadingSpinner from '@/components/loadingSpinner';
+import ConfirmationPopUp from '@/components/confirmationPopUp';
 
 const PredefinedShifts = () => {
   const [predefineShifts, setPredefineShifts] = useState<PredefinedShift[]>([]);
   const [editingShiftId, setEditingShiftId] = useState<number | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteShiftId, setDeleteShiftId] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
 
   const openDeleteModal = (shiftId: number) => {
     setDeleteShiftId(shiftId);
@@ -47,7 +45,7 @@ const PredefinedShifts = () => {
     } catch (error) {
       console.error('Error adding predefine shift:', error);
       throw error;
-    } 
+    }
   };
 
   const handleEditPredefineShift = async (values: PredefinedShift, { resetForm }: any) => {
@@ -58,10 +56,11 @@ const PredefinedShifts = () => {
     }
     catch (error) {
       console.error("Error updating predefine shift:", error);
-    } 
+    }
   };
 
   const handleDeletePredefineShift = async (shiftId: number) => {
+    setIsDeleteModalOpen(false);
     await deletePredefineShift(shiftId, setPredefineShifts);
   };
 
@@ -199,11 +198,7 @@ const PredefinedShifts = () => {
                   <>
                     <div className={styles.modalOverlay}>
                       <div className={styles.modalContent}>
-                        <DeleteConfirmation
-                          onClose={() => setIsDeleteModalOpen(false)}
-                          onDelete={() => handleDeletePredefineShift(shift.id)}
-                          info={shift.name}
-                        />
+                        <ConfirmationPopUp action={() => handleDeletePredefineShift(shift.id)} onClose={() => setIsDeleteModalOpen(false)} description={`Usunąć predefiniowaną zmianę o nazwie: ${shift.name}`} />
                       </div>
                     </div>
                   </>
@@ -268,7 +263,6 @@ const PredefinedShifts = () => {
           </Form>
         )}
       </Formik>
-      {loading && <LoadingSpinner />}
     </div>
   );
 };

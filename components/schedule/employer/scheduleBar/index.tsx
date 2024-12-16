@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import PublishConfirmation from './publishConfirmation';
 import styles from './main.module.scss';
 import { downloadSchedulePdf } from '@/services/pdfService';
 import { downloadScheduleXLSX } from '@/services/xlsxService';
-import LoadingSpinner from '@/components/loadingSpinner';
 import CustomButton from '@/components/customButton';
+import ConfirmationPopUp from '@/components/confirmationPopUp';
 interface ScheduleBarProps {
   currentWeek: Date[];
   onNextWeek: () => void;
@@ -15,9 +14,6 @@ interface ScheduleBarProps {
 const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPreviousWeek, onPublishAll }) => {
   const [modalIsOpenPublish, setModalIsOpenPublish] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
-  
-
   const formatDate = (date: Date) => {
     const [year, month, day] = date.toISOString().split('T')[0].split('-');
     return `${day}.${month}.${year}`;
@@ -46,12 +42,17 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
     }
   };
 
+  const handlePublish = async () => {
+    setModalIsOpenPublish(false);
+    await onPublishAll();
+  }
+
   return (
     <div className={styles.scheduleBarContainerMain}>
       <div className={styles.buttonContainer}>
-        <CustomButton icon="calendarCheck" writing="Opublikuj" action={() => setModalIsOpenPublish(true)}/>
+        <CustomButton icon="calendarCheck" writing="Opublikuj" action={() => setModalIsOpenPublish(true)} />
         <div className={styles.exportDropdownContainer}>
-          <CustomButton icon="cloudArrowDown" writing="Exportuj" action={() => setDropdownVisible(prev => !prev)}/>
+          <CustomButton icon="cloudArrowDown" writing="Exportuj" action={() => setDropdownVisible(prev => !prev)} />
           {dropdownVisible && (
             <div className={styles.exportDropdownMenu}>
               <button onClick={() => handleExport('pdf')}>Eksportuj do PDF</button>
@@ -61,7 +62,7 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
         </div>
       </div>
       <div className={styles.weekSwitcher}>
-        <CustomButton icon="chevronLeft" writing="" action={onPreviousWeek}/>
+        <CustomButton icon="chevronLeft" writing="" action={onPreviousWeek} />
         <div className={styles.dateRange}>
           <p className={styles.dateRangeParagraph}>
             {currentWeek[0].toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' })}
@@ -71,21 +72,15 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
             {currentWeek[6].toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' })}
           </p>
         </div>
-        <CustomButton icon="chevronRight" writing="" action={onNextWeek}/>
+        <CustomButton icon="chevronRight" writing="" action={onNextWeek} />
       </div>
       {modalIsOpenPublish && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <PublishConfirmation
-              onPublish={onPublishAll}
-              onClose={() => setModalIsOpenPublish(false)}
-              week={getThisWeek()}
-            />
+            <ConfirmationPopUp action={handlePublish} onClose={() => setModalIsOpenPublish(false)} description={`Opublikować zmiany na ten tydzien: ${getThisWeek()}`} />
           </div>
         </div>
       )}
-      {loading && <LoadingSpinner />}
-      
     </div>
   );
 };

@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 import Contract from '@/components/types/contract';
-import DeleteConfirmation from '../popUps/deleteConfirmation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import { deleteContractType, fetchContracts, postContractType, putContractType } from '@/services/contractService';
 import LoadingSpinner from '@/components/loadingSpinner';
+import ConfirmationPopUp from '@/components/confirmationPopUp';
 
 const ContractTypes = () => {
   const [contracts, setContracts] = useState<Contract[]>([]);
@@ -34,6 +34,7 @@ const ContractTypes = () => {
   }, []);
 
   const handleDeleteContractType = async (contractId: number) => {
+    setIsDeleteModalOpen(false);
     await deleteContractType(contractId, setContracts);
   };
 
@@ -159,11 +160,7 @@ const ContractTypes = () => {
                 {isDeleteModalOpen && deleteContractId === contract.id && (
                   <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
-                      <DeleteConfirmation
-                        onClose={() => setIsDeleteModalOpen(false)}
-                        onDelete={() => handleDeleteContractType(contract.id)}
-                        info={contract.name}
-                      />
+                      <ConfirmationPopUp action={() => handleDeleteContractType(contract.id)} onClose={() => setIsDeleteModalOpen(false)} description={`Usunąć typ umowy o nazwie: ${contract.name}`} />
                     </div>
                   </div>
                 )}

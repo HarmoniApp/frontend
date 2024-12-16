@@ -151,7 +151,7 @@
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
-    background-color: $green;
+    background-color: $green-dark;
     color: $font-light-colour;
     padding: 10px 15px;
 
@@ -166,7 +166,7 @@
     }
 
     &:hover {
-      background-color: $green-hover;
+      background-color: $green;
     }
   }
 

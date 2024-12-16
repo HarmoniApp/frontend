@@ -9,6 +9,7 @@ import styles from './main.module.scss';
 import { fetchUserRoles } from '@/services/roleService';
 import { fetchPredefinedShifts } from '@/services/predefineShiftService';
 import { shiftValidationSchema } from '@/validationSchemas/shiftValidationSchema';
+import ConfirmationPopUp from '@/components/confirmationPopUp';
 
 interface EditShiftModalProps {
   isOpen: boolean;
@@ -32,9 +33,9 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
       await fetchPredefinedShifts(setPredefineShifts);
       await fetchUserRoles(shift.user_id, setRoles);
       setLoading(false);
-  }
+    }
 
-  loadData();
+    loadData();
   }, [shift.user_id]);
 
   const shiftHours: string[] = [];
@@ -82,25 +83,7 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
         {isDeleteConfirmOpen ? (
-          <div className={styles.deleteContainerMain}>
-            <div className={styles.headerContainer}>
-              <label className={styles.highlightTitle}>Czy na pewno chcesz usunąć tę zmianę?</label>
-              <div className={styles.infoContainer}>
-                <label className={styles.headerLabel}>{firstName} {surname}</label>
-                <label className={styles.highlight}>{newDayFormat()}</label>
-              </div>
-            </div>
-            <div className={styles.butonContainter}>
-              <button className={styles.closeButton} onClick={() => setIsDeleteConfirmOpen(false)}>
-                <FontAwesomeIcon className={styles.buttonIcon} icon={faArrowTurnUp} style={{ transform: 'rotate(-90deg)' }} />
-                <p className={styles.buttonParagraph}>Cofnij</p>
-              </button>
-              <button className={styles.deleteButton} onClick={() => confirmDeleteShift(shift.id, shift.user_id)}>
-                <FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarXmark} />
-                <p className={styles.buttonParagraph}>Usuń zmianę</p>
-              </button>
-            </div>
-          </div>
+          <ConfirmationPopUp action={() => confirmDeleteShift(shift.id, shift.user_id)} onClose={() => setIsDeleteConfirmOpen(false)} description={`Usunąć zmianę dla użytkowanika: ${firstName} ${surname}`} />
         ) : (
           <Formik
             initialValues={{
