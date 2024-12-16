@@ -67,17 +67,17 @@ export const employeeValidationSchema = Yup.object({
             .max(50, 'Max 50 znaków')
             .required('Pole wymagane')
             .test('no-invalid-chars', function (value) {
-                const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z ]*$/);
+                const invalidChars = findInvalidCharacters(value || '', polishRegex);
                 return invalidChars.length === 0
                     ? true
                     : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
-            }),
+                }),
         street: Yup.string()
             .min(1, 'Min 1 znaków')
             .max(100, 'Max 100 znaków')
             .required('Pole wymagane')
             .test('no-invalid-chars', function (value) {
-                const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z ]*$/);
+                const invalidChars = findInvalidCharacters(value || '', polishRegex);
                 return invalidChars.length === 0
                     ? true
                     : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });

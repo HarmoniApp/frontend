@@ -20,7 +20,7 @@ export const downloadSchedulePdf = async (
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        const filename = `shifts_${startOfWeek} - ${endOfWeek}.pdf`;
+        const filename = `grafik_${startOfWeek} - ${endOfWeek}.pdf`;
         link.setAttribute('download', filename);
         document.body.appendChild(link);
         link.click();
@@ -48,7 +48,7 @@ export const downloadUsersPDF = async (): Promise<void> => {
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        const filename = `allUsers.pdf`;
+        const filename = `pracownicy.pdf`;
         link.setAttribute('download', filename);
         document.body.appendChild(link);
         link.click();
