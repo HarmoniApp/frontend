@@ -37,10 +37,8 @@
         .idLabel,
         .firstnameLabel,
         .surnameLabel,
-        .remainingDaysLabel,
         .startDateLabel,
         .endDateLabel,
-        .quantityDaysLabel,
         .statusNameLabel {
             @include displayDFJAG(flex, row, space-between, center, 5px);
         }
@@ -48,10 +46,8 @@
         .idParagraph,
         .firstnameParagraph,
         .surnameParagraph,
-        .remainingDaysParagraph,
         .startDateParagraph,
         .endDateParagraph,
-        .quantityDaysParagraph,
         .statusNameParagraph {
             font-size: 16px;
             font-weight: bold;
@@ -62,10 +58,8 @@
         .idDataParagraph,
         .firstnameDataParagraph,
         .surnameDataParagraph,
-        .remainingDaysDataParagraph,
         .startDateDataParagraph,
         .endDateDataParagraph,
-        .quantityDaysDataParagraph,
         .statusNameDataParagraph {
             font-size: 16px;
             color: $font-dark-colour;
