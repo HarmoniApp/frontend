@@ -36,7 +36,6 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
     const subbmisionDate = () => new Date(absence.submission).toLocaleDateString();
     const startDate = () => new Date(absence.start).toLocaleDateString();
     const endDate = () => new Date(absence.end).toLocaleDateString();
-    const workingDays = () => absence.working_days ?? 0;
 
     const updateAbsenceStatus = async (absenceId: number, statusId: number) => {
         setLoading(true);
@@ -125,10 +124,6 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                         <p className={styles.surnameParagraph}>Nazwisko:</p>
                         <p className={styles.surnameDataParagraph}>{user?.surname}</p>
                     </label>
-                    <label className={styles.remainingDaysLabel}>
-                        <p className={styles.remainingDaysParagraph}>Dostępne dni:</p>
-                        <p className={styles.remainingDaysDataParagraph}>20</p>
-                    </label>
                 </div>
                 <div className={styles.columnContainer}>
                     <label className={styles.startDateLabel}>
@@ -138,10 +133,6 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                     <label className={styles.endDateLabel}>
                         <p className={styles.endDateParagraph}>Do:</p>
                         <p className={styles.endDateDataParagraph}>{endDate()}</p>
-                    </label>
-                    <label className={styles.quantityDaysLabel}>
-                        <p className={styles.quantityDaysParagraph}>Liczba dni:</p>
-                        <p className={styles.quantityDaysDataParagraph}>{workingDays()}</p>
                     </label>
                     <label className={styles.statusNameLabel}>
                         <p className={styles.statusNameParagraph}>Status:</p>
