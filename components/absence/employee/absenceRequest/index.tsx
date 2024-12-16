@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck, faArrowTurnUp } from '@fortawesome/free-solid-svg-icons';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { fetchAbsenceTypes, postAbsence } from '@/services/absenceService';
-import * as Yup from 'yup';
 import AbsenceType from '@/components/types/absenceType';
 import classNames from 'classnames';
 import styles from './main.module.scss';
+import { absenceValidationSchema } from '@/validationSchemas/absenceValidationSchema';
 interface AbsenceEmployeesRequestProps {
     onClose: () => void;
     onSend: number;
@@ -32,16 +32,6 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
             console.error('Error adding absence:', error);
         } 
     };
-
-    const validationSchema = Yup.object({
-        absence_type_id: Yup.string().required('Pole wymagane'),
-        start: Yup.date()
-            .required('Pole wymagane')
-            .min(new Date(), 'Data nie może być w przeszłości'),
-        end: Yup.date()
-            .required('Pole wymagane')
-            .min(Yup.ref('start'), 'Data zakończenia nie może być przed datą rozpoczęcia'),
-    });
 
     const calculateDaysDifference = (start: string, end: string): number => {
         if (!start || !end) return 0;
@@ -73,7 +63,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                     end: '',
                     absence_type_id: ''
                 }}
-                validationSchema={validationSchema}
+                validationSchema={absenceValidationSchema}
                 onSubmit={handleAddAbsence}
             >
                 {({ values, errors, touched }) => {

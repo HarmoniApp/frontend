@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowTurnUp, faCalendarXmark, faCalendarPlus } from '@fortawesome/free-solid-svg-icons';
 import { Formik, Field, ErrorMessage, Form } from 'formik';
-import * as Yup from 'yup';
 import Role from '@/components/types/role';
 import Shift from '@/components/types/shift';
 import PredefinedShifts from '@/components/types/predefinedShifts';
 import styles from './main.module.scss';
 import { fetchUserRoles } from '@/services/roleService';
 import { fetchPredefinedShifts } from '@/services/predefineShiftService';
+import { shiftValidationSchema } from '@/validationSchemas/shiftValidationSchema';
 
 interface EditShiftModalProps {
   isOpen: boolean;
@@ -36,22 +36,6 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
 
   loadData();
   }, [shift.user_id]);
-
-  const validationSchema = Yup.object({
-    selectedRole: Yup.string().required('Pole wymagane'),
-    selectedStartTime: Yup.string()
-      .required('Pole wymagane')
-      .test('not-equal', 'Brak chronologii', function (value) {
-        const { selectedEndTime } = this.parent;
-        return value !== selectedEndTime;
-      }),
-    selectedEndTime: Yup.string()
-      .required('Pole wymagane')
-      .test('not-equal', 'Brak chronologii', function (value) {
-        const { selectedStartTime } = this.parent;
-        return value !== selectedStartTime;
-      }),
-  });
 
   const shiftHours: string[] = [];
   for (let hour = 0; hour < 24; hour++) {
@@ -124,7 +108,7 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
               selectedStartTime: shift.start.split('T')[1].slice(0, 5),
               selectedEndTime: shift.end.split('T')[1].slice(0, 5),
             }}
-            validationSchema={validationSchema}
+            validationSchema={shiftValidationSchema}
             onSubmit={(values) => {
               const newStart = `${shift.start.split('T')[0]}T${values.selectedStartTime}`;
               const newEnd = `${shift.end.split('T')[0]}T${values.selectedEndTime}`;

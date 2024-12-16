@@ -7,6 +7,7 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import styles from './main.module.scss';
 import { posChattMessage } from '@/services/chatService';
+import { messageValidationSchema } from '@/validationSchemas/messageValidationSchema';
 
 interface SendMessageFormProps {
     selectedChat: ChatPartner | null;
@@ -55,16 +56,10 @@ const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSele
         }
     };
 
-    const validationSchema = Yup.object({
-        message: Yup.string()
-            .required('Wiadomość nie może być pusta')
-            .test('no-only-spaces', 'Wiadomość nie może zawierać tylko spacji', value => value ? value.trim().length > 0 : false)
-    });
-
     return (
         <Formik
             initialValues={{ message: '' }}
-            validationSchema={validationSchema}
+            validationSchema={messageValidationSchema}
             onSubmit={(values, { resetForm }) => {
                 handleSendMessage(values.message, selectedLanguage);
                 resetForm();

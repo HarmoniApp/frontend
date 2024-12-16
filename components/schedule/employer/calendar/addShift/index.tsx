@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowTurnUp, faCalendarPlus, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { Formik, Field, ErrorMessage, Form } from 'formik';
-import * as Yup from 'yup';
 import Role from '@/components/types/role';
 import User from '@/components/types/user';
 import PredefinedShifts from '@/components/types/predefinedShifts';
@@ -10,6 +9,7 @@ import classNames from 'classnames';
 import styles from './main.module.scss';
 import { fetchUserRoles } from '@/services/roleService';
 import { fetchPredefinedShifts } from '@/services/predefineShiftService';
+import { shiftValidationSchema } from '@/validationSchemas/shiftValidationSchema';
 
 interface AddShiftModalProps {
     isOpen: boolean;
@@ -31,22 +31,6 @@ const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShi
             shiftHours.push(`${formattedHour}:${formattedMinute}`);
         }
     }
-
-    const validationSchema = Yup.object({
-        selectedRole: Yup.string().required('Pole wymagane'),
-        selectedStartTime: Yup.string()
-            .required('Pole wymagane')
-            .test('not-equal', 'Brak chronologii', function (value) {
-                const { selectedEndTime } = this.parent;
-                return value !== selectedEndTime;
-            }),
-        selectedEndTime: Yup.string()
-            .required('Pole wymagane')
-            .test('not-equal', 'Brak chronologii', function (value) {
-                const { selectedStartTime } = this.parent;
-                return value !== selectedStartTime;
-            })
-    });
 
     const shiftTime = (startTime: string, endTime: string) => {
         const convertTimeToDecimal = (time: string) => {
@@ -87,7 +71,7 @@ const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShi
                         selectedStartTime: '00:00',
                         selectedEndTime: '00:00',
                     }}
-                    validationSchema={validationSchema}
+                    validationSchema={shiftValidationSchema}
                     onSubmit={(values) => {
                         const newStart = `${day}T${values.selectedStartTime}`;
                         const newEnd = `${day}T${values.selectedEndTime}`;

@@ -4,7 +4,6 @@ import PredefinedShift from '@/components/types/predefinedShifts';
 import Role from '@/components/types/role';
 import Instruction from '@/components/plannerAI/instruction';
 import IRequirementsForm from '@/components/types/requirementsForm';
-import * as Yup from 'yup';
 import styles from './main.module.scss';
 import { fetchRoles } from '@/services/roleService';
 import { fetchPredefinedShifts } from '@/services/predefineShiftService';
@@ -12,6 +11,7 @@ import LoadingSpinner from '@/components/loadingSpinner';
 import { generateScheduleAi, revokeScheduleAi } from '@/services/planerAiService';
 import CustomButton from '@/components/customButton';
 import classNames from 'classnames';
+import { planerAiValidationSchema } from '@/validationSchemas/planerAiValidationSchema';
 
 const RequirementsForm: React.FC = () => {
     const [forms, setForms] = useState<IRequirementsForm[]>([
@@ -34,17 +34,6 @@ const RequirementsForm: React.FC = () => {
 
         loadData();
     }, []);
-
-    const validationSchema = Yup.object({
-        date: Yup.date()
-            .required('Musisz podać datę')
-            .min(new Date(), 'Data nie może być w przeszłości'),
-        shifts: Yup.array()
-            .min(1, 'Musisz wybrać co najmniej jedną zmianę')
-            .required('Pole wymagane'),
-        // roles: Yup.array()
-        //     .required('Musisz wybrać co najmniej jedną rolę'),
-    });
 
     const handleAddForm = () => {
         setForms((prevForms) => [
@@ -110,7 +99,7 @@ const RequirementsForm: React.FC = () => {
                 <Formik
                     key={form.id}
                     initialValues={form}
-                    validationSchema={validationSchema}
+                    validationSchema={planerAiValidationSchema}
                     onSubmit={() => { }}
                     innerRef={(instance) => {
                         if (instance) formRefs.current[index] = instance;

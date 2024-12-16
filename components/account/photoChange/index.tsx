@@ -2,37 +2,16 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { patchPhoto } from '@/services/imageService';
-import { toast } from 'react-toastify';
 import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
+
 import styles from './main.module.scss';
+import { photoValidationSchema } from '@/validationSchemas/photoValidationSchema';
 
 const PhotoChange: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const [fileName, setFileName] = useState<string | null>(null);
     const initialValues = {
         file: null,
     };
-
-    const validationSchema = Yup.object({
-        file: Yup.mixed()
-            .required(() => {
-                return toast.warning('Plik jest wymagany!');
-            })
-            .test('fileSize', (value) => {
-                if (value instanceof File && value.size > 2 * 1024 * 1024) {
-                    toast.warning('Plik za duży, maksymalny rozmiar to 2MB!');
-                    return false;
-                }
-                return true;
-            })
-            .test('fileFormat', (value) => {
-                if (value instanceof File && !['image/jpeg', 'image/png'].includes(value.type)) {
-                    toast.warning('Niedozwolony format pliku. Dozwolone formaty to: .jpeg, .png!');
-                    return false;
-                }
-                return true;
-            }),
-    });
 
     const handleSubmit = async (values: { file: File | null }) => {
         const formData = new FormData();
@@ -53,7 +32,7 @@ const PhotoChange: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             </div>
             <Formik
                 initialValues={initialValues}
-                validationSchema={validationSchema}
+                validationSchema={photoValidationSchema}
                 onSubmit={handleSubmit}
             >
                 {({ setFieldValue, isSubmitting }) => (

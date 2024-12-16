@@ -1,10 +1,9 @@
 import React from 'react';
 import ChatPartner from '@/components/types/chatPartner';
 import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
 import styles from './main.module.scss';
-import { fetchCsrfToken } from '@/services/csrfService';
 import { postGroup } from '@/services/chatService';
+import { groupValidationSchema } from '@/validationSchemas/groupValidationSchema';
 
 interface CreateGroupChatFormProps {
   userId: number;
@@ -45,16 +44,10 @@ const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setCh
     }
   };
 
-  const validationSchema = Yup.object({
-    groupName: Yup.string()
-      .required('Nazwa grupy nie może być pusta')
-      .test('no-only-spaces', 'Nazwa grupy nie może zawierać tylko spacji', value => value ? value.trim().length > 0 : false)
-  });
-
   return (
     <Formik
       initialValues={{ groupName: '' }}
-      validationSchema={validationSchema}
+      validationSchema={groupValidationSchema}
       onSubmit={handleCreateGroup}
     >
       {({ errors, touched }) => (

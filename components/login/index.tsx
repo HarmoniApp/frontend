@@ -4,12 +4,12 @@ import { useRouter } from 'next/navigation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import * as Yup from 'yup';
 import styles from './main.module.scss';
 import { jwtDecode } from "jwt-decode";
 import MyJwtPayload from '@/components/types/myJwtPayload';
 import LoadingSpinner from '../loadingSpinner';
 import { patchChangePassword } from '@/services/passwordService';
+import { changePasswordSchema, loginValidationSchema } from '@/validationSchemas/loginValidationSchema';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,41 +18,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [passwordPath, setPasswordPath] = useState<string>('');
   const router = useRouter();
-
-  const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
-    const invalidChars = value.split('').filter(char => !allowedPattern.test(char));
-    return Array.from(new Set(invalidChars));
-  };
-
-  const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .email('Niepoprawny adres e-mail.')
-      .required('Pole wymagane')
-      .test('no-invalid-chars', function (value) {
-        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9@.-]*$/);
-        return invalidChars.length === 0
-          ? true
-          : this.createError({ message: `Niedozwolone znak: ${invalidChars.join(', ')}` });
-      })
-      .test('no-consecutive-special-chars', 'Niedozwolone znaki', function (value) {
-        const invalidPattern = /(\.\.|--|@@)/;
-        return !invalidPattern.test(value || '');
-      }),
-    password: Yup.string().required('Hasło jest wymagane'),
-  });
-
-  const changePasswordSchema = Yup.object().shape({
-    newPassword: Yup.string()
-      .required('Wymagane nowe hasło')
-      .min(8, 'Hasło musi mieć co najmniej 8 znaków')
-      .matches(/[0-9]/, 'Hasło wymaga cyfry')
-      .matches(/[a-z]/, 'Hasło wymaga małej litery')
-      .matches(/[A-Z]/, 'Hasło wymaga dużej litery')
-      .matches(/[^\w]/, 'Hasło wymaga znaku specjalnego'),
-    repeatPassword: Yup.string()
-      .oneOf([Yup.ref('newPassword')], 'Hasła muszą być takie same')
-      .required('Potwierdzenie hasła jest wymagane'),
-  });
 
   const handleSubmit = async (values: any) => {
     setLoading(true);
@@ -125,7 +90,7 @@ const Login = () => {
       <h1 className={styles.title}>Harmoni App</h1>
       <Formik
         initialValues={{ email: '', password: '' }}
-        validationSchema={validationSchema}
+        validationSchema={loginValidationSchema}
         onSubmit={handleSubmit}
       >
         {({ errors, touched }) => (
