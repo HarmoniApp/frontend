@@ -20,7 +20,7 @@ export const downloadScheduleXLSX = async (
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        const filename = `shifts_${startOfWeek} - ${endOfWeek}.xlsx`;
+        const filename = `grafik_${startOfWeek} - ${endOfWeek}.xlsx`;
         link.setAttribute('download', filename);
         document.body.appendChild(link);
         link.click();
@@ -48,7 +48,7 @@ export const downloadUsersXLSX = async (): Promise<void> => {
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        const filename = `allUsers.xlsx`;
+        const filename = `pracownicy.xlsx`;
         link.setAttribute('download', filename);
         document.body.appendChild(link);
         link.click();

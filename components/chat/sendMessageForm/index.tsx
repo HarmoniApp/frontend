@@ -4,7 +4,6 @@ import Message from '@/components/types/message';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
 import styles from './main.module.scss';
 import { posChattMessage } from '@/services/chatService';
 import { messageValidationSchema } from '@/validationSchemas/messageValidationSchema';
