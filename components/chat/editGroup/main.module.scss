@@ -76,3 +76,16 @@
     color: $font-dark-colour;
   }
 }
+
+.iconClose {
+  position: fixed;
+  // top: 10px;
+  // right: 10px;
+  color: $white;
+  cursor: pointer;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: $red;
+  }
+}

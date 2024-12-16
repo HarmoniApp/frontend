@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import ChatPartner from '@/components/types/chatPartner';
 import SearchUser from '@/components/chat/searchUser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserMinus, faXmark, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faUserMinus, faXmark, faTrash, faX } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import UserImage from '@/components/userImage';
 import { deleteGroup, fetchGroupMembers, patchAddUserToGroup, patchRemoveUserFromGroup } from '@/services/chatService';
@@ -13,9 +13,10 @@ interface EditGroupProps {
     setSelectedUsers: (selectedUsers: ChatPartner[]) => void;
     selectedChat: ChatPartner | null;
     setLoading: (loading: boolean) => void;
+    setIsEditGroupModalOpen: (isOpen: boolean) => void;
 }
 
-const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, setSelectedUsers, selectedChat, setLoading }) => {
+const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, setSelectedUsers, selectedChat, setLoading, setIsEditGroupModalOpen }) => {
 
     useEffect(() => {
         handleEditGroup();
@@ -90,6 +91,7 @@ const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, se
     return (
         <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
+            <FontAwesomeIcon icon={faX} onClick={() => setIsEditGroupModalOpen(false)} className={styles.iconClose}/>
                 <h3 className={styles.title}>Edit group</h3>
                 <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true} />
                 <div className={styles.selectedUsers}>

@@ -249,6 +249,7 @@ const Chat = () => {
           setSelectedUsers={setSelectedUsers}
           selectedChat={selectedChat}
           setLoading={setLoading}
+          setIsEditGroupModalOpen={setIsEditGroupModalOpen}
          />
       )}
       {loading &&  <LoadingSpinner />}
