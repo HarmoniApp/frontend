@@ -12,6 +12,7 @@ import { generateScheduleAi, revokeScheduleAi } from '@/services/planerAiService
 import CustomButton from '@/components/customButton';
 import classNames from 'classnames';
 import { planerAiValidationSchema } from '@/validationSchemas/planerAiValidationSchema';
+import ConfirmationPopUp from '@/components/confirmationPopUp';
 
 const RequirementsForm: React.FC = () => {
     const [forms, setForms] = useState<IRequirementsForm[]>([
@@ -22,6 +23,7 @@ const RequirementsForm: React.FC = () => {
     const [roles, setRoles] = useState<Role[]>([]);
     const [loading, setLoading] = useState(false);
     const [isInstructionOpen, setIsInstructionOpen] = useState(false);
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
     const formRefs = useRef<FormikProps<any>[]>([]);
 
     useEffect(() => {
@@ -83,10 +85,8 @@ const RequirementsForm: React.FC = () => {
     };
 
     const handleRevoke = async () => {
-        if (!window.confirm('Czy na pewno chcesz usunąć wszystkie ostatnio wygenerowane przez PlanerAi zmiany?')) {
-            return;
-        }
         try {
+            setIsConfirmationModalOpen(false);
             await revokeScheduleAi();
         } catch (error) {
             console.error('Failed to send data:', error);
@@ -168,7 +168,7 @@ const RequirementsForm: React.FC = () => {
                             </div>
                             <div className={styles.rolesContainerMain}>
                                 {values.shifts.map((shift) => (
-                                    <>
+                                    <div key={shift.shiftId}>
                                         <div className={styles.rolesInfoContainer}>
                                             <hr />
                                             <p className={styles.editingShiftIdParagraph}>
@@ -178,7 +178,7 @@ const RequirementsForm: React.FC = () => {
                                                 </label>
                                             </p>
                                         </div>
-                                        <div key={shift.shiftId} className={styles.roleContainer}>
+                                        <div className={styles.roleContainer}>
                                             <ErrorMessage name="roles" component="div" className={styles.errorMessage} />
                                             {roles.map((role) => {
                                                 const roleInShift = shift.roles.find((r) => r.roleId === role.id);
@@ -243,7 +243,7 @@ const RequirementsForm: React.FC = () => {
                                                 );
                                             })}
                                         </div>
-                                    </>
+                                    </div>
                                 ))}
                             </div>
                             <CustomButton icon="trashCan" writing="Usuń dzień" action={() => handleRemoveForm(form.id)} />
@@ -254,10 +254,17 @@ const RequirementsForm: React.FC = () => {
             <div className={styles.buttonContainer}>
                 <CustomButton icon="chartSimple" writing="Generuj" action={handleSubmit} />
                 <CustomButton icon="plus" writing="Dodaj kolejny dzień" action={handleAddForm} />
-                <CustomButton icon="eraser" writing="Usuń wszystkie zmiany ostatnio wprowadzone przez PlanerAi" action={handleRevoke} />
+                <CustomButton icon="eraser" writing="Usuń wszystkie zmiany ostatnio wprowadzone przez PlanerAi" action={() => setIsConfirmationModalOpen(true)} />
                 <Instruction isOpen={isInstructionOpen} onClose={() => setIsInstructionOpen(false)} />
             </div>
             {loading && <LoadingSpinner />}
+            {isConfirmationModalOpen && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <ConfirmationPopUp action={handleRevoke} onClose={() => setIsConfirmationModalOpen(false)} description={`Usunąć wszystkie ostatnio wygenerowane przez PlanerAi zmiany`} />
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
