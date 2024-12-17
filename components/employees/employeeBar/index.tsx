@@ -6,6 +6,7 @@ import { downloadUsersPDF } from '@/services/pdfService';
 import { downloadUsersXLSX } from '@/services/xlsxService';
 import CustomButton from '@/components/customButton';
 import styles from './main.module.scss';
+import ConfirmationPopUp from '@/components/confirmationPopUp';
 
 interface EmployeeBarProps {
   setActiveView: (view: 'tiles' | 'list') => void;
@@ -14,11 +15,12 @@ interface EmployeeBarProps {
 
 const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [fileFormat, setFileFormat] = useState<string>('');
   const router = useRouter();
 
   const onAddEmployee = () => {
     router.push('/employees/user/add');
-    //happy path
   };
 
   const importEmployee = () => {
@@ -31,15 +33,11 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
   const handleExport = async (format: string) => {
     setDropdownVisible(false);
 
-    const confirmDownload = window.confirm(`Czy na pewno chcesz pobrać plik w formacie ${format.toUpperCase()}?`);
-
-    if (!confirmDownload) {
-      return;
-    }
-
     if (format === 'pdf') {
+      setIsConfirmationModalOpen(false);
       await downloadUsersPDF();
     } else if (format === 'xlsx') {
+      setIsConfirmationModalOpen(false);
       await downloadUsersXLSX();
     }
   };
@@ -53,8 +51,8 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
           <CustomButton icon="cloudArrowDown" writing="exportuj" action={toggleDropdown} />
           {dropdownVisible && (
             <div className={styles.exportDropdownMenu}>
-              <button onClick={() => handleExport('pdf')} > Eksportuj do PDF</button>
-              <button onClick={() => handleExport('xlsx')} > Eksportuj do Excel</button>
+              <button onClick={() => { setFileFormat('pdf'); setIsConfirmationModalOpen(true); }}>Eksportuj do PDF</button>
+              <button onClick={() => { setFileFormat('xlsx'); setIsConfirmationModalOpen(true); }}>Eksportuj do Excel</button>
             </div>
           )}
         </div>
@@ -71,6 +69,13 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
           <FontAwesomeIcon icon={faGrip} />
         </button>
       </div>
+      {isConfirmationModalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <ConfirmationPopUp action={() => { handleExport(fileFormat) }} onClose={() => setIsConfirmationModalOpen(false)} description={`Pobrać plik`} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
