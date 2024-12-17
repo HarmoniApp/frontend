@@ -65,7 +65,13 @@ export const generateScheduleAi = async (
         })(),
         {
             pending: 'Generowanie harmonogramu...',
-            success: 'Harmonogram został wygenerowany!'
+            success: 'Harmonogram został wygenerowany!',
+            error: {
+                render({ data }) {
+                    const errorMessage = data instanceof Error ? data.message : 'Wystąpił błąd podczas dodawania urlopu';
+                    return errorMessage;
+                },
+            }
         }
     );
 };
