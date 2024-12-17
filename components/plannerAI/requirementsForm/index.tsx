@@ -168,6 +168,16 @@ const RequirementsForm: React.FC = () => {
                             </div>
                             <div className={styles.rolesContainerMain}>
                                 {values.shifts.map((shift) => (
+                                    <>
+                                        <div className={styles.rolesInfoContainer}>
+                                            <hr />
+                                            <p className={styles.editingShiftIdParagraph}>
+                                                Ustawiasz rolę dla predefiniowanej zmiany o nazwie:
+                                                <label className={styles.setRolesForPredefineShiftHighlight}>
+                                                    {predefineShifts.find((s) => s.id === shift.shiftId)?.name || 'Nieznana zmiana'}
+                                                </label>
+                                            </p>
+                                        </div>
                                         <div key={shift.shiftId} className={styles.roleContainer}>
                                             <ErrorMessage name="roles" component="div" className={styles.errorMessage} />
                                             {roles.map((role) => {
@@ -233,6 +243,7 @@ const RequirementsForm: React.FC = () => {
                                                 );
                                             })}
                                         </div>
+                                    </>
                                 ))}
                             </div>
                             <CustomButton icon="trashCan" writing="Usuń dzień" action={() => handleRemoveForm(form.id)} />

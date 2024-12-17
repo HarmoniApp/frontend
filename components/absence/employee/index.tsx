@@ -7,6 +7,7 @@ import { deleteAbsence, fetchAvailableAbsenceDays, fetchUserAbsences } from '@/s
 import LoadingSpinner from '@/components/loadingSpinner';
 import CustomButton from '@/components/customButton';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
+import { Card } from 'primereact/card';
 
 interface AbsenceEmployeesProps {
     userId: number;
@@ -62,34 +63,38 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
                         </tr>
                     </thead>
                     <tbody className={styles.absenceDataBody}>
-                        {absences.map((absence) => (
-                            <tr key={absence.id} className={styles.absenceDataBodyRowElement}>
-                                <td className={styles.absenceDataBodyHeadElement}>
-                                    {absenceTypeNames[absence.absence_type_id] || 'Ładowanie...'}
-                                </td>
-                                <td className={styles.absenceDataBodyHeadElement}>
-                                    {new Date(absence.start).toLocaleDateString()}
-                                </td>
-                                <td className={styles.absenceDataBodyHeadElement}>
-                                    {new Date(absence.end).toLocaleDateString()}
-                                </td>
-                                <td className={`${styles.absenceDataBodyHeadElement} ${styles.afterElement}`}>
-                                    {absence.working_days}
-                                </td>
-                                <td className={styles.absenceDataBodyHeadElement}>
-                                    {absence.status.name}
-                                </td>
-                                <td className={`${styles.absenceDataBodyHeadElement} ${styles.absenceDataBodyHeadElementButton}`}>
-                                    <CustomButton icon="calendarMinus" writing="Anuluj" action={() => {
-                                        setSelectedAbsenceId(absence.id);
-                                        setSelectedAbsenceType(absenceTypeNames[absence.absence_type_id]);
-                                        setSelectedAbsenceStart(new Date(absence.start).toLocaleDateString());
-                                        setSelectedAbsenceEnd(new Date(absence.end).toLocaleDateString());
-                                        setModalIsOpenCancelAbsence(true);
-                                    }} />
-                                </td>
-                            </tr>
-                        ))}
+                        {absences.length === 0 ? (
+                            <Card title="Brak złożonych wniosków" className={styles.noDataCard}></Card>
+                        ) : (
+                            absences.map((absence) => (
+                                <tr key={absence.id} className={styles.absenceDataBodyRowElement}>
+                                    <td className={styles.absenceDataBodyHeadElement}>
+                                        {absenceTypeNames[absence.absence_type_id] || 'Ładowanie...'}
+                                    </td>
+                                    <td className={styles.absenceDataBodyHeadElement}>
+                                        {new Date(absence.start).toLocaleDateString()}
+                                    </td>
+                                    <td className={styles.absenceDataBodyHeadElement}>
+                                        {new Date(absence.end).toLocaleDateString()}
+                                    </td>
+                                    <td className={`${styles.absenceDataBodyHeadElement} ${styles.afterElement}`}>
+                                        {absence.working_days}
+                                    </td>
+                                    <td className={styles.absenceDataBodyHeadElement}>
+                                        {absence.status.name}
+                                    </td>
+                                    <td className={`${styles.absenceDataBodyHeadElement} ${styles.absenceDataBodyHeadElementButton}`}>
+                                        <CustomButton icon="calendarMinus" writing="Anuluj" action={() => {
+                                            setSelectedAbsenceId(absence.id);
+                                            setSelectedAbsenceType(absenceTypeNames[absence.absence_type_id]);
+                                            setSelectedAbsenceStart(new Date(absence.start).toLocaleDateString());
+                                            setSelectedAbsenceEnd(new Date(absence.end).toLocaleDateString());
+                                            setModalIsOpenCancelAbsence(true);
+                                        }} />
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
             </div>

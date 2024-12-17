@@ -55,7 +55,7 @@ const EmployeesComponent: React.FC = () => {
         </div>
         <div className={`${styles.employeesListcontainer} ${activeView === 'tiles' ? styles.tilesView : styles.listView}`}>
           {loading && <LoadingSpinner wholeModal={false}/>}
-          {!loading && data.length === 0 && <Card title="No Data" className={styles.noDataCard}><p>There is no data available at the moment.</p></Card>}
+          {!loading && data.length === 0 && <Card title="Brak pracowników" className={styles.noDataCard}></Card>}
           {!loading && data.length > 0 && data.map((person, index) => (
             <Tile key={index} person={person} view={activeView} />
           ))}

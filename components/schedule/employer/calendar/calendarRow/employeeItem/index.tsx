@@ -3,7 +3,7 @@ import styles from './main.module.scss';
 interface EmployeeItemProps {
   firstName: string;
   surname: string;
-  employeeId: string;
+  employeeId: string | undefined;
 }
 
 const EmployeeItem: React.FC<EmployeeItemProps> = ({ employeeId, firstName, surname }) => {

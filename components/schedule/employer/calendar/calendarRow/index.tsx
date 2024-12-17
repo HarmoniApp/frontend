@@ -261,9 +261,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
       {loadingUsers || loadingRoles || loadingSchedules ? (
         <LoadingSpinner wholeModal={false} />
       ) : !users || users.length === 0 ? (
-        <Card title="Brak danych" className={styles.noDataCard}>
-          <p>Brak dostępnych danych w tej chwili.</p>
-        </Card>
+        <Card title="Brak zmian" className={styles.noDataCard}></Card>
       ) : (
         <>
           {renderedRows}
@@ -277,7 +275,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
               setPageSize(event.rows);
             }}
           />
-          {loading && <LoadingSpinner />}
         </>
       )}
 

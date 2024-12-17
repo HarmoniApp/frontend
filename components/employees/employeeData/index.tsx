@@ -1,8 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faComments, faUserMinus, faUserPen, faUserLock } from '@fortawesome/free-solid-svg-icons';
 import EmployeeData from '@/components/types/employeeData';
 import Department from '@/components/types/department';
 import Flag from 'react-flagkit';
@@ -14,6 +12,7 @@ import { deleteUser, fetchUserData } from '@/services/userService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { patchResetPassword } from '@/services/passwordService';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
+import CustomButton from '@/components/customButton';
 
 const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   const [employee, setEmployee] = useState<EmployeeData | null>();
@@ -45,14 +44,14 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
   };
 
   const handleDeleteEmployee = async () => {
-      try {
-        setModalDeleteEmployee(false)
-        router.push("/employees");
-        await deleteUser(userId);
-      } catch (error) {
-        console.error('Error deleting employee:', error)
-      }
-    };
+    try {
+      setModalDeleteEmployee(false)
+      router.push("/employees");
+      await deleteUser(userId);
+    } catch (error) {
+      console.error('Error deleting employee:', error)
+    }
+  };
 
   const handlePasswordResetSubmit = async () => {
     setLoading(true);
@@ -66,31 +65,22 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
     }
   };
 
+  const goToChat = () => {
+
+  }
+
   return (
     <div className={styles.employeeDataContainerMain}>
       <div className={styles.rowButtonContainer}>
         <div className={styles.buttonContainer}>
-          <button className={styles.chatButton}>
-            <FontAwesomeIcon className={styles.buttonIcon} icon={faComments} />
-            <p className={styles.buttonParagraph}>Chat</p>
-          </button>
-          <button className={styles.resetPasswordButton} onClick={handlePasswordResetSubmit}>
-            <FontAwesomeIcon className={styles.buttonIcon} icon={faUserLock} />
-            <p className={styles.buttonParagraph}>Zresetuj hasło</p>
-          </button>
+          <CustomButton icon="comments" writing="Chat" action={goToChat} />
+          <CustomButton icon="userLock" writing="Zresetuj hasło" action={handlePasswordResetSubmit} />
         </div>
         <div className={styles.buttonContainer}>
-          <button className={styles.editButton} onClick={handleEditEmployee}>
-            <FontAwesomeIcon className={styles.buttonIcon} icon={faUserPen} />
-            <p className={styles.buttonParagraph}>Edytuj</p>
-          </button>
-          <button className={styles.deleteButton} onClick={() => setModalDeleteEmployee(true)}>
-            <FontAwesomeIcon className={styles.buttonIcon} icon={faUserMinus} />
-            <p className={styles.buttonParagraph}>Usuń</p>
-          </button>
+          <CustomButton icon="userPen" writing="Edytuj" action={handleEditEmployee} />
+          <CustomButton icon="userMinus" writing="Usuń" action={() => setModalDeleteEmployee(true)} />
         </div>
       </div>
-
       <div className={styles.fullNameAndIdContainer}>
         <div className={styles.fullNameColumnContainer}>
           <div className={styles.firstNameContainer}>
@@ -107,7 +97,6 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
           <p className={styles.idDataParagraph}>{employee.employee_id}</p>
         </div>
       </div>
-
       <div className={styles.emplyeeDataContainer}>
         <div className={styles.columnContainer}>
           <label className={styles.residenceLabel}>
@@ -116,7 +105,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
           </label>
           <label className={styles.supervisorLabel}>
             <p className={styles.supervisorParagraph}>Przełożony</p>
-            <p className={styles.supervisorDataParagraph}>{supervisorData ? `${supervisorData.firstname} ${supervisorData.surname}` : <LoadingSpinner wholeModal={false} />}</p>
+            <p className={styles.supervisorDataParagraph}>{supervisorData ? `${supervisorData.firstname} ${supervisorData.surname}` : "Brak przypisanego przełożonego"}</p>
           </label>
           <label className={styles.phoneNumberLabel}>
             <p className={styles.phoneNumberParagraph}>Nr telefonu</p>
@@ -142,7 +131,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
           </label>
           <label className={styles.departmentLabel}>
             <p className={styles.departmentParagraph}>Oddział</p>
-            <p className={styles.departmentDataParagraph}>{department ? department.departmentName : 'We do not have a branch under this name. Error!'}</p>
+            <p className={styles.departmentDataParagraph}>{department ? department.departmentName : 'Brak przypisanego oddziału'}</p>
           </label>
         </div>
       </div>
@@ -178,7 +167,6 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
           </div>
         </div>
       )}
-
       {modalNewPassword && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
@@ -191,7 +179,6 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
         </div>
       )}
       {loading && <LoadingSpinner />}
-      
     </div>
   );
 }

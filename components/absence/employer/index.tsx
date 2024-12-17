@@ -113,7 +113,7 @@ const AbsenceEmployer: React.FC = () => {
         </div>
 
         {!loading  && filteredAbsences.length === 0 && (
-          <Card title="Brak danych" className={styles.noDataCard}><p>Nie znaleziono urlopów.</p></Card>
+          <Card title="Brak wniosków urlopowych" className={styles.noDataCard}></Card>
         )}
         {!loading && filteredAbsences.length > 0 && (
           <div className={

@@ -1,7 +1,7 @@
 'use client';
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserPlus, faCloudArrowDown, faCloudArrowUp,faCalendar, faUser, faComments, faPlane, faRobot, faCalendarCheck, faChevronLeft, faChevronRight, faChartSimple, faPlus, faEraser, faCircleInfo, faTrashCan, faCalendarMinus, faCalendarPlus, faArrowTurnUp, faSquareCheck } from '@fortawesome/free-solid-svg-icons';
+import { faUserPlus, faCloudArrowDown, faCloudArrowUp,faCalendar, faUser, faComments, faPlane, faRobot, faCalendarCheck, faChevronLeft, faChevronRight, faChartSimple, faPlus, faEraser, faCircleInfo, faTrashCan, faCalendarMinus, faCalendarPlus, faArrowTurnUp, faSquareCheck, faUserLock, faUserMinus, faUserPen } from '@fortawesome/free-solid-svg-icons';
 import styles from "./main.module.scss";
 
 const Icons = {
@@ -25,6 +25,9 @@ const Icons = {
     circleInfo: faCircleInfo,
     arrowTurnUp: faArrowTurnUp,
     squareCheck: faSquareCheck,
+    userLock: faUserLock,
+    userMinus: faUserMinus,
+    userPen: faUserPen,
 };
 interface CustomButtonProps {
     icon: keyof typeof Icons;

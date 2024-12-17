@@ -68,7 +68,7 @@ export const generateScheduleAi = async (
             success: 'Harmonogram został wygenerowany!',
             error: {
                 render({ data }) {
-                    const errorMessage = data instanceof Error ? data.message : 'Wystąpił błąd podczas dodawania urlopu';
+                    const errorMessage = data instanceof Error ? data.message : 'Wystąpił błąd podczas generowania harmonogramuAi.';
                     return errorMessage;
                 },
             }
