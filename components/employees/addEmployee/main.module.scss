@@ -161,7 +161,7 @@
         }
 
         .roleContainer {
-            @include gridQG(2, 20px);
+            @include gridQG(3, 20px);
             margin: 20px;
             overflow-y: auto;
 
@@ -171,7 +171,7 @@
             }
 
             @include respond-to-sm {
-                @include gridQG(1, 20px);
+                @include gridQG(2, 20px);
             }
 
             .roleLabel {
@@ -202,13 +202,9 @@
         }
 
         .languagesContainer {
-            @include gridQG(4, 20px);
+            @include gridQG(2, 20px);
             margin: 20px;
             overflow-y: auto;
-
-            @include respond-to-lg {
-                @include gridQG(3, 20px);
-            }
 
             @include respond-to-md {
                 @include gridQG(2, 20px);

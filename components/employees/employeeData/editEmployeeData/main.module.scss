@@ -162,11 +162,16 @@
         }
 
         .roleContainer {
-            @include gridQG(2, 20px);
+            @include gridQG(3, 20px);
             margin: 20px;
             overflow-y: auto;
 
-            @include respond-to-lg {
+            @include respond-to-md {
+                @include gridQG(2, 20px);
+                height: fit-content;
+            }
+
+            @include respond-to-sm {
                 @include gridQG(1, 1fr);
             }
 
@@ -198,19 +203,15 @@
         }
 
         .languagesContainer {
-            @include gridQG(4, 20px);
+            @include gridQG(2, 20px);
             margin: 20px;
             overflow-y: auto;
 
-            @include respond-to-lg {
-                @include gridQG(3, 1fr);
-            }
-
-            @include respond-to-lg {
+            @include respond-to-md {
                 @include gridQG(2, 1fr);
             }
 
-            @include respond-to-lg {
+            @include respond-to-sm {
                 @include gridQG(1, 1fr);
             }
 
