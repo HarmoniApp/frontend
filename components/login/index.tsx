@@ -73,15 +73,11 @@ const Login = () => {
   };
 
   const handlePasswordChangeSubmit = async (values: any) => {
-    setLoading(true);
     try {
       await patchChangePassword(values, passwordPath)
-
       setIsChangePasswordModalOpen(false);
     } catch (error) {
       console.error("An error occurred while changing password:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
