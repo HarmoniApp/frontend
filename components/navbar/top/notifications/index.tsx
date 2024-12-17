@@ -26,7 +26,7 @@ const Notifications: React.FC<NotificationsProps> = ({ notifications, onClose, m
                     >
                         <strong>{notification.title}</strong>
                         <p>{notification.message}</p>
-                        <small>Date: {new Date(notification.created_at).toLocaleString()}</small>
+                        <small>Data: {new Date(notification.created_at).toLocaleString()}</small>
                     </div>
                 ))
             ) : (

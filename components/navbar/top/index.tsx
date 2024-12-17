@@ -36,9 +36,13 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
     }, [userId]);
 
     useEffect(() => {
+        const tokenJWT = sessionStorage.getItem('tokenJWT');
         const socket = new SockJS(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/ws`);
         const stompClient = new Client({
             webSocketFactory: () => socket,
+            connectHeaders: {
+                Authorization: `Bearer ${tokenJWT}`,
+              },
             // debug: (str) => console.log(str),
             onConnect: () => {
                 // console.log('Connected STOMP WebSocket');
