@@ -4,17 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRectangleList, faGrip, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import AbsenceCard from '@/components/absence/employer/absenceCard';
 import Absence from '@/components/types/absence';
-import User from '@/components/types/user';
 import AbsenceStatus from '@/components/types/absenceStatus';
 import styles from './main.module.scss';
 import { Card } from 'primereact/card';
 import { fetchAbsences, fetchAbsencesByStatus, fetchAbsencesStatus } from '@/services/absenceService';
 import LoadingSpinner from '@/components/loadingSpinner';
-import { fetchSimpleUsersWithPagination } from '@/services/userService';
 
 const AbsenceEmployer: React.FC = () => {
   const [absences, setAbsences] = useState<Absence[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
   const [absencesStatus, setAbsencesStatus] = useState<AbsenceStatus[]>([]);
   const [viewMode, setViewMode] = useState('tiles');
   const [selectedStatus, setSelectedStatus] = useState<number | undefined>(undefined);
@@ -27,7 +24,6 @@ const AbsenceEmployer: React.FC = () => {
       setLoading(true)
       await fetchAbsences(setAbsences);
       await fetchAbsencesStatus(setAbsencesStatus);
-      await fetchSimpleUsersWithPagination(setUsers);
       setLoading(false)
     };
     loadData();
@@ -52,19 +48,14 @@ const AbsenceEmployer: React.FC = () => {
     }
   };
 
-  const getUserById = (userId: number): User | undefined => {
-    return users.find(user => user.id === userId);
-  };
-
   const filteredAbsences = absences.filter(absence => {
-    const user = getUserById(absence.user_id);
 
     if (searchQuery === '') {
       return true;
     }
 
-    const userFirstNameMatches = user?.firstname?.toLowerCase().includes(searchQuery.toLowerCase());
-    const userSurnameMatches = user?.surname?.toLowerCase().includes(searchQuery.toLowerCase());
+    const userFirstNameMatches = absence.firstname.toLowerCase().includes(searchQuery.toLowerCase());
+    const userSurnameMatches = absence.surname.toLowerCase().includes(searchQuery.toLowerCase());
 
     return userFirstNameMatches || userSurnameMatches;
   });

@@ -12,4 +12,6 @@ export default interface Absence {
     absence_type_id: number;
     working_days: number;
     employee_id: number;
+    firstname: string;
+    surname: string;
   }
