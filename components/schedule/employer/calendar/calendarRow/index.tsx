@@ -209,7 +209,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
       return (
         <div key={user.id} className={styles.calendarRowContainerMain}>
           <div className={styles.employeeItemContainer} onClick={() => getMoreInfoOfEmployee(user.id)}>
-            <EmployeeItem employeeId={user.employee_id} firstName={user.firstname} surname={user.surname} />
+            <EmployeeItem employeeId={user.employee_id} firstName={user.firstname} surname={user.surname} userId={user.id}/>
           </div>
           <div className={styles.shiftItemContainer}>
             {currentWeek.map((day) => {
