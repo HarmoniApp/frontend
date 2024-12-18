@@ -13,6 +13,7 @@ import CustomButton from '@/components/customButton';
 import classNames from 'classnames';
 import { planerAiValidationSchema } from '@/validationSchemas/planerAiValidationSchema';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
+import PredefineShiftsAndRoles from './preShiftsAndRoles';
 
 const RequirementsForm: React.FC = () => {
     const [forms, setForms] = useState<IRequirementsForm[]>([
@@ -146,127 +147,16 @@ const RequirementsForm: React.FC = () => {
                                         : 'Musisz wybrać przynajmniej jedną rolę'}
                                 </div>
                             )}
-                            <div className={styles.predefineShiftsContainer}>
-                                {predefineShifts.map((shift) => {
-                                    const isSelected = values.shifts.some((s) => s.shiftId === shift.id);
-
-                                    return (
-                                        <label key={shift.id}
-                                            className={classNames(styles.predefineShiftLabel, styles.pointer, {
-                                                [styles.errorInput]: errors.shifts && touched.shifts,
-                                            })}>
-                                            <input
-                                                type="checkbox"
-                                                name="shifts"
-                                                checked={isSelected}
-                                                className={styles.predefinedShiftCheckbox}
-                                                onChange={() => {
-                                                    const updatedShifts = isSelected
-                                                        ? values.shifts.filter((s) => s.shiftId !== shift.id)
-                                                        : [...values.shifts, { shiftId: shift.id, roles: [] }];
-
-                                                    setFieldValue('shifts', updatedShifts);
-
-                                                    setForms((prevForms) =>
-                                                        prevForms.map((f) =>
-                                                            f.id === form.id ? { ...f, shifts: updatedShifts } : f
-                                                        )
-                                                    );
-                                                }}
-                                            />
-                                            <span className={styles.predefinedShiftCheckboxLabel}>
-                                                {shift.name} ({shift.start.slice(0, 5)} - {shift.end.slice(0, 5)})
-                                            </span>
-                                        </label>
-                                    );
-                                })}
-                            </div>
-                            <div className={styles.rolesContainerMain}>
-                                {values.shifts.map((shift) => (
-                                    <div key={shift.shiftId}>
-                                        <div className={styles.rolesInfoContainer}>
-                                            <hr />
-                                            <p className={styles.editingShiftIdParagraph}>
-                                                Ustawiasz rolę dla predefiniowanej zmiany o nazwie:
-                                                <label className={styles.setRolesForPredefineShiftHighlight}>
-                                                    {predefineShifts.find((s) => s.id === shift.shiftId)?.name || 'Nieznana zmiana'}
-                                                </label>
-                                            </p>
-                                        </div>
-                                        {errors.shifts && touched.shifts && (
-                                                <div className={styles.errorMessage}>
-                                                    {typeof errors.shifts === 'string'
-                                                        ? errors.shifts
-                                                        : 'Musisz wybrać przynajmniej jedną rolę'}
-                                                </div>
-                                            )}
-                                        <div className={styles.roleContainer}>
-                                            {roles.map((role) => {
-                                                const roleInShift = shift.roles.find((r) => r.roleId === role.id);
-                                                const isRoleSelected = !!roleInShift;
-
-                                                return (
-                                                    <label key={role.id}
-                                                        style={{ backgroundColor: role.color }}
-                                                        className={classNames(styles.roleLabel, styles.pointer, {
-                                                            [styles.errorInput]: errors.shifts && touched.shifts,
-                                                        })}>
-                                                        <input
-                                                            type="checkbox"
-                                                            name="roles"
-                                                            checked={isRoleSelected}
-                                                            className={styles.rolesCheckbox}
-                                                            onChange={() => {
-                                                                const updatedRoles = isRoleSelected
-                                                                    ? shift.roles.filter((r) => r.roleId !== role.id)
-                                                                    : [...shift.roles, { roleId: role.id, quantity: 1 }];
-
-                                                                const updatedShifts = values.shifts.map((s) =>
-                                                                    s.shiftId === shift.shiftId ? { ...s, roles: updatedRoles } : s
-                                                                );
-                                                                setFieldValue('shifts', updatedShifts);
-
-                                                                setForms((prevForms) =>
-                                                                    prevForms.map((f) =>
-                                                                        f.id === form.id ? { ...f, shifts: updatedShifts } : f
-                                                                    )
-                                                                );
-                                                            }}
-                                                        />
-                                                        <span className={styles.rolesCheckboxLabel}>{role.name}</span>
-                                                        {isRoleSelected && (
-                                                            <input
-                                                                type="number"
-                                                                min="1"
-                                                                value={roleInShift?.quantity || 1}
-                                                                className={styles.rolesQuantityInput}
-                                                                onChange={(e) => {
-                                                                    const newQuantity = Math.max(parseInt(e.target.value, 10) || 1, 1);
-
-                                                                    const updatedRoles = shift.roles.map((r) =>
-                                                                        r.roleId === role.id ? { ...r, quantity: newQuantity } : r
-                                                                    );
-
-                                                                    const updatedShifts = values.shifts.map((s) =>
-                                                                        s.shiftId === shift.shiftId ? { ...s, roles: updatedRoles } : s
-                                                                    );
-
-                                                                    setFieldValue('shifts', updatedShifts);
-
-                                                                    const updatedForms = forms.map((f) =>
-                                                                        f.id === form.id ? { ...f, shifts: updatedShifts } : f
-                                                                    );
-                                                                    setForms(updatedForms);
-                                                                }}
-                                                            />
-                                                        )}
-                                                    </label>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                            <PredefineShiftsAndRoles 
+                                predefineShifts={predefineShifts}
+                                roles={roles}
+                                values={values}
+                                errors={errors}
+                                touched={touched}
+                                setFieldValue={setFieldValue}
+                                setForms={setForms}
+                                form={form}
+                            />
                             <CustomButton icon="trashCan" writing="Usuń dzień" action={() => handleRemoveForm(form.id)} />
                         </Form>
                     )}

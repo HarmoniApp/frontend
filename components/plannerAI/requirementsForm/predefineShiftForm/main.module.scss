@@ -1,0 +1,39 @@
+@import '@/styles/main.scss';
+
+.predefineShiftsContainer {
+    @include gridQG(4, 20px);
+}
+
+.predefineShiftLabel {
+    @include displayDFJAG(flex, row, space-between, center, 10px);
+    text-align: center;
+    background-color: $white-4;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px $black-transparency-01;
+    font-size: 16px;
+    color: $font-dark-colour;
+    cursor: pointer;
+    width: auto;
+    padding: 10px;
+    height: 50px;
+}
+
+.predefinedShiftCheckbox {
+    margin-right: 10px;
+    accent-color: $main-colour;
+    cursor: pointer;
+}
+
+.predefinedShiftCheckboxLabel {
+    font-size: 14px;
+    color: $font-dark-colour;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.errorInput {
+    border: 2px solid $red;
+    background-color: $red-powder;
+}

@@ -1,0 +1,20 @@
+@import '@/styles/main.scss';
+
+.rolesInfoContainer {
+    margin: 20px 0;
+    width: 100%;
+
+    hr {
+        height: 2px;
+        color: $main-colour;
+    }
+
+    .editingShiftIdParagraph {
+        @include displayDFJAG(flex, null, flex-start, null, 10px);
+        font-weight: bold;
+
+        .setRolesForPredefineShiftHighlight {
+            border-bottom: 2px solid $main-colour;
+        }
+    }
+}

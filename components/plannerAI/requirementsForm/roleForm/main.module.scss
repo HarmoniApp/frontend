@@ -1,0 +1,41 @@
+@import '@/styles/main.scss';
+
+.roleContainer {
+    @include gridQG(4, 20px);
+    margin: 10px 0 0 0;
+}
+
+.roleLabel {
+    @include displayDFJAG(flex, row, space-between, center, 10px);
+    text-align: center;
+    background-color: $white-4;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px $black-transparency-01;
+    font-size: 16px;
+    color: $font-dark-colour;
+    cursor: pointer;
+    width: auto;
+    padding: 10px;
+    height: 50px;
+}
+
+.rolesCheckbox {
+    margin-right: 10px;
+    accent-color: $main-colour;
+    cursor: pointer;
+}
+
+.rolesCheckboxLabel {
+    font-size: 14px;
+    color: $font-dark-colour;
+}
+
+.rolesQuantityInput {
+    width: 5vw;
+    padding: 5px;
+    border: 2px solid $main-colour;
+    border-radius: 5px;
+    background-color: $white;
+    color: $font-dark-colour;
+    outline: none;
+}
