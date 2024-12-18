@@ -46,6 +46,7 @@ const RequirementsForm: React.FC = () => {
 
     const handleRemoveForm = (id: number) => {
         setForms((prevForms) => prevForms.filter((form) => form.id !== id));
+        formRefs.current = formRefs.current.filter((ref, index) => forms[index]?.id !== id);
     };
 
     const handleSubmit = async () => {
@@ -79,6 +80,10 @@ const RequirementsForm: React.FC = () => {
 
         try {
             await generateScheduleAi(payload);
+
+            formRefs.current.forEach((formRef) => {
+                formRef.resetForm();
+            });
         } catch (error) {
             console.error('Wystąpił błąd przy wysyłaniu danych:', error);
         }
@@ -179,7 +184,7 @@ const RequirementsForm: React.FC = () => {
                                             </p>
                                         </div>
                                         <div className={styles.roleContainer}>
-                                            <ErrorMessage name="roles" component="div" className={styles.errorMessage} />
+                                            {/* <ErrorMessage name="roles" component="div" className={styles.errorMessage} /> */}
                                             {roles.map((role) => {
                                                 const roleInShift = shift.roles.find((r) => r.roleId === role.id);
                                                 const isRoleSelected = !!roleInShift;
