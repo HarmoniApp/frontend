@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import ChatPartner from '@/components/types/chatPartner';
 import Message from '@/components/types/message';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faUsersRectangle } from '@fortawesome/free-solid-svg-icons';
+import { faCheckDouble, faUsersRectangle } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import UserImage from '@/components/userImage';
 
@@ -63,7 +63,7 @@ const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType,
                             <p className={styles.messageContent}>{message.content}</p>
                             <div className={styles.timeAndReadMessagesContainer}>
                                 {message.sender_id === userId && message.is_read && (
-                                    <FontAwesomeIcon icon={faEye} className={styles.readIcon} />
+                                    <FontAwesomeIcon icon={faCheckDouble} className={styles.readIcon} />
                                 )}
                                 <span className={styles.timestamp}>{message.sent_at}</span>
                             </div>

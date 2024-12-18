@@ -56,8 +56,15 @@
         }
 
         .messageContent {
+            padding: 10px;
+            border-radius: 10px;
+            margin: 0;
             background-color: $main-colour;
             color: $font-dark-colour;
+            white-space: normal;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
         }
     }
 
@@ -65,29 +72,16 @@
         @include displayDFJAG(flex, null, flex-start, null);
 
         .messageContent {
+            padding: 10px;
+            border-left: 10px;
+            margin: 0;
             background-color: $gray-powder;
             color: $font-dark-colour;
+            white-space: normal;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
         }
-    }
-}
-
-.avatarAndNameContainer {
-    @include displayDFJAG(flex, column-reverse, center, center);
-    margin-right: 10px;
-
-    .imageContainer {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        overflow: hidden;
-        flex-shrink: 0;
-        margin-left: 10px;
-    }
-
-    .groupSenderName {
-        font-size: 0.9em;
-        color: $font-dark-colour;
-        text-align: center;
     }
 }
 
@@ -116,5 +110,25 @@
             font-size: 1em;
             margin: 0 10px 0 0;
         }
+    }
+}
+
+.avatarAndNameContainer {
+    @include displayDFJAG(flex, column-reverse, center, center);
+    margin-right: 10px;
+
+    .imageContainer {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+        margin-left: 10px;
+    }
+
+    .groupSenderName {
+        font-size: 0.9em;
+        color: $font-dark-colour;
+        text-align: center;
     }
 }
