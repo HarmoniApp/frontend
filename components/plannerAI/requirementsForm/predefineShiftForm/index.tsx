@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import styles from './main.module.scss';
 import PredefinedShift from '@/components/types/predefinedShifts';
 
-interface PredefinedShiftSelectorProps {
+interface PredefinedShiftFormProps {
     predefineShifts: PredefinedShift[];
     values: any;
     errors: any;
@@ -13,7 +13,7 @@ interface PredefinedShiftSelectorProps {
     form: any;
 }
 
-const PredefinedShiftSelector: React.FC<PredefinedShiftSelectorProps> = ({ predefineShifts, values, errors, touched, setFieldValue, setForms, form }) => {
+const PredefinedShiftForm: React.FC<PredefinedShiftFormProps> = ({ predefineShifts, values, errors, touched, setFieldValue, setForms, form }) => {
     const handleShiftChange = (shiftId: number, isSelected: boolean) => {
         const updatedShifts = isSelected
             ? values.shifts.filter((s: any) => s.shiftId !== shiftId)
@@ -55,4 +55,4 @@ const PredefinedShiftSelector: React.FC<PredefinedShiftSelectorProps> = ({ prede
     );
 };
 
-export default PredefinedShiftSelector;
+export default PredefinedShiftForm;
