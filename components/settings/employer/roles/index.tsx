@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import styles from './main.module.scss';
 import LoadingSpinner from '@/components/loadingSpinner';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
+import { Tooltip } from 'primereact/tooltip';
 
 const Roles = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -88,6 +89,10 @@ const Roles = () => {
     editedRoleColor: Yup.string().required('Kolor wymagany'),
   });
 
+  const truncateText = (text: string, maxLength: number) => {
+    return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
+  };
+
   return (
     <div className={styles.roleContainerMain}>
       <div className={styles.showRoleMapConteiner}>
@@ -118,7 +123,19 @@ const Roles = () => {
                         </>
                       ) : (
                         <>
-                          <p className={styles.roleNameParagraph}>{role.name}</p>
+                          <p 
+                          // className={styles.roleNameParagraph}
+                          className={`${styles.roleNameParagraph} pi pi-envelope p-text-secondary p-overlay-badge`}
+                          data-pr-tooltip={role.name}
+                          data-pr-position="right" 
+                            id="roleName" 
+                            style={{
+                              cursor: truncateText(role.name, 15) !== role.name ? 'pointer' : 'default',
+                            }}
+                          >
+                            {truncateText(role.name, 15)}
+                          </p>
+                          <Tooltip target="#roleName" autoHide></Tooltip>
                         </>
                       )}
                     </div>
