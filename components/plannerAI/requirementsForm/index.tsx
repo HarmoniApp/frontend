@@ -98,6 +98,14 @@ const RequirementsForm: React.FC = () => {
         }
     };
 
+    const handleEditDate = (formId: number, value: string) => {
+        setForms((prevForms) =>
+            prevForms.map((form) =>
+                form.id === formId ? { ...form, date: value } : form
+            )
+        );
+    };
+
     return (
         <div className={styles.planerAiContainer}>
             {forms.map((form, index) => (
@@ -124,18 +132,20 @@ const RequirementsForm: React.FC = () => {
                                             })}
                                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                 setFieldValue("date", e.target.value);
-                                                setForms((prevForms) =>
-                                                    prevForms.map((f) =>
-                                                        f.id === form.id ? { ...f, date: e.target.value } : f
-                                                    )
-                                                );
+                                                handleEditDate(form.id, e.target.value)
                                             }}
                                         />
                                     </label>
                                 </>
                                 <ErrorMessage name="date" component="div" className={styles.errorMessage} />
                             </div>
-                            <ErrorMessage name="shifts" component="div" className={styles.errorMessage} />
+                            {errors.shifts && touched.shifts && (
+                                <div className={styles.errorMessage}>
+                                    {typeof errors.shifts === 'string'
+                                        ? errors.shifts
+                                        : 'Musisz wybrać przynajmniej jedną rolę'}
+                                </div>
+                            )}
                             <div className={styles.predefineShiftsContainer}>
                                 {predefineShifts.map((shift) => {
                                     const isSelected = values.shifts.some((s) => s.shiftId === shift.id);
@@ -183,8 +193,14 @@ const RequirementsForm: React.FC = () => {
                                                 </label>
                                             </p>
                                         </div>
+                                        {errors.shifts && touched.shifts && (
+                                                <div className={styles.errorMessage}>
+                                                    {typeof errors.shifts === 'string'
+                                                        ? errors.shifts
+                                                        : 'Musisz wybrać przynajmniej jedną rolę'}
+                                                </div>
+                                            )}
                                         <div className={styles.roleContainer}>
-                                            {/* <ErrorMessage name="roles" component="div" className={styles.errorMessage} /> */}
                                             {roles.map((role) => {
                                                 const roleInShift = shift.roles.find((r) => r.roleId === role.id);
                                                 const isRoleSelected = !!roleInShift;
