@@ -11,7 +11,6 @@
   .employeeItemContainer {
     @include displayDFJAG(flex, null, null, center);
     flex: 1;
-    cursor: pointer;
 
     @include respond-to-md {
       width: 100%;

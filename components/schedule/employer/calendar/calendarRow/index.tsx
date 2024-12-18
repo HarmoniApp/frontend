@@ -142,7 +142,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
       fetchUserSchedule(shiftData.userId);
     } catch (error) {
       console.error('Error editing shift:', error);
-    } 
+    }
   };
 
   const handleDeleteShift = async (shiftId: number, userId: number) => {
@@ -150,33 +150,33 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   };
 
   const handlePublishAll = async () => {
-      setLoading(true);
-      try {
-        const formatDate = (date: Date) => {
-          const year = date.getFullYear();
-          const month = String(date.getMonth() + 1).padStart(2, '0');
-          const day = String(date.getDate()).padStart(2, '0');
-          return `${year}-${month}-${day}`;
-        };
-        
-        const start = formatDate(currentWeek[0]);
-        const end = formatDate(currentWeek[currentWeek.length - 1]);
-        await patchPublishShifts(start, end)
+    setLoading(true);
+    try {
+      const formatDate = (date: Date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
 
-        setSchedules(prevSchedules => {
-          const updatedSchedules = { ...prevSchedules };
-          Object.values(updatedSchedules).forEach(schedule => {
-            schedule.shifts = schedule.shifts.map(shift =>
-              !shift.published ? { ...shift, published: true } : shift
-            );
-          });
-          return updatedSchedules;
+      const start = formatDate(currentWeek[0]);
+      const end = formatDate(currentWeek[currentWeek.length - 1]);
+      await patchPublishShifts(start, end)
+
+      setSchedules(prevSchedules => {
+        const updatedSchedules = { ...prevSchedules };
+        Object.values(updatedSchedules).forEach(schedule => {
+          schedule.shifts = schedule.shifts.map(shift =>
+            !shift.published ? { ...shift, published: true } : shift
+          );
         });
-      } catch (error) {
-        console.error('Error publishing shift:', error);
-      } finally {
-        setLoading(false);
-      }
+        return updatedSchedules;
+      });
+    } catch (error) {
+      console.error('Error publishing shift:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useImperativeHandle(ref, () => ({
@@ -200,16 +200,11 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   };
 
   const renderedRows = useMemo(() => {
-    const getMoreInfoOfEmployee = (user_id: number) => {
-      const url = `http://localhost:3000/employees/user/${user_id}`;
-      window.open(url, '_blank');
-    };
-
     return users.map((user) => {
       return (
         <div key={user.id} className={styles.calendarRowContainerMain}>
-          <div className={styles.employeeItemContainer} onClick={() => getMoreInfoOfEmployee(user.id)}>
-            <EmployeeItem employeeId={user.employee_id} firstName={user.firstname} surname={user.surname} userId={user.id}/>
+          <div className={styles.employeeItemContainer}>
+            <EmployeeItem employeeId={user.employee_id} firstName={user.firstname} surname={user.surname} userId={user.id} />
           </div>
           <div className={styles.shiftItemContainer}>
             {currentWeek.map((day) => {

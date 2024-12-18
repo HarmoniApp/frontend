@@ -1,15 +1,15 @@
 @import '@/styles/main.scss';
 
-.employeeItemContainerMain{
+.employeeItemContainerMain {
     @include displayDFJAG(flex, row, flex-start, center, 10px);
     width: 100%;
     height: 7vh;
+    max-width: 259px;
     background-color: $main-colour;
     border: 1px solid $font-dark-colour;
     box-shadow: 0px 4px 6px $black-transparency-01;
     border-radius: 10px;
     padding: 0px 20px;
-    cursor: pointer;
 
     @include respond-to-md {
         @include displayDFJAG(flex, column, null, null, 10px);
@@ -23,28 +23,47 @@
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
-    margin-left: 10px;
 }
 
 .employeeDataContainer {
     @include displayDFJAG(flex, column, center, center);
+    flex: 1;
 
     .fullNameContainer {
         @include displayDFJAG(flex, row, center, center, 5px);
         text-align: center;
-        cursor: pointer;
 
         .employeeItemLabel {
             font-weight: bold;
             text-transform: capitalize;
             color: $font-dark-colour;
-            cursor: pointer;
+            text-overflow: ellipsis;
         }
     }
 
     .employeeItemLabel {
         text-transform: capitalize;
         color: $font-dark-colour;
-        cursor: pointer;
+    }
+}
+
+.overlayPanel {
+    color: $font-dark-colour;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: underline;
+    text-decoration-color: $main-colour;
+    font-size: 0.9em;
+
+    ul {
+        list-style: square;
+        margin: 0;
+        padding: 0;
+
+        li::marker {
+            color: $main-colour;
+        }
+
     }
 }

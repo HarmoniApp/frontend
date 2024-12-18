@@ -1,6 +1,10 @@
-import React from 'react';
+'use client';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './main.module.scss';
 import UserImage from '@/components/userImage';
+import Role from '@/components/types/role';
+import { fetchUserRoles } from '@/services/roleService';
+import { OverlayPanel } from 'primereact/overlaypanel';
 interface EmployeeItemProps {
   firstName: string;
   surname: string;
@@ -8,9 +12,28 @@ interface EmployeeItemProps {
   userId: number;
 }
 
-const EmployeeItem: React.FC<EmployeeItemProps> = ({ employeeId, firstName, surname, userId }) => {
+const EmployeeItem: React.FC<EmployeeItemProps> = ({
+  employeeId,
+  firstName,
+  surname,
+  userId,
+}) => {
+  const [roles, setRoles] = useState<Role[]>([]);
+  const overlayRef = useRef<OverlayPanel>(null);
+
+  useEffect(() => {
+    const loadEmployeeRoles = async () => {
+      await fetchUserRoles(userId, setRoles);
+    };
+    loadEmployeeRoles();
+  }, [userId]);
+
+  const showOverlay = (event: React.MouseEvent) => {
+    overlayRef.current?.toggle(event);
+  };
+
   return (
-    <div className={styles.employeeItemContainerMain}>
+    <div className={styles.employeeItemContainerMain} onMouseEnter={showOverlay} onMouseLeave={showOverlay}>
       <div className={styles.employeeImageContainer}>
         <UserImage userId={userId} />
       </div>
@@ -21,6 +44,21 @@ const EmployeeItem: React.FC<EmployeeItemProps> = ({ employeeId, firstName, surn
         </div>
         <label className={styles.employeeItemLabel}>{employeeId}</label>
       </div>
+      <OverlayPanel ref={overlayRef}>
+        <div className={styles.overlayPanel}>
+          <ul className={styles.rolesList}>
+            {roles.length > 0 ? (
+              roles.map((role) => (
+                <li key={role.id} className={styles.roleItem}>
+                  {role.name}
+                </li>
+              ))
+            ) : (
+              <li>Brak przypisanych ról</li>
+            )}
+          </ul>
+        </div>
+      </OverlayPanel>
     </div>
   );
 };
