@@ -8,18 +8,19 @@ import { deleteNotification } from "@/services/notificationService";
 import CustomButton from "@/components/customButton";
 interface NotificationsProps {
     notifications: Notification[];
+    setNotifications: (notifications: Notification[]) => void ;
     onClose: () => void;
     markAllAsRead: () => void;
 }
 
-
-const Notifications: React.FC<NotificationsProps> = ({ notifications, onClose, markAllAsRead }) => {
+const Notifications: React.FC<NotificationsProps> = ({ notifications, setNotifications, onClose, markAllAsRead }) => {
 
     return (
         <div className={styles.notificationsPopup}>
             <div className={styles.popupHeader}>
                 <label className={styles.notificationLabel}>Powiadomienia</label>
-                <button onClick={() => {onClose(); markAllAsRead();}} className={styles.backButton}><FontAwesomeIcon icon={faX} className={styles.icon} /></button>
+                <button onClick={() => {onClose(); markAllAsRead();}} className={styles.backButton}>
+                    <FontAwesomeIcon icon={faX} className={styles.icon} /></button>
             </div>
             <div className={styles.notificationsList}>
                 {notifications.length > 0 ? (
@@ -34,7 +35,7 @@ const Notifications: React.FC<NotificationsProps> = ({ notifications, onClose, m
                                 <CustomButton
                                     icon="trashCan"
                                     writing=""
-                                    action={() => deleteNotification(notification.id)}
+                                    action={() => deleteNotification(notification.id, setNotifications)}
                                 />
                             </div>
                             <p className={styles.messagesParagraph}>{notification.message}</p>

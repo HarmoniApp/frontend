@@ -28,7 +28,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
     useEffect(() => {
         const loadData = async () => {
             setLoading(true);
-            await fetchNotifications(setNotifications, setUnreadCount, userId);
+            await fetchNotifications(setNotifications, setUnreadCount);
             setLoading(false);
         }
 
@@ -120,7 +120,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
             {showNotifications && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
-                        <Notifications notifications={notifications} onClose={() => setShowNotifications(false)} markAllAsRead={markAllAsRead} />
+                        <Notifications notifications={notifications} setNotifications={setNotifications} onClose={() => setShowNotifications(false)} markAllAsRead={markAllAsRead} />
                     </div>
 
                     {loading && <LoadingSpinner />}

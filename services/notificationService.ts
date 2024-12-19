@@ -4,10 +4,10 @@ import { toast } from "react-toastify";
 
 export const fetchNotifications = async (
     setNotifications: (notifications: Notification[]) => void,
-    setUnreadCount: (number: number) => void,
-    userId: number): Promise<void> => {
+    setUnreadCount?: (number: number) => void): Promise<void> => {
 
     try {
+        const userId = sessionStorage.getItem('userId');
         const tokenJWT = sessionStorage.getItem('tokenJWT');
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notification/user/${userId}`, {
             method: 'GET',
@@ -19,7 +19,7 @@ export const fetchNotifications = async (
         if (!response.ok) throw new Error('Failed to fetch notifications');
         const data: Notification[] = await response.json();
         setNotifications(data);
-        setUnreadCount(data.filter(notification => !notification.read).length);
+        setUnreadCount?.(data.filter(notification => !notification.read).length);
     } catch (error) {
         console.error('Error while fetching notifications:', error);
     }
@@ -52,7 +52,7 @@ export const patchMarkAllNotificationsAsRead = async (): Promise<void> => {
 
 export const deleteNotification = async (
     notificationId: number,
-): Promise<void> => {
+    setNotifications: (notifications: Notification[]) => void): Promise<void> => {
     await toast.promise(
         (async () => {
             try {
@@ -72,6 +72,7 @@ export const deleteNotification = async (
                     const errorMessage = errorResponse || 'Wystąpił błąd podczas usuwania powiadomienia.';
                     throw new Error(errorMessage);
                 }
+                await fetchNotifications(setNotifications);
             } catch (error) {
                 console.error('Error deleting notification:', error);
                 throw error;
