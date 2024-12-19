@@ -1,5 +1,6 @@
 import Notification from "@/components/types/notification";
 import { fetchCsrfToken } from "./csrfService";
+import { toast } from "react-toastify";
 
 export const fetchNotifications = async (
     setNotifications: (notifications: Notification[]) => void,
@@ -46,4 +47,38 @@ export const patchMarkNotificationAsRead = async (
     } catch (error) {
         console.error(`Error while marking norification as read`, error);
     }
+};
+
+export const deleteNotification = async (
+    notificationId: number
+): Promise<void> => {
+    await toast.promise(
+        (async () => {
+            try {
+                const tokenXSRF = await fetchCsrfToken();
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notification/${notificationId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                });
+
+                if (!response.ok) {
+                    const errorResponse = await response.text();
+                    const errorMessage = errorResponse || 'Wystąpił błąd podczas usuwania powiadomienia.';
+                    throw new Error(errorMessage);
+                }
+            } catch (error) {
+                console.error('Error deleting notification:', error);
+                throw error;
+            }
+        })(),
+        {
+            pending: 'Usuwanie powiadomienia...',
+            success: 'Powiadomienie zostało usunięte!'
+        }
+    );
 };
