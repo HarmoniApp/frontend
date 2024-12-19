@@ -9,6 +9,7 @@ import classNames from 'classnames';
 import styles from './main.module.scss';
 import { formatTimeToHHMM, fetchPredefinedShifts, deletePredefineShift, postPredefineShift, putPredefineShift } from '@/services/predefineShiftService';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
+import { Tooltip } from 'primereact/tooltip';
 
 const PredefinedShifts = () => {
   const [predefineShifts, setPredefineShifts] = useState<PredefinedShift[]>([]);
@@ -92,121 +93,149 @@ const PredefinedShifts = () => {
       }),
   });
 
+  const truncateText = (text: string, maxLength: number) => {
+    return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
+  };
+
   return (
     <div className={styles.predefinedShiftsContainerMain}>
       <div className={styles.showShiftMapContainer}>
-        {predefineShifts.map((shift) => (
-          <Formik
-            key={shift.id + shift.name + shift.start + shift.end}
-            initialValues={{
-              id: shift.id,
-              name: shift.name,
-              start: formatTimeToHHMM(shift.start || '00:00'),
-              end: formatTimeToHHMM(shift.end || '00:00'),
-            }}
-            validationSchema={shiftValidationSchema}
-            onSubmit={handleEditPredefineShift}
-          >
-            {({ handleSubmit, handleChange, values, errors, touched, resetForm }) => (
-              <Form onSubmit={handleSubmit}>
-                <div className={styles.showShiftContainerMain}>
-                  <ErrorMessage name="name" component="div" className={styles.errorMessage} />
-                  <ErrorMessage name="start" component="div" className={styles.errorMessage} />
-                  <ErrorMessage name="end" component="div" className={styles.errorMessage} />
-                  <div className={styles.showShiftContainer}>
-                    <div className={styles.shiftInfoContainer}>
-                      {editingShiftId === shift.id ? (
-                        <>
-                          <Field
-                            type="text"
-                            name="name"
-                            value={values.name}
-                            onChange={handleChange}
-                            className={classNames(styles.formInput, {
-                              [styles.errorInput]: errors.name && touched.name,
-                            })}
-                          />
-                        </>
-                      ) : (
-                        <>
-                          <p className={styles.shiftNameParagraph}>{shift.name}</p>
-                          <p className={styles.shiftTimeParagraph}>{shift.start ? shift.start.slice(0, 5) : 'Brak godziny'} - {shift.end ? shift.end.slice(0, 5) : 'Brak godziny'}</p>
-                        </>
-                      )}
-                    </div>
-                    <div className={styles.editAndRemoveButtonContainer}>
-                      {editingShiftId === shift.id ? (
-                        <>
-                          <Field
-                            as="select"
-                            name="start"
-                            value={formatTimeToHHMM(values.start)}
-                            onChange={handleChange}
-                            className={classNames(styles.shiftTimeSelect, {
-                              [styles.errorInput]: errors.start && touched.start,
-                            })}
-                          >
-                            {shiftHours.map((time) => (
-                              <option key={time} value={time}>
-                                {time}
-                              </option>
-                            ))}
-                          </Field>
-                          <Field
-                            as="select"
-                            name="end"
-                            value={formatTimeToHHMM(values.end)}
-                            onChange={handleChange}
-                            className={classNames(styles.shiftTimeSelect, {
-                              [styles.errorInput]: errors.end && touched.end,
-                            })}
-                          >
-                            {shiftHours.map((time) => (
-                              <option key={time} value={time}>
-                                {time}
-                              </option>
-                            ))}
-                          </Field>
-                          <button className={styles.yesButton} type="submit">
-                            <FontAwesomeIcon icon={faCheck} />
-                          </button>
-                          <button
-                            type="button"
-                            className={styles.noButton}
-                            onClick={() => {
-                              resetForm();
-                              setEditingShiftId(null);
-                            }}
-                          >
-                            <FontAwesomeIcon icon={faXmark} />
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button type='button' className={styles.editButton} onClick={() => setEditingShiftId(shift.id)}>
-                            <FontAwesomeIcon icon={faPen} />
-                          </button>
-                          <button type='button' className={styles.removeButton} onClick={() => openDeleteModal(shift.id)}>
-                            <FontAwesomeIcon icon={faMinus} />
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                {isDeleteModalOpen && deleteShiftId === shift.id && (
-                  <>
-                    <div className={styles.modalOverlay}>
-                      <div className={styles.modalContent}>
-                        <ConfirmationPopUp action={() => handleDeletePredefineShift(shift.id)} onClose={() => setIsDeleteModalOpen(false)} description={`Usunąć predefiniowaną zmianę o nazwie: ${shift.name}`} />
+        {predefineShifts.map((shift) => {
+          const isTruncated = truncateText(shift.name, 15) !== shift.name;
+          const elementId = `shiftName-${shift.id}`;
+
+          return (
+            <Formik
+              key={shift.id}
+              initialValues={{
+                id: shift.id,
+                name: shift.name,
+                start: formatTimeToHHMM(shift.start || '00:00'),
+                end: formatTimeToHHMM(shift.end || '00:00'),
+              }}
+              validationSchema={shiftValidationSchema}
+              onSubmit={handleEditPredefineShift}
+            >
+              {({ handleSubmit, handleChange, values, errors, touched, resetForm }) => (
+                <Form onSubmit={handleSubmit}>
+                  <div className={styles.showShiftContainerMain}>
+                    <ErrorMessage name="name" component="div" className={styles.errorMessage} />
+                    <ErrorMessage name="start" component="div" className={styles.errorMessage} />
+                    <ErrorMessage name="end" component="div" className={styles.errorMessage} />
+                    <div className={styles.showShiftContainer}>
+                      <div className={styles.shiftInfoContainer}>
+                        {editingShiftId === shift.id ? (
+                          <>
+                            <Field
+                              type="text"
+                              name="name"
+                              value={values.name}
+                              onChange={handleChange}
+                              className={classNames(styles.formInput, {
+                                [styles.errorInput]: errors.name && touched.name,
+                              })}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <p
+                              className={styles.shiftNameParagraph}
+                              data-pr-tooltip={shift.name}
+                              data-pr-position="right"
+                              id={elementId}
+                              style={{
+                                cursor: isTruncated ? 'pointer' : 'default',
+                              }}
+                            >
+                              {truncateText(shift.name, 15)}
+                            </p>
+                            {isTruncated && (
+                              <Tooltip target={`#${elementId}`} autoHide />
+                            )}
+                            <p className={styles.shiftTimeParagraph}>
+                              {shift.start ? shift.start.slice(0, 5) : 'Brak godziny'} - {shift.end ? shift.end.slice(0, 5) : 'Brak godziny'}
+                            </p>
+                          </>
+                        )}
+                      </div>
+                      <div className={styles.editAndRemoveButtonContainer}>
+                        {editingShiftId === shift.id ? (
+                          <>
+                            <Field
+                              as="select"
+                              name="start"
+                              value={formatTimeToHHMM(values.start)}
+                              onChange={handleChange}
+                              className={classNames(styles.shiftTimeSelect, {
+                                [styles.errorInput]: errors.start && touched.start,
+                              })}
+                            >
+                              {shiftHours.map((time) => (
+                                <option key={time} value={time}>
+                                  {time}
+                                </option>
+                              ))}
+                            </Field>
+                            <Field
+                              as="select"
+                              name="end"
+                              value={formatTimeToHHMM(values.end)}
+                              onChange={handleChange}
+                              className={classNames(styles.shiftTimeSelect, {
+                                [styles.errorInput]: errors.end && touched.end,
+                              })}
+                            >
+                              {shiftHours.map((time) => (
+                                <option key={time} value={time}>
+                                  {time}
+                                </option>
+                              ))}
+                            </Field>
+                            <button className={styles.yesButton} type="submit">
+                              <FontAwesomeIcon icon={faCheck} />
+                            </button>
+                            <button
+                              type="button"
+                              className={styles.noButton}
+                              onClick={() => {
+                                resetForm();
+                                setEditingShiftId(null);
+                              }}
+                            >
+                              <FontAwesomeIcon icon={faXmark} />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button type='button' className={styles.editButton} onClick={() => setEditingShiftId(shift.id)}>
+                              <FontAwesomeIcon icon={faPen} />
+                            </button>
+                            <button type='button' className={styles.removeButton} onClick={() => openDeleteModal(shift.id)}>
+                              <FontAwesomeIcon icon={faMinus} />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </div>
-                  </>
-                )}
-              </Form>
-            )}
-          </Formik>
-        ))}
+                  </div>
+                  {isDeleteModalOpen && deleteShiftId === shift.id && (
+                    <>
+                      <div className={styles.modalOverlay}>
+                        <div className={styles.modalContent}>
+                          <ConfirmationPopUp
+                            action={() => handleDeletePredefineShift(shift.id)}
+                            onClose={() => setIsDeleteModalOpen(false)}
+                            description={`Usunąć predefiniowaną zmianę o nazwie: ${shift.name}`}
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </Form>
+              )}
+            </Formik>
+          );
+        })}
       </div>
       <Formik
         initialValues={{ name: '', start: '00:00', end: '00:00' }}

@@ -8,7 +8,6 @@ import styles from './main.module.scss';
 import '@/styles/components/pagination.css';
 import { Card } from 'primereact/card';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
-import 'primereact/resources/themes/saga-blue/theme.css';
 import LoadingSpinner from '../loadingSpinner';
 import { fetchFilterUsers } from '@/services/userService';
 

@@ -22,7 +22,9 @@ export const fetchUserPublishedSchedule = async (
 
     try {
         const { startDate, endDate } = getMonthStartAndEnd();
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}&published=true`, {
+        const link = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}&published=true`;
+        console.log('link', link);
+        const response = await fetch(link, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

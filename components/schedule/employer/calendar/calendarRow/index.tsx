@@ -11,7 +11,6 @@ import styles from './main.module.scss';
 import { fetchRoles } from "@/services/roleService"
 import { Card } from 'primereact/card';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
-import 'primereact/resources/themes/saga-blue/theme.css';
 import '@/styles/components/pagination.css';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { deleteShift, fetchFilterUsersInSchedule, fetchUserScheduleWithAbsences, patchPublishShifts, postShift, putShift } from '@/services/scheduleService';
@@ -200,10 +199,16 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   };
 
   const renderedRows = useMemo(() => {
+
+    const getMoreInfoOfEmployee = (user_id: number) => {
+      const url = `http://localhost:3000/employees/user/${user_id}`;
+      window.open(url, '_blank');
+    };
+
     return users.map((user) => {
       return (
         <div key={user.id} className={styles.calendarRowContainerMain}>
-          <div className={styles.employeeItemContainer}>
+          <div className={styles.employeeItemContainer} onClick={() => getMoreInfoOfEmployee(user.id)}>
             <EmployeeItem employeeId={user.employee_id} firstName={user.firstname} surname={user.surname} userId={user.id} />
           </div>
           <div className={styles.shiftItemContainer}>

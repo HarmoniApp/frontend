@@ -1,9 +1,11 @@
+"use client";
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarPlus, faPersonThroughWindow } from '@fortawesome/free-solid-svg-icons';
 import Shift from '@/components/types/shift';
 import Role from '@/components/types/role';
 import styles from './main.module.scss';
+import { Tooltip } from 'primereact/tooltip';
 
 interface ShiftItemProps {
   date: string;
@@ -22,6 +24,10 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence, roles }) => {
     if (!roles || roles.length === 0) return '#A9A9A9';
     const role = roles.find(role => role.name === roleName);
     return role ? role.color : '#A9A9A9';
+  };
+
+  const truncateText = (text: string, maxLength: number) => {
+    return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
   };
 
   const hasUnpublishedShift = shifts.some(shift => !shift.published);
@@ -43,14 +49,36 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence, roles }) => {
           <p className={styles.absenceParagraph}>Urlop</p>
         </div>
       ) : shifts.length > 0 ? (
-        shifts.map(shift => (
-          <div key={shift.id} className={styles.shiftDetails}>
-            <p className={styles.shiftTimeParagraph}>{formatTime(shift.start)} - {formatTime(shift.end)}</p>
-            <p className={styles.shiftRoleParagraph}>{shift.role_name}</p>
-          </div>
-        ))
+        shifts.map(shift => {
+          const isTruncated = truncateText(shift.role_name, 18) !== shift.role_name;
+          const elementId = `roleName-${shift.id}`;
+
+          return (
+            <div key={shift.id} className={styles.shiftDetails}>
+              <p className={styles.shiftTimeParagraph}>
+                {formatTime(shift.start)} - {formatTime(shift.end)}
+              </p>
+              <p
+                className={styles.shiftRoleParagraph}
+                data-pr-tooltip={shift.role_name}
+                data-pr-position="bottom"
+                id={elementId}
+                style={{
+                  cursor: isTruncated ? 'pointer' : 'default',
+                }}
+              >
+                {truncateText(shift.role_name, 18)}
+              </p>
+              {isTruncated && (
+                <Tooltip target={`#${elementId}`} autoHide />
+              )}
+            </div>
+          );
+        })
       ) : (
-        <div className={styles.noShift}><FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarPlus} /></div>
+        <div className={styles.noShift}>
+          <FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarPlus} />
+        </div>
       )}
     </div>
   );

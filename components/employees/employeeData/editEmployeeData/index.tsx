@@ -19,13 +19,15 @@ import { fetchDepartments } from '@/services/departmentService';
 import { fetchSupervisors, patchUser } from '@/services/userService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { employeeValidationSchema } from '@/validationSchemas/employeeValiadtionSchema';
+import { Tooltip } from 'primereact/tooltip';
+import { useRouter } from 'next/navigation';
 
 interface EditEmployeeDataProps {
   employee: EmployeeDataWorkAdressOnlyId;
   onCloseEdit: () => void;
 }
 
-const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCloseEdit }) => {
+const EditEmployeeData: React.FC<EditEmployeeDataProps> = ({ employee, onCloseEdit }) => {
 
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -33,6 +35,7 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
   const [roles, setRoles] = useState<Role[]>([]);
   const [languages, setLanguages] = useState<Language[]>([]);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const fetchAllSupervisors = async () => {
     try {
@@ -58,8 +61,9 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
 
   const handleEditUser = async (values: typeof initialValues) => {
     try {
-      onCloseEdit();
       await patchUser(values);
+      onCloseEdit();
+      router.refresh()
     } catch (error) {
       console.error('Error while editing user:', error);
     }
@@ -86,6 +90,10 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     supervisor_id: employee.supervisor_id?.toString() || '',
     phone_number: employee.phone_number || '',
     employee_id: employee.employee_id || '',
+  };
+
+  const truncateText = (text: string, maxLength: number) => {
+    return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
   };
 
   return (
@@ -313,26 +321,40 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
                 <p className={styles.roleParagraph}>Wybierz role dla pracownika</p>
                 <ErrorMessage name="roles" component="div" className={styles.errorMessage} />
                 <div className={styles.roleContainer}>
-                  {roles.map((role) => (
-                    <label key={role.id} className={styles.roleLabel}>
-                      <Field
-                        className={styles.roleCheckbox}
-                        type="checkbox"
-                        name="roles"
-                        value={role.id.toString()}
-                        checked={values.roles.some((r) => r.id === role.id)}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                          const { checked } = e.target;
-                          if (checked) {
-                            setFieldValue('roles', [...values.roles, { id: parseInt(e.target.value) }]);
-                          } else {
-                            setFieldValue('roles', values.roles.filter((r) => r.id !== parseInt(e.target.value)));
-                          }
-                        }}
-                      />{' '}
-                      {role.name}
-                    </label>
-                  ))}
+                  {roles.map((role) => {
+
+                    const isTruncated = truncateText(role.name, 20) !== role.name;
+                    const elementId = `role-${role.id}`;
+                    return (
+                      <label key={role.id} className={styles.roleLabel}>
+                        <Field
+                          className={styles.roleCheckbox}
+                          type="checkbox"
+                          name="roles"
+                          value={role.id.toString()}
+                          checked={values.roles.some((r) => r.id === role.id)}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            const { checked } = e.target;
+                            if (checked) {
+                              setFieldValue('roles', [...values.roles, { id: parseInt(e.target.value) }]);
+                            } else {
+                              setFieldValue('roles', values.roles.filter((r) => r.id !== parseInt(e.target.value)));
+                            }
+                          }}
+                        />{' '}
+                        <label
+                          data-pr-tooltip={role.name}
+                          data-pr-position="bottom"
+                          id={elementId}
+                          style={{
+                            cursor: isTruncated ? 'pointer' : 'default',
+                          }}>{truncateText(role.name, 20)}</label>
+                        {isTruncated && (
+                          <Tooltip target={`#${elementId}`} autoHide />
+                        )}
+                      </label>
+                    )
+                  })}
                 </div>
               </div>
               <div className={styles.columnContainerMiddle}>
@@ -383,4 +405,4 @@ const EditEmployeeDataPopUp: React.FC<EditEmployeeDataProps> = ({ employee, onCl
     </div>
   );
 };
-export default EditEmployeeDataPopUp;
+export default EditEmployeeData;

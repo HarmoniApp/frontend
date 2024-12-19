@@ -10,6 +10,7 @@ import styles from './main.module.scss';
 import { deleteContractType, fetchContracts, postContractType, putContractType } from '@/services/contractService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
+import { Tooltip } from 'primereact/tooltip';
 
 const ContractTypes = () => {
   const [contracts, setContracts] = useState<Contract[]>([]);
@@ -26,7 +27,7 @@ const ContractTypes = () => {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-      fetchContracts(setContracts);
+      await fetchContracts(setContracts);
       setLoading(false);
     }
 
@@ -54,7 +55,7 @@ const ContractTypes = () => {
       await putContractType(values, setContracts);
       resetForm();
     } catch (error) {
-      console.error('Error editing shift:', error);
+      console.error('Error editing contract:', error);
     }
   };
 
@@ -80,94 +81,120 @@ const ContractTypes = () => {
       .typeError('Wprowadź poprawną liczbę')
   });
 
+  const truncateText = (text: string, maxLength: number) => {
+    return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
+  };
+
   return (
     <div className={styles.contractTypesContainerMain}>
       <div className={styles.showContractMapContainer}>
-        {contracts.map((contract) => (
-          <Formik
-            key={contract.id}
-            initialValues={{ id: contract.id, name: contract.name, absence_days: contract.absence_days }}
-            validationSchema={contractValidationSchema}
-            enableReinitialize={true}
-            onSubmit={handleEditContractType}
-          >
-            {({ handleSubmit, handleChange, values, errors, touched, resetForm }) => (
-              <Form onSubmit={handleSubmit}>
-                <div className={styles.showContractContainerMain}>
-                  <ErrorMessage name="name" component="div" className={styles.errorMessage} />
-                  <ErrorMessage name="absence_days" component="div" className={styles.errorMessage} />
-                  <div className={styles.showContractContainer}>
-                    <div className={styles.contractInfoContainer}>
-                      {editingContractId === contract.id ? (
-                        <>
-                          <Field
-                            type="text"
-                            name="name"
-                            value={values.name}
-                            onChange={handleChange}
-                            className={classNames(styles.formInput, {
-                              [styles.errorInput]: errors.name && touched.name,
-                            })}
-                          />
-                        </>
-                      ) : (
-                        <>
-                          <p className={styles.contractNameParagraph}>{contract.name}</p>
-                          <p className={styles.contractDaysParagraph}>{contract.absence_days} dni</p>
-                        </>
-                      )}
-                    </div>
-                    <div className={styles.editAndRemoveButtonContainer}>
-                      {editingContractId === contract.id ? (
-                        <>
-                          <Field
-                            component="input"
-                            type="number"
-                            name="absence_days"
-                            value={values.absence_days}
-                            onChange={handleChange}
-                            className={classNames(styles.absenceDaysInput, {
-                              [styles.errorInput]: errors.absence_days && touched.absence_days,
-                            })}
-                          />
-                          <button className={styles.yesButton} type="submit">
-                            <FontAwesomeIcon icon={faCheck} />
-                          </button>
-                          <button
-                            type="button"
-                            className={styles.noButton}
-                            onClick={() => {
-                              resetForm();
-                              setEditingContractId(null);
-                            }}
-                          >
-                            <FontAwesomeIcon icon={faXmark} />
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button type='button' className={styles.editButton} onClick={() => setEditingContractId(contract.id)}>
-                            <FontAwesomeIcon icon={faPen} />
-                          </button>
-                          <button type='button' className={styles.removeButton} onClick={() => openDeleteModal(contract.id)}>
-                            <FontAwesomeIcon icon={faMinus} />
-                          </button>
-                        </>
-                      )}
+        {contracts.map((contract) => {
+          const isTruncated = truncateText(contract.name, 15) !== contract.name;
+          const elementId = `contractName-${contract.id}`;
+
+          return (
+            <Formik
+              key={contract.id}
+              initialValues={{ id: contract.id, name: contract.name, absence_days: contract.absence_days }}
+              validationSchema={contractValidationSchema}
+              enableReinitialize={true}
+              onSubmit={handleEditContractType}
+            >
+              {({ handleSubmit, handleChange, values, errors, touched, resetForm }) => (
+                <Form onSubmit={handleSubmit}>
+                  <div className={styles.showContractContainerMain}>
+                    <ErrorMessage name="name" component="div" className={styles.errorMessage} />
+                    <ErrorMessage name="absence_days" component="div" className={styles.errorMessage} />
+                    <div className={styles.showContractContainer}>
+                      <div className={styles.contractInfoContainer}>
+                        {editingContractId === contract.id ? (
+                          <>
+                            <Field
+                              type="text"
+                              name="name"
+                              value={values.name}
+                              onChange={handleChange}
+                              className={classNames(styles.formInput, {
+                                [styles.errorInput]: errors.name && touched.name,
+                              })}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <p
+                              className={styles.contractNameParagraph}
+                              data-pr-tooltip={contract.name}
+                              data-pr-position="right"
+                              id={elementId}
+                              style={{
+                                cursor: isTruncated ? 'pointer' : 'default',
+                              }}
+                            >
+                              {truncateText(contract.name, 15)}
+                            </p>
+                            {isTruncated && (
+                              <Tooltip target={`#${elementId}`} autoHide />
+                            )}
+                            <p className={styles.contractDaysParagraph}>{contract.absence_days} dni</p>
+                          </>
+                        )}
+                      </div>
+                      <div className={styles.editAndRemoveButtonContainer}>
+                        {editingContractId === contract.id ? (
+                          <>
+                            <Field
+                              component="input"
+                              type="number"
+                              name="absence_days"
+                              value={values.absence_days}
+                              onChange={handleChange}
+                              className={classNames(styles.absenceDaysInput, {
+                                [styles.errorInput]: errors.absence_days && touched.absence_days,
+                              })}
+                            />
+                            <button className={styles.yesButton} type="submit">
+                              <FontAwesomeIcon icon={faCheck} />
+                            </button>
+                            <button
+                              type="button"
+                              className={styles.noButton}
+                              onClick={() => {
+                                resetForm();
+                                setEditingContractId(null);
+                              }}
+                            >
+                              <FontAwesomeIcon icon={faXmark} />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button type='button' className={styles.editButton} onClick={() => setEditingContractId(contract.id)}>
+                              <FontAwesomeIcon icon={faPen} />
+                            </button>
+                            <button type='button' className={styles.removeButton} onClick={() => openDeleteModal(contract.id)}>
+                              <FontAwesomeIcon icon={faMinus} />
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-                {isDeleteModalOpen && deleteContractId === contract.id && (
-                  <div className={styles.modalOverlay}>
-                    <div className={styles.modalContent}>
-                      <ConfirmationPopUp action={() => handleDeleteContractType(contract.id)} onClose={() => setIsDeleteModalOpen(false)} description={`Usunąć typ umowy o nazwie: ${contract.name}`} />
+                  {isDeleteModalOpen && deleteContractId === contract.id && (
+                    <div className={styles.modalOverlay}>
+                      <div className={styles.modalContent}>
+                        <ConfirmationPopUp
+                          action={() => handleDeleteContractType(contract.id)}
+                          onClose={() => setIsDeleteModalOpen(false)}
+                          description={`Usunąć typ umowy o nazwie: ${contract.name}`}
+                        />
+                      </div>
                     </div>
-                  </div>
-                )}
-              </Form>
-            )}
-          </Formik>
-        ))}
+                  )}
+                </Form>
+              )}
+            </Formik>
+          );
+        })}
       </div>
       <Formik
         initialValues={{ name: '', absence_days: 0 }}
@@ -194,7 +221,6 @@ const ContractTypes = () => {
               className={classNames(styles.absenceDaysInput, {
                 [styles.errorInput]: errors.absence_days && touched.absence_days,
               })}
-
             />
             <ErrorMessage name="absence_days" component="div" className={styles.errorMessage} />
             <button className={styles.addButton} type="submit">

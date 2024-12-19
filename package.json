@@ -20,7 +20,7 @@
     "formik": "^2.4.6",
     "jwt-decode": "^4.0.0",
     "next": "14.2.15",
-    "primereact": "^10.8.4",
+    "primereact": "^10.8.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-flagkit": "^2.0.4",

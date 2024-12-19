@@ -183,23 +183,17 @@
 }
 
 .roleAndLanguagesContainer {
-    @include displayDFJAG(flex, row, space-evenly, center, 20px);
+    @include displayDFJAG(flex, row, space-evenly, stretch, 20px);
     width: 90%;
+    max-height: 45vh;
 
     @include respond-to-lg {
         @include displayDFJAG(flex, column, null, null);
-
-        .columnContainer {
-            width: 100%;
-        }
-    }
-
-    @include respond-to-md {
-        @include displayDFJAG(flex, column, null, null, 10px);
     }
 
     .columnContainer {
-        @include displayDFJAG(flex, column, center, center);
+        @include displayDFJAG(flex, column, flex-start, center);
+
         max-height: 45vh;
         border-radius: 10px;
         background-color: $white;
@@ -260,7 +254,7 @@
         }
 
         .languagesContainer {
-            @include gridQG(4, 20px);
+            @include gridQG(3, 20px);
             margin: 20px;
             width: 100%;
             overflow-y: auto;

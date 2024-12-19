@@ -10,6 +10,7 @@
     box-shadow: 0px 4px 6px $black-transparency-01;
     border-radius: 10px;
     padding: 0px 20px;
+    cursor: pointer;
 
     @include respond-to-md {
         @include displayDFJAG(flex, column, null, null, 10px);
@@ -38,12 +39,14 @@
             text-transform: capitalize;
             color: $font-dark-colour;
             text-overflow: ellipsis;
+            cursor: pointer;
         }
     }
 
     .employeeItemLabel {
         text-transform: capitalize;
         color: $font-dark-colour;
+        cursor: pointer;
     }
 }
 
