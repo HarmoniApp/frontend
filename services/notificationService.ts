@@ -25,13 +25,14 @@ export const fetchNotifications = async (
     }
 };
 
-export const patchMarkNotificationAsRead = async (
-    notificationId: number): Promise<void> => {
-
+export const patchMarkAllNotificationsAsRead = async (): Promise<void> => {
     try {
+        const userId = sessionStorage.getItem('userId');
+        console.log(userId)
+
         const tokenXSRF = await fetchCsrfToken();
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notification/${notificationId}/read`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notification/user/${userId}/read`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -50,7 +51,7 @@ export const patchMarkNotificationAsRead = async (
 };
 
 export const deleteNotification = async (
-    notificationId: number
+    notificationId: number,
 ): Promise<void> => {
     await toast.promise(
         (async () => {

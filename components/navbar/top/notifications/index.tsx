@@ -2,24 +2,24 @@
 import React from "react";
 import Notification from '@/components/types/notification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faX, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faX } from '@fortawesome/free-solid-svg-icons';
 import styles from "./main.module.scss";
 import { deleteNotification } from "@/services/notificationService";
 import CustomButton from "@/components/customButton";
 interface NotificationsProps {
     notifications: Notification[];
     onClose: () => void;
-    markAsRead: (id: number) => void;
+    markAllAsRead: () => void;
 }
 
 
-const Notifications: React.FC<NotificationsProps> = ({ notifications, onClose, markAsRead }) => {
+const Notifications: React.FC<NotificationsProps> = ({ notifications, onClose, markAllAsRead }) => {
 
     return (
         <div className={styles.notificationsPopup}>
             <div className={styles.popupHeader}>
                 <label className={styles.notificationLabel}>Powiadomienia</label>
-                <button onClick={onClose} className={styles.backButton}><FontAwesomeIcon icon={faX} className={styles.icon} /></button>
+                <button onClick={() => {onClose(); markAllAsRead();}} className={styles.backButton}><FontAwesomeIcon icon={faX} className={styles.icon} /></button>
             </div>
             <div className={styles.notificationsList}>
                 {notifications.length > 0 ? (
@@ -27,7 +27,6 @@ const Notifications: React.FC<NotificationsProps> = ({ notifications, onClose, m
                         <div
                             key={notification.id}
                             className={`${styles.notificationItem} ${notification.read ? '' : styles.unread}`}
-                            onClick={() => markAsRead(notification.id)}
                         >
                             <div className={styles.titleContainer}>
                                 <small>{new Date(notification.created_at).toLocaleString().slice(0, 17)}</small>

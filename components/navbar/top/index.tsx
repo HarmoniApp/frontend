@@ -10,7 +10,7 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import '@/styles/main.css';
 import UserImage from "@/components/userImage";
-import { fetchNotifications, patchMarkNotificationAsRead } from "@/services/notificationService";
+import { fetchNotifications, patchMarkAllNotificationsAsRead } from "@/services/notificationService";
 import LoadingSpinner from "@/components/loadingSpinner";
 interface NavbarTopProps {
     onAccountIconClick: () => void;
@@ -51,7 +51,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
                     const newNotification: Notification = JSON.parse(message.body);
 
                     setNotifications((prevNotifications) => {
-                        const updatedNotifications = [...prevNotifications, newNotification];
+                        const updatedNotifications = [newNotification, ...prevNotifications];
 
                         const unread = updatedNotifications.filter(notification => !notification.read).length;
                         setUnreadCount(unread);
@@ -74,16 +74,17 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
         };
     }, [userId]);
 
-    const markAsRead = async (id: number) => {
+    const markAllAsRead = async () => {
         setLoading(true);
-        setNotifications(notifications.map(notification =>
-            notification.id === id ? { ...notification, read: true } : notification
-        ));
-        setUnreadCount(notifications.filter(notification => !notification.read && notification.id !== id).length);
+        setNotifications(notifications.map(notification => ({
+            ...notification,
+            read: true
+        })));
+        setUnreadCount(0);
         try {
-            await patchMarkNotificationAsRead(id);
+            await patchMarkAllNotificationsAsRead();
         } catch (error) {
-            console.error(`Error marking notification ${id} as read:`, error);
+            console.error(`Error marking notifications as read:`, error);
         } finally {
             setLoading(false);
         }
@@ -119,7 +120,7 @@ const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThi
             {showNotifications && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
-                        <Notifications notifications={notifications} onClose={() => setShowNotifications(false)} markAsRead={markAsRead} />
+                        <Notifications notifications={notifications} onClose={() => setShowNotifications(false)} markAllAsRead={markAllAsRead} />
                     </div>
 
                     {loading && <LoadingSpinner />}
