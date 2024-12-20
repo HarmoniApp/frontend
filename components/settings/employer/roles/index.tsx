@@ -5,12 +5,12 @@ import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-soli
 import Role from '@/components/types/role';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { deleteRole, fetchRoles, postRole, putRole } from "@/services/roleService"
-import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import LoadingSpinner from '@/components/loadingSpinner';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
 import { Tooltip } from 'primereact/tooltip';
+import { addRoleValidationSchema, editRoleValidationSchema } from '@/validationSchemas/roleValidationSchema';
 
 const Roles = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -59,35 +59,6 @@ const Roles = () => {
       }
     }
   };
-
-  const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
-    const invalidChars = value.split('').filter(char => !allowedPattern.test(char));
-    return Array.from(new Set(invalidChars));
-  };
-
-  const addRoleValidationSchema = Yup.object({
-    newRoleName: Yup.string()
-      .required('Pole wymagane')
-      .test('no-invalid-chars', function (value) {
-        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
-        return invalidChars.length === 0
-          ? true
-          : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
-      }),
-    newRoleColor: Yup.string().required('Kolor wymagany'),
-  });
-
-  const editRoleValidationSchema = Yup.object({
-    editedRoleName: Yup.string()
-      .required('Pole wymagane')
-      .test('no-invalid-chars', function (value) {
-        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
-        return invalidChars.length === 0
-          ? true
-          : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
-      }),
-    editedRoleColor: Yup.string().required('Kolor wymagany'),
-  });
 
   const truncateText = (text: string, maxLength: number) => {
     return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
