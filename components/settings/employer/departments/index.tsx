@@ -1,66 +1,32 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPen, faCheck, faXmark, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import classNames from "classnames";
-import DepartmentAddress from "@/components/types/departmentAddress";
 import styles from "./main.module.scss";
-import { deleteDepartment, fetchDepartmentsAddress, postDepartment, putDepartment } from "@/services/departmentService";
 import LoadingSpinner from "@/components/loadingSpinner";
 import ConfirmationPopUp from "@/components/confirmationPopUp";
 import { Tooltip } from "primereact/tooltip";
 import { departmentValidationSchema } from "@/validationSchemas/departmentValidationSchema";
+import useDepartments from "@/hooks/useDepartments";
 
 const Departments = () => {
-    const [departments, setDepartments] = useState<DepartmentAddress[]>([]);
-    const [editingDepartmentId, setEditingDepartmentId] = useState<number | null>(null);
-    const [noChangesError, setNoChangesError] = useState<string | null>(null);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [deleteDepartmentId, setDeleteDepartmentId] = useState<number | null>(null);
-    const [loading, setLoading] = useState(false);
-
-    const openDeleteModal = (departmentId: number) => {
-        setDeleteDepartmentId(departmentId);
-        setIsDeleteModalOpen(true);
-    };
-
-    useEffect(() => {
-        const loadData = async () => {
-            setLoading(true);
-            await fetchDepartmentsAddress(setDepartments);
-            setLoading(false);
-        }
-
-        loadData();
-    }, []);
-
-    const handleAddDepartment = async (values: DepartmentAddress, { resetForm }: any) => {
-        try {
-            postDepartment(values, setDepartments)
-            resetForm();
-        }
-        catch (error) {
-            console.error("Error adding department:", error);
-        }
-    };
-
-    const handleEditDepartment = async (values: DepartmentAddress) => {
-        if (editingDepartmentId !== null) {
-            try {
-                setEditingDepartmentId(null);
-                await putDepartment(values, setDepartments);
-            }
-            catch (error) {
-                console.error("Error updating department:", error);
-            }
-        }
-    };
-
-    const handleDeleteDepartment = async (departmentId: number) => {
-        setIsDeleteModalOpen(false);
-        await deleteDepartment(departmentId, setDepartments);
-    };
+    const {
+        departments,
+        editingDepartmentId,
+        setEditingDepartmentId,
+        noChangesError,
+        setNoChangesError,
+        isDeleteModalOpen,
+        setIsDeleteModalOpen,
+        deleteDepartmentId,
+        loading,
+        handleAddDepartment,
+        handleEditDepartment,
+        handleDeleteDepartment,
+        openDeleteModal,
+      } = useDepartments();
 
     const truncateText = (text: string, maxLength: number) => {
         return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
