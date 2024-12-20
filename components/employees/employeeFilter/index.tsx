@@ -1,109 +1,38 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faTrashCan, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import Language from '@/components/types/language';
-import Role from '@/components/types/role';
 import styles from './main.module.scss';
 import Flag from 'react-flagkit';
-import { fetchLanguages } from "@/services/languageService";
-import { fetchRoles } from "@/services/roleService"
+import useFilterEmployee from '@/hooks/useFilterEmployees';
 
 interface FilterEmployeeProps {
   onApplyFilters: (filters: { roles?: number[]; languages?: number[]; order?: string }) => void;
 }
 
 const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [languages, setLanguages] = useState<Language[]>([]);
-  const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
-  const [selectedLanguages, setSelectedLanguages] = useState<number[]>([]);
-  const [order, setOrder] = useState<string | null>(null);
-  const [isPositionOpen, setIsPositionOpen] = useState(false);
-  const [isSortOpen, setIsSortOpen] = useState(false);
-  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
-  const positionListRef = useRef<HTMLDivElement>(null);
-  const sortListRef = useRef<HTMLDivElement>(null);
-  const languageListRef = useRef<HTMLDivElement>(null);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-
-  useEffect(() => {
-    const loadData = async () => {
-      await fetchRoles(setRoles);
-      await fetchLanguages(setLanguages);
-    };
-
-    loadData();
-  }, []);
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      const filters: { roles?: number[]; languages?: number[]; order?: string } = {};
-      if (selectedRoles.length) filters.roles = selectedRoles;
-      if (selectedLanguages.length) filters.languages = selectedLanguages;
-      if (order) filters.order = order;
-      onApplyFilters(filters);
-    }, 300);
-
-    return () => clearTimeout(timeoutId);
-  }, [selectedRoles, selectedLanguages, order]);
-
-  const handleRoleChange = (roleId: number) => {
-    setSelectedRoles((prevSelectedRoles) => {
-      if (prevSelectedRoles.includes(roleId)) {
-        return prevSelectedRoles.filter((id) => id !== roleId);
-      } else {
-        return [...prevSelectedRoles, roleId];
-      }
-    });
-  };
-
-  const handleLanguageChange = (languageId: number) => {
-    setSelectedLanguages((prevSelectedLanguages) => {
-      if (prevSelectedLanguages.includes(languageId)) {
-        return prevSelectedLanguages.filter((id) => id !== languageId);
-      } else {
-        return [...prevSelectedLanguages, languageId];
-      }
-    });
-  };
-
-  const handleClearFilters = () => {
-    setSelectedRoles([]);
-    setSelectedLanguages([]);
-    setOrder(null);
-    onApplyFilters({});
-  };
-
-  const toggleSection = (setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, ref: React.RefObject<HTMLDivElement>) => {
-    setIsOpen(prevIsOpen => {
-      const isOpen = !prevIsOpen;
-      if (ref.current) {
-        if (isOpen) {
-          ref.current.style.height = `${ref.current.scrollHeight}px`;
-        } else {
-          ref.current.style.height = '0';
-        }
-      }
-      return isOpen;
-    });
-  };
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      const filters: { roles?: number[]; languages?: number[]; order?: string; query?: string } = {};
-      if (selectedRoles.length) filters.roles = selectedRoles;
-      if (selectedLanguages.length) filters.languages = selectedLanguages;
-      if (order) filters.order = order;
-      if (searchQuery) filters.query = searchQuery;
-      onApplyFilters(filters);
-    }, 300);
-
-    return () => clearTimeout(timeoutId);
-  }, [selectedRoles, selectedLanguages, order, searchQuery]);
-
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
+  const {
+    roles,
+    languages,
+    selectedRoles,
+    selectedLanguages,
+    order,
+    searchQuery,
+    isPositionOpen,
+    isSortOpen,
+    isLanguageOpen,
+    setIsPositionOpen,
+    setIsSortOpen,
+    setIsLanguageOpen, 
+    positionListRef,
+    sortListRef,
+    languageListRef,
+    setOrder,
+    setSearchQuery,
+    handleRoleChange,
+    handleLanguageChange,
+    handleClearFilters,
+    toggleSection,
+  } = useFilterEmployee(onApplyFilters);
 
   return (
     <div className={styles.employeesFilerContainerMain}>
@@ -113,7 +42,7 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ onApplyFilters }) => {
           <input
             type="text"
             value={searchQuery}
-            onChange={handleSearchInputChange}
+            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Wyszukaj"
             className={styles.searchInput}
           />

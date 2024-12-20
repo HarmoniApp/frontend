@@ -19,10 +19,8 @@ const EmployeesComponent: React.FC = () => {
   const [rows, setRows] = useState(21);
   const [totalRecords, setTotalRecords] = useState(0);
   
-
   const fetchFilteredData = async (filters: { roles?: number[]; languages?: number[]; order?: string; query?: string } = {}, pageNumber: number = 1, pageSize: number = 21) => {
     setLoading(true);
-
     try {
       await fetchFilterUsers(filters, pageNumber, pageSize, setData, setTotalRecords)
     } catch (error) {
