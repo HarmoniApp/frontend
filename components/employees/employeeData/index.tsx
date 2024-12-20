@@ -1,78 +1,41 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import EmployeeData from '@/components/types/employeeData';
+import React from 'react';
 import Department from '@/components/types/department';
 import Flag from 'react-flagkit';
 import styles from './main.module.scss';
 import NewPassword from './newPassword';
-import { fetchDepartments } from '@/services/departmentService';
-import Supervisor from '@/components/types/supervisor';
-import { deleteUser, fetchUserData } from '@/services/userService';
 import LoadingSpinner from '@/components/loadingSpinner';
-import { patchResetPassword } from '@/services/passwordService';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
 import CustomButton from '@/components/customButton';
 import { Tooltip } from 'primereact/tooltip';
+import useEmployeeData from '@/hooks/useEmployeeData';
 
 interface EmployeeDataComponentProps {
   userId: number;
 }
 
 const EmployeeDataComponent: React.FC<EmployeeDataComponentProps> = ({ userId }) => {
-  const [employee, setEmployee] = useState<EmployeeData | null>(null);
-  const [departments, setDepartments] = useState<Department[]>([]);
-  const [supervisorData, setSupervisorData] = useState<Supervisor | null>(null);
-  const [modalIsOpenDeleteEmployee, setModalDeleteEmployee] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [newPassword, setNewPassword] = useState('');
-  const [modalNewPassword, setModalNewPassword] = useState(false);
-  const router = useRouter();
-
-  useEffect(() => {
-    if (userId) {
-      const loadData = async () => {
-        setLoading(true);
-        await fetchDepartments(setDepartments);
-        await fetchUserData(userId, setEmployee, setSupervisorData);
-        setLoading(false);
-      };
-
-      loadData();
-    }
-  }, [userId]);
+  const {
+    employee,
+    departments,
+    supervisorData,
+    loading,
+    modalIsOpenDeleteEmployee,
+    modalNewPassword,
+    newPassword,
+    setModalDeleteEmployee,
+    setModalNewPassword,
+    handleEditEmployee,
+    handleDeleteEmployee,
+    handlePasswordResetSubmit,
+  } = useEmployeeData(userId);
 
   if (!employee) return <LoadingSpinner wholeModal={false} />;
 
-  const department = departments.find(dept => dept.id === employee.work_address.id);
-
-  const handleEditEmployee = () => {
-    router.push(`/employees/user/${userId}/edit`);
-  };
-
-  const handleDeleteEmployee = async () => {
-    try {
-      setModalDeleteEmployee(false);
-      await deleteUser(userId);
-      router.push("/employees");
-    } catch (error) {
-      console.error('Error deleting employee:', error);
-    }
-  };
-
-  const handlePasswordResetSubmit = async () => {
-    setLoading(true);
-    try {
-      await patchResetPassword(userId, setNewPassword);
-      setModalNewPassword(true);
-    } catch (error) {
-      console.error('Error while resetting password: ', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const department = departments.find((dept: Department) => dept.id === employee.work_address.id);
 
   const goToChat = () => {
+    //TODO: add link to chat
   };
 
   const truncateText = (text: string, maxLength: number) => {
