@@ -1,26 +1,16 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import Flag from 'react-flagkit';
 import EmployeeDataWorkAdressOnlyId from '@/components/types/employeeDataWorkAdressOnlyId';
-import Role from '@/components/types/role';
-import Contract from '@/components/types/contract';
-import Language from '@/components/types/language';
-import Supervisor from '@/components/types/supervisor';
-import Department from '@/components/types/department';
-import { fetchLanguages } from "@/services/languageService";
-import { fetchRoles } from "@/services/roleService"
 import styles from './main.module.scss';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import classNames from 'classnames';
-import { fetchContracts } from '@/services/contractService';
-import { fetchDepartments } from '@/services/departmentService';
-import { fetchSupervisors, patchUser } from '@/services/userService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { employeeValidationSchema } from '@/validationSchemas/employeeValiadtionSchema';
 import { Tooltip } from 'primereact/tooltip';
-import { useRouter } from 'next/navigation';
+import useEditEmployeeData from '@/hooks/useEditEmployeeData';
 
 interface EditEmployeeDataProps {
   employee: EmployeeDataWorkAdressOnlyId;
@@ -28,48 +18,7 @@ interface EditEmployeeDataProps {
 }
 
 const EditEmployeeData: React.FC<EditEmployeeDataProps> = ({ employee, onCloseEdit }) => {
-
-  const [contracts, setContracts] = useState<Contract[]>([]);
-  const [departments, setDepartments] = useState<Department[]>([]);
-  const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [languages, setLanguages] = useState<Language[]>([]);
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-
-  const fetchAllSupervisors = async () => {
-    try {
-      await fetchSupervisors(setSupervisors)
-    } catch (error) {
-      console.error('Error fetching supervisors:', error);
-    }
-  };
-
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      await fetchContracts(setContracts);
-      await fetchDepartments(setDepartments);
-      await fetchAllSupervisors();
-      await fetchRoles(setRoles);
-      await fetchLanguages(setLanguages);
-      setLoading(false);
-    };
-
-    loadData();
-  }, []);
-
-  const handleEditUser = async (values: typeof initialValues) => {
-    try {
-      await patchUser(values);
-      onCloseEdit();
-      router.refresh()
-    } catch (error) {
-      console.error('Error while editing user:', error);
-    }
-  };
-
-  const initialValues = {
+  const initialValues = { //TODO: move this to another file
     id: employee.id,
     firstname: employee.firstname || '',
     surname: employee.surname || '',
@@ -91,6 +40,15 @@ const EditEmployeeData: React.FC<EditEmployeeDataProps> = ({ employee, onCloseEd
     phone_number: employee.phone_number || '',
     employee_id: employee.employee_id || '',
   };
+
+  const {
+    contracts,
+    departments,
+    supervisors,
+    roles,
+    languages,
+    loading,
+    handleEditUser } = useEditEmployeeData(onCloseEdit, initialValues);
 
   const truncateText = (text: string, maxLength: number) => {
     return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
