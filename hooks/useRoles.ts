@@ -20,7 +20,6 @@ const useRoles = () => {
             await fetchRoles(setRoles);
             setLoading(false);
         };
-
         loadData();
     }, []);
 

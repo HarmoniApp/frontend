@@ -1,63 +1,30 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
-import Contract from '@/components/types/contract';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import classNames from 'classnames';
 import styles from './main.module.scss';
-import { deleteContractType, fetchContracts, postContractType, putContractType } from '@/services/contractService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
 import { Tooltip } from 'primereact/tooltip';
 import { contractValidationSchema } from '@/validationSchemas/contractValidationSchema';
+import useContractTypes from '@/hooks/useContractsTypes';
 
 const ContractTypes = () => {
-  const [contracts, setContracts] = useState<Contract[]>([]);
-  const [editingContractId, setEditingContractId] = useState<number | null>(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deleteContractId, setDeleteContractId] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const openDeleteModal = (contractId: number) => {
-    setDeleteContractId(contractId);
-    setIsDeleteModalOpen(true);
-  };
-
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      await fetchContracts(setContracts);
-      setLoading(false);
-    }
-
-    loadData();
-  }, []);
-
-  const handleDeleteContractType = async (contractId: number) => {
-    setIsDeleteModalOpen(false);
-    await deleteContractType(contractId, setContracts);
-  };
-
-  const handleAddContractType = async (values: any, { resetForm }: any) => {
-    try {
-      await postContractType(values, setContracts);
-      resetForm();
-    } catch (error) {
-      console.error('Error adding contract type:', error);
-      throw error;
-    }
-  };
-
-  const handleEditContractType = async (values: any, { resetForm }: any) => {
-    try {
-      setEditingContractId(null);
-      await putContractType(values, setContracts);
-      resetForm();
-    } catch (error) {
-      console.error('Error editing contract:', error);
-    }
-  };
+  const {
+    contracts,
+    editingContractId,
+    setEditingContractId,
+    isDeleteModalOpen,
+    setIsDeleteModalOpen,
+    deleteContractId,
+    loading,
+    handleAddContractType,
+    handleEditContractType,
+    handleDeleteContractType,
+    openDeleteModal,
+  } = useContractTypes();
 
   const truncateText = (text: string, maxLength: number) => {
     return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;

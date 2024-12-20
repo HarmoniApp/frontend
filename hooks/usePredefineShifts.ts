@@ -26,7 +26,6 @@ const usePredefinedShifts = () => {
         const loadData = async () => {
             await fetchPredefinedShifts(setPredefineShifts);
         }
-
         loadData();
     }, []);
 

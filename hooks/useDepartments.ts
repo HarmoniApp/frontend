@@ -21,7 +21,6 @@ const useDepartments = () => {
             await fetchDepartmentsAddress(setDepartments);
             setLoading(false);
         }
-
         loadData();
     }, []);
 
@@ -66,7 +65,7 @@ const useDepartments = () => {
         handleEditDepartment,
         handleDeleteDepartment,
         openDeleteModal,
-      };
+    };
 }
 
 export default useDepartments;
