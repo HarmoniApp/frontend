@@ -28,7 +28,6 @@ const useEmployeeDataForm = () => {
             await fetchLanguages(setLanguages);
             setLoading(false);
         };
-
         loadData();
     }, []);
 

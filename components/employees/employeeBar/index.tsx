@@ -26,10 +26,6 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
   const importEmployee = () => {
   };
 
-  const toggleDropdown = () => {
-    setDropdownVisible(!dropdownVisible);
-  };
-
   const handleExport = async (format: string) => {
     setDropdownVisible(false);
 
@@ -48,7 +44,7 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
         <CustomButton icon="userPlus" writing="dodaj pracownika" action={onAddEmployee} />
         <CustomButton icon="cloudArrowUp" writing="importuj" action={importEmployee} />
         <div className={styles.exportDropdownContainer}>
-          <CustomButton icon="cloudArrowDown" writing="exportuj" action={toggleDropdown} />
+          <CustomButton icon="cloudArrowDown" writing="exportuj" action={()=> setDropdownVisible(!dropdownVisible)} />
           {dropdownVisible && (
             <div className={styles.exportDropdownMenu}>
               <button onClick={() => { setFileFormat('pdf'); setIsConfirmationModalOpen(true); }}>Eksportuj do PDF</button>

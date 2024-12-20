@@ -23,7 +23,6 @@ const Chat = () => {
   const [newChat, setNewChat] = useState<boolean>(false);
   const [chatType, setChatType] = useState<'user' | 'group'>('user');
   const [isEditGroupModalOpen, setIsEditGroupModalOpen] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState<ChatPartner[]>([]);
   const [userId, setUserId] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -245,8 +244,6 @@ const Chat = () => {
       {isEditGroupModalOpen && (
         <EditGroup
           editGroupModal={setIsEditGroupModalOpen}
-          selectedUsers={selectedUsers}
-          setSelectedUsers={setSelectedUsers}
           selectedChat={selectedChat}
           setLoading={setLoading}
           setIsEditGroupModalOpen={setIsEditGroupModalOpen}

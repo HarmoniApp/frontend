@@ -1,97 +1,31 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ChatPartner from '@/components/types/chatPartner';
 import SearchUser from '@/components/chat/searchUser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserMinus, faXmark, faTrash, faX } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import UserImage from '@/components/userImage';
-import { deleteGroup, fetchGroupMembers, patchAddUserToGroup, patchRemoveUserFromGroup } from '@/services/chatService';
+import useEditGroup from '@/hooks/useEditGroup';
 
 interface EditGroupProps {
     editGroupModal: (open: boolean) => void;
-    selectedUsers: ChatPartner[];
-    setSelectedUsers: (selectedUsers: ChatPartner[]) => void;
     selectedChat: ChatPartner | null;
     setLoading: (loading: boolean) => void;
     setIsEditGroupModalOpen: (isOpen: boolean) => void;
 }
 
-const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedUsers, setSelectedUsers, selectedChat, setLoading, setIsEditGroupModalOpen }) => {
-
-    useEffect(() => {
-        handleEditGroup();
-    }, []);
-
-    const handleEditGroup = async () => {
-        setLoading(true);
-        if (!selectedChat) {
-            console.error("Error: No group to edit.");
-            return;
-        }
-        await fetchGroupMembers(selectedChat.id, setSelectedUsers)
-        setLoading(false);
-    };
-
-    const handleRemoveUserFromGroup = async (userId: number): Promise<void> => {
-        if (!window.confirm("Czy na pewno chcesz usunąć tego użytkownika?")) {
-            return;
-        }
-        setLoading(true);
-
-        try {
-            if (!selectedChat) {
-                console.error("Error: No group to edit.");
-                return;
-            }
-            await patchRemoveUserFromGroup(selectedChat.id, userId)
-            setSelectedUsers(selectedUsers.filter((user: ChatPartner) => user.id !== userId));
-            if (userId === parseInt(sessionStorage.getItem('userId') || '0')) {
-                window.location.reload();
-            }
-        } catch (error) {
-            console.error('Error while removing user from group:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleDeleteGroup = async (): Promise<void> => {
-        if (!selectedChat || selectedChat.type !== 'group') {
-            console.error("Error: No group selected or trying to delete a non-group chat.");
-            return;
-        }
-
-        if (!window.confirm(`Czy na pewno usunąć grupę "${selectedChat.name}"? Tej akcji nie da się cofnąć!`)) {
-            return;
-        }
-        await deleteGroup(selectedChat.id)
-    };
-
-    const handleAddUserToGroup = async (user: ChatPartner): Promise<void> => {
-        if (selectedUsers.some((existingUser) => existingUser.id === user.id)) {
-            alert("User is already in the group.");
-            return;
-        }
-        setLoading(true);
-
-        try {
-            if (!selectedChat) {
-                console.error("Error: No group to edit.");
-                return;
-            }
-            await patchAddUserToGroup(selectedChat.id, user.id)
-            setSelectedUsers([...selectedUsers, user]);
-        } catch (error) {
-            console.error('Error while adding user to group:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+const EditGroup: React.FC<EditGroupProps> = ({ editGroupModal, selectedChat, setLoading, setIsEditGroupModalOpen }) => {
+    const {
+        selectedUsers,
+        handleAddUserToGroup,
+        handleRemoveUserFromGroup,
+        handleDeleteGroup,
+    } = useEditGroup(selectedChat, setLoading);
 
     return (
         <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
-            <FontAwesomeIcon icon={faX} onClick={() => setIsEditGroupModalOpen(false)} className={styles.iconClose}/>
+                <FontAwesomeIcon icon={faX} onClick={() => setIsEditGroupModalOpen(false)} className={styles.iconClose} />
                 <h3 className={styles.title}>Edit group</h3>
                 <SearchUser handleSelectUser={handleAddUserToGroup} groupChat={true} />
                 <div className={styles.selectedUsers}>
