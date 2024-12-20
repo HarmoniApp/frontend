@@ -1,61 +1,40 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { fetchLanguages } from "@/services/languageService";
-import { fetchRoles } from "@/services/roleService"
-import { fetchContracts } from '@/services/contractService';
-import { fetchDepartments } from '@/services/departmentService';
-import { fetchSupervisors, postUser } from '@/services/userService';
 import Flag from 'react-flagkit';
-import Role from '@/components/types/role';
-import Contract from '@/components/types/contract';
-import Language from '@/components/types/language';
-import Supervisor from '@/components/types/supervisor';
-import Department from '@/components/types/department';
 import classNames from 'classnames';
 import LoadingSpinner from '@/components/loadingSpinner';
 import styles from './main.module.scss';
 import { employeeValidationSchema } from '@/validationSchemas/employeeValiadtionSchema';
+import Department from '@/components/types/department';
+import Supervisor from '@/components/types/supervisor';
+import Role from '@/components/types/role';
+import Language from '@/components/types/language';
+import Contract from '@/components/types/contract';
+import useEmployeeDataForm from '@/hooks/useEditEmployeeData';
 
 const AddEmployee: React.FC = () => {
-  const router = useRouter();
   const onBack = () => {
     router.push('/employees');
   };
 
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [contracts, setContracts] = useState<Contract[]>([]);
-  const [languages, setLanguages] = useState<Language[]>([]);
-  const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
-  const [departments, setDepartments] = useState<Department[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      await fetchRoles(setRoles);
-      await fetchContracts(setContracts);
-      await fetchLanguages(setLanguages);
-      await fetchSupervisors(setSupervisors);
-      await fetchDepartments(setDepartments);
-      setLoading(false);
-    };
-
-    loadData();
-  }, []);
+  const router = useRouter();
+  const { 
+    roles, 
+    contracts, 
+    languages, 
+    supervisors, 
+    departments, 
+    loading,
+    handleSaveEmployee } = useEmployeeDataForm();
 
   const handleSubmit = async (values: typeof initialValues, { resetForm }: { resetForm: () => void }) => {
-    try {
-      onBack();
-      await postUser(values);
-      resetForm();
-    } catch (error) {
-      console.error('Error adding employee:', error);
-      throw error;
-    }
+    await handleSaveEmployee(values, "add");
+    router.push("/employees");
+    resetForm();
   };
 
   const initialValues = {
@@ -244,7 +223,7 @@ const AddEmployee: React.FC = () => {
                   <option className={styles.defaultOption} value="" disabled>
                     Wybierz rodzaj umowy
                   </option>
-                  {contracts.map((contract) => (
+                  {contracts.map((contract: Contract) => (
                     <option key={contract.id} value={contract.id}>
                       {contract.name}
                     </option>
@@ -266,7 +245,7 @@ const AddEmployee: React.FC = () => {
                   <option className={styles.defaultOption} value="" disabled>
                     Wybierz przełożonego
                   </option>
-                  {supervisors.map((supervisor) => (
+                  {supervisors.map((supervisor: Supervisor) => (
                     <option key={supervisor.id} value={supervisor.id}>
                       {supervisor.firstname} {supervisor.surname}
                     </option>
@@ -288,7 +267,7 @@ const AddEmployee: React.FC = () => {
                   <option className={styles.defaultOption} value="" disabled>
                     Wybierz oddział
                   </option>
-                  {departments.map((department) => (
+                  {departments.map((department: Department) => (
                     <option key={department.id} value={department.id}>
                       {department.departmentName}
                     </option>
@@ -301,7 +280,7 @@ const AddEmployee: React.FC = () => {
                 <p className={styles.roleParagraph}>Wybierz role dla pracownika</p>
                 <ErrorMessage name="roles" component="div" className={styles.errorMessage} />
                 <div className={styles.roleContainer}>
-                  {roles.map((role) => (
+                  {roles.map((role: Role) => (
                     <label key={role.id} className={styles.roleLabel}>
                       <Field
                         className={styles.roleCheckbox}
@@ -327,7 +306,7 @@ const AddEmployee: React.FC = () => {
                 <p className={styles.languageParagraph}>Wybierz języki dla pracownika</p>
                 <ErrorMessage name="languages" component="div" className={styles.errorMessage} />
                 <div className={styles.languagesContainer}>
-                  {languages.map((language) => (
+                  {languages.map((language: Language) => (
                     <label key={language.id} className={styles.languageLabel}>
                       <Field
                         className={styles.languageCheckbox}

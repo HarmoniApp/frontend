@@ -10,7 +10,8 @@ import classNames from 'classnames';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { employeeValidationSchema } from '@/validationSchemas/employeeValiadtionSchema';
 import { Tooltip } from 'primereact/tooltip';
-import useEditEmployeeData from '@/hooks/useEditEmployeeData';
+import { useRouter } from 'next/navigation';
+import useEmployeeDataForm from '@/hooks/useEditEmployeeData';
 
 interface EditEmployeeDataProps {
   employee: EmployeeDataWorkAdressOnlyId;
@@ -41,14 +42,21 @@ const EditEmployeeData: React.FC<EditEmployeeDataProps> = ({ employee, onCloseEd
     employee_id: employee.employee_id || '',
   };
 
+  const router = useRouter();
   const {
-    contracts,
-    departments,
-    supervisors,
     roles,
+    contracts,
     languages,
+    supervisors,
+    departments,
     loading,
-    handleEditUser } = useEditEmployeeData(onCloseEdit, initialValues);
+    handleSaveEmployee } = useEmployeeDataForm();
+
+  const handleSubmit = async (values: typeof initialValues) => {
+    await handleSaveEmployee(values, "edit");
+    onCloseEdit();
+    router.refresh();
+  };
 
   const truncateText = (text: string, maxLength: number) => {
     return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
@@ -59,7 +67,7 @@ const EditEmployeeData: React.FC<EditEmployeeDataProps> = ({ employee, onCloseEd
       <Formik
         initialValues={initialValues}
         validationSchema={employeeValidationSchema}
-        onSubmit={handleEditUser}
+        onSubmit={handleSubmit}
         validateOnBlur={true}
         validateOnChange={false}
         validateOnMount={false}
