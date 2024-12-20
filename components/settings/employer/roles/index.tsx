@@ -1,10 +1,8 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
-import Role from '@/components/types/role';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { deleteRole, fetchRoles, postRole, putRole } from "@/services/roleService"
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import LoadingSpinner from '@/components/loadingSpinner';

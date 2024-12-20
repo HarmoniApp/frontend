@@ -1,69 +1,30 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
-import PredefinedShift from '@/components/types/predefinedShifts';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import classNames from 'classnames';
 import styles from './main.module.scss';
-import { formatTimeToHHMM, fetchPredefinedShifts, deletePredefineShift, postPredefineShift, putPredefineShift } from '@/services/predefineShiftService';
+import { formatTimeToHHMM } from '@/services/predefineShiftService';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
 import { Tooltip } from 'primereact/tooltip';
 import { predefineShiftValidationSchema } from '@/validationSchemas/predefineShiftValidationSchema';
+import usePredefinedShifts from '@/hooks/usePredefineShifts';
 
 const PredefinedShifts = () => {
-  const [predefineShifts, setPredefineShifts] = useState<PredefinedShift[]>([]);
-  const [editingShiftId, setEditingShiftId] = useState<number | null>(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deleteShiftId, setDeleteShiftId] = useState<number | null>(null);
-
-  const openDeleteModal = (shiftId: number) => {
-    setDeleteShiftId(shiftId);
-    setIsDeleteModalOpen(true);
-  };
-
-  const shiftHours: string[] = [];
-  for (let hour = 0; hour < 24; hour++) {
-    for (let minute = 0; minute < 60; minute += 30) {
-      const formattedHour = hour.toString().padStart(2, '0');
-      const formattedMinute = minute.toString().padStart(2, '0');
-      shiftHours.push(`${formattedHour}:${formattedMinute}`);
-    }
-  }
-
-  useEffect(() => {
-    const loadData = async () => {
-      await fetchPredefinedShifts(setPredefineShifts);
-    }
-
-    loadData();
-  }, []);
-
-  const handleAddPredefineShift = async (values: any, { resetForm }: any) => {
-    try {
-      await postPredefineShift(values, setPredefineShifts);
-      resetForm();
-    } catch (error) {
-      console.error('Error adding predefine shift:', error);
-      throw error;
-    }
-  };
-
-  const handleEditPredefineShift = async (values: PredefinedShift, { resetForm }: any) => {
-    try {
-      setEditingShiftId(null);
-      await putPredefineShift(values, setPredefineShifts);
-      resetForm();
-    }
-    catch (error) {
-      console.error("Error updating predefine shift:", error);
-    }
-  };
-
-  const handleDeletePredefineShift = async (shiftId: number) => {
-    setIsDeleteModalOpen(false);
-    await deletePredefineShift(shiftId, setPredefineShifts);
-  };
+  const {
+    predefineShifts,
+    editingShiftId,
+    setEditingShiftId,
+    isDeleteModalOpen,
+    deleteShiftId,
+    setIsDeleteModalOpen,
+    shiftHours,
+    handleAddPredefineShift,
+    handleEditPredefineShift,
+    handleDeletePredefineShift,
+    openDeleteModal,
+  } = usePredefinedShifts();
 
   const truncateText = (text: string, maxLength: number) => {
     return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
