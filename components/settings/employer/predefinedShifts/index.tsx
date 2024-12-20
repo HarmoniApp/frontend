@@ -4,12 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 import PredefinedShift from '@/components/types/predefinedShifts';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import { formatTimeToHHMM, fetchPredefinedShifts, deletePredefineShift, postPredefineShift, putPredefineShift } from '@/services/predefineShiftService';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
 import { Tooltip } from 'primereact/tooltip';
+import { predefineShiftValidationSchema } from '@/validationSchemas/predefineShiftValidationSchema';
 
 const PredefinedShifts = () => {
   const [predefineShifts, setPredefineShifts] = useState<PredefinedShift[]>([]);
@@ -65,34 +65,6 @@ const PredefinedShifts = () => {
     await deletePredefineShift(shiftId, setPredefineShifts);
   };
 
-  const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
-    const invalidChars = value.split('').filter(char => !allowedPattern.test(char));
-    return Array.from(new Set(invalidChars));
-  };
-
-  const shiftValidationSchema = Yup.object({
-    name: Yup.string()
-      .required('Pole wymagane')
-      .test('no-invalid-chars', function (value) {
-        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9\s]*$/);
-        return invalidChars.length === 0
-          ? true
-          : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
-      }),
-    start: Yup.string()
-      .required('Wybierz godzinę rozpoczęcia')
-      .test('start-before-end', 'Brak chronologii', function (start, context) {
-        const { end } = context.parent;
-        return start !== end;
-      }),
-    end: Yup.string()
-      .required('Wybierz godzinę zakończenia')
-      .test('start-before-end', 'Brak chronologii', function (end, context) {
-        const { start } = context.parent;
-        return start !== end;
-      }),
-  });
-
   const truncateText = (text: string, maxLength: number) => {
     return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
   };
@@ -113,7 +85,7 @@ const PredefinedShifts = () => {
                 start: formatTimeToHHMM(shift.start || '00:00'),
                 end: formatTimeToHHMM(shift.end || '00:00'),
               }}
-              validationSchema={shiftValidationSchema}
+              validationSchema={predefineShiftValidationSchema}
               onSubmit={handleEditPredefineShift}
             >
               {({ handleSubmit, handleChange, values, errors, touched, resetForm }) => (
@@ -239,7 +211,7 @@ const PredefinedShifts = () => {
       </div>
       <Formik
         initialValues={{ name: '', start: '00:00', end: '00:00' }}
-        validationSchema={shiftValidationSchema}
+        validationSchema={predefineShiftValidationSchema}
         onSubmit={handleAddPredefineShift}
       >
         {({ handleSubmit, handleChange, values, errors, touched }) => (

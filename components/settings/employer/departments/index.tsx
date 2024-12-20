@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPen, faCheck, faXmark, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import classNames from "classnames";
 import DepartmentAddress from "@/components/types/departmentAddress";
 import styles from "./main.module.scss";
@@ -11,6 +10,7 @@ import { deleteDepartment, fetchDepartmentsAddress, postDepartment, putDepartmen
 import LoadingSpinner from "@/components/loadingSpinner";
 import ConfirmationPopUp from "@/components/confirmationPopUp";
 import { Tooltip } from "primereact/tooltip";
+import { departmentValidationSchema } from "@/validationSchemas/departmentValidationSchema";
 
 const Departments = () => {
     const [departments, setDepartments] = useState<DepartmentAddress[]>([]);
@@ -61,66 +61,6 @@ const Departments = () => {
         setIsDeleteModalOpen(false);
         await deleteDepartment(departmentId, setDepartments);
     };
-
-    const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
-        const invalidChars = value.split('').filter(char => !allowedPattern.test(char));
-        return Array.from(new Set(invalidChars));
-    };
-
-    const departmentValidationSchema = Yup.object().shape({
-        department_name: Yup.string()
-            .min(1, 'Min 1 znaków')
-            .max(100, 'Max 100 znaków')
-            .required("Pole wymagane")
-            .test('no-invalid-chars', function (value) {
-                const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z ]*$/);
-                return invalidChars.length === 0
-                    ? true
-                    : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
-            }),
-        city: Yup.string()
-            .min(1, 'Min 1 znaków')
-            .max(50, 'Max 50 znaków')
-            .required("Pole wymagane")
-            .test('no-invalid-chars', function (value) {
-                const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z ]*$/);
-                return invalidChars.length === 0
-                    ? true
-                    : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
-            }),
-        zip_code: Yup.string()
-            .min(5, 'Min 5 znaków')
-            .max(10, 'Max 10 znaków')
-            .required("Pole wymagane")
-            .test('no-invalid-chars', function (value) {
-                const invalidChars = findInvalidCharacters(value || '', /^[0-9-]*$/);
-                return invalidChars.length === 0
-                    ? true
-                    : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
-            }),
-        street: Yup.string()
-            .min(1, 'Min 1 znaków')
-            .max(100, 'Max 100 znaków')
-            .required("Pole wymagane")
-            .test('no-invalid-chars', function (value) {
-                const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z ]*$/);
-                return invalidChars.length === 0
-                    ? true
-                    : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
-            }),
-        building_number: Yup.string()
-            .min(1, 'Min 1 znaków')
-            .max(10, 'Max 10 znaków')
-            .required("Pole wymagane")
-            .test('no-invalid-chars', function (value) {
-                const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
-                return invalidChars.length === 0
-                    ? true
-                    : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
-            }),
-        apartment: Yup.string()
-            .notRequired(),
-    });
 
     const truncateText = (text: string, maxLength: number) => {
         return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;

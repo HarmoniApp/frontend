@@ -4,13 +4,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faPen, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 import Contract from '@/components/types/contract';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import { deleteContractType, fetchContracts, postContractType, putContractType } from '@/services/contractService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
 import { Tooltip } from 'primereact/tooltip';
+import { contractValidationSchema } from '@/validationSchemas/contractValidationSchema';
 
 const ContractTypes = () => {
   const [contracts, setContracts] = useState<Contract[]>([]);
@@ -58,28 +58,6 @@ const ContractTypes = () => {
       console.error('Error editing contract:', error);
     }
   };
-
-  const findInvalidCharacters = (value: string, allowedPattern: RegExp): string[] => {
-    const invalidChars = value.split('').filter(char => !allowedPattern.test(char));
-    return Array.from(new Set(invalidChars));
-  };
-
-  const contractValidationSchema = Yup.object({
-    name: Yup.string()
-      .min(2, 'Min 2 znaków')
-      .max(50, 'Max 50 znaków')
-      .required('Pole wymagane')
-      .test('no-invalid-chars', function (value) {
-        const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9\s]*$/);
-        return invalidChars.length === 0
-          ? true
-          : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
-      }),
-    absence_days: Yup.number()
-      .min(0, 'Liczba dni nie może być mniejsza niż 0')
-      .required('Pole wymagane')
-      .typeError('Wprowadź poprawną liczbę')
-  });
 
   const truncateText = (text: string, maxLength: number) => {
     return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;

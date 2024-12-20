@@ -99,7 +99,6 @@ const Roles = () => {
         {roles.map(role => {
           const isTruncated = truncateText(role.name, 15) !== role.name;
           const elementId = `roleName-${role.id}`;
-          
 
           return (
             <Formik
