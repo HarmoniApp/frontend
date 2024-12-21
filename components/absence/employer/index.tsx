@@ -1,64 +1,27 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRectangleList, faGrip, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import AbsenceCard from '@/components/absence/employer/absenceCard';
-import Absence from '@/components/types/absence';
-import AbsenceStatus from '@/components/types/absenceStatus';
 import styles from './main.module.scss';
 import { Card } from 'primereact/card';
-import { fetchAbsences, fetchAbsencesByStatus, fetchAbsencesStatus } from '@/services/absenceService';
+import { fetchAbsences } from '@/services/absenceService';
 import LoadingSpinner from '@/components/loadingSpinner';
+import useAbsenceEmployer from '@/hooks/useAbsenceEmployer';
 
 const AbsenceEmployer: React.FC = () => {
-  const [absences, setAbsences] = useState<Absence[]>([]);
-  const [absencesStatus, setAbsencesStatus] = useState<AbsenceStatus[]>([]);
-  const [viewMode, setViewMode] = useState('tiles');
-  const [selectedStatus, setSelectedStatus] = useState<number | undefined>(undefined);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(true);
-  
-
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true)
-      await fetchAbsences(setAbsences);
-      await fetchAbsencesStatus(setAbsencesStatus);
-      setLoading(false)
-    };
-    loadData();
-  }, []);
-
-  const handleStatusChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const statusId = event.target.value === 'clear' ? undefined : parseInt(event.target.value);
-
-    setLoading(true);
-    setSelectedStatus(statusId);
-
-    try {
-      if(statusId !== undefined){
-        await fetchAbsencesByStatus(setAbsences, statusId)
-      } else {
-        await fetchAbsences(setAbsences);
-      }
-    } catch (error) {
-      console.error('Error fetching absences by status:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const filteredAbsences = absences.filter(absence => {
-
-    if (searchQuery === '') {
-      return true;
-    }
-
-    const userFirstNameMatches = absence.firstname.toLowerCase().includes(searchQuery.toLowerCase());
-    const userSurnameMatches = absence.surname.toLowerCase().includes(searchQuery.toLowerCase());
-
-    return userFirstNameMatches || userSurnameMatches;
-  });
+  const {
+    absences,
+    setAbsences,
+    absencesStatus,
+    viewMode,
+    selectedStatus,
+    searchQuery,
+    loading,
+    setViewMode,
+    setSearchQuery,
+    handleStatusChange,
+  } = useAbsenceEmployer();
 
   return (
     <div className={styles.absenceEmployerContainerMain}>
@@ -112,16 +75,16 @@ const AbsenceEmployer: React.FC = () => {
           </div>
         </div>
 
-        {!loading  && filteredAbsences.length === 0 && (
+        {!loading  && absences.length === 0 && (
           <Card title="Brak wniosków urlopowych" className={styles.noDataCard}></Card>
         )}
-        {!loading && filteredAbsences.length > 0 && (
+        {!loading && absences.length > 0 && (
           <div className={
             viewMode === 'tiles'
               ? styles.cardsViewContainerTiles
               : styles.cardsViewContainerList
           }>
-            {filteredAbsences.map(absence => (
+            {absences.map(absence => (
               <AbsenceCard key={absence.id} absence={absence} onStatusUpdate={() => fetchAbsences(setAbsences)}/>
             ))}
           </div>

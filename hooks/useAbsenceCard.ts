@@ -1,4 +1,3 @@
-import absence from "@/components/absence";
 import Absence from "@/components/types/absence";
 import AbsenceType from "@/components/types/absenceType";
 import User from "@/components/types/user";
