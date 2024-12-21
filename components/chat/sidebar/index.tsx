@@ -22,14 +22,14 @@ interface SidebarProps {
     chatPartners: ChatPartner[];
     setLoading: (loading: boolean) => void;
     fetchChatHistory: (selectedChat: ChatPartner, language: string) => void;
-    userId: number;
     setChatPartners: (chatPartners: ChatPartner[]) => void;
     fetchChatHistoryForm: (partner: ChatPartner) => void;
     loadChatPartners: (selectFirstPartner: boolean) => void;
     handleSelectUser: (user: ChatPartner) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, newChat, setNewChat, chatType, setChatType, chatPartners, setLoading, fetchChatHistory, userId, setChatPartners, fetchChatHistoryForm, loadChatPartners, handleSelectUser }) => {
+const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, newChat, setNewChat, chatType, setChatType, chatPartners, setLoading, fetchChatHistory, setChatPartners, fetchChatHistoryForm, loadChatPartners, handleSelectUser }) => {
+    const userId = Number(sessionStorage.getItem('userId'));
     const handleLanguageChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         setLoading(true);
         const language = event.target.value;
@@ -39,6 +39,8 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
         }
         setLoading(false);
     };
+    console.log("sidebar: " + selectedChat)
+    console.log("widac")
 
     return (
         <>

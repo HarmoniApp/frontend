@@ -13,14 +13,13 @@ interface SendMessageFormProps {
     setSelectedChat: (chatPartner: ChatPartner) => void;
     messages: Message[];
     setMessages: (messages: Message[]) => void;
-    userId: number;
     loadChatPartners: (selectFirstPartner: boolean) => void;
     selectedLanguage: string;
     loading: (loading: boolean) => void;
 }
 
-const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSelectedChat, messages, setMessages, userId, loadChatPartners, selectedLanguage, loading }) => {
-
+const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSelectedChat, messages, setMessages, loadChatPartners, selectedLanguage, loading }) => {
+    const userId = Number(sessionStorage.getItem('userId'));
     const handleSendMessage = async (content: string, language: string = '') => {
         loading(true);
 

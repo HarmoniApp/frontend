@@ -7,14 +7,14 @@ import styles from './main.module.scss';
 import UserImage from '@/components/userImage';
 
 interface ConversationProps {
-    userId: number;
     messages: Message[];
     chatType: 'user' | 'group';
     selectedChat: ChatPartner;
     setIsEditGroupModalOpen: (open: boolean) => void;
 }
 
-const Conversation: React.FC<ConversationProps> = ({ userId, messages, chatType, selectedChat, setIsEditGroupModalOpen }) => {
+const Conversation: React.FC<ConversationProps> = ({ messages, chatType, selectedChat, setIsEditGroupModalOpen }) => {
+    const userId = Number(sessionStorage.getItem('userId'));
 
     useEffect(() => {
         const chatMessagesContainer = document.querySelector(`.${styles.chatMessages}`);
