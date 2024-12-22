@@ -7,6 +7,7 @@ import AbsenceType from '@/components/types/absenceType';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import { absenceValidationSchema } from '@/validationSchemas/absenceValidationSchema';
+import { calculateWorikngDays } from '@/utils/holidayCalculator';
 interface AbsenceEmployeesRequestProps {
     onClose: () => void;
     onSend: number;
@@ -33,28 +34,6 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
         } 
     };
 
-    const calculateDaysDifference = (start: string, end: string): number => {
-        if (!start || !end) return 0;
-
-        const startDate = new Date(start);
-        const endDate = new Date(end);
-
-        if (endDate < startDate) return 0;
-
-        let currentDate = new Date(startDate);
-        let workdaysCount = 0;
-
-        while (currentDate <= endDate) {
-            const dayOfWeek = currentDate.getDay();
-            if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-                workdaysCount++;
-            }
-            currentDate.setDate(currentDate.getDate() + 1);
-        }
-
-        return workdaysCount;
-    };
-
     return (
         <div>
             <Formik
@@ -67,7 +46,6 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                 onSubmit={handleAddAbsence}
             >
                 {({ values, errors, touched }) => {
-                    const daysDifference = calculateDaysDifference(values.start, values.end);
                     return (
                         <Form className={styles.absenceForm}>
                             <div className={styles.formTitle}>
@@ -116,7 +94,7 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                             />
 
                             <label className={styles.quantityOfDaysLabel}>
-                                Ilość dni: {daysDifference}
+                                Ilość dni: {calculateWorikngDays(values.start, values.end)}
                             </label>
 
                             <div className={styles.buttonContainer}>
