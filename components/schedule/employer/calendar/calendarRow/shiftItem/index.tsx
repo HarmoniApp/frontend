@@ -6,6 +6,7 @@ import Shift from '@/components/types/shift';
 import Role from '@/components/types/role';
 import styles from './main.module.scss';
 import { Tooltip } from 'primereact/tooltip';
+import { wrapText } from '@/services/wrapText';
 
 interface ShiftItemProps {
   date: string;
@@ -24,10 +25,6 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence, roles }) => {
     if (!roles || roles.length === 0) return '#A9A9A9';
     const role = roles.find(role => role.name === roleName);
     return role ? role.color : '#A9A9A9';
-  };
-
-  const truncateText = (text: string, maxLength: number) => {
-    return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
   };
 
   const hasUnpublishedShift = shifts.some(shift => !shift.published);
@@ -50,7 +47,7 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence, roles }) => {
         </div>
       ) : shifts.length > 0 ? (
         shifts.map(shift => {
-          const isTruncated = truncateText(shift.role_name, 18) !== shift.role_name;
+          const isTruncated = wrapText(shift.role_name, 18) !== shift.role_name;
           const elementId = `roleName-${shift.id}`;
 
           return (
@@ -67,7 +64,7 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence, roles }) => {
                   cursor: isTruncated ? 'pointer' : 'default',
                 }}
               >
-                {truncateText(shift.role_name, 18)}
+                {wrapText(shift.role_name, 18)}
               </p>
               {isTruncated && (
                 <Tooltip target={`#${elementId}`} autoHide />

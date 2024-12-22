@@ -10,6 +10,7 @@ import ConfirmationPopUp from '@/components/confirmationPopUp';
 import { Tooltip } from 'primereact/tooltip';
 import { addRoleValidationSchema, editRoleValidationSchema } from '@/validationSchemas/roleValidationSchema';
 import useRoles from '@/hooks/useRoles';
+import { wrapText } from '@/services/wrapText';
 
 const Roles = () => {
   const {
@@ -26,15 +27,11 @@ const Roles = () => {
     setIsDeleteModalOpen,
   } = useRoles();
 
-  const truncateText = (text: string, maxLength: number) => {
-    return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
-  };
-
   return (
     <div className={styles.roleContainerMain}>
       <div className={styles.showRoleMapConteiner}>
         {roles.map(role => {
-          const isTruncated = truncateText(role.name, 15) !== role.name;
+          const isTruncated = wrapText(role.name, 15) !== role.name;
           const elementId = `roleName-${role.id}`;
 
           return (
@@ -73,7 +70,7 @@ const Roles = () => {
                                 cursor: isTruncated ? 'pointer' : 'default',
                               }}
                             >
-                              {truncateText(role.name, 15)}
+                              {wrapText(role.name, 15)}
                             </p>
                             {isTruncated && (
                               <Tooltip target={`#${elementId}`} autoHide />

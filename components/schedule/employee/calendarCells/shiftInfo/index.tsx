@@ -2,18 +2,14 @@ import React from 'react';
 import Shift from '@/components/types/shift';
 import styles from './main.module.scss';
 import { Tooltip } from 'primereact/tooltip';
+import { wrapText } from '@/services/wrapText';
 
 interface ShiftInfoProps {
     shift: Shift;
 }
 
 const ShiftInfo: React.FC<ShiftInfoProps> = ({ shift }) => {
-
-    const truncateText = (text: string, maxLength: number) => {
-        return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
-    };
-
-    const isTruncated = truncateText(shift.role_name, 14) !== shift.role_name;
+    const isTruncated = wrapText(shift.role_name, 14) !== shift.role_name;
     const elementId = `shiftrole-${shift.id}`;
     return (
         <div className={styles.shiftInfo}>
@@ -25,7 +21,7 @@ const ShiftInfo: React.FC<ShiftInfoProps> = ({ shift }) => {
                 id={elementId}
                 style={{
                     cursor: isTruncated ? 'pointer' : 'default',
-                }}>{truncateText(shift.role_name, 14)}</label>
+                }}>{wrapText(shift.role_name, 14)}</label>
             {isTruncated && (
                 <Tooltip target={`#${elementId}`} autoHide />
             )}

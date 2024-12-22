@@ -10,6 +10,7 @@ import ConfirmationPopUp from "@/components/confirmationPopUp";
 import { Tooltip } from "primereact/tooltip";
 import { departmentValidationSchema } from "@/validationSchemas/departmentValidationSchema";
 import useDepartments from "@/hooks/useDepartments";
+import { wrapText } from "@/services/wrapText";
 
 const Departments = () => {
     const {
@@ -28,16 +29,12 @@ const Departments = () => {
         openDeleteModal,
       } = useDepartments();
 
-    const truncateText = (text: string, maxLength: number) => {
-        return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
-    };
-
     return (
         <div className={styles.departmentContainerMain}>
             <div className={styles.showDepartmentsMapContainer}>
                 {departments.map((department) => {
 
-                    const isTruncated = truncateText(department.department_name, 30) !== department.department_name;
+                    const isTruncated = wrapText(department.department_name, 30) !== department.department_name;
                     const elementId = `departmentName-${department.id}`;
                     return (
                         <Formik
@@ -159,7 +156,7 @@ const Departments = () => {
                                                             id={elementId}
                                                             style={{
                                                                 cursor: isTruncated ? 'pointer' : 'default',
-                                                            }}>{truncateText(department.department_name, 30)}</label>
+                                                            }}>{wrapText(department.department_name, 30)}</label>
                                                         {isTruncated && (
                                                             <Tooltip target={`#${elementId}`} autoHide />
                                                         )}

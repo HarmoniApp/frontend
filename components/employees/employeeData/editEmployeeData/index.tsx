@@ -12,6 +12,7 @@ import { employeeValidationSchema } from '@/validationSchemas/employeeValiadtion
 import { Tooltip } from 'primereact/tooltip';
 import { useRouter } from 'next/navigation';
 import useEmployeeDataForm from '@/hooks/useEditEmployeeData';
+import { wrapText } from '@/services/wrapText';
 
 interface EditEmployeeDataProps {
   employee: EmployeeDataWorkAdressOnlyId;
@@ -56,10 +57,6 @@ const EditEmployeeData: React.FC<EditEmployeeDataProps> = ({ employee, onCloseEd
     await handleSaveEmployee(values, "edit");
     onCloseEdit();
     router.refresh();
-  };
-
-  const truncateText = (text: string, maxLength: number) => {
-    return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
   };
 
   return (
@@ -289,7 +286,7 @@ const EditEmployeeData: React.FC<EditEmployeeDataProps> = ({ employee, onCloseEd
                 <div className={styles.roleContainer}>
                   {roles.map((role) => {
 
-                    const isTruncated = truncateText(role.name, 20) !== role.name;
+                    const isTruncated = wrapText(role.name, 20) !== role.name;
                     const elementId = `role-${role.id}`;
                     return (
                       <label key={role.id} className={styles.roleLabel}>
@@ -314,7 +311,7 @@ const EditEmployeeData: React.FC<EditEmployeeDataProps> = ({ employee, onCloseEd
                           id={elementId}
                           style={{
                             cursor: isTruncated ? 'pointer' : 'default',
-                          }}>{truncateText(role.name, 20)}</label>
+                          }}>{wrapText(role.name, 20)}</label>
                         {isTruncated && (
                           <Tooltip target={`#${elementId}`} autoHide />
                         )}

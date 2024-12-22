@@ -9,6 +9,7 @@ import ConfirmationPopUp from '@/components/confirmationPopUp';
 import CustomButton from '@/components/customButton';
 import { Tooltip } from 'primereact/tooltip';
 import useEmployeeData from '@/hooks/useEmployeeData';
+import { wrapText } from '@/services/wrapText';
 
 interface EmployeeDataComponentProps {
   userId: number;
@@ -38,12 +39,8 @@ const EmployeeDataComponent: React.FC<EmployeeDataComponentProps> = ({ userId })
     //TODO: add link to chat
   };
 
-  const truncateText = (text: string, maxLength: number) => {
-    return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
-  };
-
   const isTruncatedDepartment = department
-    ? truncateText(department.departmentName, 30) !== department.departmentName
+    ? wrapText(department.departmentName, 30) !== department.departmentName
     : false;
   const departmentElementId = `departmentName-${userId}`;
 
@@ -122,7 +119,7 @@ const EmployeeDataComponent: React.FC<EmployeeDataComponentProps> = ({ userId })
                 cursor: isTruncatedDepartment ? 'pointer' : 'default',
               }}
             >
-              {department ? truncateText(department.departmentName, 30) : 'Brak przypisanego oddziału'}
+              {department ? wrapText(department.departmentName, 30) : 'Brak przypisanego oddziału'}
             </p>
             {isTruncatedDepartment && (
               <Tooltip target={`#${departmentElementId}`} autoHide />
@@ -136,7 +133,7 @@ const EmployeeDataComponent: React.FC<EmployeeDataComponentProps> = ({ userId })
           <p className={styles.roleParagraph}>Role przypisane do pracownika</p>
           <div className={styles.roleContainer}>
             {employee.roles.map((role) => {
-              const isTruncatedRole = truncateText(role.name, 18) !== role.name;
+              const isTruncatedRole = wrapText(role.name, 18) !== role.name;
               const roleElementId = `roleName-${role.id}`;
 
               return (
@@ -149,7 +146,7 @@ const EmployeeDataComponent: React.FC<EmployeeDataComponentProps> = ({ userId })
                       cursor: isTruncatedRole ? 'pointer' : 'default',
                     }}
                   >
-                    {truncateText(role.name, 18)}
+                    {wrapText(role.name, 18)}
                   </span>
                   {isTruncatedRole && (
                     <Tooltip target={`#${roleElementId}`} autoHide />

@@ -10,6 +10,7 @@ import ConfirmationPopUp from '@/components/confirmationPopUp';
 import { Tooltip } from 'primereact/tooltip';
 import { predefineShiftValidationSchema } from '@/validationSchemas/predefineShiftValidationSchema';
 import usePredefinedShifts from '@/hooks/usePredefineShifts';
+import { wrapText } from '@/services/wrapText';
 
 const PredefinedShifts = () => {
   const {
@@ -26,15 +27,11 @@ const PredefinedShifts = () => {
     openDeleteModal,
   } = usePredefinedShifts();
 
-  const truncateText = (text: string, maxLength: number) => {
-    return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
-  };
-
   return (
     <div className={styles.predefinedShiftsContainerMain}>
       <div className={styles.showShiftMapContainer}>
         {predefineShifts.map((shift) => {
-          const isTruncated = truncateText(shift.name, 15) !== shift.name;
+          const isTruncated = wrapText(shift.name, 15) !== shift.name;
           const elementId = `shiftName-${shift.id}`;
 
           return (
@@ -80,7 +77,7 @@ const PredefinedShifts = () => {
                                 cursor: isTruncated ? 'pointer' : 'default',
                               }}
                             >
-                              {truncateText(shift.name, 15)}
+                              {wrapText(shift.name, 15)}
                             </p>
                             {isTruncated && (
                               <Tooltip target={`#${elementId}`} autoHide />

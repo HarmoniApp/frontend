@@ -10,6 +10,7 @@ import ConfirmationPopUp from '@/components/confirmationPopUp';
 import { Tooltip } from 'primereact/tooltip';
 import { contractValidationSchema } from '@/validationSchemas/contractValidationSchema';
 import useContractTypes from '@/hooks/useContractsTypes';
+import { wrapText } from '@/services/wrapText';
 
 const ContractTypes = () => {
   const {
@@ -26,15 +27,11 @@ const ContractTypes = () => {
     openDeleteModal,
   } = useContractTypes();
 
-  const truncateText = (text: string, maxLength: number) => {
-    return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
-  };
-
   return (
     <div className={styles.contractTypesContainerMain}>
       <div className={styles.showContractMapContainer}>
         {contracts.map((contract) => {
-          const isTruncated = truncateText(contract.name, 15) !== contract.name;
+          const isTruncated = wrapText(contract.name, 15) !== contract.name;
           const elementId = `contractName-${contract.id}`;
 
           return (
@@ -75,7 +72,7 @@ const ContractTypes = () => {
                                 cursor: isTruncated ? 'pointer' : 'default',
                               }}
                             >
-                              {truncateText(contract.name, 15)}
+                              {wrapText(contract.name, 15)}
                             </p>
                             {isTruncated && (
                               <Tooltip target={`#${elementId}`} autoHide />
