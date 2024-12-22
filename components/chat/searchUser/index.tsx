@@ -16,7 +16,6 @@ const SearchUser: React.FC<SearchUserProps> = ({ handleSelectUser, groupChat, se
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<ChatPartner[]>([]);
-
   const customClass = groupChat ? styles.searchGroupUserContaner : styles.searchPrivUserContaner;
 
   const handleSearch = async (query: string) => {

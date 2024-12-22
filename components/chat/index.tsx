@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './main.module.scss';
 import Message from '@/components/types/message';
 import Language from '@/components/types/language';
@@ -24,16 +24,16 @@ const Chat = () => {
   const [isEditGroupModalOpen, setIsEditGroupModalOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const handleSelectUser = (user: ChatPartner) => {
+  const handleSelectUser = (chatPartner: ChatPartner) => {
     setLoading(true);
     setNewChat(false);
-    setSelectedChat(user);
-    if (user.type && user.type === 'user') {
+    setSelectedChat(chatPartner);
+    if (chatPartner.type && chatPartner.type === 'user') {
       setChatType('user');
     } else {
       setChatType('group');
     }
-    fetchChatHistory(user);
+    fetchChatHistory(chatPartner);
     setLoading(false);
   };
 
@@ -45,18 +45,14 @@ const Chat = () => {
     loadData();
   }, []);
 
-  const loadChatPartners = async (selectFirstPartner = false) => {
+  const loadChatPartners = async (selectFirstPartner = false, selectedChat?: ChatPartner) => {
     setLoading(true);
     try {
       const newestChatPartner = await fetchAllChatPartners(setChatType, setChatPartners)
-      console.log("chat: " + selectedChat)
 
-      if (selectFirstPartner) {
-        if (newestChatPartner != undefined) {
+      if (selectFirstPartner && newestChatPartner != undefined) {
           setSelectedChat(newestChatPartner);
           await fetchChatHistory(newestChatPartner, selectedLanguage);
-
-        }
       }
     } catch (error) {
       console.error('Error loading chat partners:', error);
@@ -65,7 +61,7 @@ const Chat = () => {
     }
   };
 
-  useChatWebSocket(selectedChat, chatType, loadChatPartners, setMessages);
+  useChatWebSocket(selectedChat, loadChatPartners, setMessages);
 
   useEffect(() => {
     setIsEditGroupModalOpen(false);
@@ -88,13 +84,13 @@ const Chat = () => {
 
     await fetchMessagesChatHistory(userId, partner, language, setMessages)
 
-    setMessages((prevMessages) =>
-      prevMessages.map((msg) =>
-        msg.receiver_id === Number(userId) ? { ...msg, is_read: true } : msg
-      )
-    );
+    // setMessages((prevMessages) =>
+    //   prevMessages.map((msg) =>
+    //     msg.receiver_id === Number(userId) ? { ...msg, is_read: true } : msg
+    //   )
+    // );
 
-    setSelectedChat(partner);
+    // setSelectedChat(partner);
     setLoading(false);
   };
 
@@ -109,13 +105,11 @@ const Chat = () => {
             setSelectedChat={setSelectedChat}
             newChat={newChat}
             setNewChat={setNewChat}
-            chatType={chatType}
             setChatType={setChatType}
             chatPartners={chatPartners}
             setLoading={setLoading}
             fetchChatHistory={fetchChatHistory}
             setChatPartners={setChatPartners}
-            fetchChatHistoryForm={fetchChatHistory}
             loadChatPartners={loadChatPartners}
             handleSelectUser={handleSelectUser}
           />

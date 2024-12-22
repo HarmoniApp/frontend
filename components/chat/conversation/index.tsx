@@ -22,7 +22,7 @@ const Conversation: React.FC<ConversationProps> = ({ messages, chatType, selecte
             chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
         }
     }, [messages]);
-
+    
     return (
         <>
             {chatType === 'user' ? (

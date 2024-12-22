@@ -14,21 +14,20 @@ interface SidebarProps {
     setSelectedLanguage: (setSelectedLanguage: string) => void;
     languages: Language[];
     selectedChat: ChatPartner | null;
-    setSelectedChat: (chatPartner: ChatPartner | null) => void;
+    // setSelectedChat: (chatPartner: ChatPartner | null) => void;
+    setSelectedChat:  React.Dispatch<React.SetStateAction<ChatPartner | null>>;
     newChat: boolean;
     setNewChat: (newChat: boolean) => void;
-    chatType: 'user' | 'group';
     setChatType: (chatType: 'user' | 'group') => void;
     chatPartners: ChatPartner[];
     setLoading: (loading: boolean) => void;
-    fetchChatHistory: (selectedChat: ChatPartner, language: string) => void;
+    fetchChatHistory: (selectedChat: ChatPartner, language?: string) => void;
     setChatPartners: (chatPartners: ChatPartner[]) => void;
-    fetchChatHistoryForm: (partner: ChatPartner) => void;
     loadChatPartners: (selectFirstPartner: boolean) => void;
     handleSelectUser: (user: ChatPartner) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, newChat, setNewChat, chatType, setChatType, chatPartners, setLoading, fetchChatHistory, setChatPartners, fetchChatHistoryForm, loadChatPartners, handleSelectUser }) => {
+const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, newChat, setNewChat, setChatType, chatPartners, setLoading, fetchChatHistory, setChatPartners, loadChatPartners, handleSelectUser }) => {
     const userId = Number(sessionStorage.getItem('userId'));
     const handleLanguageChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         setLoading(true);
@@ -39,8 +38,6 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
         }
         setLoading(false);
     };
-    console.log("sidebar: " + selectedChat)
-    console.log("widac")
 
     return (
         <>
@@ -52,11 +49,12 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                     <li
                         key={partner.id}
                         className={`${styles.chatItem} ${selectedChat === partner ? styles.activeChat : ''}`}
-                        onClick={() => {
+                        onClick={async () => {
+                            await setSelectedChat(partner);
                             if (partner.type) {
-                                setChatType(partner.type);
+                                await setChatType(partner.type);
                             }
-                            fetchChatHistory(partner, selectedLanguage);
+                            await fetchChatHistory(partner, selectedLanguage);
                         }}
                     >
                         <div className={styles.imageContainer}>
@@ -101,7 +99,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                             chatPartners={chatPartners}
                             setChatPartners={setChatPartners}
                             setSelectedChat={setSelectedChat}
-                            fetchChatHistory={fetchChatHistoryForm}
+                            fetchChatHistory={fetchChatHistory}
                             loadChatPartners={loadChatPartners}
                             setLoading={setLoading}
                             handleSelectUser={handleSelectUser}
