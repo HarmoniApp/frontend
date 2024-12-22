@@ -27,7 +27,7 @@ export default function Navbar() {
     };
     return (
         <>
-            {userId !== 0 ? <NavbarTop onAccountIconClick={toggleSidebar} userId={userId} isThisAdmin={isAdmin}/> : <LoadingSpinner wholeModal={false}/>}
+            {userId !== 0 ? <NavbarTop onAccountIconClick={toggleSidebar} isThisAdmin={isAdmin}/> : <LoadingSpinner wholeModal={false}/>}
             <Account isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
             <NavbarBottom isThisAdmin={isAdmin}/>
         </>

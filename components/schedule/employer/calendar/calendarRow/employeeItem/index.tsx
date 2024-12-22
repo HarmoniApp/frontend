@@ -12,12 +12,7 @@ interface EmployeeItemProps {
   userId: number;
 }
 
-const EmployeeItem: React.FC<EmployeeItemProps> = ({
-  employeeId,
-  firstName,
-  surname,
-  userId,
-}) => {
+const EmployeeItem: React.FC<EmployeeItemProps> = ({ employeeId, firstName, surname, userId }) => {
   const [roles, setRoles] = useState<Role[]>([]);
   const overlayRef = useRef<OverlayPanel>(null);
 

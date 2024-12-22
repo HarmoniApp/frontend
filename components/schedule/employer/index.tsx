@@ -23,7 +23,7 @@ const ScheduleEmployer: React.FC = () => {
     }
     return weekDays;
   };
-
+  
   const currentWeek = getWeekDays(currentWeekStart);
 
   const goToNextWeek = () => {

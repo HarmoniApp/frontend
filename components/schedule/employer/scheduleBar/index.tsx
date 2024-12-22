@@ -4,6 +4,7 @@ import { downloadSchedulePdf } from '@/services/pdfService';
 import { downloadScheduleXLSX } from '@/services/xlsxService';
 import CustomButton from '@/components/customButton';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
+import { formatDate } from '@/utils/formatDate';
 interface ScheduleBarProps {
   currentWeek: Date[];
   onNextWeek: () => void;
@@ -16,17 +17,6 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [fileFormat, setFileFormat] = useState<string>('');
-  const formatDate = (date: Date) => {
-    const [year, month, day] = date.toISOString().split('T')[0].split('-');
-    return `${day}.${month}.${year}`;
-  };
-
-  const getThisWeek = () => {
-    const startOfWeek = formatDate(currentWeek[0]);
-    const endOfWeek = formatDate(currentWeek[6]);
-
-    return `${startOfWeek} - ${endOfWeek}`;
-  };
 
   const handleExport = async (format: string) => {
     setDropdownVisible(false);
@@ -75,7 +65,7 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
       {modalIsOpenPublish && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <ConfirmationPopUp action={handlePublish} onClose={() => setModalIsOpenPublish(false)} description={`Opublikować zmiany na ten tydzien: ${getThisWeek()}`} />
+            <ConfirmationPopUp action={handlePublish} onClose={() => setModalIsOpenPublish(false)} description={`Opublikować zmiany na ten tydzien: ${formatDate(currentWeek[0])} - ${formatDate(currentWeek[6])}`} />
           </div>
         </div>
       )}

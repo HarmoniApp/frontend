@@ -17,7 +17,6 @@ const useChatWebSocket = (
     }, [selectedChat]);
 
     useEffect(() => {
-
         const tokenJWT = sessionStorage.getItem('tokenJWT');
         const userId = Number(sessionStorage.getItem('userId'));
         const socket = new SockJS(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/ws`);
@@ -26,10 +25,7 @@ const useChatWebSocket = (
             connectHeaders: {
                 Authorization: `Bearer ${tokenJWT}`,
             },
-            debug: (str) => console.log(str),
             onConnect: () => {
-                console.log('Connected to STOMP WebSocket');
-
                 stompClient.subscribe(`/client/messages/${userId}`, async (message) => {
                     const newMessage: Message = JSON.parse(message.body);
                     setMessages((prevMessages) => {

@@ -11,11 +11,11 @@ import LoadingSpinner from "@/components/loadingSpinner";
 import useNotifications from "@/hooks/useNotifications";
 interface NavbarTopProps {
     onAccountIconClick: () => void;
-    userId: number;
     isThisAdmin: boolean;
 }
 
-const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, userId, isThisAdmin }) => {
+const NavbarTop: React.FC<NavbarTopProps> = ({ onAccountIconClick, isThisAdmin }) => {
+    const userId = Number(sessionStorage.getItem('userId'));
     const [showNotifications, setShowNotifications] = useState(false);
     const router = useRouter();
     const {

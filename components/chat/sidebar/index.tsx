@@ -28,7 +28,6 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, newChat, setNewChat, setChatType, chatPartners, setLoading, fetchChatHistory, setChatPartners, loadChatPartners, handleSelectUser }) => {
-    const userId = Number(sessionStorage.getItem('userId'));
     const handleLanguageChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         setLoading(true);
         const language = event.target.value;
@@ -93,7 +92,6 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
                         <NewConversationForm
-                            userId={userId}
                             setChatType={setChatType}
                             setNewChat={setNewChat}
                             chatPartners={chatPartners}

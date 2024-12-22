@@ -14,6 +14,7 @@ import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import '@/styles/components/pagination.css';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { deleteShift, fetchFilterUsersInSchedule, fetchUserScheduleWithAbsences, patchPublishShifts, postShift, putShift } from '@/services/scheduleService';
+import { formatDate } from '@/utils/formatDate';
 
 interface CalendarRowProps {
   currentWeek: Date[];
@@ -151,13 +152,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const handlePublishAll = async () => {
     setLoading(true);
     try {
-      const formatDate = (date: Date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-      };
-
       const start = formatDate(currentWeek[0]);
       const end = formatDate(currentWeek[currentWeek.length - 1]);
       await patchPublishShifts(start, end)

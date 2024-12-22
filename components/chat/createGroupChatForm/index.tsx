@@ -6,7 +6,6 @@ import { postGroup } from '@/services/chatService';
 import { groupValidationSchema } from '@/validationSchemas/groupValidationSchema';
 
 interface CreateGroupChatFormProps {
-  userId: number;
   setChatType: (type: 'user' | 'group') => void;
   setNewChat: (newChat: boolean) => void;
   chatPartners: ChatPartner[];
@@ -17,7 +16,8 @@ interface CreateGroupChatFormProps {
   setLoading: (loading: boolean) => void;
 }
 
-const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartners, setLoading }) => {
+const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartners, setLoading }) => {
+  const userId = Number(sessionStorage.getItem('userId'));
 
   const handleCreateGroup = async (values: { groupName: string }) => {
     setLoading(true);
