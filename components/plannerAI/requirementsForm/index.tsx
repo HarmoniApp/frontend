@@ -12,7 +12,6 @@ import useRequirementsForm from '@/hooks/useRequirementsForm';
 
 const RequirementsForm: React.FC = () => {
     const [isInstructionOpen, setIsInstructionOpen] = useState(false);
-
     const {
         forms,
         setForms,

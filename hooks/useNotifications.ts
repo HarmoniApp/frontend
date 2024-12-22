@@ -15,7 +15,6 @@ const useNotifications = () => {
             await fetchNotifications(setNotifications, setUnreadCount);
             setLoading(false);
         }
-
         loadData();
     }, []);
 
