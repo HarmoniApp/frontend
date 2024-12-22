@@ -10,7 +10,7 @@ import ConfirmationPopUp from '@/components/confirmationPopUp';
 import { Tooltip } from 'primereact/tooltip';
 import { contractValidationSchema } from '@/validationSchemas/contractValidationSchema';
 import useContractTypes from '@/hooks/useContractsTypes';
-import { wrapText } from '@/services/wrapText';
+import { wrapText } from '@/utils/wrapText';
 
 const ContractTypes = () => {
   const {

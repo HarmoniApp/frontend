@@ -9,7 +9,7 @@ import ConfirmationPopUp from '@/components/confirmationPopUp';
 import CustomButton from '@/components/customButton';
 import { Tooltip } from 'primereact/tooltip';
 import useEmployeeData from '@/hooks/useEmployeeData';
-import { wrapText } from '@/services/wrapText';
+import { wrapText } from '@/utils/wrapText';
 
 interface EmployeeDataComponentProps {
   userId: number;

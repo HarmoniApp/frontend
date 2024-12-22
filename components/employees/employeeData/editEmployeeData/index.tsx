@@ -12,7 +12,7 @@ import { employeeValidationSchema } from '@/validationSchemas/employeeValiadtion
 import { Tooltip } from 'primereact/tooltip';
 import { useRouter } from 'next/navigation';
 import useEmployeeDataForm from '@/hooks/useEditEmployeeData';
-import { wrapText } from '@/services/wrapText';
+import { wrapText } from '@/utils/wrapText';
 
 interface EditEmployeeDataProps {
   employee: EmployeeDataWorkAdressOnlyId;

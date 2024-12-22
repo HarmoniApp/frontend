@@ -10,7 +10,7 @@ import ConfirmationPopUp from '@/components/confirmationPopUp';
 import { Tooltip } from 'primereact/tooltip';
 import { addRoleValidationSchema, editRoleValidationSchema } from '@/validationSchemas/roleValidationSchema';
 import useRoles from '@/hooks/useRoles';
-import { wrapText } from '@/services/wrapText';
+import { wrapText } from '@/utils/wrapText';
 
 const Roles = () => {
   const {

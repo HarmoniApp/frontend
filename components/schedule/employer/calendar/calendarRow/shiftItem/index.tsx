@@ -6,7 +6,7 @@ import Shift from '@/components/types/shift';
 import Role from '@/components/types/role';
 import styles from './main.module.scss';
 import { Tooltip } from 'primereact/tooltip';
-import { wrapText } from '@/services/wrapText';
+import { wrapText } from '@/utils/wrapText';
 
 interface ShiftItemProps {
   date: string;

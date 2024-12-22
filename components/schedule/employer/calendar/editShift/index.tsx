@@ -10,6 +10,8 @@ import { fetchUserRoles } from '@/services/roleService';
 import { fetchPredefinedShifts } from '@/services/predefineShiftService';
 import { shiftValidationSchema } from '@/validationSchemas/shiftValidationSchema';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
+import { calculateShiftDuration } from '@/utils/shifts/calculateShiftDuration';
+import { shiftHours } from '@/utils/shifts/generateShiftHours';
 
 interface EditShiftModalProps {
   isOpen: boolean;
@@ -37,28 +39,6 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
 
     loadData();
   }, [shift.user_id]);
-
-  const shiftHours: string[] = [];
-  for (let hour = 0; hour < 24; hour++) {
-    for (let minute = 0; minute < 60; minute += 30) {
-      const formattedHour = hour.toString().padStart(2, '0');
-      const formattedMinute = minute.toString().padStart(2, '0');
-      shiftHours.push(`${formattedHour}:${formattedMinute}`);
-    }
-  }
-
-  const shiftTime = (startTime: string, endTime: string) => {
-    const convertTimeToDecimal = (time: string) => {
-      const [hours, minutes] = time.split(':');
-      return parseInt(hours) + parseInt(minutes) / 60;
-    };
-
-    const start = convertTimeToDecimal(startTime);
-    const end = convertTimeToDecimal(endTime);
-    const duration = start <= end ? end - start : 24 - start + end;
-
-    return isNaN(duration) ? 0 : duration;
-  };
 
   const newDayFormat = () => {
     return shift.start.split('T')[0].replace(/-/g, '.').split('.').reverse().join('.');
@@ -163,7 +143,7 @@ const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift
                   </div>
                 </div>
                 <div className={styles.shiftTimeContainer}>
-                  <label className={styles.shiftTimeLabel}>Czas trwania zmiany: {shiftTime(values.selectedStartTime, values.selectedEndTime)}h.</label>
+                  <label className={styles.shiftTimeLabel}>Czas trwania zmiany: {calculateShiftDuration(values.selectedStartTime, values.selectedEndTime)}h.</label>
                 </div>
                 <div className={styles.predefinedShiftsContainer}>
                   {predefineShifts.map((predefinedShift) => (

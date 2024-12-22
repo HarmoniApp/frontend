@@ -10,7 +10,7 @@ import ConfirmationPopUp from "@/components/confirmationPopUp";
 import { Tooltip } from "primereact/tooltip";
 import { departmentValidationSchema } from "@/validationSchemas/departmentValidationSchema";
 import useDepartments from "@/hooks/useDepartments";
-import { wrapText } from "@/services/wrapText";
+import { wrapText } from "@/utils/wrapText";
 
 const Departments = () => {
     const {

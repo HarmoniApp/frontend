@@ -10,6 +10,8 @@ import styles from './main.module.scss';
 import { fetchUserRoles } from '@/services/roleService';
 import { fetchPredefinedShifts } from '@/services/predefineShiftService';
 import { shiftValidationSchema } from '@/validationSchemas/shiftValidationSchema';
+import { calculateShiftDuration } from '@/utils/shifts/calculateShiftDuration';
+import { shiftHours } from '@/utils/shifts/generateShiftHours';
 
 interface AddShiftModalProps {
     isOpen: boolean;
@@ -22,29 +24,6 @@ interface AddShiftModalProps {
 const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShift, user, day }) => {
     const [roles, setRoles] = useState<Role[]>([]);
     const [predefineShifts, setPredefineShifts] = useState<PredefinedShifts[]>([]);
-
-    const shiftHours: string[] = [];
-    for (let hour = 0; hour < 24; hour++) {
-        for (let minute = 0; minute < 60; minute += 30) {
-            const formattedHour = hour.toString().padStart(2, '0');
-            const formattedMinute = minute.toString().padStart(2, '0');
-            shiftHours.push(`${formattedHour}:${formattedMinute}`);
-        }
-    }
-
-    const shiftTime = (startTime: string, endTime: string) => {
-        const convertTimeToDecimal = (time: string) => {
-            const [hours, minutes] = time.split(':');
-            return parseInt(hours) + parseInt(minutes) / 60;
-        };
-
-        const startDecimal = convertTimeToDecimal(startTime);
-        const endDecimal = convertTimeToDecimal(endTime);
-
-        const duration = startDecimal <= endDecimal ? endDecimal - startDecimal : 24 - startDecimal + endDecimal;
-
-        return isNaN(duration) ? 0 : duration;
-    };
 
     useEffect(() => {
         if (!isOpen) return;
@@ -156,7 +135,7 @@ const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShi
                             </div>
                             <div className={styles.shiftTimeContainer}>
                                 <label className={styles.shiftTimeLabel}>
-                                    Czas trwania zmiany: {shiftTime(values.selectedStartTime, values.selectedEndTime)}h.
+                                    Czas trwania zmiany: {calculateShiftDuration(values.selectedStartTime, values.selectedEndTime)}h.
                                 </label>
                             </div>
                             <div className={styles.predefinedShiftsContainer}>
