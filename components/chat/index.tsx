@@ -11,7 +11,7 @@ import Sidebar from '@/components/chat/sidebar';
 import { fetchLanguages } from "@/services/languageService";
 import LoadingSpinner from '../loadingSpinner';
 import { fetchAllChatPartners, fetchMessagesChatHistory } from '@/services/chatService';
-import useChatWebSocket from '@/hooks/useChatWebSocket';
+import { useChatWebSocket } from '@/hooks/useChatWebSocket';
 
 const Chat = () => {
   const [chatPartners, setChatPartners] = useState<ChatPartner[]>([]);

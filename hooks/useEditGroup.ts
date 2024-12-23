@@ -2,7 +2,7 @@ import ChatPartner from "@/components/types/chatPartner";
 import { fetchGroupMembers, patchRemoveUserFromGroup, deleteGroup, patchAddUserToGroup } from "@/services/chatService";
 import { useEffect, useState } from "react";
 
-const useEditGroup = (
+export const useEditGroup = (
     selectedChat: ChatPartner | null,
     setLoading: (loading: boolean) => void
 ) => {
@@ -85,5 +85,3 @@ const useEditGroup = (
         handleDeleteGroup,
     };
 }
-
-export default useEditGroup;

@@ -14,7 +14,7 @@ import Supervisor from '@/components/types/supervisor';
 import Role from '@/components/types/role';
 import Language from '@/components/types/language';
 import Contract from '@/components/types/contract';
-import useEmployeeDataForm from '@/hooks/useEditEmployeeData';
+import { useEmployeeDataForm } from '@/hooks/useEditEmployeeData';
 
 const AddEmployee: React.FC = () => {
   const onBack = () => {

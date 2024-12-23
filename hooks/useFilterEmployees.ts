@@ -4,7 +4,7 @@ import { fetchLanguages } from "@/services/languageService";
 import { fetchRoles } from "@/services/roleService";
 import { useEffect, useRef, useState } from "react";
 
-const useFilterEmployee = (onApplyFilters: (filters: { roles?: number[]; languages?: number[]; order?: string; query?: string }) => void) => {
+export const useFilterEmployee = (onApplyFilters: (filters: { roles?: number[]; languages?: number[]; order?: string; query?: string }) => void) => {
     const [roles, setRoles] = useState<Role[]>([]);
     const [languages, setLanguages] = useState<Language[]>([]);
     const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
@@ -116,4 +116,3 @@ const useFilterEmployee = (onApplyFilters: (filters: { roles?: number[]; languag
         toggleSection,
     };
 }
-export default useFilterEmployee;

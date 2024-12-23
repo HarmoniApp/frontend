@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faTrashCan, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import Flag from 'react-flagkit';
-import useFilterEmployee from '@/hooks/useFilterEmployees';
+import { useFilterEmployee } from '@/hooks/useFilterEmployees';
 
 interface FilterEmployeeProps {
   onApplyFilters: (filters: { roles?: number[]; languages?: number[]; order?: string }) => void;

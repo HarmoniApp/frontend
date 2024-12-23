@@ -2,7 +2,7 @@ import Role from "@/components/types/role";
 import { deleteRole, fetchRoles, postRole, putRole } from "@/services/roleService";
 import { useEffect, useState } from "react";
 
-const useRoles = () => {
+export const useRoleManagement = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [roles, setRoles] = useState<Role[]>([]);
     const [editingRoleId, setEditingRoleId] = useState<number | null>(null);
@@ -63,4 +63,3 @@ const useRoles = () => {
         setIsDeleteModalOpen,
     };
 }
-export default useRoles;

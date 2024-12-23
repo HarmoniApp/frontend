@@ -5,7 +5,7 @@ import Absence from '@/components/types/absence';
 import styles from './main.module.scss';
 import LoadingSpinner from '@/components/loadingSpinner';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
-import useAbsenceCard from '@/hooks/useAbsenceCard';
+import { useAbsenceCard } from '@/hooks/useAbsenceCard';
 interface AbsenceCardProps {
     absence: Absence;
     onStatusUpdate: () => void;

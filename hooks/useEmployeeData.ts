@@ -7,7 +7,7 @@ import { fetchUserData, deleteUser } from "@/services/userService";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const useEmployeeData = (userId: number) => {
+export const useEmployeeData = (userId: number) => {
     const [employee, setEmployee] = useState<EmployeeData | null>(null);
     const [departments, setDepartments] = useState<Department[]>([]);
     const [supervisorData, setSupervisorData] = useState<Supervisor | null>(null);
@@ -70,5 +70,4 @@ const useEmployeeData = (userId: number) => {
         handleDeleteEmployee,
         handlePasswordResetSubmit,
     };
-}
-export default useEmployeeData;
+} 

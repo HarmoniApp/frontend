@@ -9,7 +9,7 @@ import LoadingSpinner from '@/components/loadingSpinner';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
 import { Tooltip } from 'primereact/tooltip';
 import { addRoleValidationSchema, editRoleValidationSchema } from '@/validationSchemas/roleValidationSchema';
-import useRoles from '@/hooks/useRoles';
+import { useRoleManagement } from '@/hooks/roles/useRolesManagement';
 import { wrapText } from '@/utils/wrapText';
 
 const Roles = () => {
@@ -25,7 +25,7 @@ const Roles = () => {
     handleDeleteRole,
     deleteRoleId,
     setIsDeleteModalOpen,
-  } = useRoles();
+  } = useRoleManagement();
 
   return (
     <div className={styles.roleContainerMain}>

@@ -3,7 +3,7 @@ import AbsenceStatus from "@/components/types/absenceStatus";
 import { fetchAbsences, fetchAbsencesStatus, fetchAbsencesByStatus } from "@/services/absenceService";
 import { useState, useEffect } from "react";
 
-const useAbsenceEmployer = () => {
+export const useAbsenceEmployer = () => {
     const [absences, setAbsences] = useState<Absence[]>([]);
     const [absencesStatus, setAbsencesStatus] = useState<AbsenceStatus[]>([]);
     const [viewMode, setViewMode] = useState('tiles');
@@ -62,4 +62,3 @@ const useAbsenceEmployer = () => {
         handleStatusChange,
     };
 }
-export default useAbsenceEmployer;

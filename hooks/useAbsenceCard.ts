@@ -5,7 +5,7 @@ import { fetchAbsenceType, patchAbsence } from "@/services/absenceService";
 import { fetchSimpleUser } from "@/services/userService";
 import { useState, useEffect } from "react";
 
-const useAbsenceCard = (absence: Absence, onStatusUpdate: () => void) => {
+export const useAbsenceCard = (absence: Absence, onStatusUpdate: () => void) => {
     const [absenceType, setAbsenceType] = useState<AbsenceType | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const [modalIsOpenCancelAbsence, setModalIsOpenCancelAbsence] = useState(false);
@@ -73,5 +73,3 @@ const useAbsenceCard = (absence: Absence, onStatusUpdate: () => void) => {
         handleAcceptClick,
     };
 }
-
-export default useAbsenceCard;

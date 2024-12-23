@@ -4,7 +4,7 @@ import { Client } from "@stomp/stompjs";
 import { useEffect, useRef } from "react";
 import SockJS from "sockjs-client";
 
-const useChatWebSocket = (
+export const useChatWebSocket = (
     selectedChat: ChatPartner | null,
     loadChatPartners: () => Promise<void>,
     setMessages: React.Dispatch<React.SetStateAction<Message[]>>
@@ -108,5 +108,3 @@ const useChatWebSocket = (
         };
     }, []);
 };
-
-export default useChatWebSocket;

@@ -4,7 +4,7 @@ import { Client } from "@stomp/stompjs";
 import { useState, useEffect } from "react";
 import SockJS from "sockjs-client";
 
-const useNotifications = () => {
+export const useNotifications = () => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -79,4 +79,3 @@ const useNotifications = () => {
         setNotifications,
     };
 }
-export default useNotifications;

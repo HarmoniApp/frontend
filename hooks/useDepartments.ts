@@ -2,7 +2,7 @@ import DepartmentAddress from "@/components/types/departmentAddress";
 import { deleteDepartment, fetchDepartmentsAddress, postDepartment, putDepartment } from "@/services/departmentService";
 import { useEffect, useState } from "react";
 
-const useDepartments = () => {
+export const useDepartments = () => {
     const [departments, setDepartments] = useState<DepartmentAddress[]>([]);
     const [editingDepartmentId, setEditingDepartmentId] = useState<number | null>(null);
     const [noChangesError, setNoChangesError] = useState<string | null>(null);
@@ -67,5 +67,3 @@ const useDepartments = () => {
         openDeleteModal,
     };
 }
-
-export default useDepartments;

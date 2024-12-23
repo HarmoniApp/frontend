@@ -6,7 +6,7 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import LoadingSpinner from '../loadingSpinner';
 import { changePasswordSchema, loginValidationSchema } from '@/validationSchemas/loginValidationSchema';
-import useLogin from '@/hooks/useLogin';
+import { useLogin } from '@/hooks/useLogin';
 
 const Login = () => {
   const {

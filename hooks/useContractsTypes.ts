@@ -2,7 +2,7 @@ import Contract from "@/components/types/contract";
 import { deleteContractType, fetchContracts, postContractType, putContractType } from "@/services/contractService";
 import { useEffect, useState } from "react";
 
-const useContractTypes = () => {
+export const useContractTypes = () => {
     const [contracts, setContracts] = useState<Contract[]>([]);
     const [editingContractId, setEditingContractId] = useState<number | null>(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -62,5 +62,3 @@ const useContractTypes = () => {
         openDeleteModal,
     };
 }
-
-export default useContractTypes;

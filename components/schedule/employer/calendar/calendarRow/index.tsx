@@ -6,15 +6,14 @@ import EditShift from '../editShift';
 import WeekSchedule from '@/components/types/weekSchedule';
 import User from '@/components/types/user';
 import Shift from '@/components/types/shift';
-import Role from '@/components/types/role';
 import styles from './main.module.scss';
-import { fetchRoles } from "@/services/roleService"
 import { Card } from 'primereact/card';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import '@/styles/components/pagination.css';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { deleteShift, fetchFilterUsersInSchedule, fetchUserScheduleWithAbsences, patchPublishShifts, postShift, putShift } from '@/services/scheduleService';
 import { formatDate } from '@/utils/formatDate';
+import { useRoles } from '@/hooks/roles/useRoles';
 
 interface CalendarRowProps {
   currentWeek: Date[];
@@ -22,6 +21,7 @@ interface CalendarRowProps {
 }
 
 const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, ref) => {
+  const {roles, loadingRoles} = useRoles();
   const [users, setUsers] = useState<User[]>([]);
   const [schedules, setSchedules] = useState<Record<number, WeekSchedule>>({});
 
@@ -31,9 +31,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [abortController, setAbortController] = useState<AbortController | null>(null);
-  const [roles, setRoles] = useState<Role[]>([]);
 
-  const [loadingRoles, setLoadingRoles] = useState<boolean>(true);
   const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
   const [loadingSchedules, setLoadingSchedules] = useState<boolean>(true);
   const [loading, setLoading] = useState(false);
@@ -41,16 +39,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [totalPages, setTotalPages] = useState(0);
-
-  useEffect(() => {
-    const loadData = async () => {
-      setLoadingRoles(true);
-      await fetchRoles(setRoles);
-      setLoadingRoles(false);
-    };
-
-    loadData();
-  }, []);
 
   useEffect(() => {
     const loadData = async () => {

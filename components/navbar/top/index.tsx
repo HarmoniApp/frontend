@@ -1,14 +1,14 @@
 'use client';
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell, faL } from '@fortawesome/free-solid-svg-icons';
+import { faBell } from '@fortawesome/free-solid-svg-icons';
 import styles from "./main.module.scss";
 import Notifications from "./notifications";
 import '@/styles/main.css';
 import UserImage from "@/components/userImage";
 import LoadingSpinner from "@/components/loadingSpinner";
-import useNotifications from "@/hooks/useNotifications";
+import { useNotifications } from "@/hooks/useNotifications";
 interface NavbarTopProps {
     onAccountIconClick: () => void;
     isThisAdmin: boolean;

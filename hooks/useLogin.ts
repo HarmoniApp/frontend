@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const useLogin = () => {
+export const useLogin = () => {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [loginError, setLoginError] = useState<string | null>(null);
@@ -84,4 +84,3 @@ const useLogin = () => {
         handlePasswordChange,
     };
 }
-export default useLogin;
