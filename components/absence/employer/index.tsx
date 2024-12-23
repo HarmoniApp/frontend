@@ -7,7 +7,7 @@ import styles from './main.module.scss';
 import { Card } from 'primereact/card';
 import { fetchAbsences } from '@/services/absenceService';
 import LoadingSpinner from '@/components/loadingSpinner';
-import { useAbsenceEmployer } from '@/hooks/useAbsenceEmployer';
+import { useAbsenceEmployer } from '@/hooks/absences/useAbsenceEmployer';
 
 const AbsenceEmployer: React.FC = () => {
   const {

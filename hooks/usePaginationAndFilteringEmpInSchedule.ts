@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import User from "@/components/types/user";
 import { fetchFilterUsersInSchedule } from "@/services/scheduleService";
 
-export const usePaginationAndFiltering = ({ searchQuery }: { searchQuery: string }) => {
+export const usePaginationAndFilteringEmpInSchedule = ({ searchQuery }: { searchQuery: string }) => {
     const [users, setUsers] = useState<User[]>([]);
     const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
     const [pageNumber, setPageNumber] = useState(1);

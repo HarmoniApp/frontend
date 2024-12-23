@@ -8,7 +8,7 @@ import LoadingSpinner from '@/components/loadingSpinner';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
 import CustomButton from '@/components/customButton';
 import { Tooltip } from 'primereact/tooltip';
-import { useEmployeeData } from '@/hooks/useEmployeeData';
+import { useEmployeeData } from '@/hooks/employees/useEmployeeData';
 import { wrapText } from '@/utils/wrapText';
 
 interface EmployeeDataComponentProps {

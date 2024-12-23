@@ -2,7 +2,7 @@ import DepartmentAddress from "@/components/types/departmentAddress";
 import { deleteDepartment, fetchDepartmentsAddress, postDepartment, putDepartment } from "@/services/departmentService";
 import { useEffect, useState } from "react";
 
-export const useDepartments = () => {
+export const useDepartmentsManagement = () => {
     const [departments, setDepartments] = useState<DepartmentAddress[]>([]);
     const [editingDepartmentId, setEditingDepartmentId] = useState<number | null>(null);
     const [noChangesError, setNoChangesError] = useState<string | null>(null);

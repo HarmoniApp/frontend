@@ -7,7 +7,7 @@ import { fetchRoles } from "@/services/roleService";
 import { FormikProps } from "formik";
 import { useEffect, useRef, useState } from "react";
 
-export const useRequirementsForm = () => {
+export const useRequirementsFormManagement = () => {
     const [forms, setForms] = useState<IRequirementsForm[]>([
         { id: Date.now(), date: '', shifts: [] },
     ]);

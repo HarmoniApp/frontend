@@ -9,10 +9,10 @@ import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import '@/styles/components/pagination.css';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { useRoles } from '@/hooks/roles/useRoles';
-import { useShiftManagement } from '@/hooks/shifts/useShiftManagement';
-import { useShiftModals } from '@/hooks/shifts/useShiftModals';
-import { usePaginationAndFiltering } from '@/hooks/usePaginationAndFilteringEmpInSchedule';
-import { useSchedule } from '@/hooks/useSchedule';
+import { useShiftManagement } from '@/hooks/schedule/shifts/useShiftManagement';
+import { useShiftModals } from '@/hooks/schedule/shifts/useShiftModals';
+import { usePaginationAndFilteringEmpInSchedule } from '@/hooks/usePaginationAndFilteringEmpInSchedule';
+import { useSchedule } from '@/hooks/schedule/useSchedule';
 
 interface CalendarRowProps {
   currentWeek: Date[];
@@ -30,7 +30,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     totalPages,
     setPageNumber,
     setPageSize,
-  } = usePaginationAndFiltering({ searchQuery });
+  } = usePaginationAndFilteringEmpInSchedule({ searchQuery });
 
   const {
     schedules,

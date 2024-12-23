@@ -9,7 +9,7 @@ import LoadingSpinner from '@/components/loadingSpinner';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
 import { Tooltip } from 'primereact/tooltip';
 import { contractValidationSchema } from '@/validationSchemas/contractValidationSchema';
-import { useContractTypes } from '@/hooks/useContractsTypes';
+import { useContractTypes } from '@/hooks/contractTypes/useContractsTypes';
 import { wrapText } from '@/utils/wrapText';
 
 const ContractTypes = () => {

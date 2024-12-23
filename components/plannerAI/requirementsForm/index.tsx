@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import { planerAiValidationSchema } from '@/validationSchemas/planerAiValidationSchema';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
 import PredefineShiftsAndRoles from './preShiftsAndRoles';
-import { useRequirementsForm } from '@/hooks/useRequirementsForm';
+import { useRequirementsFormManagement } from '@/hooks/planerAi/useRequirementsForm';
 
 const RequirementsForm: React.FC = () => {
     const [isInstructionOpen, setIsInstructionOpen] = useState(false);
@@ -26,7 +26,7 @@ const RequirementsForm: React.FC = () => {
         handleEditDate,
         handleSubmit,
         handleRevoke,
-    } = useRequirementsForm();
+    } = useRequirementsFormManagement();
 
     return (
         <div className={styles.planerAiContainer}>

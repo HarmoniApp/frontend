@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserMinus, faXmark, faTrash, faX } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import UserImage from '@/components/userImage';
-import { useEditGroup } from '@/hooks/useEditGroup';
+import { useEditGroup } from '@/hooks/chat/useEditGroup';
 
 interface EditGroupProps {
     editGroupModal: (open: boolean) => void;

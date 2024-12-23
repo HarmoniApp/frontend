@@ -2,7 +2,7 @@ import PredefinedShift from "@/components/types/predefinedShifts";
 import { deletePredefineShift, fetchPredefinedShifts, postPredefineShift, putPredefineShift } from "@/services/predefineShiftService";
 import { useEffect, useState } from "react";
 
-export const usePredefinedShifts = () => {
+export const usePredefinedShiftsManagement = () => {
     const [predefineShifts, setPredefineShifts] = useState<PredefinedShift[]>([]);
     const [editingShiftId, setEditingShiftId] = useState<number | null>(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);

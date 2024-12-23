@@ -14,7 +14,7 @@ import Supervisor from '@/components/types/supervisor';
 import Role from '@/components/types/role';
 import Language from '@/components/types/language';
 import Contract from '@/components/types/contract';
-import { useEmployeeDataForm } from '@/hooks/useEditEmployeeData';
+import { useEmployeeDataManagement } from '@/hooks/employees/useEditEmployeeData';
 
 const AddEmployee: React.FC = () => {
   const onBack = () => {
@@ -29,7 +29,7 @@ const AddEmployee: React.FC = () => {
     supervisors, 
     departments, 
     loading,
-    handleSaveEmployee } = useEmployeeDataForm();
+    handleSaveEmployee } = useEmployeeDataManagement();
 
   const handleSubmit = async (values: typeof initialValues, { resetForm }: { resetForm: () => void }) => {
     await handleSaveEmployee(values, "add");

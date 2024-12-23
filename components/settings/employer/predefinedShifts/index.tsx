@@ -9,7 +9,7 @@ import { formatTimeToHHMM } from '@/services/predefineShiftService';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
 import { Tooltip } from 'primereact/tooltip';
 import { predefineShiftValidationSchema } from '@/validationSchemas/predefineShiftValidationSchema';
-import { usePredefinedShifts } from '@/hooks/usePredefineShifts';
+import { usePredefinedShiftsManagement } from '@/hooks/predefineShifts/usePredefineShifts';
 import { wrapText } from '@/utils/wrapText';
 
 const PredefinedShifts = () => {
@@ -25,7 +25,7 @@ const PredefinedShifts = () => {
     handleEditPredefineShift,
     handleDeletePredefineShift,
     openDeleteModal,
-  } = usePredefinedShifts();
+  } = usePredefinedShiftsManagement();
 
   return (
     <div className={styles.predefinedShiftsContainerMain}>

@@ -8,7 +8,7 @@ import Notifications from "./notifications";
 import '@/styles/main.css';
 import UserImage from "@/components/userImage";
 import LoadingSpinner from "@/components/loadingSpinner";
-import { useNotifications } from "@/hooks/useNotifications";
+import { useNotifications } from "@/hooks/notifications/useNotifications";
 interface NavbarTopProps {
     onAccountIconClick: () => void;
     isThisAdmin: boolean;

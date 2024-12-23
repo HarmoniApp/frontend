@@ -13,7 +13,6 @@ export const useSchedule = ({ users, currentWeek }: UseScheduleManagementProps) 
     const [loadingSchedules, setLoadingSchedules] = useState<boolean>(false);
     const [abortController, setAbortController] = useState<AbortController | null>(null);
 
-
     useEffect(() => {
         if (users.length > 0) {
             setLoadingSchedules(true);
@@ -49,7 +48,6 @@ export const useSchedule = ({ users, currentWeek }: UseScheduleManagementProps) 
                             absences: data.absences || [],
                         };
                     });
-            
                     await setSchedules(schedulesMap);
                 } catch (error) {
                     console.error('Error fetching schedules:', error);
@@ -57,7 +55,6 @@ export const useSchedule = ({ users, currentWeek }: UseScheduleManagementProps) 
                     setLoadingSchedules(false);
                 }
             };
-
             fetchSchedules();
         }
     }, [users, currentWeek]);

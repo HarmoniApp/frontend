@@ -9,7 +9,7 @@ import LoadingSpinner from "@/components/loadingSpinner";
 import ConfirmationPopUp from "@/components/confirmationPopUp";
 import { Tooltip } from "primereact/tooltip";
 import { departmentValidationSchema } from "@/validationSchemas/departmentValidationSchema";
-import { useDepartments } from "@/hooks/useDepartments";
+import { useDepartmentsManagement } from "@/hooks/departments/useDepartments";
 import { wrapText } from "@/utils/wrapText";
 
 const Departments = () => {
@@ -27,7 +27,7 @@ const Departments = () => {
         handleEditDepartment,
         handleDeleteDepartment,
         openDeleteModal,
-      } = useDepartments();
+      } = useDepartmentsManagement();
 
     return (
         <div className={styles.departmentContainerMain}>

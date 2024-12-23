@@ -11,7 +11,7 @@ import LoadingSpinner from '@/components/loadingSpinner';
 import { employeeValidationSchema } from '@/validationSchemas/employeeValiadtionSchema';
 import { Tooltip } from 'primereact/tooltip';
 import { useRouter } from 'next/navigation';
-import { useEmployeeDataForm } from '@/hooks/useEditEmployeeData';
+import { useEmployeeDataManagement } from '@/hooks/employees/useEditEmployeeData';
 import { wrapText } from '@/utils/wrapText';
 
 interface EditEmployeeDataProps {
@@ -51,7 +51,7 @@ const EditEmployeeData: React.FC<EditEmployeeDataProps> = ({ employee, onCloseEd
     supervisors,
     departments,
     loading,
-    handleSaveEmployee } = useEmployeeDataForm();
+    handleSaveEmployee } = useEmployeeDataManagement();
 
   const handleSubmit = async (values: typeof initialValues) => {
     await handleSaveEmployee(values, "edit");

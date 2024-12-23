@@ -10,7 +10,7 @@ import { fetchRoles } from "@/services/roleService";
 import { fetchSupervisors, patchUser, postUser } from "@/services/userService";
 import { useState, useEffect } from "react";
 
-export const useEmployeeDataForm = () => {
+export const useEmployeeDataManagement = () => {
     const [contracts, setContracts] = useState<Contract[]>([]);
     const [departments, setDepartments] = useState<Department[]>([]);
     const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
