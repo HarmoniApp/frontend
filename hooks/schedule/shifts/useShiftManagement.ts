@@ -2,12 +2,12 @@ import WeekSchedule from "@/components/types/weekSchedule";
 import { deleteShift, fetchUserScheduleWithAbsences, patchPublishShifts, postShift, putShift } from "@/services/scheduleService";
 import { formatDate } from "@/utils/formatDate";
 
-interface UseShiftManagementParams {
+interface UseShiftManagementProps {
     currentWeek: Date[];
     setSchedules: React.Dispatch<React.SetStateAction<Record<number, WeekSchedule>>>;
 }
 
-export const useShiftManagement = ({ currentWeek, setSchedules }: UseShiftManagementParams) => {
+export const useShiftManagement = ({ currentWeek, setSchedules }: UseShiftManagementProps) => {
     const fetchUserSchedule = async (userId: number) => {
         try {
             const data = await fetchUserScheduleWithAbsences(userId, currentWeek);

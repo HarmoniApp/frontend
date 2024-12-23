@@ -151,7 +151,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
       )}
       {isEditModalOpen && selectedShift && (
         <EditShift
-          isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           onEditShift={(shiftData) => {
             handleEditShift(shiftData);
