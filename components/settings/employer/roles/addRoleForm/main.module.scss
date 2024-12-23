@@ -1,0 +1,76 @@
+@import '@/styles/main.scss';
+
+
+.colorPicker {
+    border: 2px solid $main-colour;
+    border-radius: 5px;
+    background-color: $main-colour;
+    height: auto;
+    width: 35px;
+    cursor: pointer;
+}
+
+.addContainer {
+    @include displayDFJAG(flex, row, null, stretch, 10px);
+    height: 100%;
+
+    .colorPicker {
+        width: 40px;
+    }
+
+    .addButton {
+        background-color: $main-colour;
+        border: none;
+        color: $font-dark-colour;
+        padding: 10px;
+        width: 5vh;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: $main-colour-hover;
+        }
+    }
+}
+
+.formInput {
+    @include appearance-none;
+    width: 100%;
+    border-radius: 5px;
+    border: 2px solid $main-colour;
+    padding: 10px 5vh 10px 10px;
+    color: $font-dark-colour;
+    transition: all 0.3s ease;
+
+    &:hover {
+        border: 2px solid $main-colour;
+        outline: none;
+        background-color: lighten($white-4, 5%);
+    }
+
+    &::placeholder {
+        margin: 0 0 0 10px;
+        color: lighten($font-dark-colour, 30%);
+    }
+
+    @include respond-to-md {
+        height: 4vh;
+        padding: 8px 2vh 8px 8px;
+    }
+}
+
+.errorMessage {
+    @include displayDFJAG(flex, null, null, center);
+    color: $red;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.errorInput {
+    border-color: $red;
+    background-color: $red-powder;
+}
