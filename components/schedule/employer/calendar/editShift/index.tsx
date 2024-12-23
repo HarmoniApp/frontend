@@ -21,20 +21,17 @@ interface EditShiftModalProps {
   shift: Shift;
   firstName: string;
   surname: string;
-  setLoading: (loading: boolean) => void;
 }
 
-const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift, onDeleteShift, shift, firstName, surname, setLoading }) => {
+const EditShift: React.FC<EditShiftModalProps> = ({ isOpen, onClose, onEditShift, onDeleteShift, shift, firstName, surname }) => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [predefineShifts, setPredefineShifts] = useState<PredefinedShifts[]>([]);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
-      setLoading(true);
       await fetchPredefinedShifts(setPredefineShifts);
       await fetchUserRoles(shift.user_id, setRoles);
-      setLoading(false);
     }
 
     loadData();

@@ -11,9 +11,10 @@ import { Card } from 'primereact/card';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import '@/styles/components/pagination.css';
 import LoadingSpinner from '@/components/loadingSpinner';
-import { deleteShift, fetchFilterUsersInSchedule, fetchUserScheduleWithAbsences, patchPublishShifts, postShift, putShift } from '@/services/scheduleService';
-import { formatDate } from '@/utils/formatDate';
+import { fetchFilterUsersInSchedule, fetchUserScheduleWithAbsences } from '@/services/scheduleService';
 import { useRoles } from '@/hooks/roles/useRoles';
+import { useShiftManagement } from '@/hooks/shifts/useShiftManagement';
+import { useShiftModals } from '@/hooks/shifts/useShiftModals';
 
 interface CalendarRowProps {
   currentWeek: Date[];
@@ -21,24 +22,36 @@ interface CalendarRowProps {
 }
 
 const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, ref) => {
-  const {roles, loadingRoles} = useRoles();
+  const { roles, loadingRoles } = useRoles();
   const [users, setUsers] = useState<User[]>([]);
   const [schedules, setSchedules] = useState<Record<number, WeekSchedule>>({});
 
-  const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
-  const [selectedDay, setSelectedDay] = useState<string>('');
   const [abortController, setAbortController] = useState<AbortController | null>(null);
 
   const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
   const [loadingSchedules, setLoadingSchedules] = useState<boolean>(true);
-  const [loading, setLoading] = useState(false);
 
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [totalPages, setTotalPages] = useState(0);
+
+  const {
+    handleAddShift,
+    handleEditShift,
+    handleDeleteShift,
+    handlePublishAll } = useShiftManagement({ currentWeek, setSchedules });
+
+  const {
+    isAddModalOpen,
+    isEditModalOpen,
+    selectedUser,
+    selectedShift,
+    selectedDay,
+    handleAddShiftClick,
+    handleEditShiftClick,
+    setIsAddModalOpen,
+    setIsEditModalOpen,
+  } = useShiftModals();
 
   useEffect(() => {
     const loadData = async () => {
@@ -97,81 +110,9 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     }
   }, [users, currentWeek]);
 
-  const handleAddShiftClick = (user: User, day: string) => {
-    setSelectedUser(user);
-    setSelectedDay(day);
-    setIsAddModalOpen(true);
-  };
-
-  const handleEditShiftClick = (shift: Shift) => {
-    setSelectedShift(shift);
-    setIsEditModalOpen(true);
-  };
-
-  const handleAddShift = async (shiftData: { start: string; end: string; userId: number; roleName: string; }) => {
-    try {
-      await postShift(shiftData)
-      fetchUserSchedule(shiftData.userId);
-    } catch (error) {
-      console.error('Error editing shift:', error);
-    }
-  };
-
-  const handleEditShift = async (shiftData: { id: number; start: string; end: string; userId: number; roleName: string; }) => {
-    try {
-      await putShift(shiftData);
-      fetchUserSchedule(shiftData.userId);
-    } catch (error) {
-      console.error('Error editing shift:', error);
-    }
-  };
-
-  const handleDeleteShift = async (shiftId: number, userId: number) => {
-    await deleteShift(shiftId, userId, fetchUserSchedule);
-  };
-
-  const handlePublishAll = async () => {
-    setLoading(true);
-    try {
-      const start = formatDate(currentWeek[0]);
-      const end = formatDate(currentWeek[currentWeek.length - 1]);
-      await patchPublishShifts(start, end)
-
-      setSchedules(prevSchedules => {
-        const updatedSchedules = { ...prevSchedules };
-        Object.values(updatedSchedules).forEach(schedule => {
-          schedule.shifts = schedule.shifts.map(shift =>
-            !shift.published ? { ...shift, published: true } : shift
-          );
-        });
-        return updatedSchedules;
-      });
-    } catch (error) {
-      console.error('Error publishing shift:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useImperativeHandle(ref, () => ({
     publishAll: handlePublishAll,
   }));
-
-  const fetchUserSchedule = async (userId: number) => {
-    try {
-      const data = await fetchUserScheduleWithAbsences(userId, currentWeek);
-
-      setSchedules(prevSchedules => ({
-        ...prevSchedules,
-        [userId]: {
-          shifts: data.shifts,
-          absences: data.absences
-        }
-      }));
-    } catch (error) {
-      console.error(`Error fetching schedule for user ${userId}:`, error);
-    }
-  };
 
   const renderedRows = useMemo(() => {
 
@@ -277,7 +218,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
           shift={selectedShift}
           firstName={users.find(user => user.id === selectedShift.user_id)?.firstname || 'Imie'}
           surname={users.find(user => user.id === selectedShift.user_id)?.surname || 'Nazwisko'}
-          setLoading={setLoading}
         />
       )}
     </div>
