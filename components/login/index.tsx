@@ -17,13 +17,13 @@ const Login = () => {
   } = useLogin();
 
   return (
-    <div className={styles.container}>
+    <div className={styles.loginContainerMain}>
       <h1 className={styles.title}>Harmoni App</h1>
       <LoginForm handleLogin={handleLogin} showPassword={showPassword} setShowPassword={setShowPassword} loginError={loginError} />
       {isChangePasswordModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <h2>Zmień hasło</h2>
+            <h2 className={styles.title}>Zmień hasło</h2>
             <ChangePasswordForm handlePasswordChange={handlePasswordChange} loading={loading}/>
           </div>
         </div>

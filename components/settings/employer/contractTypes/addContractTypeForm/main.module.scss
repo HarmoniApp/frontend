@@ -39,15 +39,6 @@
     }
 }
 
-.errorMessage {
-    color: $red;
-    font-size: 16px;
-    font-weight: bold;
-    margin: 0;
-    text-align: center;
-    flex-shrink: 0;
-}
-
 .formInput {
     @include appearance-none;
     width: 100%;
@@ -89,3 +80,4 @@
     height: 5vh;
     width: 10vh;
 }
+@include errorMessage("center");

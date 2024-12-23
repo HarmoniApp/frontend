@@ -111,15 +111,6 @@
     }
 }
 
-.errorMessage {
-    color: $red;
-    font-size: 16px;
-    font-weight: bold;
-    margin: 0;
-    text-align: right;
-    flex-shrink: 0;
-}
-
 .departmentInput {
     @include appearance-none;
     width: 100%;
@@ -147,8 +138,4 @@
         padding: 8px 2vh 8px 8px;
     }
 }
-
-.errorInput {
-    border-color: $red;
-    background-color: $red-powder;
-}
+@include errorMessage("right");

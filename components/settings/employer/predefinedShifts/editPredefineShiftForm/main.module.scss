@@ -98,15 +98,6 @@
     cursor: pointer;
 }
 
-.errorMessage {
-    color: $red;
-    font-size: 16px;
-    font-weight: bold;
-    margin: 0;
-    text-align: center;
-    flex-shrink: 0;
-}
-
 .formInput {
     @include appearance-none;
     width: 100%;
@@ -140,3 +131,4 @@
         background-color: $red-powder;
     }
 }
+@include errorMessage("center");

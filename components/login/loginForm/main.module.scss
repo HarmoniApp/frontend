@@ -1,29 +1,27 @@
 @import '@/styles/main.scss';
 
-.form {
+.loginForm {
     @include displayDFJAG(flex, column, null, stretch);
     width: 100%;
 }
 
-.label {
-    font-size: 1em;
-    margin-bottom: 5px;
-    text-align: left;
+.emailLabel, .passwordLabel {
+    font-size: 16px;
+    font-weight: bold;
     color: $font-light-colour;
+    margin: 10px 0;
+    transition: color 0.3s ease;
+    @include displayDFJAG(flex, null, space-between, center);
 }
 
-.input {
+.emailInput, .passwordInput {
     padding: 10px;
     margin-bottom: 15px;
-    border: 1px solid $main-colour;
+    border: 2px solid $main-colour;
     border-radius: 5px;
     font-size: 1em;
     width: 100%;
     box-sizing: border-box;
-}
-
-.errorInput {
-    border-color: $red-dark;
 }
 
 .passwordContainer {
@@ -38,28 +36,4 @@
     cursor: pointer;
     color: $gray;
 }
-
-.button {
-    padding: 10px;
-    margin-top: 10px;
-    background-color: $main-colour;
-    color: $font-dark-colour;
-    border: none;
-    border-radius: 5px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    width: 100%;
-
-    &:hover {
-        background-color: darken($main-colour, 10%);
-    }
-}
-
-.error {
-    color: $red;
-    font-size: 0.9em;
-    margin-top: -10px;
-    margin-bottom: 10px;
-    text-align: left;
-}
+@include errorMessage("right");

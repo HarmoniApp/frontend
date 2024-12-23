@@ -1,3 +1,5 @@
+@use './variables.scss' as vars;
+
 @mixin displayDFJAG($display:flex , $direction: column, $justify: center, $align: center, $gap: 0px) {
     display: flex;
     flex-direction: $direction;
@@ -16,6 +18,22 @@
     -webkit-appearance: none; // Safari
     -moz-appearance: none; // Firefox
     appearance: none; // Standard
+}
+
+@mixin errorMessage($textAlign: "right") {
+    .errorMessage {
+        color: vars.$red;
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0;
+        text-align: $textAlign;
+        flex-shrink: 0;
+    }
+
+    .errorInput {
+        border: 2px solid $red;
+        background-color: $red-powder;
+    }
 }
 
 @mixin respond-to-lg {

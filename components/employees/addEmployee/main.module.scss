@@ -83,11 +83,6 @@
         }
     }
 
-    .errorInput {
-        border-color: $red;
-        background-color: $red-powder;
-    }
-
     .formSelect {
         background-image:
             linear-gradient(45deg, transparent 50%, $font-dark-colour 50%),
@@ -137,11 +132,11 @@
             padding: 10px;
         }
 
-        .errorMessage {
-            color: $red;
-            font-size: 16px;
-            font-weight: bold;
-        }
+        // .errorMessage {
+        //     color: $red;
+        //     font-size: 16px;
+        //     font-weight: bold;
+        // }
 
         .languageParagraph,
         .roleParagraph {
@@ -298,3 +293,4 @@
         }
     }
 }
+@include errorMessage("right");

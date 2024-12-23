@@ -2,6 +2,7 @@ import LoadingSpinner from "@/components/loadingSpinner";
 import { changePasswordSchema } from "@/validationSchemas/loginValidationSchema";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import styles from './main.module.scss';
+import CustomButton from "@/components/customButton";
 
 interface ChangePasswordFormProps {
     handlePasswordChange: (values: any) => void;
@@ -15,19 +16,20 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ handlePa
         onSubmit={handlePasswordChange}
     >
         {({ errors, touched }) => (
-            <Form>
-                <label>Nowe Hasło</label>
-                <Field type="password" name="newPassword" className={`${styles.input} ${errors.newPassword && touched.newPassword ? styles.errorInput : ''}`} />
-                <ErrorMessage name="newPassword" component="div" className={styles.error} />
-
-                <label>Powtórz Nowe Hasło</label>
-                <Field type="password" name="repeatPassword" className={`${styles.input} ${errors.repeatPassword && touched.repeatPassword ? styles.errorInput : ''}`} />
-                <ErrorMessage name="repeatPassword" component="div" className={styles.error} />
-
-                <button type="submit" className={styles.button}>Zapisz</button>
-
+            <Form className={styles.changePasswordForm}>
+                <label className={styles.newPasswordLabel}>Nowe Hasło
+                    <ErrorMessage name="newPassword" component="div" className={styles.errorMessage} />
+                </label>
+                <Field type="password" name="newPassword" className={`${styles.newPasswordInput} ${errors.newPassword && touched.newPassword ? styles.errorInput : ''}`} />
+                <label className={styles.repeatNewPasswordLabel}>Powtórz Nowe Hasło
+                    <ErrorMessage name="repeatPassword" component="div" className={styles.errorMessage} />
+                </label>
+                <Field type="password" name="repeatPassword" className={`${styles.repeatNewPasswordInput} ${errors.repeatPassword && touched.repeatPassword ? styles.errorInput : ''}`} />
+                <CustomButton icon="floppyDisk" writing="Zapisz" typeButton="submit" />
                 {loading && <LoadingSpinner />}
             </Form>
         )}
     </Formik>
 )
+
+// joanna.kowalska12@example.com

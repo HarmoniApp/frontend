@@ -158,15 +158,6 @@
     }
 }
 
-.errorMessage {
-    color: $red;
-    font-size: 16px;
-    font-weight: bold;
-    margin: 0;
-    text-align: right;
-    flex-shrink: 0;
-}
-
 .departmentInput {
     @include appearance-none;
     width: 100%;
@@ -195,11 +186,6 @@
     }
 }
 
-.errorInput {
-    border-color: $red;
-    background-color: $red-powder;
-}
-
 @include respond-to-md {
     .addDepartmentContainer {
         @include gridQG(2, 10px);
@@ -211,3 +197,4 @@
         @include gridQG(1, 10px);
     }
 }
+@include errorMessage("right");

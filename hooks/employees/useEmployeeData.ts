@@ -45,14 +45,11 @@ export const useEmployeeData = (userId: number) => {
     };
 
     const handlePasswordResetSubmit = async () => {
-        setLoading(true);
         try {
             await patchResetPassword(userId, setNewPassword);
             setModalNewPassword(true);
         } catch (error) {
             console.error('Error while resetting password: ', error);
-        } finally {
-            setLoading(false);
         }
     };
 

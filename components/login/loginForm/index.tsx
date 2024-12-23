@@ -3,6 +3,7 @@ import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import styles from './main.module.scss';
+import CustomButton from "@/components/customButton";
 
 interface LoginFormProps {
     handleLogin: (values: any) => void;
@@ -18,21 +19,23 @@ export const LoginForm: React.FC<LoginFormProps> = ({ handleLogin, showPassword,
         onSubmit={handleLogin}
     >
         {({ errors, touched }) => (
-            <Form className={styles.form}>
-                {loginError && <div className={styles.error}>{loginError}</div>}
-                <label className={styles.label} htmlFor="email">Adres Email</label>
+            <Form className={styles.loginForm}>
+                {loginError && <div className={styles.errorMessage}>{loginError}</div>}
+                <label className={styles.emailLabel} htmlFor="email">Adres Email
+                    <ErrorMessage name="email" component="div" className={styles.errorMessage} />
+                </label>
                 <Field
-                    className={`${styles.input} ${errors.email && touched.email ? styles.errorInput : ''}`}
+                    className={`${styles.emailInput} ${errors.email && touched.email ? styles.errorInput : ''}`}
                     id="email"
                     name="email"
                     placeholder="my_email@example.com"
                 />
-                <ErrorMessage name="email" component="div" className={styles.error} />
-
-                <label className={styles.label} htmlFor="password">Hasło</label>
+                <label className={styles.passwordLabel} htmlFor="password">Hasło
+                    <ErrorMessage name="password" component="div" className={styles.errorMessage} />
+                </label>
                 <div className={styles.passwordContainer}>
                     <Field
-                        className={`${styles.input} ${errors.password && touched.password ? styles.errorInput : ''}`}
+                        className={`${styles.passwordInput} ${errors.password && touched.password ? styles.errorInput : ''}`}
                         type={showPassword ? "text" : "password"}
                         id="password"
                         name="password"
@@ -44,9 +47,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ handleLogin, showPassword,
                         onClick={() => setShowPassword(!showPassword)}
                     />
                 </div>
-                <ErrorMessage name="password" component="div" className={styles.error} />
-
-                <button type="submit" className={styles.button}>Zaloguj</button>
+                <CustomButton icon="arrowRightToBracket" writing="Zaloguj" typeButton="submit" />
             </Form>
         )}
     </Formik>
