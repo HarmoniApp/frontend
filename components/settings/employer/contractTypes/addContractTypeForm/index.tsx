@@ -4,10 +4,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import styles from './main.module.scss';
 import classNames from 'classnames';
-import { useContractTypes } from "@/hooks/contractTypes/useContractsTypes";
 
-export const AddContractTypeForm: React.FC = () => {
-    const { handleAddContractType } = useContractTypes();
+interface AddContractTypeFormProps {
+    handleAddContractType: (values: any, { resetForm }: any) => void;
+}
+
+export const AddContractTypeForm: React.FC<AddContractTypeFormProps> = ({ handleAddContractType }) => {
     return (
         <Formik
             initialValues={{ name: '', absence_days: 0 }}

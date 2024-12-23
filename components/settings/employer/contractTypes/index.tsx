@@ -7,14 +7,37 @@ import { EditContractTypeForm } from './editContractTypeForm';
 import styles from './main.module.scss';
 
 const ContractTypes = () => {
-  const { loading } = useContractTypes();
+  const {
+    contracts,
+    editingContractId,
+    setEditingContractId,
+    isDeleteModalOpen,
+    setIsDeleteModalOpen,
+    deleteContractId,
+    loading,
+    handleAddContractType,
+    handleEditContractType,
+    handleDeleteContractType,
+    openDeleteModal } = useContractTypes();
 
   return (
     <div className={styles.contractTypesContainerMain}>
       <div className={styles.showContractMapContainer}>
-        <EditContractTypeForm />
+        {contracts.map((contract) => (
+          <EditContractTypeForm
+            contract={contract}
+            editingContractId={editingContractId}
+            setEditingContractId={setEditingContractId}
+            isDeleteModalOpen={isDeleteModalOpen}
+            setIsDeleteModalOpen={setIsDeleteModalOpen}
+            deleteContractId={deleteContractId}
+            handleEditContractType={handleEditContractType}
+            handleDeleteContractType={handleDeleteContractType}
+            openDeleteModal={openDeleteModal}
+          />
+        ))}
       </div>
-      <AddContractTypeForm />
+      <AddContractTypeForm handleAddContractType={handleAddContractType} />
       {loading && <LoadingSpinner />}
     </div>
   );
