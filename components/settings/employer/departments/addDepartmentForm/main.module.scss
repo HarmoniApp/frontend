@@ -1,0 +1,213 @@
+@import '@/styles/main.scss';
+
+.departmentForm {
+
+    .showDepartmentContainer {
+        @include displayDFJAG(flex, column, space-between, null);
+        background-color: $white-3;
+        height: 100%;
+        border-radius: 5px;
+        margin: 0;
+        padding: 10px;
+
+        .departmentInfoContainer {
+            @include displayDFJAG(flex, column, null, null);
+            margin: 0;
+            padding: 0;
+
+            .inputLabel {
+                @include displayDFJAG(flex, row, space-between, center);
+                font-weight: bold;
+                color: $font-dark-colour;
+            }
+
+            .departmentNameContainer {
+                flex: 1;
+                margin: 0 0 10px 0;
+
+                .departmentNameLabel {
+                    font-weight: bold;
+                    color: $font-dark-colour;
+                    font-size: 22px;
+                    text-transform: uppercase;
+                    text-decoration: underline;
+                }
+            }
+
+            .departmentInfoRowContainer {
+                @include displayDFJAG(flex, column, center, center);
+                margin: 0 0 10px 0;
+                width: 100%;
+
+                .departmentDataContainer {
+                    @include displayDFJAG(flex, row, center, center, 5px);
+
+                    .comma::after {
+                        content: ',';
+                    }
+
+                    .largeAll {
+                        text-transform: uppercase;
+                        font-weight: bold;
+                    }
+
+                    .departmentCityLabel {
+                        color: $font-dark-colour;
+                    }
+
+                    .buildingNumbersContainer {
+                        @include displayDFJAG(flex, row, null, null);
+
+                        .slash::after {
+                            content: '/';
+                        }
+                    }
+
+                    .departmentZipCodeParagraph {
+                        color: $font-dark-colour;
+                    }
+                }
+            }
+
+            @include respond-to-md {
+                .departmentInfoRowContainer {
+                    @include displayDFJAG(flex, column, null, flex-start);
+                }
+            }
+        }
+
+        .editAndRemoveButtonContainer {
+            @include displayDFJAG(flex, row, flex-end, center, 10px);
+            margin: 10px 0 0 0;
+
+            .removeButton,
+            .editButton,
+            .yesButton,
+            .noButton {
+                background-color: $main-colour;
+                border: 2px solid $font-dark-colour;
+                color: $font-dark-colour;
+                padding: 5px 10px;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s ease, color 0.3s ease;
+
+                &:hover {
+                    background-color: $font-dark-colour;
+                    color: $main-colour;
+                }
+            }
+
+            .yesButton:hover {
+                background-color: $green-dark;
+                color: $font-dark-colour;
+            }
+
+            .noButton:hover {
+                background-color: $red;
+                color: $font-dark-colour;
+            }
+        }
+    }
+}
+
+.addDepartmentContainer {
+    @include gridQG(3, 10px);
+    margin: 10px 0 0 0;
+
+    .addItemContainer {
+        @include displayDFJAG(flex, column, null, null);
+    }
+
+    .inputLabel {
+        @include displayDFJAG(flex, row, space-between, center);
+        font-weight: bold;
+        color: $font-light-colour;
+        margin-bottom: 5px;
+    }
+}
+
+.buttonContainer {
+    width: 100%;
+    margin: 20px 0 0 0;
+
+    .addButton {
+        @include displayDFJAG(flex, row, center, center);
+        gap: 20px;
+        background-color: $main-colour;
+        border: none;
+        color: $font-dark-colour;
+        padding: 10px;
+        width: 100%;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: $main-colour-hover;
+        }
+
+        .addButtonLabel {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .icon {
+            font-size: 20px;
+        }
+    }
+}
+
+.errorMessage {
+    color: $red;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.departmentInput {
+    @include appearance-none;
+    width: 100%;
+    height: 5vh;
+    border-radius: 5px;
+    border: 2px solid $main-colour;
+    padding: 10px 5vh 10px 10px;
+    color: $font-dark-colour;
+    box-shadow: inset 0 2px 4px $black-transparency-01;
+    transition: all 0.3s ease;
+
+    &:hover {
+        border: 2px solid $main-colour;
+        outline: none;
+        background-color: lighten($white-4, 5%);
+    }
+
+    &::placeholder {
+        margin: 0 0 0 10px;
+        color: lighten($font-dark-colour, 30%);
+    }
+
+    @include respond-to-md {
+        height: 4vh;
+        padding: 8px 2vh 8px 8px;
+    }
+}
+
+.errorInput {
+    border-color: $red;
+    background-color: $red-powder;
+}
+
+@include respond-to-md {
+    .addDepartmentContainer {
+        @include gridQG(2, 10px);
+    }
+}
+
+@include respond-to-sm {
+    .addDepartmentContainer {
+        @include gridQG(1, 10px);
+    }
+}

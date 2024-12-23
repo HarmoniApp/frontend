@@ -15,7 +15,7 @@ export const fetchDepartments = async (
         });
         if (!response.ok) throw new Error('Failed to fetch departments');
         const data = await response.json();
-        setDepartments(data);
+        await setDepartments(data);
     } catch (error) {
         console.error('Error fetching departments:', error);
     }
@@ -32,7 +32,7 @@ export const fetchDepartmentsAddress = async (
             }
         });
         const data = await response.json();
-        setDepartments(data);
+        await setDepartments(data);
     } catch (error) {
         console.error("Error fetching departments:", error);
     }

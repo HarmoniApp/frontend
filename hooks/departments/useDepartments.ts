@@ -26,7 +26,7 @@ export const useDepartmentsManagement = () => {
 
     const handleAddDepartment = async (values: DepartmentAddress, { resetForm }: any) => {
         try {
-            postDepartment(values, setDepartments)
+            await postDepartment(values, setDepartments)
             resetForm();
         }
         catch (error) {
