@@ -52,20 +52,13 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
     loadData();
   }, []);
 
-  const fetchFilteredUsers = async (filters: { query?: string } = {}, pageNumber: number = 1, pageSize: number = 20) => {
-    setLoadingUsers(true);
-
-    try {
-      await fetchFilterUsersInSchedule(filters, setUsers, setTotalPages, pageNumber, pageSize)
-    } catch (error) {
-      console.error('Error while filter:', error);
-    } finally {
+  useEffect(() => {
+    const loadData = async () => {
+      setLoadingUsers(true);
+      await fetchFilterUsersInSchedule({ query: searchQuery }, setUsers, setTotalPages, pageNumber, pageSize)
       setLoadingUsers(false);
     }
-  };
-
-  useEffect(() => {
-    fetchFilteredUsers({ query: searchQuery }, pageNumber, pageSize);
+    loadData();
   }, [searchQuery, pageNumber, pageSize]);
 
   useEffect(() => {
