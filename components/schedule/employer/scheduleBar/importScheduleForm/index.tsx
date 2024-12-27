@@ -6,7 +6,7 @@ import { Formik, Form } from 'formik';
 import styles from './main.module.scss';
 import { importEmployeesOrScheduleValidationSchema } from '@/validationSchemas/importEmployeesValidationSchema';
 
-export const ImportEmployeesForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+export const ImportScheduleForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const [fileName, setFileName] = useState<string | null>(null);
     const initialValues = {
         file: null,
@@ -24,9 +24,9 @@ export const ImportEmployeesForm: React.FC<{ onClose: () => void }> = ({ onClose
     };
 
     return (
-        <div className={styles.importEmployeesContainerMain}>
+        <div className={styles.importScheduleContainerMain}>
             <div className={styles.header}>
-                <h2 className={styles.title}>Importuj Pracowników</h2>
+                <h2 className={styles.title}>Importuj harmonogram</h2>
                 <button onClick={onClose} className={styles.closeButton}>
                     <FontAwesomeIcon icon={faTimes} />
                 </button>

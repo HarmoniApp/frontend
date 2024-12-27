@@ -5,6 +5,7 @@ import { downloadScheduleXLSX } from '@/services/xlsxService';
 import CustomButton from '@/components/customButton';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
 import { formatDate } from '@/utils/formatDate';
+import { ImportScheduleForm } from './importScheduleForm';
 interface ScheduleBarProps {
   currentWeek: Date[];
   onNextWeek: () => void;
@@ -17,6 +18,7 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [fileFormat, setFileFormat] = useState<string>('');
+  const [importModal, setImportModal] = useState(false);
 
   const handleExport = async (format: string) => {
     setDropdownVisible(false);
@@ -30,6 +32,10 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
     }
   };
 
+  const handleImport = () => {
+    setImportModal(true);
+  };
+
   const handlePublish = async () => {
     setModalIsOpenPublish(false);
     await onPublishAll();
@@ -39,6 +45,7 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
     <div className={styles.scheduleBarContainerMain}>
       <div className={styles.buttonContainer}>
         <CustomButton icon="calendarCheck" writing="Opublikuj" action={() => setModalIsOpenPublish(true)} />
+        <CustomButton icon="cloudArrowUp" writing="importuj" action={handleImport} />
         <div className={styles.exportDropdownContainer}>
           <CustomButton icon="cloudArrowDown" writing="Exportuj" action={() => setDropdownVisible(prev => !prev)} />
           {dropdownVisible && (
@@ -73,6 +80,15 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
             <ConfirmationPopUp action={() => { handleExport(fileFormat) }} onClose={() => setIsConfirmationModalOpen(false)} description={`Pobrać plik`} />
+          </div>
+        </div>
+      )}
+      {importModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <ImportScheduleForm
+              onClose={() => setImportModal(false)}
+            />
           </div>
         </div>
       )}

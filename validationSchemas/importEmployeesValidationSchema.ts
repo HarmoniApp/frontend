@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 
-export const importEmployeesValidationSchema = Yup.object({
+export const importEmployeesOrScheduleValidationSchema = Yup.object({
     file: Yup.mixed()
         .required(() => {
             return toast.warning('Plik jest wymagany!');
