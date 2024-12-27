@@ -21,8 +21,8 @@ interface EmployeeFormProps {
     contracts: Contract[];
     languages: Language[];
     departments: Department[];
+    onCloseEdit: () => void;
     employee?: EmployeeDataWorkAdressOnlyId;
-    onCloseEdit?: () => void;
 }
 
 export const EmployeeForm: React.FC<EmployeeFormProps> = ({

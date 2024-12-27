@@ -7,7 +7,7 @@ import { Formik, Form } from 'formik';
 import styles from './main.module.scss';
 import { photoValidationSchema } from '@/validationSchemas/photoValidationSchema';
 
-const PhotoChange: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+export const PhotoChangeForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const [fileName, setFileName] = useState<string | null>(null);
     const initialValues = {
         file: null,
@@ -63,4 +63,3 @@ const PhotoChange: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         </div>
     );
 };
-export default PhotoChange;

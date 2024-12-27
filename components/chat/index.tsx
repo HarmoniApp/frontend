@@ -31,7 +31,6 @@ const Chat = () => {
     fetchChatHistory,
   } = useChatManagement();
 
-
   return (
     <div className={styles.chatContainer}>
       <>

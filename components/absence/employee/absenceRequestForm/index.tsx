@@ -51,7 +51,6 @@ export const AbsenceEmployeesRequestForm: React.FC<AbsenceEmployeesRequestFormPr
                             <div className={styles.formTitle}>
                                 <label className={styles.title}>Złóż wniosek o urlop</label>
                             </div>
-
                             <label className={styles.dataLabel}>
                                 Wybierz powód urlopu
                                 <ErrorMessage name="absence_type_id" component="div" className={styles.errorMessage} />
@@ -80,7 +79,6 @@ export const AbsenceEmployeesRequestForm: React.FC<AbsenceEmployeesRequestFormPr
                                     [styles.errorInput]: errors.start && touched.start,
                                 })}
                             />
-
                             <label className={styles.dataLabel}>
                                 Data zakończenia
                                 <ErrorMessage name="end" component="div" className={styles.errorMessage} />

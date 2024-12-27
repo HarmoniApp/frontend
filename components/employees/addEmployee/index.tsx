@@ -28,7 +28,7 @@ const AddEmployee: React.FC = () => {
 
   return (
     <div className={styles.addEmployeeContainerMain}>
-      <EmployeeForm handleSubmit={handleSubmit} supervisors={supervisors} roles={roles} contracts={contracts} languages={languages} departments={departments}/>
+      <EmployeeForm handleSubmit={handleSubmit} supervisors={supervisors} roles={roles} contracts={contracts} languages={languages} departments={departments} onCloseEdit={onBack}/>
       {loading && <LoadingSpinner />}
     </div>
   );

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage, faQuestionCircle, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import PhotoChange from './photoChange';
+import { PhotoChangeForm } from './photoChangeForm';
 import styles from './main.module.scss';
 interface SidebarProps {
     isOpen: boolean;
@@ -74,7 +74,7 @@ const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
             {changePhotoModal && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
-                        <PhotoChange
+                        <PhotoChangeForm
                             onClose={() => setChangePhotoModal(false)}
                          />
                     </div>
