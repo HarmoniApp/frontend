@@ -116,9 +116,7 @@ const AbsenceCardEmployer: React.FC<AbsenceCardProps> = ({ absence, onStatusUpda
                     </div>
                 </div>
             )}
-            {loading && (
-                <LoadingSpinner />
-            )}
+            {loading && <LoadingSpinner />}
         </div>
     );
 };

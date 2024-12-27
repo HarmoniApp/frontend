@@ -1,11 +1,11 @@
 "use client";
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './main.module.scss';
 import Message from '@/components/types/message';
 import Language from '@/components/types/language';
 import ChatPartner from '@/components/types/chatPartner';
 import EditGroup from '@/components/chat/editGroup';
-import SendMessageForm from '@/components/chat/sendMessageForm';
+import { SendMessageForm } from '@/components/chat/sendMessageForm';
 import Conversation from '@/components/chat/conversation';
 import Sidebar from '@/components/chat/sidebar';
 import { fetchLanguages } from "@/services/languageService";
@@ -126,8 +126,6 @@ const Chat = () => {
               <SendMessageForm
                 selectedChat={selectedChat}
                 setSelectedChat={setSelectedChat}
-                messages={messages}
-                setMessages={setMessages}
                 loadChatPartners={loadChatPartners}
                 selectedLanguage={selectedLanguage}
                 loading={setLoading}

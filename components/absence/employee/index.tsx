@@ -1,13 +1,13 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Absence from '@/components/types/absence';
-import AbsenceRequest from '@/components/absence/employee/absenceRequest';
 import styles from './main.module.scss';
 import { deleteAbsence, fetchAvailableAbsenceDays, fetchUserAbsences } from '@/services/absenceService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import CustomButton from '@/components/customButton';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
 import { Card } from 'primereact/card';
+import { AbsenceEmployeesRequestForm } from './absenceRequestForm';
 
 interface AbsenceEmployeesProps {
     userId: number;
@@ -101,7 +101,7 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
             {modalIsOpenAbsenceRequest && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
-                        <AbsenceRequest
+                        <AbsenceEmployeesRequestForm
                             onSend={userId}
                             onClose={() => setModalIsOpenAbsenceRequest(false)}
                             onRefresh={async () => {
