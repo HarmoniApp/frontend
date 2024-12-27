@@ -5,7 +5,7 @@ import styles from './main.module.scss';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { useRouter } from 'next/navigation';
 import { useEmployeeDataManagement } from '@/hooks/employees/useEditEmployeeData';
-import { EditEmployeeForm } from './editEmployeeForm';
+import { EmployeeForm } from '../../employeeForm';
 
 interface EditEmployeeDataProps {
   employee: EmployeeDataWorkAdressOnlyId;
@@ -31,7 +31,7 @@ const EditEmployeeData: React.FC<EditEmployeeDataProps> = ({ employee, onCloseEd
 
   return (
     <div className={styles.editEmployeeContainerMain}>
-      <EditEmployeeForm
+      <EmployeeForm
         employee={employee}
         handleSubmit={handleSubmit}
         roles={roles}
