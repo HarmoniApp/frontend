@@ -85,7 +85,7 @@ export const useChatManagement = () => {
         setLoading(false);
     };
 
-    useChatWebSocket(selectedChat, loadChatPartners, setMessages);
+    useChatWebSocket(selectedChat, setSelectedChat, loadChatPartners, setMessages);
 
     return {
         chatPartners,

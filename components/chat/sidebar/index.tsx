@@ -49,11 +49,11 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                         key={partner.id}
                         className={`${styles.chatItem} ${selectedChat === partner ? styles.activeChat : ''}`}
                         onClick={async () => {
-                            await setSelectedChat(partner);
+                            setSelectedChat(partner);
                             if (partner.type) {
-                                await setChatType(partner.type);
+                                setChatType(partner.type);
                             }
-                            await fetchChatHistory(partner, selectedLanguage);
+                            fetchChatHistory(partner, selectedLanguage);
                         }}
                     >
                         <div className={styles.imageContainer}>
