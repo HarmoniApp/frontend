@@ -14,18 +14,18 @@ import Department from "@/components/types/department";
 import Contract from "@/components/types/contract";
 import Supervisor from "@/components/types/supervisor";
 
-interface EditEmployeeFormProps {
-    employee: EmployeeDataWorkAdressOnlyId;
+interface EmployeeFormProps {
     handleSubmit: (values: any) => void;
+    supervisors: Supervisor[];
     roles: Role[];
     contracts: Contract[];
     languages: Language[];
-    supervisors: Supervisor[];
     departments: Department[];
     onCloseEdit: () => void;
+    employee?: EmployeeDataWorkAdressOnlyId;
 }
 
-export const EditEmployeeForm: React.FC<EditEmployeeFormProps> = ({
+export const EmployeeForm: React.FC<EmployeeFormProps> = ({
     employee,
     handleSubmit,
     roles,
@@ -36,26 +36,26 @@ export const EditEmployeeForm: React.FC<EditEmployeeFormProps> = ({
     onCloseEdit
 }) => {
     const initialValues = {
-        id: employee.id,
-        firstname: employee.firstname || '',
-        surname: employee.surname || '',
-        email: employee.email || '',
+        id: employee?.id || 0,
+        firstname: employee?.firstname || '',
+        surname: employee?.surname || '',
+        email: employee?.email || '',
         residence: {
-            city: employee.residence?.city || '',
-            street: employee.residence?.street || '',
-            apartment: employee.residence?.apartment || '',
-            zip_code: employee.residence?.zip_code || '',
-            building_number: employee.residence?.building_number || '',
+            city: employee?.residence?.city || '',
+            street: employee?.residence?.street || '',
+            apartment: employee?.residence?.apartment || '',
+            zip_code: employee?.residence?.zip_code || '',
+            building_number: employee?.residence?.building_number || '',
         },
-        roles: employee.roles.map((role) => ({ id: role.id })) || [],
-        languages: employee.languages.map((lang) => ({ id: lang.id })) || [],
-        contract_type: { id: employee.contract_type?.id || 0 },
-        contract_signature: employee.contract_signature || '',
-        contract_expiration: employee.contract_expiration || '',
-        work_address: { id: employee.work_address?.id || 0 },
-        supervisor_id: employee.supervisor_id?.toString() || '',
-        phone_number: employee.phone_number || '',
-        employee_id: employee.employee_id || '',
+        roles: employee?.roles?.map((role) => ({ id: role.id })) ||  [] as { id: number }[],
+        languages: employee?.languages?.map((lang) => ({ id: lang.id })) || [] as { id: number }[],
+        contract_type: { id: employee?.contract_type?.id || 0 },
+        contract_signature: employee?.contract_signature || '',
+        contract_expiration: employee?.contract_expiration || '',
+        work_address: { id: employee?.work_address?.id || 0 },
+        supervisor_id: employee?.supervisor_id?.toString() || '',
+        phone_number: employee?.phone_number || '',
+        employee_id: employee?.employee_id || '',
     };
 
     return (
@@ -247,7 +247,7 @@ export const EditEmployeeForm: React.FC<EditEmployeeFormProps> = ({
                                 <option className={styles.defaultOption} value="" disabled>
                                     Wybierz przełożonego
                                 </option>
-                                {supervisors.map((supervisor) => (
+                                {supervisors.map((supervisor: Supervisor) => (
                                     <option key={supervisor.id} value={supervisor.id}>
                                         {supervisor.firstname} {supervisor.surname}
                                     </option>

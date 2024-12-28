@@ -8,13 +8,13 @@ import classNames from 'classnames';
 import styles from './main.module.scss';
 import { absenceValidationSchema } from '@/validationSchemas/absenceValidationSchema';
 import { calculateWorikngDays } from '@/utils/holidayCalculator';
-interface AbsenceEmployeesRequestProps {
+interface AbsenceEmployeesRequestFormProps {
     onClose: () => void;
     onSend: number;
     onRefresh: () => void;
 }
 
-const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClose, onSend, onRefresh }) => {
+export const AbsenceEmployeesRequestForm: React.FC<AbsenceEmployeesRequestFormProps> = ({ onClose, onSend, onRefresh }) => {
     const [absenceTypes, setAbsenceTypes] = useState<AbsenceType[]>([]);
 
     useEffect(() => {
@@ -51,7 +51,6 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                             <div className={styles.formTitle}>
                                 <label className={styles.title}>Złóż wniosek o urlop</label>
                             </div>
-
                             <label className={styles.dataLabel}>
                                 Wybierz powód urlopu
                                 <ErrorMessage name="absence_type_id" component="div" className={styles.errorMessage} />
@@ -80,7 +79,6 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
                                     [styles.errorInput]: errors.start && touched.start,
                                 })}
                             />
-
                             <label className={styles.dataLabel}>
                                 Data zakończenia
                                 <ErrorMessage name="end" component="div" className={styles.errorMessage} />
@@ -114,4 +112,3 @@ const AbsenceEmployeesRequest: React.FC<AbsenceEmployeesRequestProps> = ({ onClo
         </div>
     );
 };
-export default AbsenceEmployeesRequest;

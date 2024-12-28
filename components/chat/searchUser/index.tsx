@@ -9,10 +9,9 @@ import LoadingSpinner from '@/components/loadingSpinner';
 interface SearchUserProps {
   handleSelectUser: (user: ChatPartner) => void;
   groupChat: boolean;
-  setChatType?: (type: 'user' | 'group') => void
 }
 
-const SearchUser: React.FC<SearchUserProps> = ({ handleSelectUser, groupChat, setChatType }) => {
+const SearchUser: React.FC<SearchUserProps> = ({ handleSelectUser, groupChat }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<ChatPartner[]>([]);

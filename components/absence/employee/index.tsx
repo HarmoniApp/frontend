@@ -1,13 +1,12 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import Absence from '@/components/types/absence';
-import AbsenceRequest from '@/components/absence/employee/absenceRequest';
+import React, { useState } from 'react';
 import styles from './main.module.scss';
-import { deleteAbsence, fetchAvailableAbsenceDays, fetchUserAbsences } from '@/services/absenceService';
 import LoadingSpinner from '@/components/loadingSpinner';
 import CustomButton from '@/components/customButton';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
 import { Card } from 'primereact/card';
+import { AbsenceEmployeesRequestForm } from './absenceRequestForm';
+import { useAbsenceEmployeeManagment } from '@/hooks/absences/useAbsenceEmployeeManagment';
 
 interface AbsenceEmployeesProps {
     userId: number;
@@ -15,33 +14,24 @@ interface AbsenceEmployeesProps {
 
 const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
     const [modalIsOpenAbsenceRequest, setModalIsOpenAbsenceRequest] = useState(false);
-    const [modalIsOpenCancelAbsence, setModalIsOpenCancelAbsence] = useState(false);
-    const [absences, setAbsences] = useState<Absence[]>([]);
-    const [absenceTypeNames, setAbsenceTypeNames] = useState<{ [key: number]: string }>({});
-    const [selectedAbsenceId, setSelectedAbsenceId] = useState<number | null>(null);
-    const [selectedAbsenceType, setSelectedAbsenceType] = useState<string>('');
-    const [selectedAbsenceStart, setSelectedAbsenceStart] = useState<string>('');
-    const [selectedAbsenceEnd, setSelectedAbsenceEnd] = useState<string>('');
-    const [loading, setLoading] = useState(false);
-    const [availableAbsenceDays, setAvailableAbsenceDays] = useState<number | string>('Ładowanie...');
 
-    const handleCancelAbsence = async () => {
-        if (selectedAbsenceId === null) return;
-        await deleteAbsence(selectedAbsenceId, userId, setAbsenceTypeNames, setAbsences);
-        setModalIsOpenCancelAbsence(false);
-        await fetchAvailableAbsenceDays(userId, setAvailableAbsenceDays);
-    };
-
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            await fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences);
-            await fetchAvailableAbsenceDays(userId, setAvailableAbsenceDays);
-            setLoading(false);
-        };
-
-        fetchData();
-    }, []);
+    const {
+        absences,
+        absenceTypeNames,
+        setSelectedAbsenceId,
+        selectedAbsenceType,
+        setSelectedAbsenceType,
+        selectedAbsenceStart,
+        setSelectedAbsenceStart,
+        selectedAbsenceEnd,
+        setSelectedAbsenceEnd,
+        loading,
+        availableAbsenceDays,
+        fetchData,
+        handleCancelAbsence,
+        modalIsOpenCancelAbsence,
+        setModalIsOpenCancelAbsence
+    } = useAbsenceEmployeeManagment();
 
     return (
         <div className={styles.absenceEmployeesContainerMain}>
@@ -101,13 +91,10 @@ const AbsenceEmployees: React.FC<AbsenceEmployeesProps> = ({ userId }) => {
             {modalIsOpenAbsenceRequest && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
-                        <AbsenceRequest
+                        <AbsenceEmployeesRequestForm
                             onSend={userId}
                             onClose={() => setModalIsOpenAbsenceRequest(false)}
-                            onRefresh={async () => {
-                                await fetchUserAbsences(userId, setAbsenceTypeNames, setAbsences);
-                                await fetchAvailableAbsenceDays(userId, setAvailableAbsenceDays); 
-                            }}
+                            onRefresh={fetchData}
                         />
                     </div>
                 </div>

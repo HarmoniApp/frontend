@@ -1,6 +1,5 @@
 import React from 'react';
 import ChatPartner from '@/components/types/chatPartner';
-import Message from '@/components/types/message';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { Formik, Form, Field } from 'formik';
@@ -11,14 +10,12 @@ import { messageValidationSchema } from '@/validationSchemas/messageValidationSc
 interface SendMessageFormProps {
     selectedChat: ChatPartner | null;
     setSelectedChat: (chatPartner: ChatPartner) => void;
-    messages: Message[];
-    setMessages: (messages: Message[]) => void;
     loadChatPartners: (selectFirstPartner: boolean) => void;
     selectedLanguage: string;
     loading: (loading: boolean) => void;
 }
 
-const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSelectedChat, messages, setMessages, loadChatPartners, selectedLanguage, loading }) => {
+export const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSelectedChat, loadChatPartners, selectedLanguage, loading }) => {
     const userId = Number(sessionStorage.getItem('userId'));
     const handleSendMessage = async (content: string, language: string = '') => {
         loading(true);
@@ -83,4 +80,3 @@ const SendMessageForm: React.FC<SendMessageFormProps> = ({ selectedChat, setSele
         </Formik>
     );
 };
-export default SendMessageForm;

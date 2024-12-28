@@ -7,6 +7,7 @@ import { downloadUsersXLSX } from '@/services/xlsxService';
 import CustomButton from '@/components/customButton';
 import styles from './main.module.scss';
 import ConfirmationPopUp from '@/components/confirmationPopUp';
+import { ImportEmployeesForm } from './importEmployeesForm';
 
 interface EmployeeBarProps {
   setActiveView: (view: 'tiles' | 'list') => void;
@@ -17,13 +18,15 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [fileFormat, setFileFormat] = useState<string>('');
+  const [importModal, setImportModal] = useState(false);
   const router = useRouter();
 
   const onAddEmployee = () => {
     router.push('/employees/user/add');
   };
 
-  const importEmployee = () => {
+  const handleImport = () => {
+    setImportModal(true);
   };
 
   const handleExport = async (format: string) => {
@@ -42,9 +45,9 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
     <div className={styles.employeeBarContainerMain}>
       <div className={styles.actionContainer}>
         <CustomButton icon="userPlus" writing="dodaj pracownika" action={onAddEmployee} />
-        <CustomButton icon="cloudArrowUp" writing="importuj" action={importEmployee} />
+        <CustomButton icon="cloudArrowUp" writing="importuj" action={handleImport} />
         <div className={styles.exportDropdownContainer}>
-          <CustomButton icon="cloudArrowDown" writing="exportuj" action={()=> setDropdownVisible(!dropdownVisible)} />
+          <CustomButton icon="cloudArrowDown" writing="exportuj" action={() => setDropdownVisible(!dropdownVisible)} />
           {dropdownVisible && (
             <div className={styles.exportDropdownMenu}>
               <button onClick={() => { setFileFormat('pdf'); setIsConfirmationModalOpen(true); }}>Eksportuj do PDF</button>
@@ -69,6 +72,16 @@ const EmployeeBar: React.FC<EmployeeBarProps> = ({ setActiveView, activeView }) 
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
             <ConfirmationPopUp action={() => { handleExport(fileFormat) }} onClose={() => setIsConfirmationModalOpen(false)} description={`Pobrać plik`} />
+          </div>
+        </div>
+      )}
+
+      {importModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <ImportEmployeesForm
+              onClose={() => setImportModal(false)}
+            />
           </div>
         </div>
       )}

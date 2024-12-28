@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { patchPhoto } from '@/services/imageService';
 import { Formik, Form } from 'formik';
 
 import styles from './main.module.scss';
-import { photoValidationSchema } from '@/validationSchemas/photoValidationSchema';
+import { importEmployeesOrScheduleValidationSchema } from '@/validationSchemas/importEmployeesValidationSchema';
 
-const PhotoChange: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+export const ImportEmployeesForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const [fileName, setFileName] = useState<string | null>(null);
     const initialValues = {
         file: null,
@@ -18,21 +17,23 @@ const PhotoChange: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         if (values.file) {
             formData.append('file', values.file);
         }
-        patchPhoto(formData),
-            onClose();
+        // patchPhoto(formData),
+        //TODO: here import endpoint
+        onClose();
+        //refresh?
     };
 
     return (
-        <div className={styles.photoChangeContainerMain}>
+        <div className={styles.importEmployeesContainerMain}>
             <div className={styles.header}>
-                <h2 className={styles.title}>Prześlij nowe zdjęcie</h2>
+                <h2 className={styles.title}>Importuj Pracowników</h2>
                 <button onClick={onClose} className={styles.closeButton}>
                     <FontAwesomeIcon icon={faTimes} />
                 </button>
             </div>
             <Formik
                 initialValues={initialValues}
-                validationSchema={photoValidationSchema}
+                validationSchema={importEmployeesOrScheduleValidationSchema}
                 onSubmit={handleSubmit}
             >
                 {({ setFieldValue, isSubmitting }) => (
@@ -56,11 +57,10 @@ const PhotoChange: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                                 }}
                             />
                         </label>
-                        <button type="submit" className={styles.submitButton} disabled={isSubmitting}>Prześlij</button>
+                        <button type="submit" className={styles.submitButton} disabled={isSubmitting}>Importuj</button>
                     </Form>
                 )}
             </Formik>
         </div>
     );
 };
-export default PhotoChange;

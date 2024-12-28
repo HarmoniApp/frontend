@@ -1,11 +1,13 @@
 import ChatPartner from "@/components/types/chatPartner";
 import Message from "@/components/types/message";
+import { patchMarkMessagesAsReadInIndividualChat } from "@/services/chatService";
 import { Client } from "@stomp/stompjs";
 import { useEffect, useRef } from "react";
 import SockJS from "sockjs-client";
 
 export const useChatWebSocket = (
     selectedChat: ChatPartner | null,
+    setSelectedChat: (partner: ChatPartner | null) => void,
     loadChatPartners: () => Promise<void>,
     setMessages: React.Dispatch<React.SetStateAction<Message[]>>
 ) => {
@@ -35,10 +37,12 @@ export const useChatWebSocket = (
                             currentChat &&
                             (newMessage.sender_id === currentChat.id || newMessage.receiver_id === currentChat.id)
                         ) {
-                            return [...prevMessages, newMessage];
+                            patchMarkMessagesAsReadInIndividualChat(newMessage.receiver_id, newMessage.sender_id);
+                            return [...prevMessages, { ...newMessage, is_read: true }];
                         }
                         return prevMessages;
                     });
+                    setSelectedChat(selectedChatRef.current)
                     await loadChatPartners();
                 });
 

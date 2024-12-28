@@ -74,7 +74,6 @@ const AbsenceEmployer: React.FC = () => {
             </button>
           </div>
         </div>
-
         {!loading  && absences.length === 0 && (
           <Card title="Brak wniosków urlopowych" className={styles.noDataCard}></Card>
         )}
