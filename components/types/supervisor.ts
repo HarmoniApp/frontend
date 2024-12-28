@@ -1,4 +1,4 @@
-export default interface Supervisor {
+export interface Supervisor {
     id: number;
     firstname: string;
     surname: string;

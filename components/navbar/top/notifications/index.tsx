@@ -1,6 +1,6 @@
 'use client';
 import React from "react";
-import Notification from '@/components/types/notification';
+import { Notification } from '@/components/types/notification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import styles from "./main.module.scss";
@@ -8,7 +8,7 @@ import { deleteNotification } from "@/services/notificationService";
 import CustomButton from "@/components/customButton";
 interface NotificationsProps {
     notifications: Notification[];
-    setNotifications: (notifications: Notification[]) => void ;
+    setNotifications: (notifications: Notification[]) => void;
     onClose: () => void;
     markAllAsRead: () => void;
 }
@@ -19,7 +19,7 @@ const Notifications: React.FC<NotificationsProps> = ({ notifications, setNotific
         <div className={styles.notificationsPopup}>
             <div className={styles.popupHeader}>
                 <label className={styles.notificationLabel}>Powiadomienia</label>
-                <button onClick={() => {onClose(); markAllAsRead();}} className={styles.backButton}>
+                <button onClick={() => { onClose(); markAllAsRead(); }} className={styles.backButton}>
                     <FontAwesomeIcon icon={faX} className={styles.icon} /></button>
             </div>
             <div className={styles.notificationsList}>

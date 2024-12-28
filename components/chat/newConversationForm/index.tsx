@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './main.module.scss';
 import SearchUser from '../searchUser';
 import CreateGroupChatForm from '../createGroupChatForm';
-import ChatPartner from '@/components/types/chatPartner';
+import { ChatPartner } from '@/components/types/chatPartner';
 
 interface NewConversationFormProps {
     setChatType: (type: 'user' | 'group') => void;
@@ -21,7 +21,7 @@ const NewConversationForm: React.FC<NewConversationFormProps> = ({ setChatType, 
         <div className={styles.newConversationForm}>
             <div className={styles.userNewConversation}>
                 <label className={styles.newConversationLabel}>Nowy indywidualny czat</label>
-                <SearchUser handleSelectUser={handleSelectUser} groupChat={false} setChatType={setChatType} />
+                <SearchUser handleSelectUser={handleSelectUser} groupChat={false} />
             </div>
             <div className={styles.groupNewConversation}>
                 <label className={styles.newConversationLabel}>Nowy czat grupowy</label>

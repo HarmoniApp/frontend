@@ -6,9 +6,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import styles from './main.module.scss';
-import User from "@/components/types/user";
-import PredefinedShift from "@/components/types/predefinedShifts";
-import Role from "@/components/types/role";
+import { User } from "@/components/types/user";
+import { PredefinedShift } from "@/components/types/predefinedShifts";
+import { Role } from "@/components/types/role";
 
 interface AddShiftModalProps {
     onClose: () => void;

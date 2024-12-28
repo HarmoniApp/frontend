@@ -1,6 +1,6 @@
-import PredefinedShift from "@/components/types/predefinedShifts";
-import IRequirementsForm from "@/components/types/requirementsForm";
-import Role from "@/components/types/role";
+import { PredefinedShift } from "@/components/types/predefinedShifts";
+import { RequirementsForm } from "@/components/types/requirementsForm";
+import { Role } from "@/components/types/role";
 import { generateScheduleAi, revokeScheduleAi } from "@/services/planerAiService";
 import { fetchPredefinedShifts } from "@/services/predefineShiftService";
 import { fetchRoles } from "@/services/roleService";
@@ -8,7 +8,7 @@ import { FormikProps } from "formik";
 import { useEffect, useRef, useState } from "react";
 
 export const useRequirementsFormManagement = () => {
-    const [forms, setForms] = useState<IRequirementsForm[]>([
+    const [forms, setForms] = useState<RequirementsForm[]>([
         { id: Date.now(), date: '', shifts: [] },
     ]);
     const [predefineShifts, setPredefineShifts] = useState<PredefinedShift[]>([]);

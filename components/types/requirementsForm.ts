@@ -1,4 +1,4 @@
-export default interface IRequirementsForm {
+export interface RequirementsForm {
     id: number;
     date: string;
     shifts: {

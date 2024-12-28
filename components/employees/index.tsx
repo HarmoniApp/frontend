@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Tile from '@/components/employees/tile';
 import EmployeeFilter from '@/components/employees/employeeFilter';
 import EmployeeBar from '@/components/employees/employeeBar';
-import PersonTile from '@/components/types/personTile';
+import { PersonTile } from '@/components/types/personTile';
 import styles from './main.module.scss';
 import '@/styles/components/pagination.css';
 import { Card } from 'primereact/card';
@@ -18,7 +18,7 @@ const EmployeesComponent: React.FC = () => {
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(21);
   const [totalRecords, setTotalRecords] = useState(0);
-  
+
   const fetchFilteredData = async (filters: { roles?: number[]; languages?: number[]; order?: string; query?: string } = {}, pageNumber: number = 1, pageSize: number = 21) => {
     setLoading(true);
     try {
@@ -44,14 +44,14 @@ const EmployeesComponent: React.FC = () => {
   return (
     <div className={styles.employeesContainerMain}>
       <div className={styles.emplyeesBarContainer}>
-        <EmployeeBar setActiveView={setActiveView} activeView={activeView}/>
+        <EmployeeBar setActiveView={setActiveView} activeView={activeView} />
       </div>
       <div className={styles.employeesFilterAndListContainer}>
         <div className={styles.emplyeesFilterContainer}>
-          <EmployeeFilter onApplyFilters={(filters) => fetchFilteredData(filters, 1, rows)}/>
+          <EmployeeFilter onApplyFilters={(filters) => fetchFilteredData(filters, 1, rows)} />
         </div>
         <div className={`${styles.employeesListcontainer} ${activeView === 'tiles' ? styles.tilesView : styles.listView}`}>
-          {loading && <LoadingSpinner wholeModal={false}/>}
+          {loading && <LoadingSpinner wholeModal={false} />}
           {!loading && data.length === 0 && <Card title="Brak pracowników" className={styles.noDataCard}></Card>}
           {!loading && data.length > 0 && data.map((person, index) => (
             <Tile key={index} person={person} view={activeView} />
@@ -65,7 +65,7 @@ const EmployeesComponent: React.FC = () => {
         rowsPerPageOptions={[21, 49, 70]}
         onPageChange={onPageChange}
       />
-      
+
     </div>
   );
 };

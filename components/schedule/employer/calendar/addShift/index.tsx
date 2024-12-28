@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import Role from '@/components/types/role';
-import User from '@/components/types/user';
-import PredefinedShifts from '@/components/types/predefinedShifts';
+import { Role } from '@/components/types/role';
+import { User } from '@/components/types/user';
+import { PredefinedShift } from '@/components/types/predefinedShifts';
 import styles from './main.module.scss';
 import { fetchUserRoles } from '@/services/roleService';
 import { fetchPredefinedShifts } from '@/services/predefineShiftService';
@@ -17,7 +17,7 @@ interface AddShiftModalProps {
 
 const AddShiftModal: React.FC<AddShiftModalProps> = ({ isOpen, onClose, onAddShift, user, day }) => {
     const [roles, setRoles] = useState<Role[]>([]);
-    const [predefineShifts, setPredefineShifts] = useState<PredefinedShifts[]>([]);
+    const [predefineShifts, setPredefineShifts] = useState<PredefinedShift[]>([]);
 
     useEffect(() => {
         if (!isOpen) return;

@@ -1,5 +1,5 @@
-import Language from "@/components/types/language";
-import Role from "@/components/types/role";
+import { Language } from "@/components/types/language";
+import { Role } from "@/components/types/role";
 import { fetchLanguages } from "@/services/languageService";
 import { fetchRoles } from "@/services/roleService";
 import { useEffect, useRef, useState } from "react";

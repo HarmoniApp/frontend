@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ChatPartner from '@/components/types/chatPartner';
+import { ChatPartner } from '@/components/types/chatPartner';
 import styles from './main.module.scss';
 import '@/styles/main.css';
 import UserImage from '@/components/userImage';

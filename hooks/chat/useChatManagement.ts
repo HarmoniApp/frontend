@@ -1,6 +1,6 @@
-import ChatPartner from "@/components/types/chatPartner";
-import Language from "@/components/types/language";
-import Message from "@/components/types/message";
+import { ChatPartner } from "@/components/types/chatPartner";
+import { Language } from "@/components/types/language";
+import { Message } from "@/components/types/message";
 import { fetchAllChatPartners, fetchMessagesChatHistory } from "@/services/chatService";
 import { fetchLanguages } from "@/services/languageService";
 import { useState, useEffect } from "react";

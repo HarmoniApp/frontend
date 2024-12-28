@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import PersonTile from '@/components/types/personTile';
+import { PersonTile } from '@/components/types/personTile';
 import UserImage from '@/components/userImage';
 import Flag from 'react-flagkit';
 import styles from './main.module.scss';

@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
-import ChatPartner from '@/components/types/chatPartner';
-import Language from '@/components/types/language';
+import { ChatPartner } from '@/components/types/chatPartner';
+import { Language } from '@/components/types/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faLanguage } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
@@ -15,7 +15,7 @@ interface SidebarProps {
     languages: Language[];
     selectedChat: ChatPartner | null;
     // setSelectedChat: (chatPartner: ChatPartner | null) => void;
-    setSelectedChat:  React.Dispatch<React.SetStateAction<ChatPartner | null>>;
+    setSelectedChat: React.Dispatch<React.SetStateAction<ChatPartner | null>>;
     newChat: boolean;
     setNewChat: (newChat: boolean) => void;
     setChatType: (chatType: 'user' | 'group') => void;
@@ -41,7 +41,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
     return (
         <>
             <div className={styles.sidebarHeader}>
-                <CustomButton icon="plus" writing="Dodaj chat/grupę" action={() => { setNewChat(true); }} additionalClass='atChat'/>
+                <CustomButton icon="plus" writing="Dodaj chat/grupę" action={() => { setNewChat(true); }} additionalClass='atChat' />
             </div>
             <ul className={styles.chatList}>
                 {chatPartners.map((partner) => (
@@ -57,7 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                         }}
                     >
                         <div className={styles.imageContainer}>
-                            <UserImage userId={partner.id} type={partner.type}/>
+                            <UserImage userId={partner.id} type={partner.type} />
                         </div>
                         <div className={styles.messagesTileInfo}>
                             <label className={styles.chatName}>{partner.name}</label>

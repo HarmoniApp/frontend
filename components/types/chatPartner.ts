@@ -1,4 +1,4 @@
-export default interface ChatPartner {
+export interface ChatPartner {
     id: number;
     name: string;
     photo?: string;

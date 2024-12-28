@@ -1,4 +1,4 @@
-import Notification from "@/components/types/notification";
+import { Notification } from "@/components/types/notification";
 import { fetchNotifications, patchMarkAllNotificationsAsRead } from "@/services/notificationService";
 import { Client } from "@stomp/stompjs";
 import { useState, useEffect } from "react";

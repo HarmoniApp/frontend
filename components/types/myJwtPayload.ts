@@ -1,4 +1,4 @@
-export default interface MyJwtPayload {
+export interface MyJwtPayload {
     id: number;
     authorities: string;
     exp: number;

@@ -7,7 +7,7 @@ import classNames from "classnames";
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import { Tooltip } from "primereact/tooltip";
 import styles from './main.module.scss';
-import DepartmentAddress from "@/components/types/departmentAddress";
+import { DepartmentAddress } from "@/components/types/department";
 
 interface EditDepartmentFormProps {
     department: DepartmentAddress;

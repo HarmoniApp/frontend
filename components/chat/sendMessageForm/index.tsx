@@ -1,5 +1,5 @@
 import React from 'react';
-import ChatPartner from '@/components/types/chatPartner';
+import { ChatPartner } from '@/components/types/chatPartner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { Formik, Form, Field } from 'formik';

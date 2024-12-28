@@ -1,5 +1,5 @@
-import ChatPartner from "@/components/types/chatPartner";
-import Message from "@/components/types/message";
+import { ChatPartner } from "@/components/types/chatPartner";
+import { Message } from "@/components/types/message";
 import { patchMarkMessagesAsReadInIndividualChat } from "@/services/chatService";
 import { Client } from "@stomp/stompjs";
 import { useEffect, useRef } from "react";

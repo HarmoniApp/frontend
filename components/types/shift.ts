@@ -1,4 +1,4 @@
-export default interface Shift {
+export interface Shift {
     id: number;
     start: string;
     end: string;

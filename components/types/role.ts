@@ -1,4 +1,4 @@
-export default interface Role {
+export interface Role {
     id: number;
     name: string;
     color?: string;

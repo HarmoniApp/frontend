@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import WeekSchedule from '@/components/types/weekSchedule';
-import User from '@/components/types/user';
+import { WeekSchedule } from '@/components/types/weekSchedule';
+import { User } from '@/components/types/user';
 import { fetchUserScheduleWithAbsences } from '@/services/scheduleService';
 
 interface UseScheduleManagementProps {
@@ -38,10 +38,10 @@ export const useSchedule = ({ users, currentWeek }: UseScheduleManagementProps) 
                             return { userId: user.id, data: { shifts: [], absences: [] } };
                         }
                     });
-            
+
                     const results = await Promise.all(schedulePromises);
                     const schedulesMap: Record<number, WeekSchedule> = {};
-            
+
                     results.forEach(({ userId, data }) => {
                         schedulesMap[userId] = {
                             shifts: data.shifts || [],

@@ -1,6 +1,6 @@
-import Department from "@/components/types/department";
-import EmployeeData from "@/components/types/employeeData";
-import Supervisor from "@/components/types/supervisor";
+import { Department } from "@/components/types/department";
+import { EmployeeData } from "@/components/types/employeeData";
+import { Supervisor } from "@/components/types/supervisor";
 import { fetchDepartments } from "@/services/departmentService";
 import { patchResetPassword } from "@/services/passwordService";
 import { fetchUserData, deleteUser } from "@/services/userService";
@@ -19,16 +19,16 @@ export const useEmployeeData = (userId: number) => {
 
     useEffect(() => {
         if (userId) {
-          const loadData = async () => {
-            setLoading(true);
-            await fetchDepartments(setDepartments);
-            await fetchUserData(userId, setEmployee, setSupervisorData);
-            setLoading(false);
-          };
-    
-          loadData();
+            const loadData = async () => {
+                setLoading(true);
+                await fetchDepartments(setDepartments);
+                await fetchUserData(userId, setEmployee, setSupervisorData);
+                setLoading(false);
+            };
+
+            loadData();
         }
-      }, [userId]);
+    }, [userId]);
 
     const handleEditEmployee = () => {
         router.push(`/employees/user/${userId}/edit`);

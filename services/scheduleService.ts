@@ -1,8 +1,8 @@
-import WeekSchedule from "@/components/types/weekSchedule";
+import { WeekSchedule } from "@/components/types/weekSchedule";
 import { fetchCsrfToken } from "./csrfService";
-import Shift from "@/components/types/shift";
-import AbsenceShort from "@/components/types/absenceShort";
-import User from "@/components/types/user";
+import { Shift } from "@/components/types/shift";
+import { AbsenceShort } from "@/components/types/absence";
+import { User } from "@/components/types/user";
 import { toast } from "react-toastify";
 
 export const fetchUserPublishedSchedule = async (

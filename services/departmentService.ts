@@ -1,5 +1,4 @@
-import Department from "@/components/types/department";
-import DepartmentAddress from "@/components/types/departmentAddress";
+import { Department, DepartmentAddress } from "@/components/types/department";
 import { fetchCsrfToken } from "./csrfService";
 import { toast } from "react-toastify";
 

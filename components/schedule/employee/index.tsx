@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import CalendarHeader from './calendarHeader';
 import CalendarDays from './calendarDays';
 import CalendarCells from './calendarCells';
-import WeekSchedule from '@/components/types/weekSchedule';
+import { WeekSchedule } from '@/components/types/weekSchedule';
 import styles from './main.module.scss';
 import { fetchUserPublishedSchedule } from '@/services/scheduleService';
 import LoadingSpinner from '@/components/loadingSpinner';

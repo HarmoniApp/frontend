@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import styles from './main.module.scss';
-import Role from '@/components/types/role';
+import { Role } from '@/components/types/role';
 
 interface RoleFormProps {
     roles: Role[];

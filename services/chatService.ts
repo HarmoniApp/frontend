@@ -1,6 +1,6 @@
-import Message from "@/components/types/message";
+import { Message } from "@/components/types/message";
 import { fetchCsrfToken } from "./csrfService";
-import ChatPartner from "@/components/types/chatPartner";
+import { ChatPartner } from "@/components/types/chatPartner";
 
 export const fetchGroupMembers = async (
     id: number,

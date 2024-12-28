@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './main.module.scss';
 import UserImage from '@/components/userImage';
-import Role from '@/components/types/role';
+import { Role } from '@/components/types/role';
 import { fetchUserRoles } from '@/services/roleService';
 import { OverlayPanel } from 'primereact/overlaypanel';
 interface EmployeeItemProps {

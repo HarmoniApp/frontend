@@ -1,4 +1,4 @@
-import Contract from "@/components/types/contract";
+import { Contract } from "@/components/types/contract";
 import { fetchCsrfToken } from "./csrfService";
 import { toast } from "react-toastify";
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import User from "@/components/types/user";
+import { User } from "@/components/types/user";
 import { fetchFilterUsersInSchedule } from "@/services/scheduleService";
 
 export const usePaginationAndFilteringEmpInSchedule = ({ searchQuery }: { searchQuery: string }) => {

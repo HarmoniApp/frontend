@@ -1,4 +1,4 @@
-import ChatPartner from "@/components/types/chatPartner";
+import { ChatPartner } from "@/components/types/chatPartner";
 import { fetchGroupMembers, patchRemoveUserFromGroup, deleteGroup, patchAddUserToGroup } from "@/services/chatService";
 import { useEffect, useState } from "react";
 

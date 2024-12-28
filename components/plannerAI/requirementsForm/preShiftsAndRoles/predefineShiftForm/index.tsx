@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import styles from './main.module.scss';
-import PredefinedShift from '@/components/types/predefinedShifts';
+import { PredefinedShift } from '@/components/types/predefinedShifts';
 
 interface PredefinedShiftFormProps {
     predefineShifts: PredefinedShift[];

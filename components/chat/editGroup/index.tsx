@@ -1,5 +1,5 @@
 import React from 'react';
-import ChatPartner from '@/components/types/chatPartner';
+import { ChatPartner } from '@/components/types/chatPartner';
 import SearchUser from '@/components/chat/searchUser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserMinus, faXmark, faTrash, faX } from '@fortawesome/free-solid-svg-icons';

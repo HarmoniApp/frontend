@@ -1,4 +1,4 @@
-import DepartmentAddress from "@/components/types/departmentAddress";
+import { DepartmentAddress } from "@/components/types/department";
 import { deleteDepartment, fetchDepartmentsAddress, postDepartment, putDepartment } from "@/services/departmentService";
 import { useEffect, useState } from "react";
 

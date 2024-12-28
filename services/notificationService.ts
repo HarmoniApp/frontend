@@ -1,4 +1,4 @@
-import Notification from "@/components/types/notification";
+import { Notification } from "@/components/types/notification";
 import { fetchCsrfToken } from "./csrfService";
 import { toast } from "react-toastify";
 

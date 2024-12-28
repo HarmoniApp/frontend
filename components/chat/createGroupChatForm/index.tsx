@@ -1,5 +1,5 @@
 import React from 'react';
-import ChatPartner from '@/components/types/chatPartner';
+import { ChatPartner } from '@/components/types/chatPartner';
 import { Formik, Form, Field } from 'formik';
 import styles from './main.module.scss';
 import { postGroup } from '@/services/chatService';

@@ -2,8 +2,8 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarPlus, faPersonThroughWindow } from '@fortawesome/free-solid-svg-icons';
-import Shift from '@/components/types/shift';
-import Role from '@/components/types/role';
+import { Shift } from '@/components/types/shift';
+import { Role } from '@/components/types/role';
 import styles from './main.module.scss';
 import { Tooltip } from 'primereact/tooltip';
 import { wrapText } from '@/utils/wrapText';

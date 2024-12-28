@@ -1,5 +1,5 @@
 import React from 'react';
-import Shift from '@/components/types/shift';
+import { Shift } from '@/components/types/shift';
 import styles from './main.module.scss';
 import { Tooltip } from 'primereact/tooltip';
 import { wrapText } from '@/utils/wrapText';

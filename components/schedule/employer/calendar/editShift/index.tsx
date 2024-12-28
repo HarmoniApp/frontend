@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import Role from '@/components/types/role';
-import Shift from '@/components/types/shift';
-import PredefinedShifts from '@/components/types/predefinedShifts';
+import { Role } from '@/components/types/role';
+import { Shift } from '@/components/types/shift';
+import { PredefinedShift } from '@/components/types/predefinedShifts';
 import styles from './main.module.scss';
 import { fetchUserRoles } from '@/services/roleService';
 import { fetchPredefinedShifts } from '@/services/predefineShiftService';
@@ -19,7 +19,7 @@ interface EditShiftModalProps {
 
 const EditShift: React.FC<EditShiftModalProps> = ({ onClose, onEditShift, onDeleteShift, shift, firstName, surname }) => {
   const [roles, setRoles] = useState<Role[]>([]);
-  const [predefineShifts, setPredefineShifts] = useState<PredefinedShifts[]>([]);
+  const [predefineShifts, setPredefineShifts] = useState<PredefinedShift[]>([]);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   useEffect(() => {

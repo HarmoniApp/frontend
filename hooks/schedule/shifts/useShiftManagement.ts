@@ -1,4 +1,4 @@
-import WeekSchedule from "@/components/types/weekSchedule";
+import { WeekSchedule } from "@/components/types/weekSchedule";
 import { deleteShift, fetchUserScheduleWithAbsences, patchPublishShifts, postShift, putShift } from "@/services/scheduleService";
 import { formatDate } from "@/utils/formatDate";
 

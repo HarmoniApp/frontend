@@ -1,8 +1,8 @@
 import React from 'react';
 import ShiftInfo from './shiftInfo';
 import AbsenceInfo from './absenceInfo';
-import Shift from '@/components/types/shift';
-import AbsenceShort from '@/components/types/absenceShort';
+import { Shift } from '@/components/types/shift';
+import { AbsenceShort } from '@/components/types/absence';
 import styles from './main.module.scss';
 
 interface CalendarCellsProps {

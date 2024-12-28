@@ -1,4 +1,4 @@
-import PredefinedShift from "@/components/types/predefinedShifts";
+import { PredefinedShift } from "@/components/types/predefinedShifts";
 import { fetchCsrfToken } from "./csrfService";
 import { toast } from "react-toastify";
 

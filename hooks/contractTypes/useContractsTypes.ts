@@ -1,4 +1,4 @@
-import Contract from "@/components/types/contract";
+import { Contract } from "@/components/types/contract";
 import { deleteContractType, fetchContracts, postContractType, putContractType } from "@/services/contractService";
 import { useEffect, useState } from "react";
 

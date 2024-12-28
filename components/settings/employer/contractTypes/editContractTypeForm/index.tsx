@@ -7,7 +7,7 @@ import { Formik, Form, ErrorMessage, Field } from "formik";
 import { Tooltip } from "primereact/tooltip";
 import styles from './main.module.scss';
 import classNames from 'classnames';
-import Contract from "@/components/types/contract";
+import { Contract } from "@/components/types/contract";
 
 interface EditContractTypeFormProps {
     contract: Contract;

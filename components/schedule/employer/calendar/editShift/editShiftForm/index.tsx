@@ -6,9 +6,9 @@ import { faArrowTurnUp, faCalendarXmark, faCalendarPlus } from "@fortawesome/fre
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import styles from './main.module.scss';
-import Shift from "@/components/types/shift";
-import PredefinedShift from "@/components/types/predefinedShifts";
-import Role from "@/components/types/role";
+import { Shift } from "@/components/types/shift";
+import { PredefinedShift } from "@/components/types/predefinedShifts";
+import { Role } from "@/components/types/role";
 
 interface EditShiftFormProps {
     shift: Shift;

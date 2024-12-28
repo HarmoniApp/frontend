@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import Department from '@/components/types/department';
+import { Department } from '@/components/types/department';
 import Flag from 'react-flagkit';
 import styles from './main.module.scss';
 import NewPassword from './newPassword';

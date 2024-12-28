@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import ChatPartner from '@/components/types/chatPartner';
-import Message from '@/components/types/message';
+import { ChatPartner } from '@/components/types/chatPartner';
+import { Message } from '@/components/types/message';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckDouble, faUsersRectangle } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
@@ -22,7 +22,7 @@ const Conversation: React.FC<ConversationProps> = ({ messages, chatType, selecte
             chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
         }
     }, [messages]);
-    
+
     return (
         <>
             {chatType === 'user' ? (

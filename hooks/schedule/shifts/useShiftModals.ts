@@ -1,6 +1,6 @@
 import { useState } from "react";
-import User from "@/components/types/user";
-import Shift from "@/components/types/shift";
+import { User } from "@/components/types/user";
+import { Shift } from "@/components/types/shift";
 
 export const useShiftModals = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);

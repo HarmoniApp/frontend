@@ -1,4 +1,4 @@
-import Language from "@/components/types/language";
+import { Language } from "@/components/types/language";
 
 export const fetchLanguages = async (
     setLanguages: (languages: Language[]) => void): Promise<void> => {

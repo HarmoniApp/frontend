@@ -1,5 +1,4 @@
-import Absence from "@/components/types/absence";
-import AbsenceStatus from "@/components/types/absenceStatus";
+import { Absence, AbsenceStatus } from "@/components/types/absence";
 import { fetchAbsences, fetchAbsencesStatus, fetchAbsencesByStatus } from "@/services/absenceService";
 import { useState, useEffect } from "react";
 

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck, faArrowTurnUp } from '@fortawesome/free-solid-svg-icons';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { fetchAbsenceTypes, postAbsence } from '@/services/absenceService';
-import AbsenceType from '@/components/types/absenceType';
+import { AbsenceType } from '@/components/types/absence';
 import classNames from 'classnames';
 import styles from './main.module.scss';
 import { absenceValidationSchema } from '@/validationSchemas/absenceValidationSchema';

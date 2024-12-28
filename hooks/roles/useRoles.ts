@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Role from '@/components/types/role';
+import { Role } from '@/components/types/role';
 import { fetchRoles } from "@/services/roleService";
 
 export const useRoles = () => {

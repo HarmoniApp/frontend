@@ -1,4 +1,4 @@
-export default interface EmployeeData {
+export interface EmployeeDataWorkAdressOnlyId {
     id: number;
     firstname: string;
     surname: string;

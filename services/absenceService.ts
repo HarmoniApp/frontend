@@ -1,6 +1,4 @@
-import Absence from "@/components/types/absence";
-import AbsenceStatus from "@/components/types/absenceStatus";
-import AbsenceType from "@/components/types/absenceType";
+import { Absence, AbsenceStatus, AbsenceType }from "@/components/types/absence";
 import { fetchCsrfToken } from "./csrfService";
 import { toast } from "react-toastify";
 

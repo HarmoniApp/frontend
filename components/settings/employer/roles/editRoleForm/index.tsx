@@ -1,5 +1,5 @@
 import ConfirmationPopUp from "@/components/confirmationPopUp";
-import Role from "@/components/types/role";
+import { Role } from "@/components/types/role";
 import { wrapText } from "@/utils/wrapText";
 import { editRoleValidationSchema } from "@/validationSchemas/roleValidationSchema";
 import { faCheck, faXmark, faPen, faMinus } from "@fortawesome/free-solid-svg-icons";

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { fetchUserData } from '@/services/userService';
 import Navbar from "@/components/navbar";
 import EditEmployeeDataPopUp from '@/components/employees/employeeData/editEmployeeData';
-import EmployeeData from '@/components/types/employeeData';
+import { EmployeeData } from '@/components/types/employeeData';
 import styles from '@/styles/components/pages.module.scss';
 import LoadingSpinner from '@/components/loadingSpinner';
 

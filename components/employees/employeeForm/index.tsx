@@ -1,18 +1,18 @@
 import { wrapText } from "@/utils/wrapText";
 import { employeeValidationSchema } from "@/validationSchemas/employeeValiadtionSchema";
 import { faDeleteLeft, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
-import EmployeeDataWorkAdressOnlyId from '@/components/types/employeeDataWorkAdressOnlyId';
+import { EmployeeDataWorkAdressOnlyId } from '@/components/types/employeeDataWorkAdressOnlyId';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import { Tooltip } from "primereact/tooltip";
 import Flag from "react-flagkit";
 import styles from './main.module.scss';
-import Role from "@/components/types/role";
-import Language from "@/components/types/language";
-import Department from "@/components/types/department";
-import Contract from "@/components/types/contract";
-import Supervisor from "@/components/types/supervisor";
+import { Role } from "@/components/types/role";
+import { Language } from "@/components/types/language";
+import { Department } from "@/components/types/department";
+import { Contract } from "@/components/types/contract";
+import { Supervisor } from "@/components/types/supervisor";
 
 interface EmployeeFormProps {
     handleSubmit: (values: any) => void;
@@ -47,7 +47,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
             zip_code: employee?.residence?.zip_code || '',
             building_number: employee?.residence?.building_number || '',
         },
-        roles: employee?.roles?.map((role) => ({ id: role.id })) ||  [] as { id: number }[],
+        roles: employee?.roles?.map((role) => ({ id: role.id })) || [] as { id: number }[],
         languages: employee?.languages?.map((lang) => ({ id: lang.id })) || [] as { id: number }[],
         contract_type: { id: employee?.contract_type?.id || 0 },
         contract_signature: employee?.contract_signature || '',

@@ -1,4 +1,4 @@
-import Role from "@/components/types/role";
+import { Role } from "@/components/types/role";
 import { deleteRole, fetchRoles, postRole, putRole } from "@/services/roleService";
 import { useEffect, useState } from "react";
 

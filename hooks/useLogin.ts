@@ -1,4 +1,4 @@
-import MyJwtPayload from "@/components/types/myJwtPayload";
+import { MyJwtPayload } from "@/components/types/myJwtPayload";
 import { patchChangePassword } from "@/services/passwordService";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";

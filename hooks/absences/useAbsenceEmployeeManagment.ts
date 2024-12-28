@@ -1,4 +1,4 @@
-import Absence from "@/components/types/absence";
+import { Absence } from "@/components/types/absence";
 import { deleteAbsence, fetchAvailableAbsenceDays, fetchUserAbsences } from "@/services/absenceService";
 import { useState, useEffect } from "react";
 

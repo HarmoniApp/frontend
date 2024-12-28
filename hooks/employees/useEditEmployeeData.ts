@@ -1,8 +1,8 @@
-import Contract from "@/components/types/contract";
-import Department from "@/components/types/department";
-import Language from "@/components/types/language";
-import Role from "@/components/types/role";
-import Supervisor from "@/components/types/supervisor";
+import { Contract } from "@/components/types/contract";
+import { Department } from "@/components/types/department";
+import { Language } from "@/components/types/language";
+import { Role } from "@/components/types/role";
+import { Supervisor } from "@/components/types/supervisor";
 import { fetchContracts } from "@/services/contractService";
 import { fetchDepartments } from "@/services/departmentService";
 import { fetchLanguages } from "@/services/languageService";

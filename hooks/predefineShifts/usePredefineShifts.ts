@@ -1,4 +1,4 @@
-import PredefinedShift from "@/components/types/predefinedShifts";
+import { PredefinedShift } from "@/components/types/predefinedShifts";
 import { deletePredefineShift, fetchPredefinedShifts, postPredefineShift, putPredefineShift } from "@/services/predefineShiftService";
 import { useEffect, useState } from "react";
 

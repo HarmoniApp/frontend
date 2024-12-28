@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import classNames from "classnames"
 import styles from './main.module.scss';
 import { Formik, Form, ErrorMessage, Field } from "formik"
-import DepartmentAddress from "@/components/types/departmentAddress";
+import { DepartmentAddress } from "@/components/types/department";
 
 interface AddDepartmentFormProps {
     handleAddDepartment: (values: DepartmentAddress, { resetForm }: any) => void;

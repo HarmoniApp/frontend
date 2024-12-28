@@ -1,8 +1,8 @@
-import EmployeeData from "@/components/types/employeeData";
-import User from "@/components/types/user";
-import Supervisor from "@/components/types/supervisor";
+import { EmployeeData } from "@/components/types/employeeData";
+import { User } from "@/components/types/user";
+import { Supervisor } from "@/components/types/supervisor";
 import { fetchCsrfToken } from "./csrfService";
-import PersonTile from "@/components/types/personTile";
+import { PersonTile } from "@/components/types/personTile";
 import { toast } from "react-toastify";
 
 export const fetchSimpleUser = async (

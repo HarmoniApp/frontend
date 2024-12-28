@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import EmployeeDataWorkAdressOnlyId from '@/components/types/employeeDataWorkAdressOnlyId';
+import { EmployeeDataWorkAdressOnlyId } from '@/components/types/employeeDataWorkAdressOnlyId';
 import styles from './main.module.scss';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { useRouter } from 'next/navigation';

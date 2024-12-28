@@ -1,4 +1,4 @@
-import Role from "@/components/types/role";
+import { Role } from "@/components/types/role";
 import { fetchCsrfToken } from "./csrfService";
 import { toast } from "react-toastify";
 
