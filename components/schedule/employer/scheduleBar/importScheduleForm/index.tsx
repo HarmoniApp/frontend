@@ -5,6 +5,7 @@ import { Formik, Form } from 'formik';
 
 import styles from './main.module.scss';
 import { importEmployeesOrScheduleValidationSchema } from '@/validationSchemas/importEmployeesValidationSchema';
+import { importScheduleXLSX } from '@/services/xlsxService';
 
 export const ImportScheduleForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const [fileName, setFileName] = useState<string | null>(null);
@@ -17,10 +18,10 @@ export const ImportScheduleForm: React.FC<{ onClose: () => void }> = ({ onClose 
         if (values.file) {
             formData.append('file', values.file);
         }
-        // patchPhoto(formData),
-        //TODO: here import endpoint
+        await importScheduleXLSX(formData);
         onClose();
-        //refresh?
+        await new Promise((resolve) => setTimeout(resolve, 3000)); 
+        window.location.reload();
     };
 
     return (
@@ -61,6 +62,7 @@ export const ImportScheduleForm: React.FC<{ onClose: () => void }> = ({ onClose 
                     </Form>
                 )}
             </Formik>
+            <p>*po pomyślnym dodaniu nastąpi odświenie strony</p>
         </div>
     );
 };
