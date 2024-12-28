@@ -47,7 +47,8 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence, roles }) => {
         </div>
       ) : shifts.length > 0 ? (
         shifts.map(shift => {
-          const isTruncated = wrapText(shift.role_name, 18) !== shift.role_name;
+          const roleName = shift.role_name || 'Brak roli';
+          const isTruncated = wrapText(roleName, 18) !== roleName;
           const elementId = `roleName-${shift.id}`;
 
           return (
@@ -57,14 +58,14 @@ const ShiftItem: React.FC<ShiftItemProps> = ({ shifts, absence, roles }) => {
               </p>
               <p
                 className={styles.shiftRoleParagraph}
-                data-pr-tooltip={shift.role_name}
+                data-pr-tooltip={roleName}
                 data-pr-position="bottom"
                 id={elementId}
                 style={{
                   cursor: isTruncated ? 'pointer' : 'default',
                 }}
               >
-                {wrapText(shift.role_name, 18)}
+                {wrapText(roleName, 18)}
               </p>
               {isTruncated && (
                 <Tooltip target={`#${elementId}`} autoHide />
