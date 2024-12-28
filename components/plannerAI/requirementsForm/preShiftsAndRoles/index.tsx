@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './main.module.scss';
-import RoleForm from '../roleForm';
-import PredefineShiftForm from '../predefineShiftForm';
+import RoleForm from './roleForm';
+import PredefineShiftForm from './predefineShiftForm';
 
 interface PredefineShiftsAndRolesProps {
     predefineShifts: any[];

@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import Employee from './employee';
 import Employer from './employer';
-import styles from './main.module.scss';
 import LoadingSpinner from '../loadingSpinner';
 
 const Absence = () => {
@@ -22,13 +21,13 @@ const Absence = () => {
     }, []);
 
     return (
-            <div className={styles.absenceContainerMain}>
+            <>
                 {userId !== 0 ? (
                     isAdmin ? <Employer /> : <Employee userId={userId} />
                 ) : (
                     <LoadingSpinner wholeModal={false}/>
                 )}
-            </div>
+            </>
     )
 }
 export default Absence;
