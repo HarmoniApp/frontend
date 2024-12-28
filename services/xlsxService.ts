@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import { fetchCsrfToken } from "./csrfService";
 
 export const downloadScheduleXLSX = async (
     currentWeek: Date[]
@@ -77,6 +78,52 @@ export const downloadUsersXLSX = async (): Promise<void> => {
         {
             pending: 'Pobieranie listy pracowników w formacie XLSX...',
             success: 'Lista pracowników została pobrana!'
+        }
+    );
+};
+
+export const importUsersXLSX = async (
+    file: FormData,
+): Promise<void> => {
+    await toast.promise(
+        (async () => {
+            try {
+                const tokenXSRF = await fetchCsrfToken();
+
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/excel/users/import-excel`, {
+                    method: 'POST',
+                    headers: {
+                        // 'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                        'X-XSRF-TOKEN': tokenXSRF,
+                    },
+                    credentials: 'include',
+                    body: file,
+                });
+
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    const errorMessage = errorResponse.message || 'Wystąpił błąd podczas importowania użytkowników.';
+                    throw new Error(errorMessage);
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                const filename = `loginy-hasla.pdf`;
+                link.setAttribute('download', filename);
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+            } catch (error) {
+                console.error('Error importing users:', error);
+                throw error;
+            }
+        })(),
+        {
+            pending: 'Importowanie użytkowników...',
+            success: 'Użytkownicy zostali dodani!'
         }
     );
 };
