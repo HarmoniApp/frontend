@@ -1,9 +1,7 @@
 @import '@/styles/main.scss';
-
 /**
   * The reference md(only number) is still in index.tsx(11 line) because it changes the full name of the day to the abbreviation. 
   */
-
 .calendarDays {
   @include gridQG(7, 10px);
   text-align: center;

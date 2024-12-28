@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import Employee from './employee';
 import Employer from './employer';
-import styles from './main.module.scss';
 import LoadingSpinner from '../loadingSpinner';
 
 const Schedule = () => {
@@ -22,13 +21,13 @@ const Schedule = () => {
   }, []);
 
   return (
-    <div className={styles.scheduleContainerMain}>
+    <>
       {userId !== 0 ? (
         isAdmin ? <Employer /> : <Employee userId={userId} />
       ) : (
         <LoadingSpinner wholeModal={false}/>
       )}
-    </div>
+    </>
   );
 };
 export default Schedule;
