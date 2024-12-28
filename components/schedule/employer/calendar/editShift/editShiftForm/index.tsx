@@ -42,7 +42,6 @@ export const EditShiftForm: React.FC<EditShiftFormProps> = ({
             onSubmit={(values) => {
                 const newStart = `${shift.start.split('T')[0]}T${values.selectedStartTime}`;
                 const newEnd = `${shift.end.split('T')[0]}T${values.selectedEndTime}`;
-
                 onEditShift({
                     id: shift.id,
                     start: newStart,
@@ -50,7 +49,6 @@ export const EditShiftForm: React.FC<EditShiftFormProps> = ({
                     userId: shift.user_id,
                     roleName: values.selectedRole,
                 });
-
                 onClose();
             }}
         >
