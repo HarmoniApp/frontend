@@ -62,17 +62,6 @@
     }
 }
 
-.errorInput {
-    border-color: $red;
-    background-color: $red-powder;
-
-    &.contractDaysInput,
-    &.addContractDaysInput {
-        border-color: $red;
-        background-color: $red-powder;
-    }
-}
-
 .absenceDaysInput {
     border: 2px solid $main-colour;
     border-radius: 8px;

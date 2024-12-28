@@ -79,15 +79,4 @@
         color: lighten($font-dark-colour, 30%);
     }
 }
-
-.errorInput {
-    border-color: $red;
-    background-color: $red-powder;
-
-    &.shiftTimeSelect,
-    &.addShiftTimeSelect {
-        border-color: $red;
-        background-color: $red-powder;
-    }
-}
 @include errorMessage("center");

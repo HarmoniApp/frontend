@@ -1,7 +1,6 @@
 @import '@/styles/main.scss';
 
 .departmentForm {
-
     .showDepartmentContainer {
         @include displayDFJAG(flex, column, space-between, null);
         background-color: $white-3;

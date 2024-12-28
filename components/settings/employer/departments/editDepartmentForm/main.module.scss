@@ -1,7 +1,6 @@
 @import '@/styles/main.scss';
 
 .departmentForm {
-
     .showDepartmentContainer {
         @include displayDFJAG(flex, column, space-between, null);
         background-color: $white-3;
@@ -80,33 +79,8 @@
             @include displayDFJAG(flex, row, flex-end, center, 10px);
             margin: 10px 0 0 0;
 
-            .removeButton,
-            .editButton,
-            .yesButton,
-            .noButton {
-                background-color: $main-colour;
-                border: 2px solid $font-dark-colour;
-                color: $font-dark-colour;
-                padding: 5px 10px;
-                border-radius: 5px;
-                cursor: pointer;
-                transition: background-color 0.3s ease, color 0.3s ease;
+                @include settingButtons;
 
-                &:hover {
-                    background-color: $font-dark-colour;
-                    color: $main-colour;
-                }
-            }
-
-            .yesButton:hover {
-                background-color: $green-dark;
-                color: $font-dark-colour;
-            }
-
-            .noButton:hover {
-                background-color: $red;
-                color: $font-dark-colour;
-            }
         }
     }
 }

@@ -49,36 +49,8 @@
     }
 }
 
-.removeButton,
-.editButton,
-.yesButton,
-.noButton {
-    background-color: $main-colour;
-    border: 2px solid $font-dark-colour;
-    color: $font-dark-colour;
-    padding: 5px 10px;
-    border-radius: 5px;
-    height: 5vh;
-    width: 5vh;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    @include settingButtons;
 
-    &:hover {
-        background-color: $font-dark-colour;
-        color: $main-colour;
-    }
-
-}
-
-.yesButton:hover {
-    background-color: $green-dark;
-    color: $font-dark-colour;
-}
-
-.noButton:hover {
-    background-color: $red;
-    color: $font-dark-colour;
-}
 
 .shiftTimeSelect {
     @include appearance-none;
@@ -118,17 +90,6 @@
     &::placeholder {
         margin: 0 0 0 10px;
         color: lighten($font-dark-colour, 30%);
-    }
-}
-
-.errorInput {
-    border-color: $red;
-    background-color: $red-powder;
-
-    &.shiftTimeSelect,
-    &.addShiftTimeSelect {
-        border-color: $red;
-        background-color: $red-powder;
     }
 }
 @include errorMessage("center");

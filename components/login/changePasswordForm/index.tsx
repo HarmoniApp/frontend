@@ -31,5 +31,3 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ handlePa
         )}
     </Formik>
 )
-
-// joanna.kowalska12@example.com
