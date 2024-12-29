@@ -1,6 +1,6 @@
 import { ChatPartner } from "@/components/types/chatPartner";
 import { Message } from "@/components/types/message";
-import { patchMarkMessagesAsReadInIndividualChat } from "@/services/chatService";
+import { patchMarkMessagesAsReadInGroupChat, patchMarkMessagesAsReadInIndividualChat } from "@/services/chatService";
 import { Client } from "@stomp/stompjs";
 import { useEffect, useRef } from "react";
 import SockJS from "sockjs-client";
@@ -83,7 +83,8 @@ export const useChatWebSocket = (
                             currentChat &&
                             newMessage.group_id === currentChat.id
                         ) {
-                            return [...prevMessages, newMessage];
+                            patchMarkMessagesAsReadInGroupChat(newMessage.group_id);
+                            return [...prevMessages, { ...newMessage, is_read: true }];
                         }
                         return prevMessages;
                     });
@@ -92,11 +93,12 @@ export const useChatWebSocket = (
 
                 stompClient.subscribe(`/client/groupMessages/readStatus/${userId}`, async (message) => {
                     const updatedMessages: Message[] = JSON.parse(message.body);
-                    setMessages((prevMessages) =>
-                        prevMessages.map((msg) =>
+                    setMessages((prevMessages) => {
+                        const updated = prevMessages.map((msg) =>
                             updatedMessages.find((um) => um.id === msg.id) ? { ...msg, is_read: true } : msg
-                        )
-                    );
+                        );
+                        return [...updated];
+                    });
                 });
             },
             onStompError: (error) => {

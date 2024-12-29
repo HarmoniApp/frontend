@@ -316,6 +316,31 @@ export const patchMarkMessagesAsReadInIndividualChat = async (
     }
 };
 
+export const patchMarkMessagesAsReadInGroupChat = async (
+    partnerId: number): Promise<void> => {
+
+    try {
+        const userId = sessionStorage.getItem('userId');
+        const tokenXSRF = await fetchCsrfToken();
+        
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/message/mark-all-read?userId1=${userId}&groupId=${partnerId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
+                'X-XSRF-TOKEN': tokenXSRF,
+            },
+            credentials: 'include',
+        });
+        if (!response.ok) {
+            console.error('Failed to mark messages as read:', response.statusText);
+            throw new Error('Failed to mark messages as read');
+        }
+    } catch (error) {
+        console.error(`Error marking messages as read`, error);
+    }
+};
+
 export const patchAddUserToGroup = async (
     selectedChatId: number,
     userId: number): Promise<void> => {
