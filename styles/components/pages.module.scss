@@ -1,0 +1,7 @@
+@import '@/styles/main.scss';
+
+.pageContainer{
+    @include displayDFJAG(flex, column, null, null);
+    min-height: 100vh;
+    background-color: $page-main-background-colour;
+}

@@ -1,0 +1,31 @@
+@import '@/styles/main.scss';
+
+.confirmationPopUpContainer {
+    background-color: $gray;
+    @include displayDFJAG(flex, column, center, center, 20px);
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.headerContainer {
+    @include displayDFJAG(flex, column, center, center, 15px);
+    width: 100%;
+    margin: 0;
+
+    .headerLabel {
+        text-align: center;
+        color: $font-light-colour;
+        margin: 0;
+    }
+
+    .headerLabelHighlight{
+        text-decoration: underline;
+        text-decoration-color: $main-colour;
+    }
+}
+
+.butonContainter {
+    @include displayDFJAG(flex, row, space-evenly, null);
+    width: 100%;
+}

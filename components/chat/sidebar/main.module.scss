@@ -1,88 +1,61 @@
-@import '@/styles/variables.scss';
+@import '@/styles/main.scss';
 
-.modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .modalContent {
-    background-color: $white;
-    border-radius: 10px;
-    padding: 20px;
-    width: 90%;
-    max-width: 500px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    position: relative;
-  }
+.imageContainer {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    margin-left: 10px;
+}
 
 .sidebarHeader {
-    display: flex;
-    align-items: center;
+    @include displayDFJAG(flex, column, null, center, 20px);
     font-size: 1.5em;
-    flex-direction: column;
-    gap:20px;
 }
 
 .translateContainer {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+    @include displayDFJAG(flex, null, space-around, center);
     width: 100%;
     border: 2px solid $main-colour;
     border-radius: 8px;
-    padding:10px 0;
+    padding: 10px 0;
 }
 
-.newChatContainer{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+.newChatContainer {
+    @include displayDFJAG(flex, null, space-around, center);
     width: 100%;
     border: 2px solid $main-colour;
     border-radius: 8px;
-    padding:10px 0;
+    padding: 10px 0;
     cursor: pointer;
 }
 
-.newChatLabel{
+.newChatLabel {
     cursor: pointer;
 }
 
 .sectionBlock .activeSection {
-    .activeIcon{
-        color:$main-colour;
+    .activeIcon {
+        color: $main-colour;
     }
 }
 
-.selectedChatContainer{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+.selectedChatContainer {
+    @include displayDFJAG(flex, null, space-around, center);
     width: 100%;
     border: 2px solid $main-colour;
     border-radius: 8px;
-    padding:10px 0;
+    padding: 10px 0;
 }
 
-.addNewConversationContainer{
+.addNewConversationContainer {
     cursor: pointer;
 }
 
 .sectionSelector {
-    display: flex;
-    justify-content: space-between;
+    @include displayDFJAG(flex, null, space-between, null);
 }
-
 
 .chatList {
     flex-grow: 1;
@@ -93,13 +66,9 @@
 }
 
 .chatItem {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
+    @include displayDFJAG(flex, row, flex-start, center, 20px);
     padding: 10px 20px;
     transition: background-color 0.3s;
-    gap:20px;
 
     &:hover {
         background-color: lighten($gray, 10%);
@@ -110,10 +79,8 @@
     }
 }
 
-.messagesTileInfo{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+.messagesTileInfo {
+    @include displayDFJAG(flex, column, null, flex-start);
 }
 
 .chatName {

@@ -3,74 +3,29 @@ import React, { useEffect, useState } from 'react';
 import Tile from '@/components/employees/tile';
 import EmployeeFilter from '@/components/employees/employeeFilter';
 import EmployeeBar from '@/components/employees/employeeBar';
-import PersonTile from '@/components/types/personTile';
+import { PersonTile } from '@/components/types/personTile';
 import styles from './main.module.scss';
-import './main.css';
-
-import { ProgressSpinner } from 'primereact/progressspinner';
+import '@/styles/components/pagination.css';
 import { Card } from 'primereact/card';
-import { Message } from 'primereact/message';
-import { Message as PrimeMessage } from 'primereact/message';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
-import 'primereact/resources/themes/saga-blue/theme.css';
+import LoadingSpinner from '../loadingSpinner';
+import { fetchFilterUsers } from '@/services/userService';
 
 const EmployeesComponent: React.FC = () => {
   const [activeView, setActiveView] = useState<'tiles' | 'list'>('tiles');
   const [data, setData] = useState<PersonTile[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(21);
   const [totalRecords, setTotalRecords] = useState(0);
 
   const fetchFilteredData = async (filters: { roles?: number[]; languages?: number[]; order?: string; query?: string } = {}, pageNumber: number = 1, pageSize: number = 21) => {
     setLoading(true);
-
-    let url = '';
-
-    if (filters.query && filters.query.trim() !== '') {
-      url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/search?q=${filters.query}`;
-    } else {
-      url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=${pageSize}`;
-
-      const params = new URLSearchParams();
-
-      if (filters.roles && filters.roles.length) {
-        filters.roles.forEach(role => params.append('role', role.toString()));
-      }
-      if (filters.languages && filters.languages.length) {
-        filters.languages.forEach(language => params.append('language', language.toString()));
-      }
-      if (filters.order) params.append('order', filters.order);
-
-      if (params.toString()) {
-        url += `&${params.toString()}`;
-      }
-    }
-
     try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        }
-
-      });
-      const responseData = await response.json();
-      if (responseData && responseData.content) {
-        setData(responseData.content);
-        setTotalRecords(responseData.pageSize * responseData.totalPages);
-      } else if (responseData && responseData.length > 0) {
-        setData(responseData);
-      } else {
-        setData([]);
-        setTotalRecords(0);
-      }
-      setLoading(false);
+      await fetchFilterUsers(filters, pageNumber, pageSize, setData, setTotalRecords)
     } catch (error) {
       console.error('Error fetching data:', error);
-      setError('Błąd podczas filtrowania danychTets');
+    } finally {
       setLoading(false);
     }
   };
@@ -93,19 +48,16 @@ const EmployeesComponent: React.FC = () => {
       </div>
       <div className={styles.employeesFilterAndListContainer}>
         <div className={styles.emplyeesFilterContainer}>
-          <EmployeeFilter onApplyFilters={(filters) => fetchFilteredData(filters, 1, rows)} setError={setError} />
+          <EmployeeFilter onApplyFilters={(filters) => fetchFilteredData(filters, 1, rows)} />
         </div>
         <div className={`${styles.employeesListcontainer} ${activeView === 'tiles' ? styles.tilesView : styles.listView}`}>
-          {loading && <div className={styles.spinnerContainer}><ProgressSpinner /></div>}
-          {!loading && error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessage} />}
-          {!loading && !error && data.length === 0 && <Card title="No Data" className={styles.noDataCard}><p>There is no data available at the moment.</p></Card>}
-          {!loading && !error && data.length > 0 && data.map((person, index) => (
-            <Tile key={index} person={person} view={activeView} setError={setError} />
+          {loading && <LoadingSpinner wholeModal={false} />}
+          {!loading && data.length === 0 && <Card title="Brak pracowników" className={styles.noDataCard}></Card>}
+          {!loading && data.length > 0 && data.map((person, index) => (
+            <Tile key={index} person={person} view={activeView} />
           ))}
-          {error && <PrimeMessage severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
         </div>
       </div>
-
       <Paginator
         first={first}
         rows={rows}
@@ -113,8 +65,8 @@ const EmployeesComponent: React.FC = () => {
         rowsPerPageOptions={[21, 49, 70]}
         onPageChange={onPageChange}
       />
+
     </div>
   );
 };
-
 export default EmployeesComponent;

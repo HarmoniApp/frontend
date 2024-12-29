@@ -1,57 +1,17 @@
-@import '@/styles/variables.scss';
-
-.modalOverlayDeleteEmployee , .modalOverlayNewPassword {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modalContentOfDeleteEmployee, .modalContentOfNewPassword {
-    display: flex;
-    flex-direction: column;
-    border: 2px solid $main-colour;
-    border-radius: 8px;
-    background-color: $gray;
-    text-align: center;
-    width: auto;
-    max-height: 80vh;
-    overflow-y: auto;
-    gap: 20px;
-    padding: 20px;
-
-    @media (max-width: 768px) {
-        width: 90%;
-        max-height: 70vh;
-    }
-}
+@import '@/styles/main.scss';
 
 .employeeDataContainerMain {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
+    @include displayDFJAG(flex, column, center, center, 20px);
     width: 100%;
     margin: 20px 0;
 }
 
 .rowButtonContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
+    @include displayDFJAG(flex, row, space-evenly, center, 20px);
     width: 90%;
-    gap: 20px;
 
-    @media (max-width: 1225px) {
-        flex-direction: column;
+    @include respond-to-lg {
+        @include displayDFJAG(flex, column, null, null);
 
         .buttonContainer {
             width: 100%;
@@ -59,64 +19,21 @@
     }
 
     .buttonContainer {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-evenly;
+        @include displayDFJAG(flex, row, space-evenly, center);
         flex: 1;
         padding: 20px;
-
         border-radius: 10px;
         background-color: $white;
         box-shadow: 0 4px 8px $black-transparency-01;
-
-        .statisticsButton,
-        .absencesButton,
-        .chatButton,
-        .resetPasswordButton,
-        .editButton,
-        .deleteButton {
-            display: flex;
-            align-items: center;
-            background-color: $main-colour;
-            color: $font-dark-colour;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            gap: 10px;
-
-            &:hover {
-                background-color: $main-colour-hover;
-            }
-
-            .buttonIcon {
-                height: 26px;
-                width: 26px;
-                margin: 0;
-            }
-
-            .buttonParagraph {
-                text-align: center;
-                font-size: 20px;
-                margin: 0;
-            }
-        }
     }
 }
 
 .fullNameAndIdContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: stretch;
+    @include displayDFJAG(flex, row, center, stretch, 20px);
     width: 90%;
-    gap: 20px;
 
-    @media (max-width: 1225px) {
-        flex-direction: column;
-        gap: 20px;
+    @include respond-to-lg {
+        @include displayDFJAG(flex, column, null, null, 20px);
 
         .fullNameColumnContainer,
         .employeeIdContainer {
@@ -126,10 +43,7 @@
     }
 
     .fullNameColumnContainer {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: center;
+        @include displayDFJAG(flex, row, space-around, center);
         flex: 1;
         width: 100%;
         height: auto;
@@ -140,12 +54,8 @@
 
         .firstNameContainer,
         .surnameContainer {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
+            @include displayDFJAG(flex, row, center, center, 10px);
             height: auto;
-            gap: 10px;
 
             .firstNameParagraph {
                 font-size: 20px;
@@ -183,16 +93,12 @@
     }
 
     .employeeIdContainer {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
+        @include displayDFJAG(flex, row, center, center, 2%);
         flex: 1;
         width: 100%;
-        gap: 2%;
         height: auto;
 
-        @media (max-width: 1225px) {
+        @include respond-to-lg {
             padding: 10px;
         }
 
@@ -223,34 +129,30 @@
 }
 
 .emplyeeDataContainer {
-    display: flex;
+    @include displayDFJAG(flex, null, null, null, 20px);
     flex-wrap: wrap;
-    gap: 20px;
     width: 90%;
 
-    @media (max-width: 1225px) {
-        flex-direction: column;
+    @include respond-to-lg {
+        @include displayDFJAG(flex, column, null, null);
 
         .columnContainer {
             width: 100%;
         }
     }
 
-    @media (max-width: 768px) {
-        flex-direction: column;
-        gap: 10px;
+    @include respond-to-md {
+        @include displayDFJAG(flex, column, null, null, 10px);
     }
 }
 
 .columnContainer {
-    display: flex;
-    flex-direction: column;
+    @include displayDFJAG(flex, column, null, null);
     flex: 1;
     padding: 20px;
     background-color: $white;
     border-radius: 10px;
     box-shadow: 0 4px 8px $black-transparency-01;
-
 
     .residenceLabel,
     .supervisorLabel,
@@ -260,9 +162,7 @@
     .endContractDateLables,
     .contractTypeLabel,
     .departmentLabel {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        @include displayDFJAG(flex, null, space-between, center);
         padding: 0 10px;
         color: $font-dark-colour;
         border-bottom: 2px solid $main-colour;
@@ -283,38 +183,23 @@
 }
 
 .roleAndLanguagesContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
-    gap: 20px;
+    @include displayDFJAG(flex, row, space-evenly, stretch, 20px);
     width: 90%;
+    max-height: 45vh;
 
-
-    @media (max-width: 1225px) {
-        flex-direction: column;
-
-        .columnContainer {
-            width: 100%;
-        }
-    }
-
-    @media (max-width: 768px) {
-        flex-direction: column;
-        gap: 10px;
+    @include respond-to-lg {
+        @include displayDFJAG(flex, column, null, null);
     }
 
     .columnContainer {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        @include displayDFJAG(flex, column, flex-start, center);
+
         max-height: 45vh;
         border-radius: 10px;
         background-color: $white;
         box-shadow: 0 4px 8px $black-transparency-01;
 
-        @media (max-width: 768px) {
+        @include respond-to-md {
             margin: 10px;
             max-height: 60vh;
             padding: 10px;
@@ -329,39 +214,28 @@
         }
 
         .roleContainer {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            @include gridQG(3, 20px);
             margin: 20px;
             width: 100%;
             overflow-y: auto;
 
-            @media (max-width: 1225px) {
-                grid-template-columns: repeat(3, 1fr);
+            @include respond-to-lg {
+                @include gridQG(3, 20px);
                 height: fit-content;
             }
 
-            @media (max-width: 825px) {
-                grid-template-columns: repeat(2, 1fr);
+            @include respond-to-md {
+                @include gridQG(2, 20px);
                 height: fit-content;
             }
 
-            @media (max-width: 650px) {
-                grid-template-columns: repeat(2, 1fr);
-                height: fit-content;
-            }
-
-            @media (max-width: 350px) {
-                grid-template-columns: 1fr;
+            @include respond-to-sm {
+                @include gridQG(1, 20px);
             }
 
             .roleLabel {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
+                @include displayDFJAG(flex, row, space-between, center, 10px);
                 text-align: center;
-                gap: 10px;
                 background-color: $white-4;
                 border-radius: 5px;
                 box-shadow: 0px 2px 5px $black-transparency-01;
@@ -371,7 +245,7 @@
                 width: 100%;
                 padding: 10px;
 
-                @media (max-width: 768px) {
+                @include respond-to-md {
                     padding: 8px;
                     width: 100%;
                 }
@@ -380,36 +254,26 @@
         }
 
         .languagesContainer {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            @include gridQG(3, 20px);
             margin: 20px;
             width: 100%;
             overflow-y: auto;
 
-            @media (max-width: 1225px) {
-                grid-template-columns: repeat(3, 1fr);
+            @include respond-to-lg {
+                @include gridQG(3, 20px);
             }
 
-            @media (max-width: 825px) {
-                grid-template-columns: repeat(2, 1fr);
+            @include respond-to-md {
+                @include gridQG(2, 20px);
             }
 
-            @media (max-width: 650px) {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            @media (max-width: 350px) {
-                grid-template-columns: 1fr;
+            @include respond-to-sm {
+                @include gridQG(1, 20px);
             }
 
             .languageLabel {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
+                @include displayDFJAG(flex, row, space-between, center, 10px);
                 text-align: center;
-                gap: 10px;
                 background-color: $white-4;
                 border-radius: 5px;
                 box-shadow: 0px 2px 5px $black-transparency-01;
@@ -419,7 +283,7 @@
                 width: 100%;
                 padding: 10px;
 
-                @media (max-width: 768px) {
+                @include respond-to-md {
                     padding: 8px;
                 }
 
@@ -429,49 +293,6 @@
                     margin: 0 0 0 auto;
                 }
             }
-        }
-    }
-}
-
-.spinnerContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999;
-}
-
-.loadingModalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-
-    .loadingModalContent {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-
-        .spinnerContainer {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
         }
     }
 }

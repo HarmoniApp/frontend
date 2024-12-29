@@ -1,255 +1,35 @@
-@import '@/styles/variables.scss';
-
-.modalOverlayOfAdd, .modalOverlayOfDelete { 
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modalContentOfAdd, .modalContentOfDelete {
-    display: flex;
-    flex-direction: column;
-    border: 2px solid $main-colour;
-    border-radius: 8px;
-    background-color: $gray;
-    text-align: center;
-    width: auto;
-    max-height: 80vh;
-    overflow-y: auto;
-    gap: 20px;
-    padding: 20px;
-
-    @media (max-width: 768px) {
-        width: 90%;
-        max-height: 70vh;
-    }
-}
+@import '@/styles/main.scss';
 
 .roleContainerMain {
+    @include displayDFJAG(flex, column, null, null, 15px);
     background-color: $gray;
     color: $font-light-colour;
     padding: 20px 0 0 0;
     border-radius: 10px;
-    display: flex;
-    flex-direction: column;
     width: 100%;
     height: 100%;
-    gap: 15px;
 }
-
 
 .showRoleMapConteiner {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    @include gridQG(4, 10px);
     grid-template-rows: minmax(auto, 1fr);
     grid-auto-rows: 1fr;
-    gap: 10px;
-
-    .showRoleConteinerMain {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 100%;
-        padding: 10px;
-        background-color: $white-3;
-        border-radius: 5px;
-        gap: 10px;
-
-        .showRoleConteiner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 100%;
-            gap: 10px;
-
-            .roleInfoContainer {
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-            }
-
-            .roleNameParagraph {
-                display: flex;
-                align-items: left;
-                margin: 0;
-                color: $font-dark-colour;
-                font-weight: bold;
-                width: 10vw;
-            }
-
-            .editAndRemoveButtonContainer {
-                display: flex;
-                flex-direction: row;
-                gap: 10px;
-            }
-        }
-    }
 }
 
-@media (max-width: 1200px) {
+@include respond-to-lg {
     .showRoleMapConteiner {
-        grid-template-columns: repeat(3, 1fr);
+        @include gridQG(3, 10px);
     }
-
 }
 
-@media (max-width: 800px) {
+@include respond-to-md {
     .showRoleMapConteiner {
-        grid-template-columns: repeat(2, 1fr);
+        @include gridQG(2, 10px);
     }
 }
 
-@media (max-width: 600px) {
+@include respond-to-sm {
     .showRoleMapConteiner {
-        grid-template-columns: 1fr;
-
-    }
-}
-
-
-.removeButton,
-.editButton,
-.yesButton,
-.noButton {
-    background-color: $main-colour;
-    border: 2px solid $font-dark-colour;
-    color: $font-dark-colour;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-
-    &:hover {
-        background-color: $font-dark-colour;
-        color: $main-colour;
-    }
-
-}
-
-.colorPicker {
-    border: 2px solid $main-colour;
-    border-radius: 5px;
-    background-color: $main-colour;
-    height: auto;
-    width: 35px;
-    cursor: pointer;
-}
-
-.yesButton:hover {
-    background-color: $green;
-    color: $font-dark-colour;
-}
-
-.noButton:hover {
-    background-color: $red;
-    color: $font-dark-colour;
-}
-
-.addContainer {
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    height: 100%;
-    gap: 10px;
-
-    .colorPicker {
-        width: 40px;
-    }
-
-    .addButton {
-        background-color: $main-colour;
-        border: none;
-        color: $font-dark-colour;
-        padding: 10px;
-        width: 5vh;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-
-        &:hover {
-            background-color: $main-colour-hover;
-        }
-    }
-}
-
-.formInput {
-    -webkit-appearance: none; //Safari
-    -moz-appearance: none; //Firefox
-    appearance: none; //Standard
-    width: 100%;
-    border-radius: 5px;
-    border: 2px solid $main-colour;
-    padding: 10px 5vh 10px 10px;
-    color: $font-dark-colour;
-    transition: all 0.3s ease;
-
-    &:hover {
-        border: 2px solid $main-colour;
-        outline: none;
-        background-color: lighten($white-4, 5%);
-    }
-
-    &::placeholder {
-        margin: 0 0 0 10px;
-        color: lighten($font-dark-colour, 30%);
-    }
-
-    @media (max-width: 768px) {
-        height: 4vh;
-        padding: 8px 2vh 8px 8px;
-    }
-}
-
-.errorMessage {
-    display: flex;
-    align-items: center;
-    color: $red;
-    font-size: 16px;
-    font-weight: bold;
-    margin: 0;
-    text-align: right;
-    flex-shrink: 0;
-}
-
-.errorInput {
-    border-color: $red;
-    background-color: $red-powder;
-}
-
-.loadingModalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-
-    .loadingModalContent {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-
-        .spinnerContainer {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-        }
+        @include gridQG(1, 10px);
     }
 }

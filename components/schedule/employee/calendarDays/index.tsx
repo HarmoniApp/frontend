@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './main.module.scss';
-
-const fullDayNames = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela'];
-const shortDayNames = ['Pn', 'Wt', 'Śr', 'Czw', 'Pt', 'Sb', 'Nd'];
+import { shortDayNames, fullDayNames } from '@/utils/calendarDayAndMonthNames';
 
 const CalendarDays: React.FC = () => {
     const [isMobileView, setIsMobileView] = useState(false);

@@ -1,130 +1,27 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRectangleList, faGrip, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import AbsenceCard from '@/components/absence/employer/absenceCard';
-import Absence from '@/components/types/absence';
-import SimpleUser from '@/components/types/simpleUser';
-import AbsenceStatus from '@/components/types/absenceStatus';
-import User from '@/components/types/user';
 import styles from './main.module.scss';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import { Card } from 'primereact/card';
-import { Message } from 'primereact/message';
 import { fetchAbsences } from '@/services/absenceService';
+import LoadingSpinner from '@/components/loadingSpinner';
+import { useAbsenceEmployer } from '@/hooks/absences/useAbsenceEmployer';
 
 const AbsenceEmployer: React.FC = () => {
-  const [absences, setAbsences] = useState<Absence[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
-  const [absencesStatus, setAbsencesStatus] = useState<AbsenceStatus[]>([]);
-  const [viewMode, setViewMode] = useState('tiles');
-  const [selectedStatus, setSelectedStatus] = useState<number | undefined>(undefined);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchUsers = async () => {
-    setLoading(true);
-    let pageNumber = 0;
-    let totalPages = 1;
-    const allUsers = [];
-
-    try {
-      while (pageNumber < totalPages) {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple?pageNumber=${pageNumber}&pageSize=10`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-          },
-        });
-        const data = await response.json();
-
-        allUsers.push(...data.content);
-        totalPages = data.totalPages;
-        pageNumber += 1;
-      }
-
-      setUsers(allUsers);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      setError('Błąd podczas pobierania użytkowników');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchAbsences(setAbsences, setError, setLoading);
-      fetchUsers();
-    };
-    fetchData();
-
-    const fetchAbsencesStatus = async () => {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/status`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-          },
-        });
-        const data = await response.json();
-        setAbsencesStatus(data);
-      } catch (error) {
-        console.error('Error fetching absence statuses:', error);
-      }
-    };
-
-    fetchAbsencesStatus();
-  }, []);
-
-  const handleStatusChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const statusId = event.target.value === 'clear' ? undefined : parseInt(event.target.value);
-
-    setLoading(true);
-    setError(null);
-    setSelectedStatus(statusId);
-
-    try {
-      const url = statusId !== undefined
-        ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence/status/${statusId}`
-        : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/absence`;
-
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      });
-      const data = await response.json();
-      setAbsences(data.content);
-    } catch (error) {
-      console.error('Error fetching absences by status:', error);
-      setError('Error fetching absences by status');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getUserById = (userId: number): SimpleUser | undefined => {
-    return users.find(user => user.id === userId);
-  };
-
-  const filteredAbsences = absences.filter(absence => {
-    const user = getUserById(absence.user_id);
-
-    if (searchQuery === '') {
-      return true;
-    }
-
-    const userFirstNameMatches = user?.firstname?.toLowerCase().includes(searchQuery.toLowerCase());
-    const userSurnameMatches = user?.surname?.toLowerCase().includes(searchQuery.toLowerCase());
-
-    return userFirstNameMatches || userSurnameMatches;
-  });
+  const {
+    absences,
+    setAbsences,
+    absencesStatus,
+    viewMode,
+    selectedStatus,
+    searchQuery,
+    loading,
+    setViewMode,
+    setSearchQuery,
+    handleStatusChange,
+  } = useAbsenceEmployer();
 
   return (
     <div className={styles.absenceEmployerContainerMain}>
@@ -177,26 +74,24 @@ const AbsenceEmployer: React.FC = () => {
             </button>
           </div>
         </div>
-
-        {loading && <div className={styles.spinnerContainer}><ProgressSpinner /></div>}
-        {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
-        {!loading && !error && filteredAbsences.length === 0 && (
-          <Card title="No Data" className={styles.noDataCard}><p>There is no data available at the moment.</p></Card>
+        {!loading  && absences.length === 0 && (
+          <Card title="Brak wniosków urlopowych" className={styles.noDataCard}></Card>
         )}
-        {!loading && !error && filteredAbsences.length > 0 && (
+        {!loading && absences.length > 0 && (
           <div className={
             viewMode === 'tiles'
               ? styles.cardsViewContainerTiles
               : styles.cardsViewContainerList
           }>
-            {filteredAbsences.map(absence => (
-              <AbsenceCard key={absence.id} absence={absence} onStatusUpdate={() => fetchAbsences(setAbsences, setError, setLoading)} />
+            {absences.map(absence => (
+              <AbsenceCard key={absence.id} absence={absence} onStatusUpdate={() => fetchAbsences(setAbsences)}/>
             ))}
           </div>
         )}
       </div>
+      {loading && <LoadingSpinner wholeModal={false}/>}
+      
     </div>
   );
 };
-
 export default AbsenceEmployer;

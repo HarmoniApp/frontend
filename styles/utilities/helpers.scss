@@ -1,0 +1,77 @@
+@import '../abstracts/variables.scss';
+@import '../abstracts/mixins.scss';
+
+.errorMessageComponent {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    width: calc(100% - 40px);
+    max-width: 400px;
+    z-index: 1000;
+    padding: 10px;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    animation: slideDown 0.3s ease-in-out;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateX(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.errorMessageComponent:nth-child(n) {
+    bottom: calc(20px + (50px * (n - 1)));
+    opacity: 1;
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $black-transparency-05;
+    @include displayDFJAG(flex, null, center, center);
+    z-index: 1000;
+}
+
+.modalContent {
+    @include displayDFJAG(flex, column, null, null, 20px);
+    border: 2px solid $main-colour;
+    border-radius: 8px;
+    background-color: $gray;
+    text-align: center;
+    width: auto;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 20px;
+    color: $white;
+
+    @include respond-to-md {
+        width: 90%;
+        max-height: 70vh;
+    }
+}
+
+.noDataCard {
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: $white;
+    border-radius: 8px;
+    border: 2px solid $main-colour;
+    color: $font-dark-colour;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 20px;
+    margin: 20px 0 0 0;
+}

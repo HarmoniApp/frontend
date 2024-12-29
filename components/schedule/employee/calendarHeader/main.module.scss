@@ -1,12 +1,8 @@
-@import '@/styles/variables.scss';
+@import '@/styles/main.scss';
 
 .calendarHeader {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  @include displayDFJAG(flex, row, center, center, 20px);
   padding: 10px;
-  gap: 20px;
   width: 100%;
 
   .dateRange {
@@ -16,25 +12,5 @@
     text-transform: capitalize;
     color: $font-dark-colour;
     border-bottom: 2px solid $main-colour;
-  }
-
-  .changeMonthButton {
-    background-color: $white;
-    color: $font-dark-colour;
-    border: 2px solid $main-colour;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-
-    .buttonIcon {
-      height: 20px;
-      width: 20px;
-    }
-
-    &:hover {
-      background-color: $main-colour-hover;
-      color: $font-light-colour;
-      border-color: $main-colour-hover;
-    }
   }
 }

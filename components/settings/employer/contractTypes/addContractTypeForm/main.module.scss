@@ -1,0 +1,72 @@
+@import '@/styles/main.scss';
+
+.addContainer {
+    @include displayDFJAG(flex, row, null, center, 10px);
+    margin: 10px 0 0 0;
+
+    .addContractDaysInput {
+        border: 2px solid $main-colour;
+        border-radius: 4px;
+    }
+
+    .addInput {
+        flex-grow: 1;
+        padding: 10px;
+        border: 2px solid $main-colour;
+        border-radius: 5px;
+        background-color: $white;
+        color: $font-dark-colour;
+        outline: none;
+
+        &::placeholder {
+            color: $font-dark-colour;
+        }
+    }
+
+    .addButton {
+        background-color: $main-colour;
+        border: none;
+        color: $font-dark-colour;
+        padding: 10px;
+        width: 5vh;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: $main-colour-hover;
+        }
+    }
+}
+
+.formInput {
+    @include appearance-none;
+    width: 100%;
+    height: 5vh;
+    border-radius: 5px;
+    border: 2px solid $main-colour;
+    padding: 10px 5vh 10px 10px;
+    color: $font-dark-colour;
+    box-shadow: inset 0 2px 4px $black-transparency-01;
+    transition: all 0.3s ease;
+
+    &:hover {
+        border: 2px solid $main-colour;
+        outline: none;
+        background-color: lighten($white-4, 5%);
+    }
+
+    &::placeholder {
+        margin: 0 0 0 10px;
+        color: lighten($font-dark-colour, 30%);
+    }
+}
+
+.absenceDaysInput {
+    border: 2px solid $main-colour;
+    border-radius: 8px;
+    text-align: center;
+    height: 5vh;
+    width: 10vh;
+}
+@include errorMessage("center");

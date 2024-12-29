@@ -9,7 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/fontawesome-svg-core": "^6.7.1",
+    "@fortawesome/free-brands-svg-icons": "^6.7.1",
+    "@fortawesome/free-regular-svg-icons": "^6.7.1",
+    "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@stomp/stompjs": "^7.0.0",
     "@types/react-modal": "^3.16.3",
@@ -17,12 +20,13 @@
     "formik": "^2.4.6",
     "jwt-decode": "^4.0.0",
     "next": "14.2.15",
-    "primereact": "^10.8.4",
+    "primereact": "^10.8.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-flagkit": "^2.0.4",
     "react-modal": "^3.16.1",
-    "sass": "^1.77.6",
+    "react-toastify": "^10.0.6",
+    "sass": "^1.82.0",
     "sockjs-client": "^1.6.1",
     "yup": "^1.4.0"
   },

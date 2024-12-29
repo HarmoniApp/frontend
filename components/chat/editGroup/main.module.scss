@@ -1,29 +1,4 @@
-@import '@/styles/variables.scss';
-
-.modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: $black-transparency-05;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modalContent {
-  background-color: $white;
-  border-radius: 10px;
-  padding: 20px;
-  width: 90%;
-  max-width: 500px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  position: relative;
-}
+@import '@/styles/main.scss';
 
 .title {
   margin: 0;
@@ -33,53 +8,58 @@
 }
 
 .selectedUsers {
-  display: flex;
+  @include displayDFJAG(flex, null, null, null, 10px);
   flex-wrap: wrap;
-  gap: 10px;
   margin-top: 10px;
 
   .selectedUser {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 5px;
-      border: 2px solid $main-colour;
-      border-radius: 5px;
-      background-color: $white;
+    @include displayDFJAG(flex, null, null, center, 10px);
+    padding: 5px;
+    border: 2px solid $main-colour;
+    border-radius: 5px;
+    background-color: $white;
 
-      p {
-          margin: 0;
-          font-size: 0.9rem;
-          color: $font-dark-colour;
+    .imageContainer {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      margin-left: 10px;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: $font-dark-colour;
+    }
+
+    .removeIcon {
+      color: $red;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: color 0.2s;
+
+      &:hover {
+        color: $red-dark;
       }
-
-      .removeIcon {
-          color: $red;
-          cursor: pointer;
-          font-size: 1.2rem;
-          transition: color 0.2s;
-
-          &:hover {
-              color: $red-dark;
-          }
-      }
+    }
   }
 }
 
 .groupActions {
-  display: flex;
-  justify-content: flex-end;
+  @include displayDFJAG(flex, null, flex-end, null);
   margin-top: 10px;
 
   .deleteIcon {
-      color: $red;
-      cursor: pointer;
-      font-size: 1.5rem;
-      transition: color 0.2s;
+    color: $red;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: color 0.2s;
 
-      &:hover {
-          color: $red-dark;
-      }
+    &:hover {
+      color: $red-dark;
+    }
   }
 }
 
@@ -93,6 +73,18 @@
   transition: color 0.2s;
 
   &:hover {
-      color: $font-dark-colour;
+    color: $font-dark-colour;
+  }
+}
+
+.iconClose {
+  position: fixed;
+
+  color: $white;
+  cursor: pointer;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: $red;
   }
 }

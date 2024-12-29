@@ -1,157 +1,61 @@
 "use client";
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { ProgressSpinner } from 'primereact/progressspinner';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faComments, faUserMinus, faUserPen, faUserLock } from '@fortawesome/free-solid-svg-icons';
-import DeleteEmployeePopUp from '@/components/employees/employeeData/deleteEmployee';
-import EmployeeData from '@/components/types/employeeData';
-import Department from '@/components/types/department';
-import SupervisorDataSimple from '@/components/types/supervisorDataSimple';
+import React from 'react';
+import { Department } from '@/components/types/department';
 import Flag from 'react-flagkit';
 import styles from './main.module.scss';
 import NewPassword from './newPassword';
-import { Message } from 'primereact/message';
-import { fetchCsrfToken } from '@/services/csrfService';
+import LoadingSpinner from '@/components/loadingSpinner';
+import ConfirmationPopUp from '@/components/confirmationPopUp';
+import CustomButton from '@/components/customButton';
+import { Tooltip } from 'primereact/tooltip';
+import { useEmployeeData } from '@/hooks/employees/useEmployeeData';
+import { wrapText } from '@/utils/wrapText';
 
-const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
-  const [employee, setEmployee] = useState<EmployeeData | null>(null);
-  const [departments, setDepartments] = useState<Department[]>([]);
-  const [supervisorData, setSupervisorData] = useState<SupervisorDataSimple | null>(null);
-  const [modalIsOpenDeleteEmployee, setModalDeleteEmployee] = useState(false);
-  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
-  const [newPassword, setNewPassword] = useState('');
-  const [modalNewPassword, setModalNewPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+interface EmployeeDataComponentProps {
+  userId: number;
+}
 
-  const router = useRouter();
+const EmployeeDataComponent: React.FC<EmployeeDataComponentProps> = ({ userId }) => {
+  const {
+    employee,
+    departments,
+    supervisorData,
+    loading,
+    modalIsOpenDeleteEmployee,
+    modalNewPassword,
+    newPassword,
+    setModalDeleteEmployee,
+    setModalNewPassword,
+    handleEditEmployee,
+    handleDeleteEmployee,
+    handlePasswordResetSubmit,
+  } = useEmployeeData(userId);
 
-  const openModalDeleteEmployee = () => setModalDeleteEmployee(true);
-  const closeModalDeleteEmployee = () => setModalDeleteEmployee(false);
+  if (!employee) return <LoadingSpinner wholeModal={false} />;
 
-  useEffect(() => {
-    if (userId) {
-      const fetchDepartments = async () => {
-        try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/address/departments`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            },
-          });
-          const data = await response.json();
-          setDepartments(data);
-        } catch (error) {
-          console.error('Error fetching departments:', error);
-          setError('Błąd podczas pobierania oddziałów');
-        }
-      };
+  const department = departments.find((dept: Department) => dept.id === employee.work_address.id);
 
-      const fetchEmployee = async () => {
-        try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            },
-          });
-          const data = await response.json();
-          setEmployee(data);
-          if (data.supervisor_id) {
-            fetchSupervisor(data.supervisor_id);
-          }
-        } catch (error) {
-          console.error('Error fetching employee data:', error);
-          setError('Błąd podczas pobierania pracownika');
-        }
-      };
-
-      const fetchSupervisor = async (supervisorId: number) => {
-        try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/${supervisorId}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            },
-          });
-          const supervisorData = await response.json();
-          setSupervisorData(supervisorData);
-        } catch (error) {
-          console.error('Error fetching supervisor data:', error);
-          setError('Błąd podczas pobierania przełoonego');
-        }
-      };
-
-      fetchDepartments();
-      fetchEmployee();
-    }
-  }, [userId]);
-
-  if (!employee) return <div className={styles.spinnerContainer}><ProgressSpinner /></div>;
-
-  const department = departments.find(dept => dept.id === employee.work_address.id);
-
-  const handleEditEmployee = () => {
-    router.push(`/employees/user/${userId}/edit`);
+  const goToChat = () => {
+    //TODO: add link to chat
   };
 
-  const handlePasswordResetSubmit = async () => {
-    setModalIsOpenLoadning(true);
-    try {
-      const tokenXSRF = await fetchCsrfToken(setError);
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${employee.id}/generatePassword`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-        });
-
-        if (!response.ok) {
-          console.error('Error reseting password, response not OK');
-          throw new Error('Error reseting password');
-        }
-        const result = await response.text();
-        setNewPassword(result);
-        setModalIsOpenLoadning(false);
-        setModalNewPassword(true);
-    } catch (error) {
-      console.error('Błąd podczas resetowania hasła: ', error);
-      setError('Błąd podczas resetowania hasła');
-    }
-  };
+  const isTruncatedDepartment = department
+    ? wrapText(department.departmentName, 30) !== department.departmentName
+    : false;
+  const departmentElementId = `departmentName-${userId}`;
 
   return (
     <div className={styles.employeeDataContainerMain}>
       <div className={styles.rowButtonContainer}>
         <div className={styles.buttonContainer}>
-          <button className={styles.chatButton}>
-            <FontAwesomeIcon className={styles.buttonIcon} icon={faComments} />
-            <p className={styles.buttonParagraph}>Chat</p>
-          </button>
-          <button className={styles.resetPasswordButton} onClick={handlePasswordResetSubmit}>
-            <FontAwesomeIcon className={styles.buttonIcon} icon={faUserLock} />
-            <p className={styles.buttonParagraph}>Zresetuj hasło</p>
-          </button>
+          <CustomButton icon="comments" writing="Chat" action={goToChat} />
+          <CustomButton icon="userLock" writing="Zresetuj hasło" action={handlePasswordResetSubmit} />
         </div>
         <div className={styles.buttonContainer}>
-          <button className={styles.editButton} onClick={handleEditEmployee}>
-            <FontAwesomeIcon className={styles.buttonIcon} icon={faUserPen} />
-            <p className={styles.buttonParagraph}>Edytuj</p>
-          </button>
-          <button className={styles.deleteButton} onClick={openModalDeleteEmployee}>
-            <FontAwesomeIcon className={styles.buttonIcon} icon={faUserMinus} />
-            <p className={styles.buttonParagraph}>Usuń</p>
-          </button>
+          <CustomButton icon="userPen" writing="Edytuj" action={handleEditEmployee} />
+          <CustomButton icon="userMinus" writing="Usuń" action={() => setModalDeleteEmployee(true)} />
         </div>
       </div>
-
       <div className={styles.fullNameAndIdContainer}>
         <div className={styles.fullNameColumnContainer}>
           <div className={styles.firstNameContainer}>
@@ -168,16 +72,19 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
           <p className={styles.idDataParagraph}>{employee.employee_id}</p>
         </div>
       </div>
-
       <div className={styles.emplyeeDataContainer}>
         <div className={styles.columnContainer}>
           <label className={styles.residenceLabel}>
             <p className={styles.homeAdressParagraph}>Adres zamieszkania</p>
-            <p className={styles.homeAdressDataParagraph}>ul. {employee.residence.street} {employee.residence.building_number} {employee.residence.apartment ? '/ ' + employee.residence.apartment : ''}, {employee.residence.city} {employee.residence.zip_code}</p>
+            <p className={styles.homeAdressDataParagraph}>
+              ul. {employee.residence.street} {employee.residence.building_number} {employee.residence.apartment ? '/ ' + employee.residence.apartment : ''}, {employee.residence.city} {employee.residence.zip_code}
+            </p>
           </label>
           <label className={styles.supervisorLabel}>
             <p className={styles.supervisorParagraph}>Przełożony</p>
-            <p className={styles.supervisorDataParagraph}>{supervisorData ? `${supervisorData.firstname} ${supervisorData.surname}` : 'Loading...'}</p>
+            <p className={styles.supervisorDataParagraph}>
+              {supervisorData ? `${supervisorData.firstname} ${supervisorData.surname}` : "Brak przypisanego przełożonego"}
+            </p>
           </label>
           <label className={styles.phoneNumberLabel}>
             <p className={styles.phoneNumberParagraph}>Nr telefonu</p>
@@ -194,7 +101,7 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
             <p className={styles.startContractDateDataParagraph}>{employee.contract_signature}</p>
           </label>
           <label className={styles.endContractDateLables}>
-            <p className={styles.endContractDateParagraph}>Data zakończenia sie umowy</p>
+            <p className={styles.endContractDateParagraph}>Data zakończenia umowy</p>
             <p className={styles.endContractDateDataParagraph}>{employee.contract_expiration}</p>
           </label>
           <label className={styles.contractTypeLabel}>
@@ -203,7 +110,20 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
           </label>
           <label className={styles.departmentLabel}>
             <p className={styles.departmentParagraph}>Oddział</p>
-            <p className={styles.departmentDataParagraph}>{department ? department.departmentName : 'We do not have a branch under this name. Error!'}</p>
+            <p
+              className={styles.departmentDataParagraph}
+              data-pr-tooltip={department ? department.departmentName : 'Brak przypisanego oddziału'}
+              data-pr-position="left"
+              id={departmentElementId}
+              style={{
+                cursor: isTruncatedDepartment ? 'pointer' : 'default',
+              }}
+            >
+              {department ? wrapText(department.departmentName, 30) : 'Brak przypisanego oddziału'}
+            </p>
+            {isTruncatedDepartment && (
+              <Tooltip target={`#${departmentElementId}`} autoHide />
+            )}
           </label>
         </div>
       </div>
@@ -212,15 +132,32 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
         <div className={styles.columnContainer}>
           <p className={styles.roleParagraph}>Role przypisane do pracownika</p>
           <div className={styles.roleContainer}>
-            {employee.roles.map((role) => (
-              <label key={role.id} className={styles.roleLabel}>
-                <span>{role.name}</span>
-              </label>
-            ))}
+            {employee.roles.map((role) => {
+              const isTruncatedRole = wrapText(role.name, 18) !== role.name;
+              const roleElementId = `roleName-${role.id}`;
+
+              return (
+                <label key={role.id} className={styles.roleLabel}>
+                  <span
+                    data-pr-tooltip={role.name}
+                    data-pr-position="bottom"
+                    id={roleElementId}
+                    style={{
+                      cursor: isTruncatedRole ? 'pointer' : 'default',
+                    }}
+                  >
+                    {wrapText(role.name, 18)}
+                  </span>
+                  {isTruncatedRole && (
+                    <Tooltip target={`#${roleElementId}`} autoHide />
+                  )}
+                </label>
+              );
+            })}
           </div>
         </div>
         <div className={styles.columnContainer}>
-          <p className={styles.languageParagraph}>Ten pracownik posługuję się tymi językami</p>
+          <p className={styles.languageParagraph}>Ten pracownik posługuje się tymi językami</p>
           <div className={styles.languagesContainer}>
             {employee.languages.map((language) => (
               <label key={language.id} className={styles.languageLabel}>
@@ -231,41 +168,31 @@ const EmployeeDataComponent: React.FC<{ userId: number }> = ({ userId }) => {
           </div>
         </div>
       </div>
-
       {modalIsOpenDeleteEmployee && (
-        <div className={styles.modalOverlayDeleteEmployee}>
-          <div className={styles.modalContentOfDeleteEmployee}>
-            <DeleteEmployeePopUp
-              userId={employee.id}
-              firstName={employee.firstname}
-              surname={employee.surname}
-              onClose={closeModalDeleteEmployee}
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <ConfirmationPopUp
+              action={handleDeleteEmployee}
+              onClose={() => setModalDeleteEmployee(false)}
+              description={`Usunąć użytkownika: ${employee.firstname} ${employee.surname}`}
             />
           </div>
         </div>
       )}
-
       {modalNewPassword && (
-        <div className={styles.modalOverlayNewPassword}>
-          <div className={styles.modalContentOfNewPassword}>
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
             <NewPassword
               newPassword={newPassword}
               onClose={() => setModalNewPassword(false)}
               firstName={employee.firstname}
-              surname={employee.surname} />
+              surname={employee.surname}
+            />
           </div>
         </div>
       )}
-      {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
-
-      {modalIsOpenLoadning && (
-        <div className={styles.loadingModalOverlay}>
-          <div className={styles.loadingModalContent}>
-            <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-          </div>
-        </div>
-      )}
+      {loading && <LoadingSpinner />}
     </div>
   );
-}
+};
 export default EmployeeDataComponent;

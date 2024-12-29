@@ -1,0 +1,62 @@
+@import '@/styles/main.scss';
+
+.customButton {
+    @include displayDFJAG(flex, row, center, center, 10px);
+    padding: 10px;
+    height: 40px;
+    background-color: $white;
+    color: $font-dark-colour;
+    border: 2px solid $main-colour;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+
+    .icon{
+        height: 20px;
+        width: 20px;
+    }
+
+    &:hover {
+        background-color: $main-colour-hover;
+        color: $font-light-colour;
+        border-color: $main-colour-hover;
+    }
+}
+
+.atNormal {
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.atChat {
+    width: 100%;
+    height: 60px;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.atDashboard {
+    height: 100px;
+    font-size: 20px;
+    width: 100%;
+    text-transform: none;
+}
+
+.atBackPopUp{
+    .icon{
+        transform: rotate(-90deg);
+    }
+}
+
+.atConfirmPopUp {
+    background-color: $main-colour-hover;
+    border: 2px solid $main-colour-hover;
+    color: $font-light-colour;
+
+    &:hover {
+        background-color: $white;
+        color: $font-dark-colour;
+        border: 2px solid $main-colour-hover;
+    }
+}

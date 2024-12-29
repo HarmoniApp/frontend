@@ -1,10 +1,10 @@
 import Navbar from "@/components/navbar";
-import styles from './main.module.scss';
 import PlanerAi from '@/components/plannerAI';
+import styles from '@/styles/components/pages.module.scss';
 
 export default function PlanerAiPage() {
     return (
-        <div className={styles.planerAiPageContainerMain}>
+        <div className={styles.pageContainer}>
             <Navbar />
             <PlanerAi />
         </div>

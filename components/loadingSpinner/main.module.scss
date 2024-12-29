@@ -1,0 +1,26 @@
+@import '@/styles/main.scss';
+
+.loadingModalOverlay {
+    @include displayDFJAG(flex, null, center, center);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $black-transparency-05;
+    z-index: 1000;
+}
+
+.loadingModalContent {
+    @include displayDFJAG(flex, column, null, null);
+    text-align: center;
+}
+
+.spinnerContainer {
+    @include displayDFJAG(flex, column, center, center);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+}

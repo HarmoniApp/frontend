@@ -1,78 +1,18 @@
-@import '@/styles/variables.scss';
+@import '@/styles/main.scss';
 
 .mainContainer {
-    margin: 0 auto;
-    padding-top: 10%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    @include displayDFJAG(flex, column, center, center, 10px);
     width: 80%;
+    height: 80vh; 
+    margin: 0 auto;
 
     .firstRow {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        @include displayDFJAG(flex, null, center, center);
         width: 100%;
-        margin-bottom: 10px;
-
-        &>div {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            background-color: $main-colour;
-            color: $font-dark-colour;
-            font-weight: bold;
-            border: 2px solid $black-transparency-05;
-            border-radius: 8px;
-            letter-spacing: 1.5px;
-            font-size: 18px;
-            padding: 15px;
-            cursor: pointer;
-
-            .icon {
-                margin-right: 8px;
-                height: 20px;
-                width: 20px;
-            }
-
-            .paragraphName {
-                margin: 0;
-            }
-        }
     }
 
-
     .secondRow {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        @include gridQG(2, 10px);
         width: 100%;
-        gap: 10px;
-
-        &>div {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: $main-colour;
-            color: $font-dark-colour;
-            font-weight: bold;
-            border: 2px solid $black-transparency-05;
-            border-radius: 8px;
-            letter-spacing: 1.5px;
-            font-size: 18px;
-            padding: 15px;
-            cursor: pointer;
-
-            .icon {
-                margin-right: 8px;
-                height: 20px;
-                width: 20px;
-            }
-
-            .paragraphName {
-                margin: 0;
-            }
-        }
     }
 }

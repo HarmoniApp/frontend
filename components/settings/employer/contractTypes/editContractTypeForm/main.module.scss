@@ -1,0 +1,85 @@
+@import '@/styles/main.scss';
+
+.showContractContainerMain {
+    @include displayDFJAG(flex, column, null, null, 15px);
+    height: 100%;
+    padding: 10px;
+    background-color: $white-3;
+    border-radius: 5px;
+
+    .showContractContainer {
+        @include displayDFJAG(flex, null, space-between, center, 15px);
+        height: 100%;
+
+        .contractInfoContainer {
+            @include displayDFJAG(flex, row, space-between, center, 10px);
+            text-align: center;
+            padding: 0;
+            width: 100%;
+
+            .contractNameParagraph,
+            .contractDaysParagraph {
+                @include displayDFJAG(flex, null, null, left);
+                margin: 0;
+                color: $font-dark-colour;
+                font-weight: bold;
+                width: auto;
+            }
+
+            .contractNameInput {
+                padding: 5px;
+                border: 2px solid $font-dark-colour;
+                border-radius: 5px;
+                background-color: $white;
+                color: $font-dark-colour;
+                outline: none;
+                width: 8vw;
+                height: 5vh;
+            }
+        }
+
+        .editAndRemoveButtonContainer {
+            @include displayDFJAG(flex, row, null, null, 10px);
+
+            .contractDaysInput {
+                border: 2px solid $font-dark-colour;
+                border-radius: 4px;
+            }
+        }
+    }
+}
+
+    @include settingButtons;   
+
+
+.formInput {
+    @include appearance-none;
+    width: 100%;
+    height: 5vh;
+    border-radius: 5px;
+    border: 2px solid $main-colour;
+    padding: 10px 5vh 10px 10px;
+    color: $font-dark-colour;
+    box-shadow: inset 0 2px 4px $black-transparency-01;
+    transition: all 0.3s ease;
+
+    &:hover {
+        border: 2px solid $main-colour;
+        outline: none;
+        background-color: lighten($white-4, 5%);
+    }
+
+    &::placeholder {
+        margin: 0 0 0 10px;
+        color: lighten($font-dark-colour, 30%);
+    }
+}
+
+.absenceDaysInput {
+    border: 2px solid $main-colour;
+    border-radius: 8px;
+    text-align: center;
+    height: 5vh;
+    width: 10vh;
+}
+@include errorMessage("center");

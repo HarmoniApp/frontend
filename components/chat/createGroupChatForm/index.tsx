@@ -1,12 +1,11 @@
 import React from 'react';
-import ChatPartner from '@/components/types/chatPartner';
+import { ChatPartner } from '@/components/types/chatPartner';
 import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
 import styles from './main.module.scss';
-import { fetchCsrfToken } from '@/services/csrfService';
+import { postGroup } from '@/services/chatService';
+import { groupValidationSchema } from '@/validationSchemas/groupValidationSchema';
 
 interface CreateGroupChatFormProps {
-  userId: number;
   setChatType: (type: 'user' | 'group') => void;
   setNewChat: (newChat: boolean) => void;
   chatPartners: ChatPartner[];
@@ -14,14 +13,14 @@ interface CreateGroupChatFormProps {
   setSelectedChat: (chatPartner: ChatPartner) => void;
   fetchChatHistory: (partner: ChatPartner) => void;
   loadChatPartners: (selectFirstPartner: boolean) => void;
-  loading: (loading: boolean) => void;
-  setError: (errorMessage: string | null) => void;
+  setLoading: (loading: boolean) => void;
 }
 
-const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartners, loading, setError }) => {
+const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ setChatType, setNewChat, chatPartners, setChatPartners, setSelectedChat, fetchChatHistory, loadChatPartners, setLoading }) => {
+  const userId = Number(sessionStorage.getItem('userId'));
 
   const handleCreateGroup = async (values: { groupName: string }) => {
-    loading(true);
+    setLoading(true);
 
     const groupData = {
       name: values.groupName,
@@ -29,49 +28,26 @@ const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setCh
     };
 
     try {
-      const tokenXSRF = await fetchCsrfToken(setError);
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/group`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-          'X-XSRF-TOKEN': tokenXSRF,
-        },
-        credentials: 'include',
-        body: JSON.stringify(groupData),
-      });
-
-      if (response.ok) {
-        const newGroup = await response.json();
+      const newGroup = await postGroup(groupData);
+      if (newGroup != undefined) {
         setChatType('group');
         loadChatPartners(false);
         setNewChat(false);
         setChatPartners([...chatPartners, newGroup]);
         setSelectedChat(newGroup);
         fetchChatHistory(newGroup);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Błąd podczas tworzenia grupy');
       }
     } catch (error) {
-      console.error('Błąd podczas tworzenia grupy:', error);
-      setError('Błąd podczas tworzenia grupy');
+      console.error('Error while creating group:', error);
     } finally {
-      loading(false);
+      setLoading(false);
     }
   };
-
-  const validationSchema = Yup.object({
-    groupName: Yup.string()
-      .required('Nazwa grupy nie może być pusta')
-      .test('no-only-spaces', 'Nazwa grupy nie może zawierać tylko spacji', value => value ? value.trim().length > 0 : false)
-  });
 
   return (
     <Formik
       initialValues={{ groupName: '' }}
-      validationSchema={validationSchema}
+      validationSchema={groupValidationSchema}
       onSubmit={handleCreateGroup}
     >
       {({ errors, touched }) => (
@@ -91,5 +67,4 @@ const CreateGroupChatForm: React.FC<CreateGroupChatFormProps> = ({ userId, setCh
     </Formik>
   );
 };
-
 export default CreateGroupChatForm;

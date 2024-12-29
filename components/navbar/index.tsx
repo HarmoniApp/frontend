@@ -1,10 +1,9 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import NavbarBottom from "./bottom";
 import Account from "@/components/account";
 import NavbarTop from "./top";
-import styles from './main.module.scss';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 export default function Navbar() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -27,10 +26,10 @@ export default function Navbar() {
         setIsSidebarOpen(!isSidebarOpen);
     };
     return (
-        <div>
-            {userId !== 0 ? <NavbarTop onAccountIconClick={toggleSidebar} userId={userId} isThisAdmin={isAdmin}/> : <div className={styles.spinnerContainer}><ProgressSpinner /></div>}
+        <>
+            {userId !== 0 ? <NavbarTop onAccountIconClick={toggleSidebar} isThisAdmin={isAdmin}/> : <LoadingSpinner wholeModal={false}/>}
             <Account isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
             <NavbarBottom isThisAdmin={isAdmin}/>
-        </div>
+        </>
     )
 }

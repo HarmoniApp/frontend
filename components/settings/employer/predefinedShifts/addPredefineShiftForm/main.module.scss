@@ -1,0 +1,82 @@
+@import '@/styles/main.scss';
+
+.addContainer {
+    @include displayDFJAG(flex, row, null, center, 10px);
+    margin: 10px 0 0 0;
+
+    .addShiftTimeSelect {
+        border: 2px solid $main-colour;
+        border-radius: 4px;
+    }
+
+    .addInput {
+        flex-grow: 1;
+        padding: 10px;
+        border: 2px solid $main-colour;
+        border-radius: 5px;
+        background-color: $white;
+        color: $font-dark-colour;
+        outline: none;
+
+        &::placeholder {
+            color: $font-dark-colour;
+        }
+    }
+
+    .addButton {
+        background-color: $main-colour;
+        border: none;
+        color: $font-dark-colour;
+        padding: 10px;
+        width: 5vh;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: $main-colour-hover;
+        }
+    }
+}
+
+.addShiftTimeSelect {
+    @include appearance-none;
+    height: 5vh;
+    padding: 10px 3.5vh 10px 10px;
+    background-image:
+        linear-gradient(45deg, transparent 50%, $font-dark-colour 50%),
+        linear-gradient(135deg, $font-dark-colour 50%, transparent 50%);
+    background-position:
+        calc(100% - 15px) calc(1em + 5px),
+        calc(100% - 6px) calc(1em + 5px);
+    background-size:
+        9px 9px,
+        9px 9px;
+    background-repeat: no-repeat;
+    color: $font-dark-colour;
+    cursor: pointer;
+}
+
+.formInput {
+    @include appearance-none;
+    width: 100%;
+    height: 5vh;
+    border-radius: 5px;
+    border: 2px solid $main-colour;
+    padding: 10px 5vh 10px 10px;
+    color: $font-dark-colour;
+    box-shadow: inset 0 2px 4px $black-transparency-01;
+    transition: all 0.3s ease;
+
+    &:hover {
+        border: 2px solid $main-colour;
+        outline: none;
+        background-color: lighten($white-4, 5%);
+    }
+
+    &::placeholder {
+        margin: 0 0 0 10px;
+        color: lighten($font-dark-colour, 30%);
+    }
+}
+@include errorMessage("center");

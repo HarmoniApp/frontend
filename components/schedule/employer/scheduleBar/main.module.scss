@@ -1,123 +1,35 @@
-@import '@/styles/variables.scss';
-
-@mixin respond-to-md {
-    @media (max-width: $breakpoint-md) {
-        @content;
-    }
-}
-
-.publishModalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.publishModalContent {
-    display: flex;
-    flex-direction: column;
-    border: 2px solid $main-colour;
-    border-radius: 8px;
-    background-color: $gray;
-    text-align: center;
-    width: auto;
-    max-height: 80vh;
-    overflow-y: auto;
-    gap: 20px;
-    padding: 20px;
-}
+@import '@/styles/main.scss';
 
 .scheduleBarContainerMain {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    @include displayDFJAG(flex, row, center, space-between);
 
     @include respond-to-md {
-        flex-direction: column;
-        gap: 10px;
+        @include displayDFJAG(flex, column, null, null, 10px);
     }
 
     .buttonContainer {
-        display: flex;
+        @include displayDFJAG(flex, null, null, null, 15px);
         flex: 1;
-        gap: 15px;
         margin: 0 30px 0 0;
 
         @include respond-to-md {
-            flex-direction: row;
-            justify-content: center;
-            gap: 10px;
+            @include displayDFJAG(flex, row, center, null, 10px);
             margin: 0;
-        }
-
-        .exportButton,
-        .publishButton {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background-color: $white;
-            color: $font-dark-colour;
-            border: 2px solid $main-colour;
-            border-radius: 5px;
-            font-size: 14px;
-            gap: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-
-            &:hover {
-                background-color: $main-colour-hover;
-                color: $font-light-colour;
-                border-color: $main-colour-hover;
-            }
-
         }
     }
 
     .weekSwitcher {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        gap: 30px;
+        @include displayDFJAG(flex, row, center, center, 30px);
         flex: 4;
 
-        .changeWeekButton {
-            padding: 10px;
-            background-color: $white;
-            color: $font-dark-colour;
-            border: 2px solid $main-colour;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-
-            &:hover {
-                background-color: $main-colour-hover;
-                color: $font-light-colour;
-                border-color: $main-colour-hover;
-            }
-
-        }
-
         .dateRange {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
+            @include displayDFJAG(flex, row, center, center, 10px);
             padding: 10px;
             background-color: $white;
             color: $font-dark-colour;
             border: 2px solid $main-colour;
             border-radius: 5px;
-            gap: 10px;
+            height: 40px;
 
             .dateRangeParagraph {
                 margin: 0;
@@ -127,11 +39,6 @@
             }
         }
     }
-}
-
-.buttonIcon {
-    height: 20px;
-    width: 20px;
 }
 
 .exportDropdownContainer {
@@ -146,10 +53,7 @@
         z-index: 1000;
 
         button {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
+            @include displayDFJAG(flex, row, space-between, center);
             text-align: center;
             background-color: $white-4;
             padding: 10px;
@@ -158,28 +62,9 @@
             width: 100%;
             margin: 5px 0;
 
-
             &:hover {
                 background-color: $main-colour-hover;
             }
         }
     }
-}
-
-.spinnerOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.spinnerContainer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }

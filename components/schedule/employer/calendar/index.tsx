@@ -21,5 +21,4 @@ const Calendar = forwardRef(({ currentWeek }: CalendarProps, ref) => {
     </div>
   );
 });
-
 export default Calendar;

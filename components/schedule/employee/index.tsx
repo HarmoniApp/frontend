@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react';
 import CalendarHeader from './calendarHeader';
 import CalendarDays from './calendarDays';
 import CalendarCells from './calendarCells';
-import WeekSchedule from '@/components/types/weekSchedule';
-import { Message } from 'primereact/message';
+import { WeekSchedule } from '@/components/types/weekSchedule';
 import styles from './main.module.scss';
+import { fetchUserPublishedSchedule } from '@/services/scheduleService';
+import LoadingSpinner from '@/components/loadingSpinner';
 interface ScheduleEmployeeProps {
     userId: number;
 }
@@ -13,48 +14,23 @@ interface ScheduleEmployeeProps {
 const ScheduleEmployee: React.FC<ScheduleEmployeeProps> = ({ userId }) => {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [weekSchedule, setWeekSchedule] = useState<WeekSchedule | null>(null);
-    const [error, setError] = useState<string | null>(null);
-
-    const getMonthStartAndEnd = () => {
-        const year = currentMonth.getFullYear();
-        const month = currentMonth.getMonth() + 1;
-        const startDate = `${year}-${month.toString().padStart(2, '0')}-01T00:00`;
-        const lastDayOfMonth = new Date(year, month, 0).getDate();
-        const endDate = `${year}-${month.toString().padStart(2, '0')}-${lastDayOfMonth}T23:59`;
-
-        return { startDate, endDate };
-    };
-
-    const fetchShiftsAndAbsences = async () => {
-        try {
-            const { startDate, endDate } = getMonthStartAndEnd();
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}&published=true`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                }
-            });
-            const data: WeekSchedule = await response.json();
-            setWeekSchedule(data);
-        } catch (error) {
-            console.error('Error fetching week schedule:', error);
-            setError('Błąd podczas pobierania kalendarza');
-        }
-    };
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        fetchShiftsAndAbsences();
+        const loadData = async () => {
+            setLoading(true);
+            await fetchUserPublishedSchedule(currentMonth, userId, setWeekSchedule);
+            setLoading(false);
+        }
+        loadData();
     }, [currentMonth]);
 
     const handlePrevMonth = () => {
         setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
-        fetchShiftsAndAbsences();
     };
 
     const handleNextMonth = () => {
         setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
-        fetchShiftsAndAbsences();
     };
 
     return (
@@ -68,7 +44,7 @@ const ScheduleEmployee: React.FC<ScheduleEmployeeProps> = ({ userId }) => {
                     absences={weekSchedule.absences || []}
                 />
             )}
-            {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
+            {loading && <LoadingSpinner />}
         </div>
     );
 };

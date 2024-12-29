@@ -1,8 +1,7 @@
+@import '@/styles/main.scss';
+
 .scheduleContainerMain {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    @include displayDFJAG(flex, column, center, center);
     width: 90%;
     margin: 0 auto;
 }

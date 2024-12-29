@@ -1,0 +1,30 @@
+@import '@/styles/main.scss';
+
+.changePasswordForm {
+    @include displayDFJAG(flex, column, null, stretch);
+    min-width: 500px;
+    width: 100%;
+}
+
+.newPasswordLabel,
+.repeatNewPasswordLabel {
+    font-size: 16px;
+    font-weight: bold;
+    color: $font-light-colour;
+    margin: 10px 0;
+    transition: color 0.3s ease;
+    @include displayDFJAG(flex, null, space-between, center);
+}
+
+.newPasswordInput,
+.repeatNewPasswordInput {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 2px solid $main-colour;
+    border-radius: 5px;
+    font-size: 1em;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@include errorMessage("right");

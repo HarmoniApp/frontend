@@ -1,10 +1,7 @@
-import Language from "@/components/types/language";
+import { Language } from "@/components/types/language";
 
 export const fetchLanguages = async (
-    setLanguages: (languages: Language[]) => void,
-    setError: (errorMessage: string | null) => void,
-    setLoading: (loading: boolean) => void): Promise<void> => {
-    setLoading(true);
+    setLanguages: (languages: Language[]) => void): Promise<void> => {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/language`, {
             method: 'GET',
@@ -18,8 +15,5 @@ export const fetchLanguages = async (
         setLanguages(data);
     } catch (error) {
         console.error('Error fetching languages:', error);
-        setError('Błąd podczas pobierania języków');
-    } finally {
-        setLoading(false);
     }
 };

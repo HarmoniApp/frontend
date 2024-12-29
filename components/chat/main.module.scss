@@ -1,10 +1,7 @@
-@import '@/styles/variables.scss';
+@import '@/styles/main.scss';
 
 .chatContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap:20px;
+  @include displayDFJAG(flex, row, center, null, 20px);
   height: 78vh;
   width: 96%;
   text-align: center;
@@ -12,17 +9,16 @@
 }
 
 .sidebar {
-  display: flex;
-  flex-direction: column;
+  @include displayDFJAG(flex, column, null, null, 20px);
   padding: 20px;
   background-color: $white;
   border-radius: 10px;
   box-shadow: 0 4px 8px $black-transparency-01;
-  gap:20px;
   flex:1;
 }
 
 .chatWindow{
+  @include displayDFJAG(flex, column, space-between, null, 0px);
   flex:5;
   max-width: 1100px;
   background-color: $white;

@@ -1,0 +1,86 @@
+@use './variables.scss' as vars;
+
+@mixin displayDFJAG($display: flex, $direction: column, $justify: center, $align: center, $gap: 0px) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $justify;
+    align-items: $align;
+    gap: $gap;
+}
+
+@mixin gridQG($quantity: 3, $gap: 20px) {
+    display: grid;
+    grid-template-columns: repeat($quantity, 1fr);
+    gap: $gap;
+}
+
+@mixin appearance-none {
+    -webkit-appearance: none; // Safari
+    -moz-appearance: none; // Firefox
+    appearance: none; // Standard
+}
+
+@mixin errorMessage($textAlign: "right") {
+    .errorMessage {
+        @include displayDFJAG(flex, null, null, center);
+        color: vars.$red;
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0;
+        text-align: $textAlign;
+        flex-shrink: 0;
+    }
+
+    .errorInput {
+        border: 2px solid $red;
+        background-color: $red-powder;
+    }
+}
+
+@mixin settingButtons {
+    .removeButton,
+    .editButton,
+    .yesButton,
+    .noButton {
+        background-color: $main-colour;
+        border: 2px solid $font-dark-colour;
+        color: $font-dark-colour;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+
+        &:hover {
+            background-color: $font-dark-colour;
+            color: $main-colour;
+        }
+    }
+
+    .yesButton:hover {
+        background-color: $green-dark;
+        color: $font-dark-colour;
+    }
+
+    .noButton:hover {
+        background-color: $red;
+        color: $font-dark-colour;
+    }
+}
+
+@mixin respond-to-lg {
+    @media (max-width: $breakpoint-lg) {
+        @content;
+    }
+}
+
+@mixin respond-to-md {
+    @media (max-width: $breakpoint-md) {
+        @content;
+    }
+}
+
+@mixin respond-to-sm {
+    @media (max-width: $breakpoint-sm) {
+        @content;
+    }
+}

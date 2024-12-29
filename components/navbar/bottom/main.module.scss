@@ -1,4 +1,4 @@
-@import '@/styles/variables.scss';
+@import '@/styles/main.scss';
 
 .navbar {
     background-color: $gray-powder;
@@ -6,9 +6,7 @@
 }
 
 .navList {
-    display: flex;
-    justify-content: left;
-    align-items: center;
+    @include displayDFJAG(flex, null, left, center);
     list-style-type: none;
     margin: 0;
     padding: 0;

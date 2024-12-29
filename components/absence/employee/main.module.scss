@@ -1,47 +1,13 @@
-@import '@/styles/variables.scss';
-
-.addAbsencetModalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: $black-transparency-05;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.addAbsenceModalContent {
-  display: flex;
-  flex-direction: column;
-  border: 2px solid $main-colour;
-  border-radius: 8px;
-  background-color: $gray;
-  text-align: center;
-  width: auto;
-  max-height: 80vh;
-  overflow-y: auto;
-  gap: 20px;
-  padding: 20px;
-}
+@import '@/styles/main.scss';
 
 .absenceEmployeesContainerMain {
-  display: flex;
-  flex-direction: column;
-  align-self: center;
-  justify-content: center;
-  gap: 40px;
+  @include displayDFJAG(flex, column, center, center, 40px) ;
   margin: 20px auto ;
   width: 70%;
 }
 
 .absenceHeaderContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  @include displayDFJAG(flex, row, space-between, center);
   background-color: $gray;
   border: 2px solid $main-colour;
   border-radius: 10px;
@@ -53,7 +19,6 @@
     font-weight: bold;
     color: $main-colour;
     text-transform: uppercase;
-
   }
 
   .subtitle{
@@ -66,8 +31,7 @@
 }
 
 .tableContainer {
-  display: flex;
-  flex-direction: column;
+  @include displayDFJAG(flex, column, null, null);
   align-self: center;
   background-color: $gray;
   border: 2px solid $main-colour;
@@ -79,7 +43,6 @@
 .absenceTable {
   border-collapse: collapse;
   background-color: $gray;
-
 }
 
 .absenceThead {
@@ -121,9 +84,7 @@
 }
 
 .absenceDataBodyHeadElementButton{
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include displayDFJAG(flex, null, center, center);
   text-align: center;
 }
 
@@ -131,70 +92,9 @@
   content: " dni";
 }
 
-.archiveButton,
-.cancelButton,
-.newAbsenceButton {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  background-color: $white;
-  color: $font-dark-colour;
-  border: 2px solid $main-colour;
-  border-radius: 5px;
-  font-size: 14px;
-  font-weight: bold;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-.archiveButton:hover,
-.cancelButton:hover,
-.newAbsenceButton:hover {
-  background-color: $main-colour-hover;
-  color: $font-light-colour;
-  border-color: $main-colour-hover;
-}
-
 .error{
+  @include displayDFJAG(flex, null, center, center);
   color: $red;
   font-size: 14px;
   font-weight: bold;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  
-}
-
-.loadingModalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: $black-transparency-05;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-
-  .loadingModalContent {
-      display: flex;
-      flex-direction: column;
-      text-align: center;
-
-      .spinnerContainer {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          z-index: 9999;
-      }
-  }
 }

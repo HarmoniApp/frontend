@@ -1,33 +1,4 @@
-@import '@/styles/variables.scss';
-
-.cancelAbsenceModalOverlay,
-.aproveAbsenceModalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.cancelAbsenceModalContent,
-.aproveAbsenceModalContent {
-    display: flex;
-    flex-direction: column;
-    border: 2px solid $main-colour;
-    border-radius: 8px;
-    background-color: $gray;
-    text-align: center;
-    width: auto;
-    max-height: 80vh;
-    overflow-y: auto;
-    gap: 20px;
-    padding: 20px;
-}
+@import '@/styles/main.scss';
 
 .absenceCardContainerMain {
     background-color: $white;
@@ -35,15 +6,11 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px $black-transparency-01;
     padding: 0 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    @include displayDFJAG(flex, column, null, null, 20px);
 }
 
 .headerCardContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include displayDFJAG(flex, null, space-between, center);
     border-bottom: 2px solid $main-colour;
 
     .absenceTypeNameParagraph {
@@ -60,38 +27,27 @@
 }
 
 .absenceDataContainer {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
+    @include displayDFJAG(flex, row, null, null, 20px);
     margin: 0 0 10px 0;
 
     .columnContainer {
-        display: flex;
-        flex-direction: column;
+        @include displayDFJAG(flex, column, null, null);
         flex: 1;
 
         .idLabel,
         .firstnameLabel,
         .surnameLabel,
-        .remainingDaysLabel,
         .startDateLabel,
         .endDateLabel,
-        .quantityDaysLabel,
         .statusNameLabel {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-            gap: 5px;
+            @include displayDFJAG(flex, row, space-between, center, 5px);
         }
 
         .idParagraph,
         .firstnameParagraph,
         .surnameParagraph,
-        .remainingDaysParagraph,
         .startDateParagraph,
         .endDateParagraph,
-        .quantityDaysParagraph,
         .statusNameParagraph {
             font-size: 16px;
             font-weight: bold;
@@ -102,10 +58,8 @@
         .idDataParagraph,
         .firstnameDataParagraph,
         .surnameDataParagraph,
-        .remainingDaysDataParagraph,
         .startDateDataParagraph,
         .endDateDataParagraph,
-        .quantityDaysDataParagraph,
         .statusNameDataParagraph {
             font-size: 16px;
             color: $font-dark-colour;
@@ -116,29 +70,25 @@
 }
 
 .buttonContainer {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
+    @include displayDFJAG(flex, null, center, null, 20px);
     margin: 0 0 10px 0;
 
     .acceptButton,
     .declineButton {
+        @include displayDFJAG(flex, null, null, center, 5px);
         padding: 10px 20px;
         font-size: 16px;
         color: $font-light-colour;
         border: none;
         border-radius: 5px;
         cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 5px;
     }
 
     .acceptButton {
-        background-color: $green;
+        background-color: $green-dark;
 
         &:hover {
-            background-color: $green-hover;
+            background-color: $green;
         }
     }
 
@@ -156,36 +106,5 @@
 
     .buttonParagraph {
         margin: 0;
-    }
-}
-
-.loadingModalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: $black-transparency-05;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-
-    .loadingModalContent {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-
-        .spinnerContainer {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-        }
     }
 }

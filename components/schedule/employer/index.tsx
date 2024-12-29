@@ -2,12 +2,9 @@
 import React, { useState, useRef } from 'react';
 import ScheduleBar from './scheduleBar';
 import Calendar from './calendar';
-import { Message } from 'primereact/message';
 import styles from './main.module.scss';
 
 const ScheduleEmployer: React.FC = () => {
-  const [error, setError] = useState<string | null>(null);
-
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() => {
     const today = new Date();
     const dayOfWeek = today.getDay();
@@ -26,7 +23,7 @@ const ScheduleEmployer: React.FC = () => {
     }
     return weekDays;
   };
-
+  
   const currentWeek = getWeekDays(currentWeekStart);
 
   const goToNextWeek = () => {
@@ -51,13 +48,11 @@ const ScheduleEmployer: React.FC = () => {
           onNextWeek={goToNextWeek}
           onPreviousWeek={goToPreviousWeek}
           onPublishAll={handlePublishAll}
-          setError={setError}
         />
       </div>
       <div className={styles.secoundRowContainer}>
         <Calendar ref={calendarRowRef} currentWeek={currentWeek} />
       </div>
-      {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
     </div>
   );
 };

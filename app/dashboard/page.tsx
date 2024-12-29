@@ -1,21 +1,11 @@
-'use client';
-import React, { useState } from "react";
-import NavbarTop from "@/components/navbar/top";
+import Navbar from "@/components/navbar";
 import DashboardCenter from "@/components/dashboard";
-import Account from "@/components/account";
+import styles from '@/styles/components/pages.module.scss';
 
-export default function Dashboard() {
-
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-    const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
-    };
-
+export default function DashboardPage() {
     return (
-        <div>
-            <NavbarTop onAccountIconClick={toggleSidebar}/>
-            <Account isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+        <div className={styles.pageContainer}>
+            <Navbar />
             <DashboardCenter />
         </div>
     )

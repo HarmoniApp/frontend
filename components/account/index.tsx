@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage, faQuestionCircle, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import PhotoChange from './photoChange';
+import { PhotoChangeForm } from './photoChangeForm';
 import styles from './main.module.scss';
 interface SidebarProps {
     isOpen: boolean;
@@ -17,6 +17,9 @@ const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
 
     const pathname = usePathname();
     const router = useRouter();
+    const navigateTo = (path: string) => {
+        router.push(path);
+    };
     const customContent = isAdmin ? styles.adminContent : styles.userContent;
 
     useEffect(() => {
@@ -32,14 +35,10 @@ const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
         }
     }, []);
 
-    const settingsToGo = () => {
-        router.push('/settings');
-    };
-
     const logout = () => {
         localStorage.clear();
         sessionStorage.clear();
-        router.push('/');
+        navigateTo('/');
     }
 
     return (
@@ -53,7 +52,7 @@ const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
                         <FontAwesomeIcon icon={faQuestionCircle} className={styles.icon} />
                         <span>Pomoc i Wsparcie</span>
                     </div>
-                    <div className={`${styles.item} ${pathname === '/settings' ? styles.active : ''}`} onClick={isAdmin ? settingsToGo : () => setChangePhotoModal(true)}>
+                    <div className={`${styles.item} ${pathname === '/settings' ? styles.active : ''}`} onClick={isAdmin ? () => navigateTo('/settings') : () => setChangePhotoModal(true)}>
                         <FontAwesomeIcon icon={isAdmin ? faCog : faImage} className={styles.icon} />
                         <span>{isAdmin ? "Ustawienia" : "Zmień zdjęcie"}</span>
                     </div>
@@ -72,11 +71,11 @@ const Account: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
             {isOpen && <div className={styles.overlay} onClick={toggleSidebar}></div>}
 
             {changePhotoModal && (
-                <div className={styles.modalOverlayChangePhoto}>
-                    <div className={styles.modalContentOfChangePhoto}>
-                        <PhotoChange
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <PhotoChangeForm
                             onClose={() => setChangePhotoModal(false)}
-                         />
+                        />
                     </div>
                 </div>
             )}

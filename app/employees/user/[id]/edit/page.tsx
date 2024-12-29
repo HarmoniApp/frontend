@@ -1,60 +1,40 @@
 'use client';
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { fetchUserData } from '@/services/userService';
 import Navbar from "@/components/navbar";
 import EditEmployeeDataPopUp from '@/components/employees/employeeData/editEmployeeData';
-import EmployeeData from '@/components/types/employeeData';
-import styles from './main.module.scss';
+import { EmployeeData } from '@/components/types/employeeData';
+import styles from '@/styles/components/pages.module.scss';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 const EditEmployeePage: React.FC = () => {
   const router = useRouter();
   const { id } = useParams();
-
   const [employee, setEmployee] = useState<EmployeeData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchEmployeeData = async () => {
-        if (!id) {
-            setError('No userId provided');
-            setLoading(false);
-            return;
-        }
-
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${id}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-                }
-            });
-            if (!response.ok) {
-                throw new Error('Failed to fetch employee data');
-            }
-            const data = await response.json();
-            setEmployee(data);
-        } catch (error) {
-            if (error instanceof Error) {
-                setError(error.message);
-            } else {
-                setError('An unknown error occurred');
-            }
-        } finally {
-            setLoading(false);
-        }
+    const loadData = async () => {
+      if (!id) {
+        setLoading(false);
+        return;
+      }
+      if (typeof id === 'string') {
+        await fetchUserData(id, setEmployee);
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
     };
+    loadData();
+  }, [id]);
 
-    fetchEmployeeData();
-}, [id]);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!employee) return <div>No employee data found</div>;
+  if (loading) return <LoadingSpinner wholeModal={false} />;
+  if (!employee) return <div>Nie znaleziono danych pracownika</div>;
 
   return (
-    <div className={styles.editEmployeePageContainerMain}>
+    <div className={styles.pageContainer}>
       <Navbar />
       <EditEmployeeDataPopUp
         employee={employee}

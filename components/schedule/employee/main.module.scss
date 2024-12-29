@@ -1,21 +1,10 @@
-@import '@/styles/variables.scss';
-
-@mixin respond-to-md {
-  @media (max-width: $breakpoint-md) {
-    @content;
-  }
-}
+@import '@/styles/main.scss';
 
 .scheduleEmployee {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  @include displayDFJAG(flex, column, center, center, 20px);
   width: 90%;
-  gap: 20px;
   padding: 20px;
   margin: 0 auto;
-
   @include respond-to-md {
     width: 98%;
   }

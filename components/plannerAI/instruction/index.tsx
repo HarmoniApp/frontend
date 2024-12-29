@@ -33,5 +33,4 @@ const Instruction: React.FC<InstructionProps> = ({ isOpen, onClose }) => {
         </div>
     );
 };
-
 export default Instruction;

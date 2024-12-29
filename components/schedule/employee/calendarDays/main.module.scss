@@ -1,23 +1,13 @@
-@import '@/styles/variables.scss';
-
+@import '@/styles/main.scss';
 /**
   * The reference md(only number) is still in index.tsx(11 line) because it changes the full name of the day to the abbreviation. 
   */
-
-@mixin respond-to-md {
-  @media (max-width: $breakpoint-md) {
-    @content;
-  }
-}
-
 .calendarDays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  @include gridQG(7, 10px);
   text-align: center;
   font-weight: bold;
   text-transform: uppercase;
   font-size: 16px;
-  gap: 10px;
   width: 100%;
 
   .day {

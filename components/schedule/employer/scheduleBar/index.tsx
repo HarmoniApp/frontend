@@ -1,156 +1,63 @@
 import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight, faCloudArrowDown, faCalendarCheck } from '@fortawesome/free-solid-svg-icons';
-import PublishConfirmation from './publishConfirmation';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import styles from './main.module.scss';
-
+import { downloadSchedulePdf } from '@/services/pdfService';
+import { downloadScheduleXLSX } from '@/services/xlsxService';
+import CustomButton from '@/components/customButton';
+import ConfirmationPopUp from '@/components/confirmationPopUp';
+import { formatDate } from '@/utils/formatDate';
+import { ImportScheduleForm } from './importScheduleForm';
 interface ScheduleBarProps {
   currentWeek: Date[];
   onNextWeek: () => void;
   onPreviousWeek: () => void;
   onPublishAll: () => void;
-  setError: (errorMessage: string | null) => void;
 }
 
-const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPreviousWeek, onPublishAll, setError }) => {
+const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPreviousWeek, onPublishAll }) => {
   const [modalIsOpenPublish, setModalIsOpenPublish] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [fileFormat, setFileFormat] = useState<string>('');
+  const [importModal, setImportModal] = useState(false);
 
-  const downloadPdf = async () => {
-    setLoading(true);
-
-    try {
-      const startOfWeek = currentWeek[0].toISOString().split('T')[0];
-      const endOfWeek = currentWeek[6].toISOString().split('T')[0];
-      const responsePDF = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/pdf/generate-pdf-shift?startOfWeek=${startOfWeek}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      }
-      );
-
-      if (!responsePDF.ok) {
-        console.error('Error downloading PDF');
-        return;
-      }
-
-      const blob = await responsePDF.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-
-      const filename = `shifts_${startOfWeek} - ${endOfWeek}.pdf`;
-
-      link.setAttribute('download', filename);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      console.error('Error:', error);
-      setError('Błąd');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const downloadXLSX = async () => {
-    setLoading(true);
-
-    try {
-      const startOfWeek = currentWeek[0].toISOString().split('T')[0];
-      const endOfWeek = currentWeek[6].toISOString().split('T')[0];
-      const responseXLSX = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/excel/shifts/export-excel?start=${startOfWeek}&end=${endOfWeek}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-        },
-      }
-      );
-
-      if (!responseXLSX.ok) {
-        console.error('Error downloading XLSX');
-        return;
-      }
-
-      const blob = await responseXLSX.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-
-      const filename = `shifts_${startOfWeek} - ${endOfWeek}.xlsx`;
-
-      link.setAttribute('download', filename);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      console.error('Error:', error);
-      setError('Błąd');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const formatDate = (date: Date) => {
-    const [year, month, day] = date.toISOString().split('T')[0].split('-');
-    return `${day}.${month}.${year}`;
-  };
-
-  const getThisWeek = () => {
-    const startOfWeek = formatDate(currentWeek[0]);
-    const endOfWeek = formatDate(currentWeek[6]);
-
-    return `${startOfWeek} - ${endOfWeek}`;
-  };
-
-  const handleExport = (format: string) => {
+  const handleExport = async (format: string) => {
     setDropdownVisible(false);
-    const weekRange = getThisWeek();
-    const confirmDownload = window.confirm(`Czy na pewno chcesz pobrać plik w formacie ${format.toUpperCase()} na ten tydzień: ${weekRange}?`);
-
-    if (!confirmDownload) {
-      return;
-    }
 
     if (format === 'pdf') {
-      downloadPdf();
+      setIsConfirmationModalOpen(false);
+      await downloadSchedulePdf(currentWeek);
     } else if (format === 'xlsx') {
-      downloadXLSX();
+      setIsConfirmationModalOpen(false);
+      await downloadScheduleXLSX(currentWeek);
     }
   };
+
+  const handleImport = () => {
+    setImportModal(true);
+  };
+
+  const handlePublish = async () => {
+    setModalIsOpenPublish(false);
+    await onPublishAll();
+  }
 
   return (
     <div className={styles.scheduleBarContainerMain}>
       <div className={styles.buttonContainer}>
-        <button className={styles.publishButton} onClick={() => setModalIsOpenPublish(true)}>
-          <FontAwesomeIcon className={styles.buttonIcon} icon={faCalendarCheck} />Opublikuj
-        </button>
-
+        <CustomButton icon="calendarCheck" writing="Opublikuj" action={() => setModalIsOpenPublish(true)} />
+        <CustomButton icon="cloudArrowUp" writing="importuj" action={handleImport} />
         <div className={styles.exportDropdownContainer}>
-          <button
-            className={styles.exportButton}
-            onClick={() => setDropdownVisible(prev => !prev)}
-          >
-            <FontAwesomeIcon className={styles.buttonIcon} icon={faCloudArrowDown} />Exportuj
-          </button>
-
+          <CustomButton icon="cloudArrowDown" writing="Exportuj" action={() => setDropdownVisible(prev => !prev)} />
           {dropdownVisible && (
             <div className={styles.exportDropdownMenu}>
-              <button onClick={() => handleExport('pdf')}>Eksportuj do PDF</button>
-              <button onClick={() => handleExport('xlsx')}>Eksportuj do Excel</button>
+              <button onClick={() => { setFileFormat('pdf'); setIsConfirmationModalOpen(true); }}>Eksportuj do PDF</button>
+              <button onClick={() => { setFileFormat('xlsx'); setIsConfirmationModalOpen(true); }}>Eksportuj do Excel</button>
             </div>
           )}
         </div>
       </div>
       <div className={styles.weekSwitcher}>
-        <button className={styles.changeWeekButton} onClick={onPreviousWeek}>
-          <FontAwesomeIcon className={styles.buttonIcon} icon={faChevronLeft} />
-        </button>
+        <CustomButton icon="chevronLeft" writing="" action={onPreviousWeek} />
         <div className={styles.dateRange}>
           <p className={styles.dateRangeParagraph}>
             {currentWeek[0].toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' })}
@@ -160,32 +67,32 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentWeek, onNextWeek, onPr
             {currentWeek[6].toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' })}
           </p>
         </div>
-        <button className={styles.changeWeekButton} onClick={onNextWeek}>
-          <FontAwesomeIcon className={styles.buttonIcon} icon={faChevronRight} />
-        </button>
+        <CustomButton icon="chevronRight" writing="" action={onNextWeek} />
       </div>
-
       {modalIsOpenPublish && (
-        <div className={styles.publishModalOverlay}>
-          <div className={styles.publishModalContent}>
-            <PublishConfirmation
-              onPublish={onPublishAll}
-              onClose={() => setModalIsOpenPublish(false)}
-              week={getThisWeek()}
-            />
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <ConfirmationPopUp action={handlePublish} onClose={() => setModalIsOpenPublish(false)} description={`Opublikować zmiany na ten tydzien: ${formatDate(currentWeek[0])} - ${formatDate(currentWeek[6])}`} />
           </div>
         </div>
       )}
-
-      {loading && (
-        <div className={styles.spinnerOverlay}>
-          <div className={styles.spinnerContainer}>
-            <ProgressSpinner />
+      {isConfirmationModalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <ConfirmationPopUp action={() => { handleExport(fileFormat) }} onClose={() => setIsConfirmationModalOpen(false)} description={`Pobrać plik`} />
+          </div>
+        </div>
+      )}
+      {importModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <ImportScheduleForm
+              onClose={() => setImportModal(false)}
+            />
           </div>
         </div>
       )}
     </div>
   );
 };
-
 export default ScheduleBar;

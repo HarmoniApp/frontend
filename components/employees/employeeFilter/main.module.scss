@@ -1,10 +1,7 @@
-@import '@/styles/variables.scss';
+@import '@/styles/main.scss';
 
 .employeesFilerContainerMain {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+  @include displayDFJAG(flex, column, space-between, center);
   padding: 10px 20px;
   background-color: $white;
   border: 1px solid $main-colour;
@@ -20,9 +17,8 @@
 }
 
 .searchInputContainer {
-  display: flex;
+  @include displayDFJAG(flex, null, null, center);
   position: relative;
-  align-items: center;
   margin: 0 0 20px 0;
   background-color: $main-colour;
   border-radius: 8px;
@@ -50,20 +46,11 @@
   &::placeholder {
     opacity: 1;
   }
-
-  // &:focus {
-  //   outline: none;
-  //   border-color: $main-colour-hover;
-  //   box-shadow: 0 0 5px $black-transparency-01-orange;
-  // }
 }
 .positionTitleContainer,
 .sortTitleContainer,
 .languagesTitleContainer {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+  @include displayDFJAG(flex, row, space-between, center);
   cursor: pointer;
   padding: 10px;
   background-color: $main-colour;
@@ -118,10 +105,7 @@
 .descCheckboxContainer,
 .languageCheckboxContainer,
 .positionCheckboxContainer {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+  @include displayDFJAG(flex, row, space-between, center);
   text-align: center;
   background-color: $white-4;
   padding: 10px;
@@ -162,10 +146,7 @@
   }
 
   .clearButton {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    @include displayDFJAG(flex, row, space-between, center);
     padding: 10px 15px;
     background-color: $main-colour;
     color: $font-dark-colour;

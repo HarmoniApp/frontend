@@ -1,78 +1,64 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import ChatPartner from '@/components/types/chatPartner';
-import AuthorizedImage from '@/components/chat/authorizedImage';
-import Language from '@/components/types/language';
+import React from 'react';
+import { ChatPartner } from '@/components/types/chatPartner';
+import { Language } from '@/components/types/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUsers, faXmark, faPlus, faLanguage } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faLanguage } from '@fortawesome/free-solid-svg-icons';
 import styles from './main.module.scss';
 import NewConversationForm from '../newConversationForm';
+import UserImage from '@/components/userImage';
+import CustomButton from '@/components/customButton';
 
 interface SidebarProps {
     selectedLanguage: string;
     setSelectedLanguage: (setSelectedLanguage: string) => void;
     languages: Language[];
     selectedChat: ChatPartner | null;
-    setSelectedChat: (chatPartner: ChatPartner | null) => void;
+    // setSelectedChat: (chatPartner: ChatPartner | null) => void;
+    setSelectedChat: React.Dispatch<React.SetStateAction<ChatPartner | null>>;
     newChat: boolean;
     setNewChat: (newChat: boolean) => void;
-    chatType: 'user' | 'group';
     setChatType: (chatType: 'user' | 'group') => void;
     chatPartners: ChatPartner[];
-    loading: (loading: boolean) => void;
-    fetchChatHistory: (selectedChat: ChatPartner, language: string) => void;
-    setError: (errorMessage: string | null) => void;
-    userId: number;
+    setLoading: (loading: boolean) => void;
+    fetchChatHistory: (selectedChat: ChatPartner, language?: string) => void;
     setChatPartners: (chatPartners: ChatPartner[]) => void;
-    fetchChatHistoryForm: (partner: ChatPartner) => void;
     loadChatPartners: (selectFirstPartner: boolean) => void;
     handleSelectUser: (user: ChatPartner) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, newChat, setNewChat, chatType, setChatType, chatPartners, loading, fetchChatHistory, setError, userId, setChatPartners, fetchChatHistoryForm, loadChatPartners, handleSelectUser }) => {
-
-    const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        loading(true);
+const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage, languages, selectedChat, setSelectedChat, newChat, setNewChat, setChatType, chatPartners, setLoading, fetchChatHistory, setChatPartners, loadChatPartners, handleSelectUser }) => {
+    const handleLanguageChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setLoading(true);
         const language = event.target.value;
         setSelectedLanguage(language);
-
         if (selectedChat) {
-            fetchChatHistory(selectedChat, language);
+            await fetchChatHistory(selectedChat, language);
         }
-        loading(false);
+        setLoading(false);
     };
 
     return (
         <>
             <div className={styles.sidebarHeader}>
-                <div
-                    className={styles.newChatContainer}
-                    onClick={() => { setNewChat(true); }}
-                >
-                    <FontAwesomeIcon icon={faPlus} className={styles.addChatIcon} />
-                    <label className={styles.newChatLabel}>Dodaj chat/grupę</label>
-                </div>
+                <CustomButton icon="plus" writing="Dodaj chat/grupę" action={() => { setNewChat(true); }} additionalClass='atChat' />
             </div>
             <ul className={styles.chatList}>
                 {chatPartners.map((partner) => (
                     <li
                         key={partner.id}
                         className={`${styles.chatItem} ${selectedChat === partner ? styles.activeChat : ''}`}
-                        onClick={() => {
+                        onClick={async () => {
+                            setSelectedChat(partner);
                             if (partner.type) {
                                 setChatType(partner.type);
                             }
                             fetchChatHistory(partner, selectedLanguage);
                         }}
                     >
-                        {partner.photo ? (
-                            <AuthorizedImage
-                                src={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/userPhoto/${partner.photo}`}
-                                setError={setError}
-                            />
-                        ) : (
-                            <FontAwesomeIcon icon={faUsers} className={styles.defaultAvatarIcon} />
-                        )}
+                        <div className={styles.imageContainer}>
+                            <UserImage userId={partner.id} type={partner.type} />
+                        </div>
                         <div className={styles.messagesTileInfo}>
                             <label className={styles.chatName}>{partner.name}</label>
                             <label className={styles.lastMessage}>
@@ -106,16 +92,14 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
                         <NewConversationForm
-                            userId={userId}
                             setChatType={setChatType}
                             setNewChat={setNewChat}
                             chatPartners={chatPartners}
                             setChatPartners={setChatPartners}
                             setSelectedChat={setSelectedChat}
-                            fetchChatHistory={fetchChatHistoryForm}
+                            fetchChatHistory={fetchChatHistory}
                             loadChatPartners={loadChatPartners}
-                            loading={loading}
-                            setError={setError}
+                            setLoading={setLoading}
                             handleSelectUser={handleSelectUser}
                         />
                         <FontAwesomeIcon icon={faXmark} onClick={() => { setNewChat(false) }} />
@@ -125,5 +109,4 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedLanguage, setSelectedLanguage
         </>
     );
 };
-
 export default Sidebar;

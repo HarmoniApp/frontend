@@ -1,21 +1,18 @@
-import React, { useEffect, useState, useMemo, useImperativeHandle, forwardRef } from 'react';
+import React, { useMemo, useImperativeHandle, forwardRef } from 'react';
 import EmployeeItem from './employeeItem';
 import ShiftItem from './shiftItem';
 import AddShift from '../addShift';
 import EditShift from '../editShift';
-import WeekSchedule from '@/components/types/weekSchedule';
-import User from '@/components/types/user';
-import Shift from '@/components/types/shift';
-import { Message } from 'primereact/message';
-import Role from '@/components/types/role';
 import styles from './main.module.scss';
-import { fetchRoles } from "@/services/roleService"
-import { ProgressSpinner } from 'primereact/progressspinner';
 import { Card } from 'primereact/card';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
-import 'primereact/resources/themes/saga-blue/theme.css';
-import './main.css';
-import { fetchCsrfToken } from '@/services/csrfService';
+import '@/styles/components/pagination.css';
+import LoadingSpinner from '@/components/loadingSpinner';
+import { useRoles } from '@/hooks/roles/useRoles';
+import { useShiftManagement } from '@/hooks/schedule/shifts/useShiftManagement';
+import { useShiftModals } from '@/hooks/schedule/shifts/useShiftModals';
+import { usePaginationAndFilteringEmpInSchedule } from '@/hooks/usePaginationAndFilteringEmpInSchedule';
+import { useSchedule } from '@/hooks/schedule/useSchedule';
 
 interface CalendarRowProps {
   currentWeek: Date[];
@@ -23,340 +20,44 @@ interface CalendarRowProps {
 }
 
 const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, ref) => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [schedules, setSchedules] = useState<Record<number, WeekSchedule>>({});
-  const [loadingRoles, setLoadingRoles] = useState<boolean>(true);
-  const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
-  const [loadingSchedules, setLoadingSchedules] = useState<boolean>(true);
+  const { roles, loadingRoles } = useRoles();
 
-  const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
-  const [selectedDay, setSelectedDay] = useState<string>('');
-  const [abortController, setAbortController] = useState<AbortController | null>(null);
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [modalIsOpenLoadning, setModalIsOpenLoadning] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    users,
+    loadingUsers,
+    pageNumber,
+    pageSize,
+    totalPages,
+    setPageNumber,
+    setPageSize,
+  } = usePaginationAndFilteringEmpInSchedule({ searchQuery });
 
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
-  const [totalPages, setTotalPages] = useState(0);
+  const {
+    schedules,
+    loadingSchedules,
+    setSchedules } = useSchedule({ users, currentWeek });
 
-  useEffect(() => {
-    const loadData = async () => {
-      await fetchRoles(setRoles, setError, setLoadingRoles);
-    };
+  const {
+    handleAddShift,
+    handleEditShift,
+    handleDeleteShift,
+    handlePublishAll } = useShiftManagement({ currentWeek, setSchedules });
 
-    loadData();
-  }, []);
-
-  const fetchFilteredUsers = async (filters: { query?: string } = {}, pageNumber: number = 1, pageSize: number = 20) => {
-    setLoadingUsers(true);
-
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId?pageNumber=${pageNumber}&pageSize=${pageSize}`;
-
-    if (filters.query && filters.query.trim() !== '') {
-      url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/simple/empId/search?q=${filters.query}`;
-    }
-
-    const tokenJWT = sessionStorage.getItem('tokenJWT');
-
-    try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const responseData = await response.json();
-      const usersData = responseData.content || responseData;
-
-      if (Array.isArray(usersData)) {
-        setUsers(usersData);
-      } else {
-        console.error('Unexpected response format, expected an array but got:', usersData);
-        setUsers([]);
-      }
-      setTotalPages(responseData.totalPages * pageSize);
-
-    } catch (error) {
-      console.error('Error while filter:', error);
-      setError('Błąd podczas filtrowania');
-    } finally {
-      setLoadingUsers(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchFilteredUsers({ query: searchQuery }, pageNumber, pageSize);
-  }, [searchQuery, pageNumber, pageSize]);
-
-  useEffect(() => {
-    if (users.length > 0) {
-      setLoadingSchedules(true);
-      if (abortController) {
-        abortController.abort();
-      }
-
-      const newAbortController = new AbortController();
-      setAbortController(newAbortController);
-      const fetchSchedules = async () => {
-        try {
-          const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
-          const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
-          const tokenJWT = sessionStorage.getItem('tokenJWT');
-
-          const schedulePromises = users.map(user =>
-            fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${user.id}/week?startDate=${startDate}&endDate=${endDate}`, {
-              signal: newAbortController.signal,
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${tokenJWT}`,
-              }
-            })
-              .then(response => {
-                if (!response.ok) {
-                  throw new Error('Network response was not ok');
-                }
-                return response.json();
-              })
-              .then(data => {
-                return { userId: user.id, data: data };
-              })
-              .catch(error => {
-                if (error.name === 'AbortError') {
-                } else {
-                  console.error(`Error fetching schedule for user ${user.id}:`, error);
-                  setError('Błąd podczas pobierania kalendarza');
-                }
-                return { userId: user.id, data: { shifts: [], absences: [] } };
-              })
-          );
-
-          const results = await Promise.all(schedulePromises);
-          const schedulesMap: Record<number, WeekSchedule> = {};
-
-          results.forEach(({ userId, data }) => {
-            schedulesMap[userId] = {
-              shifts: data.shifts || [],
-              absences: data.absences || []
-            };
-          });
-
-          setSchedules(schedulesMap);
-        } catch (error) {
-          console.error('Error fetching schedules:', error);
-          setError('Błąd podczas pobierania kalendarza');
-        } finally {
-          setLoadingSchedules(false);
-        }
-      };
-
-      fetchSchedules();
-    }
-  }, [users, currentWeek]);
-
-  const handleAddShiftClick = (user: User, day: string) => {
-    setSelectedUser(user);
-    setSelectedDay(day);
-    setIsAddModalOpen(true);
-  };
-
-  const handleEditShiftClick = (shift: Shift) => {
-    setSelectedShift(shift);
-    setIsEditModalOpen(true);
-  };
-
-  const handleAddShift = async (shiftData: { start: string; end: string; userId: number; roleName: string; }) => {
-    setModalIsOpenLoadning(true);
-    try {
-      const tokenXSRF = await fetchCsrfToken(setError);
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            start: shiftData.start,
-            end: shiftData.end,
-            published: false,
-            user_id: shiftData.userId,
-            role_name: shiftData.roleName,
-          }),
-        });
-
-        if (!response.ok) {
-          console.error('Failed to add add shift:', response.statusText);
-          throw new Error('Failed to add add shift');
-        }
-        setModalIsOpenLoadning(false);
-        fetchUserSchedule(shiftData.userId);
-    } catch (error) {
-      console.error('Error adding add shift:', error);
-      setError('Błąd podczas dodawania zmiany');
-    } finally {
-      setModalIsOpenLoadning(false);
-    }
-  };
-
-  const handleEditShift = async (shiftData: { id: number; start: string; end: string; userId: number; roleName: string; }) => {
-    setModalIsOpenLoadning(true);
-    try {
-      const tokenXSRF = await fetchCsrfToken(setError);
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftData.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            start: shiftData.start,
-            end: shiftData.end,
-            published: false,
-            user_id: shiftData.userId,
-            role_name: shiftData.roleName,
-          }),
-        });
-        if (!response.ok) {
-          console.error('Failed to edit shift');
-          throw new Error('Failed to edit shift');
-        }
-        setModalIsOpenLoadning(false);
-        fetchUserSchedule(shiftData.userId);
-    } catch (error) {
-      console.error('Error editing shift:', error);
-      setError('Błąd podczas edycji zmiany');
-    } finally {
-      setModalIsOpenLoadning(false);
-    }
-  };
-
-  const handleDeleteShift = async (shiftId: number, userId: number) => {
-    setModalIsOpenLoadning(true);
-    try {
-      const tokenXSRF = await fetchCsrfToken(setError);
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shiftId}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-            'X-XSRF-TOKEN': tokenXSRF,
-          },
-          credentials: 'include',
-        });
-        if (!response.ok) {
-          console.error('Failed to delete shift: ', response.statusText);
-          throw new Error('Failed to delete shift');
-        }
-        setModalIsOpenLoadning(false);
-        fetchUserSchedule(userId);
-    } catch (error) {
-      console.error('Error deleting shift:', error);
-      setError('Błąd podczas usuwania zmiany');
-    } finally {
-      setModalIsOpenLoadning(false);
-    }
-  };
-
-  const handlePublishAll = async () => {
-    const shiftsToPublish: Shift[] = [];
-
-    Object.values(schedules).forEach(schedule => {
-      schedule.shifts.forEach(shift => {
-        if (!shift.published) {
-          shiftsToPublish.push(shift);
-        }
-      });
-    });
-
-    shiftsToPublish.forEach(async (shift) => {
-      setModalIsOpenLoadning(true);
-      try {
-        const tokenXSRF = await fetchCsrfToken(setError);
-
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/shift/${shift.id}`, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${sessionStorage.getItem('tokenJWT')}`,
-              'X-XSRF-TOKEN': tokenXSRF,
-            },
-            credentials: 'include',
-          });
-          if (!response.ok) {
-            console.error(`Failed to publish shift ${shift.id}`);
-            throw new Error(`Failed to publish shift ${shift.id}`);
-          }
-          setModalIsOpenLoadning(false);
-          setSchedules(prevSchedules => ({
-            ...prevSchedules,
-            [shift.user_id]: {
-              ...prevSchedules[shift.user_id],
-              shifts: prevSchedules[shift.user_id].shifts.map(s =>
-                s.id === shift.id ? { ...s, published: true } : s
-              ),
-            },
-          }));
-      } catch (error) {
-        console.error('Error publishing shift:', error);
-        setError('Błąd podczas publikacji');
-      } finally {
-        setModalIsOpenLoadning(false);
-      }
-    });
-  };
+  const {
+    isAddModalOpen,
+    isEditModalOpen,
+    selectedUser,
+    selectedShift,
+    selectedDay,
+    handleAddShiftClick,
+    handleEditShiftClick,
+    setIsAddModalOpen,
+    setIsEditModalOpen,
+  } = useShiftModals();
 
   useImperativeHandle(ref, () => ({
     publishAll: handlePublishAll,
   }));
-
-  const fetchUserSchedule = async (userId: number) => {
-    try {
-      const startDate = currentWeek[0].toISOString().split('T')[0] + 'T00:00:00';
-      const endDate = currentWeek[currentWeek.length - 1].toISOString().split('T')[0] + 'T23:59:59';
-      const tokenJWT = sessionStorage.getItem('tokenJWT');
-      const userResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/calendar/user/${userId}/week?startDate=${startDate}&endDate=${endDate}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenJWT}`,
-        }
-      });
-
-      if (!userResponse.ok) {
-        throw new Error(`Failed to fetch schedule for user ${userId}`);
-      }
-
-      const data = await userResponse.json();
-
-      setSchedules(prevSchedules => ({
-        ...prevSchedules,
-        [userId]: {
-          shifts: data.shifts || [],
-          absences: data.absences || []
-        }
-      }));
-    } catch (error) {
-      console.error(`Error fetching schedule for user ${userId}:`, error);
-      setError('Błąd podczas pobierania grafiku dla użytkownika');
-    }
-  };
 
   const renderedRows = useMemo(() => {
     const getMoreInfoOfEmployee = (user_id: number) => {
@@ -368,7 +69,7 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
       return (
         <div key={user.id} className={styles.calendarRowContainerMain}>
           <div className={styles.employeeItemContainer} onClick={() => getMoreInfoOfEmployee(user.id)}>
-            <EmployeeItem employeeId={user.employee_id} firstName={user.firstname} surname={user.surname} />
+            <EmployeeItem employeeId={user.employee_id} firstName={user.firstname} surname={user.surname} userId={user.id} />
           </div>
           <div className={styles.shiftItemContainer}>
             {currentWeek.map((day) => {
@@ -418,11 +119,9 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
   return (
     <div>
       {loadingUsers || loadingRoles || loadingSchedules ? (
-        <div className={styles.spinnerContainer}><ProgressSpinner /></div>
+        <LoadingSpinner wholeModal={false} />
       ) : !users || users.length === 0 ? (
-        <Card title="No Data" className={styles.noDataCard}>
-          <p>There is no data available at the moment.</p>
-        </Card>
+        <Card title="Brak zmian" className={styles.noDataCard}></Card>
       ) : (
         <>
           {renderedRows}
@@ -436,13 +135,6 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
               setPageSize(event.rows);
             }}
           />
-          {modalIsOpenLoadning && (
-            <div className={styles.loadingModalOverlay}>
-              <div className={styles.loadingModalContent}>
-                <div className={styles.spinnerContainer}><ProgressSpinner /></div>
-              </div>
-            </div>
-          )}
         </>
       )}
 
@@ -450,21 +142,25 @@ const CalendarRow = forwardRef(({ currentWeek, searchQuery }: CalendarRowProps, 
         <AddShift
           isOpen={isAddModalOpen}
           onClose={() => setIsAddModalOpen(false)}
-          onAddShift={handleAddShift}
+          onAddShift={(shiftData) => {
+            handleAddShift(shiftData);
+          }}
           user={selectedUser}
           day={selectedDay}
         />
       )}
-      {error && <Message severity="error" text={`Error: ${error}`} className={styles.errorMessageComponent} />}
       {isEditModalOpen && selectedShift && (
         <EditShift
-          isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
-          onEditShift={handleEditShift}
-          onDeleteShift={handleDeleteShift}
+          onEditShift={(shiftData) => {
+            handleEditShift(shiftData);
+          }}
+          onDeleteShift={(shiftId, userId) => {
+            handleDeleteShift(shiftId, userId);
+          }}
           shift={selectedShift}
-          firstName={users.find(user => user.id === selectedShift.user_id)?.firstname || 'test'}
-          surname={users.find(user => user.id === selectedShift.user_id)?.surname || 'test'}
+          firstName={users.find(user => user.id === selectedShift.user_id)?.firstname || 'Imie'}
+          surname={users.find(user => user.id === selectedShift.user_id)?.surname || 'Nazwisko'}
         />
       )}
     </div>

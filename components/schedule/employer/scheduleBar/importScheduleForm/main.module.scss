@@ -1,0 +1,90 @@
+@import '@/styles/main.scss';
+
+.importScheduleContainerMain {
+  @include displayDFJAG(flex, column, center, center);
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 10px;
+
+  .header {
+    @include displayDFJAG(flex, null, space-between, center);
+    width: 100%;
+
+    .title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: $white;
+    }
+
+    .closeButton {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: $main-colour;
+
+      &:hover {
+        color: $red;
+      }
+    }
+  }
+
+  .form {
+    @include displayDFJAG(flex, column, null, null);
+    width: 100%;
+    margin-top: 20px;
+
+    .uploadLabel {
+      @include displayDFJAG(flex, null, center, center, 10px);
+      padding: 10px;
+      background-color: $main-colour;
+      color: $font-dark-colour;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      .uploadInput {
+        display: none;
+      }
+
+      .icon,
+      .fileLabel {
+        cursor: pointer;
+      }
+
+      &:hover {
+        background-color: $main-colour-hover;
+      }
+    }
+
+    .fileName {
+      margin-top: 10px;
+      padding: 10px 15px;
+      background-color: $white;
+      color: $font-dark-colour;
+      border: 2px solid $main-colour;
+      border-radius: 5px;
+      cursor: default;
+      font-size: 1rem;
+      pointer-events: none;
+    }
+
+    .submitButton {
+      margin-top: 10px;
+      padding: 10px 15px;
+      background-color: $green-dark;
+      color: $white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: $green;
+      }
+    }
+  }
+}

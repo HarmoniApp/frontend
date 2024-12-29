@@ -1,0 +1,39 @@
+@import '@/styles/main.scss';
+
+.loginForm {
+    @include displayDFJAG(flex, column, null, stretch);
+    width: 100%;
+}
+
+.emailLabel, .passwordLabel {
+    font-size: 16px;
+    font-weight: bold;
+    color: $font-light-colour;
+    margin: 10px 0;
+    transition: color 0.3s ease;
+    @include displayDFJAG(flex, null, space-between, center);
+}
+
+.emailInput, .passwordInput {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 2px solid $main-colour;
+    border-radius: 5px;
+    font-size: 1em;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.passwordContainer {
+    position: relative;
+}
+
+.eyeIcon {
+    position: absolute;
+    top: 37%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: $gray;
+}
+@include errorMessage("right");
