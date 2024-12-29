@@ -39,7 +39,13 @@ export const downloadScheduleXLSX = async (
         })(),
         {
             pending: 'Pobieranie grafiku w formacie XLSX...',
-            success: `Grafik ${startOfWeek} - ${endOfWeek} został pobrany!`
+            success: `Grafik ${startOfWeek} - ${endOfWeek} został pobrany!`,
+            error: {
+                render({ data }) {
+                    const errorMessage = data instanceof Error ? data.message : 'Wystąpił błąd exportu';
+                    return errorMessage;
+                },
+            },
         }
     );
 };

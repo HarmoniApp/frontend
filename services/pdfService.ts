@@ -36,7 +36,13 @@ export const downloadSchedulePdf = async (currentWeek: Date[]): Promise<void> =>
         })(),
         {
             pending: 'Pobieranie grafiku...',
-            success: `Grafik ${startOfWeek} - ${endOfWeek} został pobrany!`
+            success: `Grafik ${startOfWeek} - ${endOfWeek} został pobrany!`,
+            error: {
+                render({ data }) {
+                    const errorMessage = data instanceof Error ? data.message : 'Wystąpił błąd podczas eksportu!';
+                    return errorMessage;
+                },
+            },
         }
     );
 };
