@@ -9,7 +9,7 @@ export const addRoleValidationSchema = Yup.object({
     newRoleName: Yup.string()
         .required('Pole wymagane')
         .test('no-invalid-chars', function (value) {
-            const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
+            const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9 ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]*$/);
             return invalidChars.length === 0
                 ? true
                 : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
@@ -21,7 +21,7 @@ export const editRoleValidationSchema = Yup.object({
     editedRoleName: Yup.string()
         .required('Pole wymagane')
         .test('no-invalid-chars', function (value) {
-            const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9]*$/);
+            const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9 ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]*$/);
             return invalidChars.length === 0
                 ? true
                 : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
