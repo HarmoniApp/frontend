@@ -49,6 +49,7 @@ export const EditPredefineShiftForm: React.FC<EditPredefineShiftFormProps> = ({
       }}
       validationSchema={predefineShiftValidationSchema}
       onSubmit={handleEditPredefineShift}
+      enableReinitialize
     >
       {({ handleSubmit, handleChange, values, errors, touched, resetForm }) => (
         <Form onSubmit={handleSubmit}>

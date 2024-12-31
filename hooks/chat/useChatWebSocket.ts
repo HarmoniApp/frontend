@@ -88,6 +88,7 @@ export const useChatWebSocket = (
                         }
                         return prevMessages;
                     });
+                    setSelectedChat(selectedChatRef.current)
                     await loadChatPartners();
                 });
 

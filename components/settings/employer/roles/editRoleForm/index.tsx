@@ -41,6 +41,7 @@ export const EditRoleForm: React.FC<EditRoleFormProps> = ({
             initialValues={{ id: role.id, editedRoleName: role.name, editedRoleColor: role.color || '#ffb6c1' }}
             validationSchema={editRoleValidationSchema}
             onSubmit={handleEditRole}
+            enableReinitialize
         >
             {({ handleSubmit, handleChange, values, errors, touched, resetForm }) => (
                 <Form onSubmit={handleSubmit}>

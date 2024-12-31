@@ -75,11 +75,11 @@ export const useChatManagement = () => {
 
         await fetchMessagesChatHistory(userId, partner, language, setMessages)
 
-        // setMessages((prevMessages) =>
-        //   prevMessages.map((msg) =>
-        //     msg.receiver_id === Number(userId) ? { ...msg, is_read: true } : msg
-        //   )
-        // );
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            msg.receiver_id === Number(userId) ? { ...msg, is_read: true } : msg
+          )
+        );
 
         // setSelectedChat(partner);
         setLoading(false);
