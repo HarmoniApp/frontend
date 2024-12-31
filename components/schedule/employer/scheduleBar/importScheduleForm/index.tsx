@@ -6,6 +6,7 @@ import { Formik, Form } from 'formik';
 import styles from './main.module.scss';
 import { importEmployeesOrScheduleValidationSchema } from '@/validationSchemas/importEmployeesValidationSchema';
 import { importScheduleXLSX } from '@/services/xlsxService';
+import CustomButton from '@/components/customButton';
 
 export const ImportScheduleForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const [fileName, setFileName] = useState<string | null>(null);
@@ -62,7 +63,15 @@ export const ImportScheduleForm: React.FC<{ onClose: () => void }> = ({ onClose 
                     </Form>
                 )}
             </Formik>
-            <p>*po pomyślnym dodaniu nastąpi odświenie strony</p>
+            <p>*po pomyślnym dodaniu nastąpi odświeżenie strony</p>
+            <CustomButton
+                icon="faDownload"
+                writing="Pobierz szablon pliku"
+                action={() => {
+                    const fileUrl = "/template import schedule.xlsx";
+                    window.location.href = fileUrl;
+                }}
+            />
         </div>
     );
 };

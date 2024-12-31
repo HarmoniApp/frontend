@@ -6,6 +6,7 @@ import { Formik, Form } from 'formik';
 import styles from './main.module.scss';
 import { importEmployeesOrScheduleValidationSchema } from '@/validationSchemas/importEmployeesValidationSchema';
 import { importUsersXLSX } from '@/services/xlsxService';
+import CustomButton from '@/components/customButton';
 
 export const ImportEmployeesForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const [fileName, setFileName] = useState<string | null>(null);
@@ -20,7 +21,7 @@ export const ImportEmployeesForm: React.FC<{ onClose: () => void }> = ({ onClose
         }
         await importUsersXLSX(formData);
         onClose();
-        await new Promise((resolve) => setTimeout(resolve, 3000)); 
+        await new Promise((resolve) => setTimeout(resolve, 3000));
         window.location.reload();
     };
 
@@ -63,6 +64,14 @@ export const ImportEmployeesForm: React.FC<{ onClose: () => void }> = ({ onClose
                 )}
             </Formik>
             <p>*po pomyślnym importowaniu zostanie wygenerowany i pobrany plik z loginami i hasłami</p>
+            <CustomButton
+                icon="faDownload"
+                writing="Pobierz szablon pliku"
+                action={() => {
+                    const fileUrl = "/template import users.xlsx";
+                    window.location.href = fileUrl;
+                }}
+            />            
         </div>
     );
 };
