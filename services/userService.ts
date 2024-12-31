@@ -68,8 +68,8 @@ export const fetchFilterUsers = async (
             const params = new URLSearchParams();
 
             if (filters.roles && filters.roles.length) {
-                filters.roles.forEach(role => params.append('role', role.toString()));
-            }
+                params.append('roles', filters.roles.join(','));
+            } 
             if (filters.languages && filters.languages.length) {
                 filters.languages.forEach(language => params.append('language', language.toString()));
             }
