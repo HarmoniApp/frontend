@@ -9,7 +9,7 @@ export const predefineShiftValidationSchema = Yup.object({
     name: Yup.string()
         .required('Pole wymagane')
         .test('no-invalid-chars', function (value) {
-            const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9\s]*$/);
+            const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z0-9 ąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s]*$/);
             return invalidChars.length === 0
                 ? true
                 : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });

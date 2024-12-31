@@ -11,7 +11,7 @@ export const departmentValidationSchema = Yup.object().shape({
         .max(100, 'Max 100 znaków')
         .required("Pole wymagane")
         .test('no-invalid-chars', function (value) {
-            const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z ]*$/);
+            const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]*$/);
             return invalidChars.length === 0
                 ? true
                 : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
@@ -21,7 +21,7 @@ export const departmentValidationSchema = Yup.object().shape({
         .max(50, 'Max 50 znaków')
         .required("Pole wymagane")
         .test('no-invalid-chars', function (value) {
-            const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z ]*$/);
+            const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]*$/);
             return invalidChars.length === 0
                 ? true
                 : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
@@ -41,7 +41,7 @@ export const departmentValidationSchema = Yup.object().shape({
         .max(100, 'Max 100 znaków')
         .required("Pole wymagane")
         .test('no-invalid-chars', function (value) {
-            const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z ]*$/);
+            const invalidChars = findInvalidCharacters(value || '', /^[a-zA-Z ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]*$/);
             return invalidChars.length === 0
                 ? true
                 : this.createError({ message: `Niedozwolone znaki: ${invalidChars.join(', ')}` });
